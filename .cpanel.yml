@@ -1,0 +1,9 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/tpcjvytc/public_html/
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -R .env $DEPLOYPATH
+    - /usr/local/bin/composer install --no-dev -d $DEPLOYPATH
+    - php $DEPLOYPATH/artisan migrate --force
+    - php $DEPLOYPATH/artisan config:cache
+    - php $DEPLOYPATH/artisan route:cache

@@ -1,0 +1,2 @@
+[31-May-2024 10:33:03 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\center\RechargeController::center_recharge() in /home/indiates/public_html/test_mayacomputer/app/Http/Controllers/center/RechargeController.php on line 94
+[01-Jun-2024 08:08:00 UTC] PHP Fatal error:  Cannot use App\Http\Controllers\center\StudentController as StudentController because the name is already in use in /home/indiates/public_html/test_mayacomputer/routes/admin_route.php on line 10
