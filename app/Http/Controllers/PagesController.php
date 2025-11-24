@@ -83,7 +83,7 @@ class PagesController extends Controller
 
     public function iso()
     {
-        return view('downloads.iso');
+        return view('frontend.iso');
     }
 
     public function trademark()
