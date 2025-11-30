@@ -96,11 +96,11 @@
 
 									<!--About Menu Start-->
 									<li class="menu-item-has-children">
-										<a href="#">About Us</a>
-										<ul class="sub-menu">
+										<a href="{{route('aboutus')}}">About Us</a>
+										<!-- <ul class="sub-menu">
 											<li><a href="{{ route('director') }}">Director</a></li>
 											<li><a href="{{ route('teacher') }}">Teacher</a></li>
-										</ul>
+										</ul> -->
 									</li>
 									<!--About Menu End-->
 

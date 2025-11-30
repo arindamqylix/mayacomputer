@@ -13,9 +13,9 @@ class PagesController extends Controller
     }
 
     // About
-    public function director()
+    public function aboutUs()
     {
-        return view('frontend.director');
+        return view('frontend.about-us');
     }
 
     public function teacher()

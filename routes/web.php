@@ -26,6 +26,7 @@ Route::get('/', [PagesController::class, 'index'])->name('index');
 // About
 Route::get('/director', [PagesController::class, 'director'])->name('director');
 Route::get('/teacher', [PagesController::class, 'teacher'])->name('teacher');
+Route::get('/about-us', [PagesController::class, 'aboutus'])->name('aboutus');
 
 // Courses
 Route::get('/courses-one', [PagesController::class, 'one'])->name('courses.one');
@@ -55,8 +56,8 @@ Route::get('/payment-terms', [PagesController::class, 'paymentTerms'])->name('pa
 Route::get('/payment-refunds', [PagesController::class, 'paymentRefunds'])->name('paymentRefunds');
 
 // Gallery
-Route::get('/gallery', [PagesController::class, 'index'])->name('gallery');
+Route::get('/gallery', [PagesController::class, 'gallery'])->name('gallery');
 
 // Contact
-Route::get('/contact', [PagesController::class, 'index'])->name('contact');
+Route::get('/contact', [PagesController::class, 'contact'])->name('contact');
 
