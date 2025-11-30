@@ -19,19 +19,9 @@
 						<div class="col-md-12">
 							
 							<div class="form-group mb-3">
-								<label>Select Page</label>
-								<select class="form-select select2" name='download_name' required>
-									<option value='' selected disabled>-- Select Page --</option>
-									<option value='Franchisee Form'>Franchisee Form</option>
-									<option value='Admission Form'>Admission Form</option>
-									<option value='Company Certificate'>Company Certificate</option>
-									<option value='Company PAN Card'>Company PAN Card</option>
-									<option value='Udyam Registration Certificate'>Udyam Registration Certificate</option>
-									<option value='Startup India Certificate'>Startup India Certificate</option>
-									<option value='ISO Certificate'>ISO Certificate</option>
-									<option value='Trademark Certificate'>Trademark Certificate</option>
-								</select>
-							</div>
+                                <label>Name</label>
+                                <input type="text" name="download_name" id="" class="form-control" placeholder="Name">
+                            </div>
 
 							<div class="form-group mb-3">
 								<label>Download Type</label>

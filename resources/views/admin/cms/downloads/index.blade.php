@@ -51,13 +51,13 @@
                                     <td>{{ $download->download_name }}</td>
                                     <td>{{ $download->type }}</td>
                                     <td>
-										<a href="{{ asset('storage/'.$download->file) }}" target="_blank" class="badge bg-primary text-decoration-none">
+										<a href="{{ asset($download->file) }}" target="_blank" class="badge bg-primary text-decoration-none">
 											View
 										</a>
 									</td>
                                     <td>
                                         <a href="{{ route('edit_download_form', $download->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="{{ route('delete_download_form', $download->id) }}" class="btn btn-danger btn-sm">Edit</a>
+                                        <a href="{{ route('delete_download_form', $download->id) }}" class="btn btn-danger btn-sm">Delete</a>
                                     </td>
                                 </tr>
                             @endforeach

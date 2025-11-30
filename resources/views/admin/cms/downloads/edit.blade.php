@@ -18,7 +18,7 @@
 					<div class='row'>
 						<div class="col-md-12">
 							
-							<div class="form-group mb-3">
+							<!-- <div class="form-group mb-3">
                                 <label>Select Page</label>
                                 <select class="form-select select2" name='download_name' required>
                                     <option value='' disabled>-- Select Page --</option>
@@ -31,6 +31,11 @@
                                     <option value='ISO Certificate' {{ $download->download_name == 'ISO Certificate' ? 'selected' : '' }}>ISO Certificate</option>
                                     <option value='Trademark Certificate' {{ $download->download_name == 'Trademark Certificate' ? 'selected' : '' }}>Trademark Certificate</option>
                                 </select>
+                            </div> -->
+
+                            <div class="form-group mb-3">
+                                <label>Name</label>
+                                <input type="text" name="download_name" id="" class="form-control" placeholder="Name">
                             </div>
 
                             <div class="form-group mb-3">

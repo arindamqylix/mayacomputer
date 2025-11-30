@@ -30,7 +30,7 @@
                                 <tr>
                                     <td>{{ $gallery->id }}</td>
                                     <td>
-										<img src="{{ asset('storage/'.$gallery->file) }}" alt="">
+										<img src="{{ asset($gallery->file) }}" style="width: 60px;height: 55px;" alt="">
 									</td>
                                     <td>
                                         <a href="{{ route('edit_gallery', $gallery->id) }}" class="btn btn-warning btn-sm">Edit</a>

@@ -20,17 +20,26 @@ class GalleryController extends Controller
 
     public function handle_gallery(Request $request)
     {
+        $request->validate([
+            'file' => 'required|image|max:4096' // you can change max size
+        ]);
 
-        $filePath = $request->file('file')->store('gallery', 'public');
 
+        // upload image
+        $uploadedFile = $request->file('file');
+        $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+        $uploadedFile->move(public_path('gallery'), $fileName);
+
+        // save path to DB
         DB::table('cms_gallery')->insert([
-            'file' => $filePath,
+            'file'       => 'gallery/' . $fileName,  // relative path
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('all_gallery')->with('success', 'Download added successfully.');
+        return redirect()->route('all_gallery')->with('success', 'Image added successfully.');
     }
+
 
     public function edit_gallery($id)
     {
@@ -41,23 +50,41 @@ class GalleryController extends Controller
     public function update_gallery(Request $request, $id)
     {
         $request->validate([
-            'file' => 'nullable|file|max:2048'
+            'file' => 'nullable|image|max:4096' // you can increase size if needed
         ]);
 
         $gallery = DB::table('cms_gallery')->where('id', $id)->first();
 
+        // Keep old file path by default
         $filePath = $gallery->file;
+
+        // If new image uploaded
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('gallery', 'public');
+
+
+            // delete old image if exists
+            if (!empty($gallery->file) && file_exists(public_path($gallery->file))) {
+                unlink(public_path($gallery->file));
+            }
+
+            // upload new image
+            $uploadedFile = $request->file('file');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('gallery'), $fileName);
+
+            // save new path
+            $filePath = 'gallery/' . $fileName;
         }
 
+        // DB update
         DB::table('cms_gallery')->where('id', $id)->update([
-            'file' => $filePath,
+            'file'       => $filePath,
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('all_gallery')->with('success', 'Download updated successfully.');
+        return redirect()->route('all_gallery')->with('success', 'Gallery updated successfully.');
     }
+
 
     // Delete
     public function delete_gallery($id)

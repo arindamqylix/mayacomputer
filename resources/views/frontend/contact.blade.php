@@ -28,7 +28,7 @@
 		<div class="contact-page-section sec-spacer">
         	<div class="container">
         		<div class="googleMap">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10021.751397791153!2d10.617219779333421!3d51.10038127213924!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a489ec9a274fc5%3A0xc4fd489f48cf0fac!2sUfhoven%2C%2099947%20Bad%20Langensalza%2C%20Germany!5e0!3m2!1sen!2sbd!4v1724318090468!5m2!1sen!2sbd" width="600" height="490" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <iframe src="{{$data->map ?? ''}}" width="600" height="490" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
         		<div class="row contact-address-section">
     				<div class="col-md-4 pl-0">

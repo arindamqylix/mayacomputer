@@ -418,3 +418,8 @@ CREATE TABLE `site_settings` (
     `created_at` TIMESTAMP NULL DEFAULT NULL,
     `updated_at` TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 30-11-2025
+
+ALTER TABLE `site_settings`
+ADD `map` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `copyright`;

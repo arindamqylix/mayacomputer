@@ -137,18 +137,14 @@
 									<li class="menu-item-has-children">
 										<a href="#">Downloads</a>
 										<ul class="sub-menu">
-											<li><a href="{{ route('downloads.franchisee') }}">Franchisee Form</a></li>
-											<li><a href="{{ route('downloads.admission') }}">Admission Form</a></li>
-											<li><a href="{{ route('downloads.certificate.company') }}">Company
-													Certificate</a></li>
-											<li><a href="{{ route('downloads.pancard') }}">Company PAN Card</a></li>
-											<li><a href="{{ route('downloads.udyam') }}">Udyam Registration
-													Certificate</a></li>
-											<li><a href="{{ route('downloads.startup') }}">Startup India Certificate</a>
-											</li>
-											<li><a href="{{ route('downloads.iso') }}">ISO Certificate</a></li>
-											<li><a href="{{ route('downloads.trademark') }}">Trademark Certificate</a>
-											</li>
+											@php
+												$download = DB::table('cms_downloads')->get();	
+											@endphp
+											
+
+											@foreach ($download as $val)
+												<li><a href="{{asset($val->file)}}">{{$val->download_name}}</a></li>
+											@endforeach
 										</ul>
 									</li>
 									<!--Downloads Menu End-->
