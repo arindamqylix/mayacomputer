@@ -1,5 +1,5 @@
 @php
-	$data = DB::table('site_Settings')->where('id','1')->first();
+	$data = DB::table('site_settings')->where('id','1')->first();
 @endphp
 <!--Full width header Start-->
 <div class="full-width-header">
