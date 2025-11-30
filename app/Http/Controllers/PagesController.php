@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 
 class PagesController extends Controller
 {
@@ -95,6 +96,11 @@ class PagesController extends Controller
     public function gallery()
     {
         return view('frontend.gallery');
+    }
+
+    public function courseDetails($slug){
+        $data = DB::table('course')->where('slug',$slug)->first();
+        return view('frontend.course-details', compact('data'));
     }
 
     // Contact

@@ -29,10 +29,8 @@ Route::get('/teacher', [PagesController::class, 'teacher'])->name('teacher');
 Route::get('/about-us', [PagesController::class, 'aboutus'])->name('aboutus');
 
 // Courses
-Route::get('/courses-one', [PagesController::class, 'one'])->name('courses.one');
-Route::get('/courses-two', [PagesController::class, 'two'])->name('courses.two');
-Route::get('/courses-details', [PagesController::class, 'details'])->name('courses.details');
-Route::get('/courses-details2', [PagesController::class, 'details2'])->name('courses.details2');
+Route::get('/courses', [PagesController::class, 'course'])->name('courses');
+Route::get('/courses-details/{slug}', [PagesController::class, 'courseDetails'])->name('courses.details');
 
 // Verification
 Route::get('/verification/registration', [PagesController::class, 'registration'])->name('verification.registration');
@@ -52,8 +50,8 @@ Route::get('/downloads/iso-certificate', [PagesController::class, 'iso'])->name(
 Route::get('/downloads/trademark', [PagesController::class, 'trademark'])->name('downloads.trademark');
 
 
-Route::get('/payment-terms', [PagesController::class, 'paymentTerms'])->name('paymentTerms');
-Route::get('/payment-refunds', [PagesController::class, 'paymentRefunds'])->name('paymentRefunds');
+Route::get('/terms-and-conditions', [PagesController::class, 'paymentTerms'])->name('paymentTerms');
+Route::get('/refund-policy', [PagesController::class, 'paymentRefunds'])->name('paymentRefunds');
 
 // Gallery
 Route::get('/gallery', [PagesController::class, 'gallery'])->name('gallery');

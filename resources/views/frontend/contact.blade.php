@@ -57,7 +57,7 @@
         		<div class="contact-comment-section">
         			<h3>Leave Comment</h3>
                     <div id="form-messages"></div>
-					<form id="contact-form" method="post" action="mailer.php">
+					<form id="contact-form" method="post">
 						<fieldset>
 							<div class="row">                                      
 								<div class="col-md-6 col-sm-12">

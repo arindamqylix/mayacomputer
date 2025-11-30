@@ -1,57 +1,82 @@
 @extends('frontend.layouts.master')
-@section('title','Payment Terms')
+@section('title','Refund Policy')
 @section('content')
-
-<section class="payment-terms" style="font-family:Arial, sans-serif; line-height:1.6; color:#333;">
-    <!-- ==================== Payment Refund Policy ==================== -->
-    <h2 style="color:#2a7ae2; margin-top:40px;">Payment Refund Policy</h2>
+@php
+	$data = DB::table('site_settings')->where('id','1')->first();
+@endphp
+<!-- Breadcrumbs Start -->
+		<div class="rs-breadcrumbs bg7 breadcrumbs-overlay">
+		    <div class="breadcrumbs-inner">
+		        <div class="container">
+		            <div class="row">
+		                <div class="col-md-12 text-center">
+		                    <h1 class="page-title">Refund Policy</h1>
+		                    <ul>
+		                        <li>
+		                            <a class="active" href="{{url('/')}}">Home</a>
+		                        </li>
+		                        <li>Refund Policy</li>
+		                    </ul>
+		                </div>
+		            </div>
+		        </div>
+		    </div><!-- .breadcrumbs-inner end -->
+		</div>
+		<!-- Breadcrumbs End -->
+		
+		<!-- Contact Section Start -->
+		<div class="contact-page-section sec-spacer">
+        	<div class="container">
+        		<section class="payment-terms" style="font-family:Arial, sans-serif; line-height:1.6; color:#333;">
+    <h2 style="color:#2a7ae2;">Refund Policy</h2>
     <ol>
         <li>
-            <strong>Non-Refundable Fees</strong><br>
-            <strong>Franchise Registration Fee, Setup Charges, and Training Fees</strong>
-            are strictly <strong>non-refundable</strong>, irrespective of whether the franchise continues operations
-            or terminates the agreement.
-        </li>
-
-        <li>
-            <strong>Refunds on Duplicate or Excess Payment</strong><br>
-            If a franchisee has made a <strong>duplicate payment</strong> or paid an amount in excess of the invoice,
-            a refund or credit adjustment will be processed after verification of payment records.
-            The refund will be issued to the original payment method within <strong>7–10 working days</strong>.
-        </li>
-
-        <li>
-            <strong>Technical Errors</strong><br>
-            In case of a <strong>technical error or failed transaction</strong> where payment has been deducted
-            but services or credits are not allocated, the parent company will verify the transaction and
-            initiate a refund or allocate credits within <strong>5–7 working days</strong>.
+            <strong>Franchise Registration &amp; Setup Fee</strong><br>
+            Each franchisee must pay the one-time <strong>Franchise Registration Fee</strong> and any applicable
+            <strong>Setup Charges</strong> as specified in the Franchise Agreement before commencing operations.
+            These fees are <strong>non-refundable</strong> once the registration process is completed and franchise credentials are issued.
         </li>
 
         <li>
             <strong>Student Enrollment Credits</strong><br>
-            Payments made for <strong>Student Enrollment Credits</strong> are <strong>non-refundable</strong>
-            once credits are allocated to the franchise account.
-            In case of unused credits at the time of termination, no monetary refund will be provided,
-            but credits may be transferred only if specified in the franchise agreement.
+            To enroll students, each franchisee must <strong>pre-purchase Student Enrollment Credits</strong> or
+            make payments as per the plan defined by the parent organization.
+            Enrollment of students will be allowed <strong>only after receipt of cleared payment</strong>
+            in the parent company’s designated bank account or payment gateway.
+            Unused credits, if any, will remain valid for the period specified in the franchise agreement.
         </li>
 
         <li>
-            <strong>Payment Disputes</strong><br>
-            Any discrepancy or dispute regarding payment must be reported to
-            <strong>Maya Computer Center PVT LTD</strong> in writing at
-            <a href="mailto:mccsiswar@gmail.com">mccsiswar@gmail.com</a> within
-            <strong>7 working days</strong> of payment.
-            The company reserves the right to verify and resolve disputes as per internal policies.
+            <strong>Mode of Payment</strong><br>
+            Payments can be made via <strong>Bank Transfer (NEFT/RTGS/IMPS)</strong>, <strong>UPI</strong>,
+            or <strong>approved online payment gateway</strong>.
+            All payments must be made in the name of <strong>[Parent Company Name]</strong> and are subject to applicable taxes and charges.
         </li>
 
         <li>
-            <strong>Termination of Franchise</strong><br>
-            If the franchise agreement is terminated by either party,
-            <strong>no refund</strong> will be provided for any fees already paid.
-            Any <strong>outstanding dues</strong> must be cleared immediately before the termination is finalized.
+            <strong>Payment Timeline</strong><br>
+            All recurring fees (if any) such as <strong>monthly royalty</strong> or <strong>service fees</strong>
+            must be paid on or before the <strong>due date mentioned in the invoice</strong>.
+            <strong>Late payments</strong> will attract a penalty/interest as specified in the franchise agreement.
+        </li>
+
+        <li>
+            <strong>Invoice &amp; Acknowledgement</strong><br>
+            An electronic invoice/receipt will be issued within <strong>3 working days</strong> of receiving the payment.
+            Franchisees are responsible for maintaining their payment records and ensuring timely clearance.
         </li>
     </ol>
+
+
+    <h3 style="color:#2a7ae2; margin-top:30px;">Contact for Payment &amp; Refunds</h3>
+    <p>
+        For payment or refund-related queries, please contact:<br>
+        <strong>Accounts &amp; Billing Department</strong><br>
+        Email: <a href="mailto:mccsiswar@gmail.com">mccsiswar@gmail.com</a><br>
+        Phone: +918825148127
+    </p>
 </section>
-
-
+        	</div>
+        </div>
+        <!-- Contact Section End -->  
 @endsection

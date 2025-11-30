@@ -1,9 +1,33 @@
 @extends('frontend.layouts.master')
-@section('title','Payment Refunds')
+@section('title','Terms & Conditions')
 @section('content')
-
-
-<section class="payment-terms" style="font-family:Arial, sans-serif; line-height:1.6; color:#333;">
+@php
+	$data = DB::table('site_settings')->where('id','1')->first();
+@endphp
+<!-- Breadcrumbs Start -->
+		<div class="rs-breadcrumbs bg7 breadcrumbs-overlay">
+		    <div class="breadcrumbs-inner">
+		        <div class="container">
+		            <div class="row">
+		                <div class="col-md-12 text-center">
+		                    <h1 class="page-title">Terms & Conditions</h1>
+		                    <ul>
+		                        <li>
+		                            <a class="active" href="{{url('/')}}">Home</a>
+		                        </li>
+		                        <li>Terms & Conditions</li>
+		                    </ul>
+		                </div>
+		            </div>
+		        </div>
+		    </div><!-- .breadcrumbs-inner end -->
+		</div>
+		<!-- Breadcrumbs End -->
+		
+		<!-- Contact Section Start -->
+		<div class="contact-page-section sec-spacer">
+        	<div class="container">
+        		<section class="payment-terms" style="font-family:Arial, sans-serif; line-height:1.6; color:#333;">
     <h2 style="color:#2a7ae2;">Payment Terms</h2>
     <ol>
         <li>
@@ -52,6 +76,7 @@
         Phone: +918825148127
     </p>
 </section>
-
-
+        	</div>
+        </div>
+        <!-- Contact Section End -->  
 @endsection

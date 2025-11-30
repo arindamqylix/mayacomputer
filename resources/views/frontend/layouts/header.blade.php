@@ -11,7 +11,7 @@
 				<div class="col-md-6">
 					<div class="rs-toolbar-left">
 						<div class="welcome-message">
-							<i class="fa fa-bank"></i><span>Welcome to Maya Computer Center</span>
+							<i class="fa fa-bank"></i><span>Welcome to Maya Computer Center PVT LTD</span>
 						</div>
 					</div>
 				</div>
@@ -55,7 +55,7 @@
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="logo-area text-center">
-							<a href="index.html"><img src="{{asset($data->site_logo)}}" alt="logo"></a>
+							<a href="{{url('/')}}"><img src="{{asset($data->site_logo)}}" alt="logo"></a>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
@@ -105,13 +105,15 @@
 									<!--About Menu End-->
 
 									<!--Courses Menu Start-->
+									@php
+										$course = DB::table('course')->get();
+									@endphp
 									<li class="menu-item-has-children">
 										<a href="#">Courses</a>
 										<ul class="sub-menu">
-											<li><a href="">Courses One</a></li>
-											<li><a href="">Courses Two</a></li>
-											<li><a href="">Courses Details</a></li>
-											<li><a href="">Courses Details 2</a></li>
+											@foreach ($course as $val)
+												<li><a href="{{route('courses.details',$val->slug)}}">{{$val->c_full_name ??''}}</a></li>
+											@endforeach
 										</ul>
 									</li>
 									<!--Courses Menu End-->

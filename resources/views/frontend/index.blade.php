@@ -4,66 +4,56 @@
 
 <!-- Slider Area Start -->
 <div id="rs-slider" class="slider-overlay-2">
-    <div id="home-slider" class="rs-carousel owl-carousel" data-loop="true" data-items="4" data-margin="0"
-        data-autoplay="false" data-autoplay-timeout="5000" data-smart-speed="1200" data-dots="false" data-nav="true"
-        data-nav-speed="false" data-mobile-device="1" data-mobile-device-nav="true" data-mobile-device-dots="true"
-        data-ipad-device="1" data-ipad-device-nav="true" data-ipad-device-dots="true" data-md-device="1"
-        data-md-device-nav="true" data-md-device-dots="false">
-        <!-- Item 1 -->
-        <div class="item active">
-            <img src="{{asset('frontend/images/banner/banner2.jpeg')}}" alt="Slide1" />
-            <div class="slide-content">
-                <div class="display-table">
-                    <div class="display-table-cell">
-                        <div class="container text-center">
-                            <!-- <h1 class="slider-title" data-animation-in="fadeInLeft" data-animation-out="animate-out">
-                                WELCOME TO EDULEARN</h1>
-                            <p data-animation-in="fadeInUp" data-animation-out="animate-out" class="slider-desc">Fusce
-                                sem dolor, interdum in efficitur at, faucibus nec lorem.Sed nec molestie justo.<br
-                                    class="hidden-sm-dow"> Nunc quis sapien in arcu pharetra volutpat.Morbi nec
-                                vulputate dolor.</p> -->
-                            <a href="#" class="sl-readmore-btn mr-30" data-animation-in="lightSpeedIn"
-                                data-animation-out="animate-out">READ MORE</a>
-                            <a href="#" class="sl-get-started-btn" data-animation-in="lightSpeedIn"
-                                data-animation-out="animate-out">GET STARTED NOW</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="home-slider" class="rs-carousel owl-carousel"
+        data-loop="true"
+        data-items="1"
+        data-margin="0"
+        data-autoplay="true"
+        data-autoplay-timeout="5000"
+        data-smart-speed="1200"
+        data-dots="false"
+        data-nav="true"
+        data-nav-speed="false"
+        data-mobile-device="1"
+        data-mobile-device-nav="true"
+        data-mobile-device-dots="true"
+        data-ipad-device="1"
+        data-ipad-device-nav="true"
+        data-ipad-device-dots="true"
+        data-md-device="1"
+        data-md-device-nav="true"
+        data-md-device-dots="false">
 
-        <!-- Item 2 -->
+        @php
+            $banners = DB::table('cms_banner')->orderBy('id','DESC')->get();
+        @endphp
+
+        @foreach($banners as $banner)
         <div class="item">
-            <img src="{{asset('frontend/images/banner/banner1.jpeg')}}" alt="Slide2" />
+            <img src="{{ asset($banner->file) }}" alt="Banner"  style="height:40vh;" />
+
             <div class="slide-content">
                 <div class="display-table">
                     <div class="display-table-cell">
                         <div class="container text-center">
-                            <!-- <h1 class="slider-title" data-animation-in="fadeInUp" data-animation-out="animate-out">ARE
-                                YOU READY TO APPLY?</h1>
-                            <p data-animation-in="fadeInUp" data-animation-out="animate-out" class="slider-desc">Fusce
-                                sem dolor, interdum in efficitur at, faucibus nec lorem.Sed nec molestie justo.<br
-                                    class="hidden-sm-dow"> Nunc quis sapien in arcu pharetra volutpat.Morbi nec
-                                vulputate dolor.</p> -->
-                            <a href="#" class="sl-readmore-btn mr-30" data-animation-in="fadeInUp"
-                                data-animation-out="animate-out">READ MORE</a>
-                            <a href="#" class="sl-get-started-btn" data-animation-in="fadeInUp"
-                                data-animation-out="animate-out">GET STARTED NOW</a>
+                            <!-- <a href="#" class="sl-readmore-btn mr-30" data-animation-in="lightSpeedIn"
+                               data-animation-out="animate-out">READ MORE</a>
+                            <a href="#" class="sl-get-started-btn" data-animation-in="lightSpeedIn"
+                               data-animation-out="animate-out">GET STARTED NOW</a> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Item 3 -->
-        
+        @endforeach
 
     </div>
 </div>
 <!-- Slider Area End -->
 
+
 <!-- Services Start -->
-<div class="rs-services rs-services-style1">
+<div class="rs-services rs-services-style1" style="margin-top:100px;">
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-md-6">

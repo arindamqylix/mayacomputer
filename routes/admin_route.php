@@ -9,6 +9,7 @@ use App\Http\Controllers\admin\CenterPaymentController;
 use App\Http\Controllers\admin\IncomeExpenseController;
 use App\Http\Controllers\admin\DownloadController;
 use App\Http\Controllers\admin\GalleryController;
+use App\Http\Controllers\admin\BannerController;
 use App\Http\Controllers\admin\SiteSettingController;
 use App\Http\Controllers\admin\ContactRequestController;
 use App\Http\Controllers\admin\CmsCourseController;
@@ -96,6 +97,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('edit-gallery/{id}', [GalleryController::class, 'edit_gallery'])->name('edit_gallery');
 	Route::post('edit-gallery/{id}', [GalleryController::class, 'update_gallery'])->name('edit_gallery');
 	Route::get('delete-gallery/{id}', [GalleryController::class, 'delete_gallery'])->name('delete_gallery');
+
+	// Banner
+	Route::get('all-banner', [BannerController::class, 'all_banner'])->name('all_banner');
+	Route::get('add-banner', [BannerController::class, 'add_banner'])->name('add_banner');
+	Route::post('add-banner', [BannerController::class, 'handle_banner'])->name('handle_banner');
+	Route::get('edit-banner/{id}', [BannerController::class, 'edit_banner'])->name('edit_banner');
+	Route::post('edit-banner/{id}', [BannerController::class, 'update_banner'])->name('edit_banner');
+	Route::get('delete-banner/{id}', [BannerController::class, 'delete_banner'])->name('delete_banner');
 
 	// Site Settings
 	Route::get('site-settings', [SiteSettingController::class, 'edit'])->name('site_settings.edit');

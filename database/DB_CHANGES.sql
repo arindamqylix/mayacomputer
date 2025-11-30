@@ -423,3 +423,13 @@ CREATE TABLE `site_settings` (
 
 ALTER TABLE `site_settings`
 ADD `map` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `copyright`;
+
+ALTER TABLE course
+ADD COLUMN file VARCHAR(255) DEFAULT NULL AFTER c_id,
+ADD COLUMN description LONGTEXT DEFAULT NULL AFTER c_duration,
+ADD COLUMN category_name VARCHAR(255) DEFAULT NULL AFTER description,
+ADD COLUMN course_syllabus LONGTEXT DEFAULT NULL AFTER category_name,
+ADD COLUMN information LONGTEXT DEFAULT NULL AFTER course_syllabus;
+
+ALTER TABLE `course`
+ADD `slug` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `c_full_name`;

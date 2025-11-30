@@ -46,8 +46,9 @@
                         <div class="col-lg-3 col-md-12">
                             <div class="about-widget">
                                 <img src="{{asset($data->site_logo)}}" alt="Footer Logo">
-                                <p>We create Premium Html Themes for more than three years. Our team goal is to reunite the elegance of unique.</p>
-                                <p class="margin-remove">We create Unique and Easy To Use Flexible Html Themes.</p>
+                                <p>
+                                    Maya Computer Center Pvt. Ltd. is an ISO 9001:2015 certified company which is recognized by JAS-ANZ and registered under the Company Act 2013, Ministry of Company Affairs, and Government of India with Certificate identity number (CIN) is U74999BR2017PTC036132.
+                                </p>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-12">
@@ -78,18 +79,12 @@
                         <div class="col-lg-3 col-md-12">
                             <h5 class="footer-title">OUR SITEMAP</h5>
                             <ul class="sitemap-widget">
-                                <li class="active"><a href="index.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Home</a></li>
-                                <li ><a href="about.html"><i class="fa fa-angle-right" aria-hidden="true"></i>About</a></li>
-                                <li><a href="courses.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Courses</a></li>
-                                <li><a href="courses-details.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Courses Details</a></li>
-                                <li><a href="events.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Events</a></li>
-                                <li><a href="events-details.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Events Details</a></li>                                
-                                <li><a href="blog.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Blog</a></li>
-                                <li><a href="blog-details.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Blog Details</a></li>
-                                <li><a href="teachers.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Teachers</a></li>
-                                <li><a href="teachers-single.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Teachers Details</a></li>
-                                <li><a href="contact.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Contact</a></li>
-                                <li><a href="error-404.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Error 404</a></li>
+                                <li class="active"><a href="{{url('/')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Home</a></li>
+                                <li ><a href="{{route('aboutus')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>About</a></li>
+                                <li><a href="{{route('gallery')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Gallery</a></li>
+                                <li><a href="{{route('contact')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Contact Us</a></li> 
+                                <li><a href="{{route('paymentTerms')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Terms & Conditions</a></li> 
+                                <li><a href="{{route('paymentRefunds')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Privacy Policy</a></li> 
                             </ul>
                         </div>
                         <div class="col-lg-3 col-md-12">
@@ -103,11 +98,11 @@
                     </div>
                     <div class="footer-share">
                         <ul>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <!-- <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
                             <li><a href="#"><i class="fa fa-pinterest-p"></i></a></li>
-                            <li><a href="#"><i class="fa fa-vimeo"></i></a></li>    
+                            <li><a href="#"><i class="fa fa-vimeo"></i></a></li>     -->
                         </ul>
                     </div>                                
                 </div>
@@ -117,7 +112,7 @@
             <div class="footer-bottom">
                 <div class="container">
                     <div class="copyright">
-                        <p>© 2025 <a href="#">Maya Computer Center</a>. All Rights Reserved.</p>
+                        <p>© 2025 <a href="{{url('/')}}">Maya Computer Center PVT LTD</a>. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>
@@ -142,31 +137,16 @@
                 <!--Home Menu End-->
                 
                 <!--About Menu Start-->
-                <li class="menu-item-has-children"><a href="#">About Us</a>
-                    <ul class="list-unstyled">
-                        <li class="sub-nav"><a href="">Director<span class="icon"></span></a></li>
-                        <li class="sub-nav"><a href="">Teacher<span class="icon"></span></a></li>
-                    </ul>
+                <li class="menu-item-has-children"><a href="{{route('aboutus')}}">About Us</a>
                 </li>
                 <!--About Menu End-->
                 
                 <!--Courses Menu Star-->
-                <li class="menu-item-has-children"><a href="#">Courses</a>
-                    <ul class="list-unstyled">
-                        <li class="sub-nav"><a href="courses.html">Courses<span class="icon"></span></a></li>
-                        <li class="sub-nav"><a href="courses2.html">Courses Two<span class="icon"></span></a></li>
-                        <li class="sub-nav"><a href="courses-details.html">Courses Details<span class="icon"></span></a></li>
-                    </ul>
-                </li>
+               
                 <!--Courses Menu End-->
                 
                 <!--Events Menu Star-->
-                <li class="menu-item-has-children"><a href="#">Events</a>
-                    <ul class="list-unstyled">
-                        <li class="sub-nav"><a href="events.html">Events<span class="icon"></span></a></li>
-                        <li class="sub-nav"><a href="events-details.html">Events Details<span class="icon"></span></a></li>
-                    </ul>
-                </li>
+               
                 <!--Events Menu End-->
 
                 <li><a href="{{route('gallery')}}">Gallery<span class="icon"></span></a></li>

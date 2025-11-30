@@ -24,10 +24,10 @@
 		<!-- Gallery Start -->
         <div class="rs-gallery sec-spacer">
             <div class="container">
-            	<div class="sec-title-2 mb-50 text-center">
+            	<!-- <div class="sec-title-2 mb-50 text-center">
             	    <h2>GALLERY (3 COLUMNS)</h2>      
             		<p>Considering primary motivation for the generation of narratives is a useful concept</p>
-            	</div>
+            	</div> -->
             	
                 <div class="row">
                     @php

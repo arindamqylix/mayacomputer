@@ -14,16 +14,19 @@
     "use strict";
 
     // sticky menu
-    var header = $('.menu-sticky');
-    var win = $(window);
-    win.on('scroll', function() {
-       var scroll = win.scrollTop();
-       if (scroll < 300) {
-           header.removeClass("sticky");
-       } else {
-           header.addClass("sticky");
-       }
-    });
+    var header = $('.full-width-header');
+var win = $(window);
+
+win.on('scroll', function () {
+    var scroll = win.scrollTop();
+    if (scroll < 200) {
+        header.removeClass("sticky");
+        $("body").removeClass("add-padding");
+    } else {
+        header.addClass("sticky");
+        $("body").addClass("add-padding");
+    }
+});
 	
     // Latest News
 	$('.latest-news-slider').slick({

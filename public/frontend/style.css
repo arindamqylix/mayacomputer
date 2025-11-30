@@ -660,7 +660,7 @@ ul {
   background-position: center top;
 }
 .bg7 {
-  background-image: url(images/bg/bg3.jpg);
+  background-image: url(images/bg/bg3.jpeg);
   background-size: cover;
   background-position: center;
   background-position: center top;
@@ -1276,6 +1276,7 @@ ul {
 .nav-menu > li > a {
   font-weight: 500;
   font-size: 16px;
+  font-weight: bold !important;
 }
 .home1 .logo-area {
   padding-top: 3px;
@@ -1291,7 +1292,7 @@ ul {
   color: #d00226;
 }
 .home1 .menu-area .rs-menu > ul > li > a {
-  color: #bbbbbb;
+  color: #fff !important;
 }
 .home1 .menu-area .rs-menu > ul > li > a:hover,
 .home1 .menu-area .rs-menu li.current_page_item > a {
@@ -1531,10 +1532,25 @@ ul {
 #rs-header.rs-transfarent-header-style .logo-area {
   padding-top: 0;
 }
-#rs-header.rs-transfarent-header-style .menu-sticky.sticky {
+/* #rs-header.rs-transfarent-header-style .menu-sticky.sticky {
   background: #000077;
   padding-top: 10px;
   padding-bottom: 10px;
+} */
+ .full-width-header.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background: #fff; /* keep menu visible after sticking */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    animation: smoothSlide 0.3s ease-in-out;
+}
+
+@keyframes smoothSlide {
+  from { top: -50px; }
+  to { top: 0; }
 }
 #rs-header.rs-transfarent-header-style .menu-area {
   background: transparent;
@@ -2445,7 +2461,7 @@ ul {
   padding: 100px 0 35px;
 }
 .rs-breadcrumbs .page-title {
-  margin: 80px 0 100px;
+  margin: 30px;
   font-size: 36px;
   color: #ffffff;
   text-transform: uppercase;
