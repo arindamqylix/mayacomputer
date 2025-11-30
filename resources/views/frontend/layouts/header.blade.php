@@ -112,7 +112,7 @@
 										<a href="#">Courses</a>
 										<ul class="sub-menu">
 											@foreach ($course as $val)
-												<li><a href="{{route('courses.details',$val->slug)}}">{{$val->c_full_name ??''}}</a></li>
+												<li><a href="{{route('courses.details',$val->slug??'')}}">{{$val->c_full_name ??''}}</a></li>
 											@endforeach
 										</ul>
 									</li>

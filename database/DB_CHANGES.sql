@@ -433,3 +433,26 @@ ADD COLUMN information LONGTEXT DEFAULT NULL AFTER course_syllabus;
 
 ALTER TABLE `course`
 ADD `slug` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `c_full_name`;
+
+-- Adminer 5.3.0 MariaDB 10.4.32-MariaDB dump
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `cms_banner`;
+CREATE TABLE `cms_banner` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `file` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `cms_banner` (`id`, `file`, `created_at`, `updated_at`) VALUES
+(1,	'banner/1764504435_692c337393988.jpg',	'2025-11-30 06:37:15',	'2025-11-30 06:37:15');
+
+-- 2025-11-30 13:50:20 UTC
