@@ -16,13 +16,13 @@
 					<div class="rs-toolbar-right">
 						<div class="toolbar-share-icon">
 							<ul>
-								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+								<li><a href="#" style="color:#fff;"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#" style="color:#fff;"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#" style="color:#fff;"><i class="fa fa-google-plus"></i></a></li>
+								<li><a href="#" style="color:#fff;"><i class="fa fa-linkedin"></i></a></li>
 							</ul>
 						</div>
-						<a href="#" class="apply-btn">Apply Now</a>
+						<!-- <a href="#" class="apply-btn">Apply Now</a> -->
 					</div>
 				</div>
 			</div>
