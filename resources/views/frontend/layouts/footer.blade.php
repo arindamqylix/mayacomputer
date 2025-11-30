@@ -1,3 +1,7 @@
+@php
+	$data = DB::table('site_Settings')->where('id','1')->first();
+@endphp
+
 <!-- Footer Start -->
         <footer id="rs-footer" class="bg3 rs-footer">
 			<div class="container">
@@ -41,7 +45,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-md-12">
                             <div class="about-widget">
-                                <img src="images/logo-footer.png" alt="Footer Logo">
+                                <img src="{{asset($data->site_logo)}}" alt="Footer Logo">
                                 <p>We create Premium Html Themes for more than three years. Our team goal is to reunite the elegance of unique.</p>
                                 <p class="margin-remove">We create Unique and Easy To Use Flexible Html Themes.</p>
                             </div>
@@ -129,7 +133,7 @@
         <nav class="right_menu_togle">
         	<div class="close-btn"><span id="nav-close" class="text-center">x</span></div>
             <div class="canvas-logo">
-                <a href="index.html"><img src="images/logo-white.png" alt="logo"></a>
+                <a href="{{url('/')}}"><img src="{{asset($data->site_logo)}}" alt="logo"></a>
             </div>
         	<ul class="sidebarnav_menu list-unstyled main-menu">
                 <!--Home Menu Start-->

@@ -17,16 +17,24 @@ class SiteSettingController extends Controller
     public function update(Request $request)
     {
         $data = $request->only(['name', 'email', 'phone', 'address', 'copyright']);
+
         if ($request->hasFile('site_logo')) {
-            $data['site_logo'] = $request->file('site_logo')->store('site_settings', 'public');
+            $logo = $request->file('site_logo');
+            $logoName = time() . '_logo.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('site_settings'), $logoName);
+            $data['site_logo'] = 'site_settings/' . $logoName;
         }
 
         if ($request->hasFile('site_fav_icon')) {
-            $data['site_fav_icon'] = $request->file('site_fav_icon')->store('site_settings', 'public');
+            $favicon = $request->file('site_fav_icon');
+            $faviconName = time() . '_favicon.' . $favicon->getClientOriginalExtension();
+            $favicon->move(public_path('site_settings'), $faviconName);
+            $data['site_fav_icon'] = 'site_settings/' . $faviconName;
         }
 
         DB::table('site_settings')->updateOrInsert(['id' => 1], $data);
 
         return redirect()->route('site_settings.edit')->with('success', 'Settings updated successfully.');
     }
+
 }

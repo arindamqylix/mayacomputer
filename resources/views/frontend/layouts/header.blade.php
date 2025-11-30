@@ -1,3 +1,6 @@
+@php
+	$data = DB::table('site_Settings')->where('id','1')->first();
+@endphp
 <!--Full width header Start-->
 <div class="full-width-header">
 
@@ -52,7 +55,7 @@
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="logo-area text-center">
-							<a href="index.html"><img src="{{asset('frontend/images/logo.jpeg')}}" alt="logo"></a>
+							<a href="index.html"><img src="{{asset($data->site_logo)}}" alt="logo"></a>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
