@@ -35,6 +35,7 @@ class DownloadController extends Controller
         DB::table('cms_downloads')->insert([
             'download_name' => $request->download_name,
             'type'          => $request->type,
+            'slug'          => $request->slug,
             'file'          => 'downloads/' . $fileName,
             'created_at'    => now(),
             'updated_at'    => now(),
@@ -90,6 +91,7 @@ class DownloadController extends Controller
     DB::table('cms_downloads')->where('id', $id)->update([
         'download_name' => $request->download_name,
         'type'          => $request->type,
+        'slug'          => $request->slug,
         'file'          => $filePath,
         'updated_at'    => now(),
     ]);

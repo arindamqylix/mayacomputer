@@ -456,3 +456,8 @@ INSERT INTO `cms_banner` (`id`, `file`, `created_at`, `updated_at`) VALUES
 (1,	'banner/1764504435_692c337393988.jpg',	'2025-11-30 06:37:15',	'2025-11-30 06:37:15');
 
 -- 2025-11-30 13:50:20 UTC
+
+-- 01-12-2025
+
+ALTER TABLE `cms_downloads`
+ADD `slug` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `download_name`;

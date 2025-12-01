@@ -40,7 +40,7 @@ Route::get('/verification/certificate', [PagesController::class, 'certificate'])
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
 
 // Downloads
-Route::get('/downloads/franchisee-form', [PagesController::class, 'franchisee'])->name('downloads.franchisee');
+Route::get('/downloads/{slug}', [PagesController::class, 'downloadDocument'])->name('downloads.document');
 Route::get('/downloads/admission-form', [PagesController::class, 'admission'])->name('downloads.admission');
 Route::get('/downloads/company-certificate', [PagesController::class, 'companyCertificate'])->name('downloads.certificate.company');
 Route::get('/downloads/pan-card', [PagesController::class, 'pancard'])->name('downloads.pancard');

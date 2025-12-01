@@ -145,7 +145,7 @@
 											
 
 											@foreach ($download as $val)
-												<li><a href="{{asset($val->file)}}">{{$val->download_name}}</a></li>
+												<li><a href="{{route('downloads.document',$val->slug??'')}}">{{$val->download_name}}</a></li>
 											@endforeach
 										</ul>
 									</li>

@@ -34,9 +34,14 @@
                             </div> -->
 
                             <div class="form-group mb-3">
-                                <label>Name</label>
-                                <input type="text" name="download_name" id="" class="form-control" placeholder="Name">
-                            </div>
+								<label>Name</label>
+								<input type="text" name="download_name" value="{{$download->download_name??''}}" id="download_name" class="form-control" placeholder="Name">
+							</div>
+
+							<div class="form-group mb-3 ">
+								<label>Slug</label>
+								<input type="text" name="slug" id="slug" value="{{$download->slug??''}}" class="form-control" placeholder="Slug" readonly>
+							</div>
 
                             <div class="form-group mb-3">
                                 <label>Download Type</label>
@@ -72,6 +77,15 @@
 		</form>
 	</div>
 </div>
+<script>
+		document.getElementById('download_name').addEventListener('keyup', function () {
+			let name = this.value;
+			let slug = name.toLowerCase()
+						.replace(/[^a-z0-9]+/g, '-')  // replace non-alphanumeric with -
+						.replace(/^-+|-+$/g, '');     // remove starting/ending -  
+			document.getElementById('slug').value = slug;
+		});
+</script>
 @endsection
 @push('custom-js')
 

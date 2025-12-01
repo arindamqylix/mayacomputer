@@ -41,9 +41,10 @@ class PagesController extends Controller
         return view('frontend.result');
     }
 
-    public function certificate()
+    public function downloadDocument($slug)
     {
-        return view('frontend.certificate');
+        $data = DB::table('cms_downloads')->where('slug',$slug)->first();
+        return view('frontend.download-document', compact('data'));
     }
 
     public function typing()
