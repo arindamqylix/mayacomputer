@@ -2506,7 +2506,7 @@ ul {
 .breadcrumbs-overlay:after {
   content: '';
   position: absolute;
-  background-color: rgba(17, 17, 17, 0.8);
+  /* background-color: rgba(17, 17, 17, 0.8); */
   left: 0;
   top: 0;
   width: 100%;
