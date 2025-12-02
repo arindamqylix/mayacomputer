@@ -191,11 +191,13 @@
                             <ul class="contact-info-list">
                                 <li>
                                     <span class="icon-box-lg orange"><i class="fa fa-map-marker"></i></span>
-                                    <span class="info-text">{{$data->address ?? 'K-40/B, First Floor, New Govindpura Extension, Delhi-110051'}}</span>
+                                    <span class="info-text">Corporate Office
+                                        Siswar, Phulparas, Madhubani, Bihar - 847409</span>
                                 </li>
                                 <li>
                                     <span class="icon-box-lg orange"><i class="fa fa-map-marker"></i></span>
-                                    <span class="info-text">{{$data->address ?? 'K-40/B, First Floor, New Govindpura Extension, Delhi-110051'}}</span>
+                                    <span class="info-text">Registered Office
+                                        K-40/B, First Floor, New Govindpura Extension, Delhi-110051</span>
                                 </li>
                                 <li>
                                     <span class="icon-box-lg blue"><i class="fa fa-phone"></i></span>
