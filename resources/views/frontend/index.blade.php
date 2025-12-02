@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- Slider Area Start -->
-<div id="rs-slider" class="slider-overlay-2">
+<div id="rs-slider" class="">
     <div id="home-slider" class="rs-carousel owl-carousel"
         data-loop="true"
         data-items="1"
