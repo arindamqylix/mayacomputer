@@ -119,4 +119,41 @@ class PagesController extends Controller
     {
         return view('frontend.payment-refunds');
     }
+
+    public function sitemap()
+    {
+        return view('frontend.sitemap');
+    }
+
+    public function disclaimer()
+    {
+        return view('frontend.disclaimer');
+    }
+
+    public function director()
+    {
+        return view('frontend.director');
+    }
+
+    public function course()
+    {
+        return view('frontend.courses');
+    }
+
+    public function certificate()
+    {
+        return view('frontend.certificate');
+    }
+
+    // XML Sitemap for search engines
+    public function sitemapXml()
+    {
+        $courses = DB::table('course')->select('slug', 'updated_at')->get();
+        $downloads = DB::table('cms_downloads')->select('slug', 'updated_at')->get();
+        
+        return response()->view('frontend.sitemap-xml', [
+            'courses' => $courses,
+            'downloads' => $downloads,
+        ])->header('Content-Type', 'application/xml');
+    }
 }

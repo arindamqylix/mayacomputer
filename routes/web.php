@@ -52,6 +52,9 @@ Route::get('/downloads/trademark', [PagesController::class, 'trademark'])->name(
 
 Route::get('/terms-and-conditions', [PagesController::class, 'paymentTerms'])->name('paymentTerms');
 Route::get('/refund-policy', [PagesController::class, 'paymentRefunds'])->name('paymentRefunds');
+Route::get('/sitemap', [PagesController::class, 'sitemap'])->name('sitemap');
+Route::get('/sitemap.xml', [PagesController::class, 'sitemapXml'])->name('sitemap.xml');
+Route::get('/disclaimer', [PagesController::class, 'disclaimer'])->name('disclaimer');
 
 // Gallery
 Route::get('/gallery', [PagesController::class, 'gallery'])->name('gallery');

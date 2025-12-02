@@ -461,3 +461,8 @@ INSERT INTO `cms_banner` (`id`, `file`, `created_at`, `updated_at`) VALUES
 
 ALTER TABLE `cms_downloads`
 ADD `slug` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `download_name`;
+
+-- 02-12-2025
+
+ALTER TABLE `site_settings`
+ADD `breadcumb_image` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `site_fav_icon`;

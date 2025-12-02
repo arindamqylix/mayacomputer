@@ -57,9 +57,11 @@
 
 								<td>
 									<a href="{{ route('edit_admit_card',$val->ac_id) }}" class="btn btn-primary btn-sm">
-										View
+										Edit
 									</a>
-
+									<a href="{{ route('print_admit_card',$val->ac_id) }}" class="btn btn-success btn-sm" target="_blank">
+										Print
+									</a>
 								</td>
 							</tr>
 							@endforeach

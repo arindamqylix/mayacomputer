@@ -85,7 +85,7 @@
 							<!-- <div id="logo-sticky" class="text-center">
 										<a href="index.html"><img src="images/logo.png" alt="logo"></a>
 									</div> -->
-							<a class="rs-menu-toggle"><i class="fa fa-bars"></i>Menu</a>
+							<a class="rs-menu-toggle" style="font-size: 20px;font-weight: bold;"><i class="fa fa-bars"></i>Menu</a>
 							<nav class="rs-menu">
 								<ul class="nav-menu">
 									<!-- Home -->

@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- Breadcrumbs Start -->
-		<div class="rs-breadcrumbs bg7 breadcrumbs-overlay">
+		<div class="rs-breadcrumbs bg7 breadcrumbs-overlay" style="background-image: url({{ breadcrumb_image() }});">
 		    <div class="breadcrumbs-inner">
 		        <div class="container">
 		            <div class="row">

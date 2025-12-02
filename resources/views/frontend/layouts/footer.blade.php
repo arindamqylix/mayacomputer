@@ -77,14 +77,17 @@
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-12">
-                            <h5 class="footer-title">OUR SITEMAP</h5>
+                            <h5 class="footer-title">Quicklinks</h5>
                             <ul class="sitemap-widget">
                                 <li class="active"><a href="{{url('/')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Home</a></li>
                                 <li ><a href="{{route('aboutus')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>About</a></li>
                                 <li><a href="{{route('gallery')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Gallery</a></li>
                                 <li><a href="{{route('contact')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Contact Us</a></li> 
-                                <li><a href="{{route('paymentTerms')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Terms & Conditions</a></li> 
+                                
                                 <li><a href="{{route('paymentRefunds')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Privacy Policy</a></li> 
+                                <li><a href="{{route('disclaimer')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Disclaimer</a></li> 
+                                <li><a href="{{route('paymentTerms')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Terms & Conditions</a></li> 
+                                <li><a href="{{route('sitemap')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Sitemap</a></li> 
                             </ul>
                         </div>
                         <div class="col-lg-3 col-md-12">

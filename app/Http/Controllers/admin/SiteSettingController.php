@@ -32,6 +32,13 @@ class SiteSettingController extends Controller
             $data['site_fav_icon'] = 'site_settings/' . $faviconName;
         }
 
+        if ($request->hasFile('breadcumb_image')) {
+            $breadcumb = $request->file('breadcumb_image');
+            $breadcumb_image = time() . '_favicon.' . $breadcumb->getClientOriginalExtension();
+            $breadcumb->move(public_path('site_settings'), $breadcumb_image);
+            $data['breadcumb_image'] = 'site_settings/' . $breadcumb_image;
+        }
+
         DB::table('site_settings')->updateOrInsert(['id' => 1], $data);
 
         return redirect()->route('site_settings.edit')->with('success', 'Settings updated successfully.');

@@ -137,4 +137,29 @@ class GenerateAdmitController extends Controller
         return redirect()->route('admit_card_list')->with('success', 'Admit Card Updated Successfully');
     }
 
+    public function print_admit_card($id)
+    {
+        $admit = DB::table('student_admit_cards')
+            ->where('ac_id', $id)
+            ->first();
+
+        if (!$admit) {
+            return back()->with('error', 'Admit Card not found');
+        }
+
+        $student = DB::table('student_login')
+            ->where('sl_id', $admit->student_id)
+            ->first();
+
+        $course = DB::table('course')
+            ->where('c_id', $student->sl_FK_of_course_id)
+            ->first();
+
+        $center = DB::table('center_login')
+            ->where('cl_id', $admit->center_id)
+            ->first();
+
+        return view('center.admit_card.print', compact('admit', 'student', 'course', 'center'));
+    }
+
 }

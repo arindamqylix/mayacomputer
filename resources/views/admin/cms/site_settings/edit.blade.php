@@ -50,7 +50,7 @@
                                 @if(!empty($setting->site_logo))
                                     <div class="mt-2">
                                         <label class="text-muted">Current Logo:</label><br>
-                                        <img src="{{ asset('storage/'.$setting->site_logo) }}" alt="Site Logo" class="preview-img">
+                                        <img src="{{ asset($setting->site_logo) }}" alt="Site Logo" class="preview-img">
                                     </div>
                                 @endif
                             </div>
@@ -61,7 +61,18 @@
                                 @if(!empty($setting->site_fav_icon))
                                     <div class="mt-2">
                                         <label class="text-muted">Current Favicon:</label><br>
-                                        <img src="{{ asset('storage/'.$setting->site_fav_icon) }}" alt="Favicon" class="preview-img">
+                                        <img src="{{ asset($setting->site_fav_icon) }}" alt="Favicon" class="preview-img">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Breadcumb Image</label>
+                                <input type="file" class="form-control" name="breadcumb_image" accept=".jpg,.jpeg,.png,.ico">
+                                @if(!empty($setting->breadcumb_image))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Image:</label><br>
+                                        <img src="{{ asset($setting->breadcumb_image) }}" alt="Favicon" class="preview-img">
                                     </div>
                                 @endif
                             </div>
