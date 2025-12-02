@@ -2,110 +2,217 @@
 	$data = DB::table('site_settings')->where('id','1')->first();
 @endphp
 
+<style>
+.footer-contact-box {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 20px;
+    padding: 40px 20px;
+    margin-top: -80px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+.footer-contact-box .contact-inner {
+    text-align: center;
+    padding: 15px 10px;
+}
+.footer-contact-box .contact-inner i {
+    font-size: 28px;
+    color: #e94560;
+    margin-bottom: 12px;
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    background: rgba(233, 69, 96, 0.15);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.footer-contact-box .contact-inner:hover i {
+    background: #e94560;
+    color: #fff;
+    transform: scale(1.1);
+}
+.footer-contact-box .contact-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.footer-contact-box .contact-desc {
+    color: #b0b0b0;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+.footer-contact-box .col-lg-3:not(:last-child) .contact-inner {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+@media (max-width: 991px) {
+    .footer-contact-box .col-lg-3:not(:last-child) .contact-inner {
+        border-right: none;
+    }
+    .footer-contact-box .col-lg-3 {
+        margin-bottom: 20px;
+    }
+}
+@media (max-width: 768px) {
+    .footer-contact-box {
+        margin-top: 30px;
+        padding: 30px 15px;
+    }
+}
+</style>
+
 <!-- Footer Start -->
         <footer id="rs-footer" class="bg3 rs-footer">
-			<div class="container">
-				<!-- Footer Address -->
-				<div>
-					<div class="row footer-contact-desc">
-						<div class="col-md-4">
-							<div class="contact-inner">
-								<i class="fa fa-map-marker"></i>
-								<h4 class="contact-title">Address</h4>
-								<p class="contact-desc">
-									Register Office K-40/B, First Floor, New Govindpura Extension, Delhi-110051
-								</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="contact-inner">
-								<i class="fa fa-phone"></i>
-								<h4 class="contact-title">Phone Number</h4>
-								<p class="contact-desc">
-									+918825148127<br>
-								</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="contact-inner">
-								<i class="fa fa-map-marker"></i>
-								<h4 class="contact-title">Email Address</h4>
-								<p class="contact-desc">
-									mccsiswar@gmail.com<br>
-								</p>
-							</div>
-						</div>
-					</div>					
-				</div>
-			</div>
 			
+			
+			<style>
+			.footer-new-style .footer-title-new {
+				color: #ffffff;
+				font-size: 20px;
+				font-weight: 600;
+				margin-bottom: 25px;
+				position: relative;
+			}
+			.footer-new-style .info-link-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.footer-new-style .info-link-list li {
+				margin-bottom: 12px;
+			}
+			.footer-new-style .info-link-list li a {
+				color: #a8b8d0;
+				text-decoration: none;
+				display: flex;
+				align-items: center;
+				transition: all 0.3s ease;
+			}
+			.footer-new-style .info-link-list li a:hover {
+				color: #ff6b35;
+				padding-left: 5px;
+			}
+			.footer-new-style .info-link-list li a .icon-box {
+				width: 28px;
+				height: 28px;
+				background: rgba(255, 107, 53, 0.2);
+				border-radius: 6px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				margin-right: 12px;
+			}
+			.footer-new-style .info-link-list li a .icon-box i {
+				color: #ff6b35;
+				font-size: 12px;
+			}
+			.footer-new-style .contact-info-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.footer-new-style .contact-info-list li {
+				display: flex;
+				align-items: flex-start;
+				margin-bottom: 20px;
+			}
+			.footer-new-style .contact-info-list li .icon-box-lg {
+				width: 45px;
+				height: 45px;
+				border-radius: 10px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				margin-right: 15px;
+				flex-shrink: 0;
+			}
+			.footer-new-style .contact-info-list li .icon-box-lg.orange {
+				background: linear-gradient(135deg, #ff6b35, #ff8f35);
+			}
+			.footer-new-style .contact-info-list li .icon-box-lg.blue {
+				background: linear-gradient(135deg, #3a5a8c, #4a6a9c);
+			}
+			.footer-new-style .contact-info-list li .icon-box-lg i {
+				color: #ffffff;
+				font-size: 18px;
+			}
+			.footer-new-style .contact-info-list li .info-text {
+				color: #a8b8d0;
+				font-size: 14px;
+				line-height: 1.5;
+			}
+			.footer-new-style .contact-info-list li .info-text a {
+				color: #a8b8d0;
+				text-decoration: none;
+				transition: color 0.3s ease;
+			}
+			.footer-new-style .contact-info-list li .info-text a:hover {
+				color: #ff6b35;
+			}
+			</style>
+
 			<!-- Footer Top -->
-            <div class="footer-top">
+            <div class="footer-top footer-new-style">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-3 col-md-12">
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <div class="about-widget">
                                 <img src="{{asset($data->site_logo)}}" alt="Footer Logo">
-                                <p>
-                                    Maya Computer Center Pvt. Ltd. is an ISO 9001:2015 certified company which is recognized by JAS-ANZ and registered under the Company Act 2013, Ministry of Company Affairs, and Government of India with Certificate identity number (CIN) is U74999BR2017PTC036132.
+                                <p style="text-align: justify;">
+                                    Maya Computer Center Pvt. Ltd. is an ISO 9001:2015 certified company which is recognized by JAS-ANZ and registered under the Company Act 2013, Ministry of Company Affairs, and Government of India.
                                 </p>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-12">
-                            <h5 class="footer-title">RECENT POSTS</h5>
-                            <div class="recent-post-widget">
-                                <div class="post-item">
-                                    <div class="post-date">
-                                        <span>28</span>
-                                        <span>June</span>
-                                    </div>
-                                    <div class="post-desc">
-                                        <h5 class="post-title"><a href="#">While the lovely valley team work</a></h5>
-                                        <span class="post-category">Keyword Analysis</span>
-                                    </div>
-                                </div>
-                                <div class="post-item">
-                                    <div class="post-date">
-                                        <span>28</span>
-                                        <span>June</span>
-                                    </div>
-                                    <div class="post-desc">
-                                        <h5 class="post-title"><a href="#">I must explain to you how all this idea</a></h5>
-                                        <span class="post-category">Spoken English</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-12">
-                            <h5 class="footer-title">Quicklinks</h5>
-                            <ul class="sitemap-widget">
-                                <li class="active"><a href="{{url('/')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Home</a></li>
-                                <li ><a href="{{route('aboutus')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>About</a></li>
-                                <li><a href="{{route('gallery')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Gallery</a></li>
-                                <li><a href="{{route('contact')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Contact Us</a></li> 
-                                
-                                <li><a href="{{route('paymentRefunds')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Privacy Policy</a></li> 
-                                <li><a href="{{route('disclaimer')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Disclaimer</a></li> 
-                                <li><a href="{{route('paymentTerms')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Terms & Conditions</a></li> 
-                                <li><a href="{{route('sitemap')}}"><i class="fa fa-angle-right" aria-hidden="true"></i>Sitemap</a></li> 
+                        
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <h5 class="footer-title-new">Information Link</h5>
+                            <ul class="info-link-list">
+                                <li><a href="{{url('/')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Home</a></li>
+                                <li><a href="{{route('aboutus')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>About Us</a></li>
+                                <li><a href="{{route('courses')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Courses</a></li>
+                                <li><a href="{{route('gallery')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Gallery</a></li>
+                                <li><a href="{{route('contact')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Contact Us</a></li>
                             </ul>
                         </div>
-                        <div class="col-lg-3 col-md-12">
-                            <h5 class="footer-title">NEWSLETTER</h5>
-                            <p>Sign Up to Our Newsletter to Get Latest Updates &amp; Services</p>
-                            <form class="news-form">
-                                <input type="text" class="form-input" placeholder="Enter Your Email">
-                                <button type="submit" class="form-button"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-                            </form>
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                            <h5 class="footer-title-new">Quick Links</h5>
+                            <ul class="info-link-list">
+                                <li><a href="{{route('paymentTerms')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Terms & Conditions</a></li>
+                                <li><a href="{{route('paymentRefunds')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Privacy Policy</a></li>
+                                <li><a href="{{route('disclaimer')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Disclaimer</a></li>
+                                <li><a href="{{route('sitemap')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Sitemap</a></li>
+                            </ul>
                         </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <h5 class="footer-title-new">Location</h5>
+                            <ul class="contact-info-list">
+                                <li>
+                                    <span class="icon-box-lg orange"><i class="fa fa-map-marker"></i></span>
+                                    <span class="info-text">{{$data->address ?? 'K-40/B, First Floor, New Govindpura Extension, Delhi-110051'}}</span>
+                                </li>
+                                <li>
+                                    <span class="icon-box-lg orange"><i class="fa fa-map-marker"></i></span>
+                                    <span class="info-text">{{$data->address ?? 'K-40/B, First Floor, New Govindpura Extension, Delhi-110051'}}</span>
+                                </li>
+                                <li>
+                                    <span class="icon-box-lg blue"><i class="fa fa-phone"></i></span>
+                                    <span class="info-text"><a href="tel:{{$data->phone ?? ''}}">{{$data->phone ?? '+918825148127'}}</a></span>
+                                </li>
+                                <li>
+                                    <span class="icon-box-lg blue"><i class="fa fa-envelope"></i></span>
+                                    <span class="info-text"><a href="mailto:{{$data->email ?? ''}}">{{$data->email ?? 'mccsiswar@gmail.com'}}</a></span>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                        
                     </div>
                     <div class="footer-share">
                         <ul>
-                            <!-- <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-pinterest-p"></i></a></li>
-                            <li><a href="#"><i class="fa fa-vimeo"></i></a></li>     -->
+                            <!-- Social icons can be added here -->
                         </ul>
                     </div>                                
                 </div>
@@ -115,7 +222,7 @@
             <div class="footer-bottom">
                 <div class="container">
                     <div class="copyright">
-                        <p>© 2025 <a href="{{url('/')}}">Maya Computer Center PVT LTD</a>. All Rights Reserved.</p>
+                        <p>© <?php date('Y');?> <a href="{{url('/')}}">Maya Computer Center Private Limited</a>. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

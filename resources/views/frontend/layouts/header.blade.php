@@ -11,7 +11,7 @@
 				<div class="col-md-6">
 					<div class="rs-toolbar-left">
 						<div class="welcome-message">
-							<i class="fa fa-bank"></i><span>Welcome to Maya Computer Center PVT LTD</span>
+							<i class="fa fa-bank"></i><span>Welcome to Maya Computer Center Private Limited</span>
 						</div>
 					</div>
 				</div>
@@ -97,10 +97,10 @@
 									<!--About Menu Start-->
 									<li class="menu-item-has-children">
 										<a href="{{route('aboutus')}}">About Us</a>
-										<!-- <ul class="sub-menu">
+										<ul class="sub-menu">
 											<li><a href="{{ route('director') }}">Director</a></li>
 											<li><a href="{{ route('teacher') }}">Teacher</a></li>
-										</ul> -->
+										</ul>
 									</li>
 									<!--About Menu End-->
 

@@ -25,18 +25,23 @@ class CmsDirectorController extends Controller
             'name'        => 'required|string|max:255',
             'image'       => 'nullable|image',
             'designation' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
         $path = null;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('directors', 'public');
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('director'), $imageName);
+            $path = $imageName;
         }
 
         DB::table('cms_directors')->insert([
             'name'        => $request->name,
             'image'       => $path,
             'designation' => $request->designation,
-            'type' => $request->type,
+            'description' => $request->description,
+            'type'        => $request->type,
             'created_at'  => now(),
             'updated_at'  => now(),
         ]);
@@ -56,20 +61,25 @@ class CmsDirectorController extends Controller
             'name'        => 'required|string|max:255',
             'image'       => 'nullable|image',
             'designation' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
         $existingImage = DB::table('cms_directors')->where('id', $id)->value('image');
 
         $path = $existingImage;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('directors', 'public');
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('director'), $imageName);
+            $path = $imageName;
         }
 
         DB::table('cms_directors')->where('id', $id)->update([
             'name'        => $request->name,
             'image'       => $path,
             'designation' => $request->designation,
-            'type' => $request->type,
+            'description' => $request->description,
+            'type'        => $request->type,
             'updated_at'  => now(),
         ]);
 

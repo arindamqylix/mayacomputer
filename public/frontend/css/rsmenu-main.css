@@ -225,6 +225,7 @@ Version: 1.0.0
 
 .rs-menu .sub-menu li a {
 	padding: 10px 14px;
+	font-weight: bold !important;
 }
 
 /*.home2 .rs-menu {

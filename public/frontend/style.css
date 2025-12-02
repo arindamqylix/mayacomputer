@@ -532,7 +532,7 @@ a:active,
 a:hover {
   text-decoration: none;
   outline: 0 none;
-  color: #d00226;
+  color: #fff !important;
 }
 ul {
   list-style: outside none none;
@@ -1229,7 +1229,7 @@ ul {
   color: #fff !important;
 }
 .rs-header .rs-menu-toggle:hover {
-  color: #d00226 !important;
+  color: #fff !important;
 }
 .rs-header .menu-area .rs-menu li.current_page_item > a,
 .rs-header-2 .menu-area .rs-menu li.current_page_item > a,
@@ -1247,7 +1247,8 @@ ul {
 .rs-header-2 .menu-area .rs-menu li a:hover,
 .rs-header-3 .menu-area .rs-menu li a:hover,
 .rs-header-4 .menu-area .rs-menu li a:hover {
-  color: #d00226 !important;
+  color: #fff !important;
+  font-weight: bold;
 }
 .rs-header-2 {
   position: absolute;
@@ -1351,8 +1352,15 @@ ul {
 .home2 .menu-area .rs-menu ul > li > a {
   color: #bbbbbb;
 }
+.rs-menu ul ul li:hover{
+  background: #d00226 !important;
+}
+
+.home2 .menu-area .rs-menu ul > li:hover{
+  background: red !important;
+}
 .home2 .menu-area .rs-menu ul > li > a:hover {
-  color: #d00226;
+  color: #fff;
 }
 .home2 .menu-area .rs-menu ul > li ul.sub-menu a {
   color: #bbbbbb;

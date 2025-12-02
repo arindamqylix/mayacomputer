@@ -52,58 +52,112 @@
 <!-- Slider Area End -->
 
 
-<!-- Services Start -->
-<div class="rs-services rs-services-style1" style="margin-top:100px;">
+<!-- Counter Stats Start -->
+<style>
+.counter-stats-section {
+    background: linear-gradient(135deg, #000055 0%, #000077 50%, #000088 100%);
+    padding: 50px 0;
+    margin: 0;
+}
+.counter-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+.counter-item:last-child {
+    border-right: none;
+}
+.counter-icon {
+    margin-right: 20px;
+}
+.counter-icon i {
+    font-size: 38px;
+    color: #ff6b35;
+}
+.counter-content h3 {
+    font-size: 34px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1;
+}
+.counter-content p {
+    font-size: 13px;
+    color: #a8b8d0;
+    margin: 8px 0 0 0;
+}
+@media (max-width: 991px) {
+    .counter-item {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 25px 15px;
+    }
+    .counter-item:last-child {
+        border-bottom: none;
+    }
+}
+@media (max-width: 767px) {
+    .counter-content h3 {
+        font-size: 28px;
+    }
+    .counter-icon i {
+        font-size: 32px;
+    }
+}
+</style>
+<div class="counter-stats-section">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <div class="services-item rs-animation-hover">
-                    <div class="services-icon">
-                        <i class="fa fa-american-sign-language-interpreting rs-animation-scale-up"></i>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="counter-item">
+                    <div class="counter-icon">
+                        <i class="fa fa-users"></i>
                     </div>
-                    <div class="services-desc">
-                        <h4 class="services-title">Trending Courses</h4>
-                        <p>Lorem ipsum dolor sit amet Sed nec molestie justo</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="services-item rs-animation-hover">
-                    <div class="services-icon">
-                        <i class="fa fa-book rs-animation-scale-up"></i>
-                    </div>
-                    <div class="services-desc">
-                        <h4 class="services-title">Books & Liberary</h4>
-                        <p>Lorem ipsum dolor sit amet Sed nec molestie justo</p>
+                    <div class="counter-content">
+                        <h3>50707+</h3>
+                        <p>Students Enrolled</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="services-item rs-animation-hover">
-                    <div class="services-icon">
-                        <i class="fa fa-user rs-animation-scale-up"></i>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="counter-item">
+                    <div class="counter-icon">
+                        <i class="fa fa-book"></i>
                     </div>
-                    <div class="services-desc">
-                        <h4 class="services-title">Certified Teachers</h4>
-                        <p>Lorem ipsum dolor sit amet Sed nec molestie justo</p>
+                    <div class="counter-content">
+                        <h3>129+</h3>
+                        <p>Courses Available</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="services-item rs-animation-hover">
-                    <div class="services-icon">
-                        <i class="fa fa-graduation-cap rs-animation-scale-up"></i>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="counter-item">
+                    <div class="counter-icon">
+                        <i class="fa fa-trophy"></i>
                     </div>
-                    <div class="services-desc">
-                        <h4 class="services-title">Certification</h4>
-                        <p>Lorem ipsum dolor sit amet Sed nec molestie justo</p>
+                    <div class="counter-content">
+                        <h3>8+</h3>
+                        <p>Years Experience</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="counter-item">
+                    <div class="counter-icon">
+                        <i class="fa fa-briefcase"></i>
+                    </div>
+                    <div class="counter-content">
+                        <h3>95%</h3>
+                        <p>Placement Rate</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Services End -->
+<!-- Counter Stats End -->
 
 <!-- About Us Start -->
 <div id="rs-about" class="rs-about sec-spacer">

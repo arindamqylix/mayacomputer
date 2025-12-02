@@ -466,3 +466,6 @@ ADD `slug` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `download_name`;
 
 ALTER TABLE `site_settings`
 ADD `breadcumb_image` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `site_fav_icon`;
+
+ALTER TABLE `cms_directors`
+ADD `description` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `designation`;

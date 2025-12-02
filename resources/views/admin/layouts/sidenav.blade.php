@@ -141,8 +141,8 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-aboutus" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('director_list') }}" class="nav-link"><span class="sidebar-text">Director</span></a></li>
-            <li class="nav-item"><a href="#" class="nav-link"><span class="sidebar-text">Teacher</span></a></li>
+            <li class="nav-item"><a href="{{ route('director_list') }}" class="nav-link"><span class="sidebar-text">Director & Teacher</span></a></li>
+            
           </ul>
         </div>
       </li>

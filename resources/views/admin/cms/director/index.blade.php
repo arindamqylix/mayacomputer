@@ -29,7 +29,7 @@
                                 <th>ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
-                                <th>Designation</th>
+                                {{-- <th>Designation</th> --}}
                                 <th>Type</th>
                                 <th>Actions</th>
                             </tr>
@@ -40,13 +40,13 @@
                                     <td>{{ $director->id }}</td>
                                     <td>
                                         @if($director->image)
-                                            <img src="{{ asset('storage/'.$director->image) }}" alt="Director Image" class="director-img">
+                                            <img src="{{ asset('director/'.$director->image) }}" alt="Director Image" class="director-img">
                                         @else
                                             <span class="badge bg-secondary">No Image</span>
                                         @endif
                                     </td>
                                     <td>{{ $director->name }}</td>
-                                    <td>{{ $director->designation }}</td>
+                                    {{-- <td>{{ $director->designation }}</td> --}}
                                     <td>{{ $director->type }}</td>
                                     <td>
                                         <a href="{{ route('edit_director', $director->id) }}" class="btn btn-warning btn-sm">Edit</a>
