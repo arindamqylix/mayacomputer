@@ -64,6 +64,151 @@
 }
 </style>
 
+<!-- Newsletter Section Start -->
+<style>
+.newsletter-section {
+    background: linear-gradient(135deg, #d00226 0%, #d40e22 50%, #d00226 100%);
+    padding: 50px 0;
+    margin-bottom: 0;
+}
+.newsletter-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+.newsletter-content {
+    max-width: 500px;
+}
+.newsletter-content .newsletter-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+.newsletter-content .newsletter-title i {
+    font-size: 28px;
+    color: #ffffff;
+    transform: rotate(-25deg);
+}
+.newsletter-content .newsletter-title h3 {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+}
+.newsletter-content p {
+    color: #ffffff;
+    font-size: 15px;
+    margin: 0;
+    opacity: 0.95;
+}
+.newsletter-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.newsletter-form .email-input {
+    width: 320px;
+    height: 55px;
+    padding: 0 25px;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    background: #ffffff;
+}
+.newsletter-form .email-input::placeholder {
+    color: #888;
+}
+.newsletter-form .subscribe-btn {
+    height: 55px;
+    padding: 0 35px;
+    background: #1e3a5f;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+.newsletter-form .subscribe-btn:hover {
+    background: #152a45;
+    transform: translateY(-2px);
+}
+.newsletter-form .subscribe-btn i {
+    font-size: 14px;
+}
+@media (max-width: 991px) {
+    .newsletter-wrapper {
+        justify-content: center;
+        text-align: center;
+    }
+    .newsletter-content .newsletter-title {
+        justify-content: center;
+    }
+    .newsletter-form {
+        justify-content: center;
+    }
+}
+@media (max-width: 576px) {
+    .newsletter-form .email-input {
+        width: 100%;
+    }
+    .newsletter-form {
+        width: 100%;
+        flex-direction: column;
+    }
+    .newsletter-form .subscribe-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* Remove gap between newsletter and footer */
+.newsletter-section {
+    margin-bottom: 0 !important;
+}
+#rs-footer.rs-footer,
+footer#rs-footer,
+.rs-footer.bg3 {
+    margin-top: 0 !important;
+    padding-top: 50px !important;
+}
+#rs-footer.rs-footer .footer-top {
+    padding-top: 0;
+}
+section.newsletter-section + footer#rs-footer {
+    margin-top: 0 !important;
+}
+</style>
+
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-wrapper">
+            <div class="newsletter-content">
+                <div class="newsletter-title">
+                    <i class="fa fa-paper-plane"></i>
+                    <h3>Subscribe to Our Newsletter</h3>
+                </div>
+                <p>Get latest updates on courses, offers, and career tips directly in your inbox.</p>
+            </div>
+            <form class="newsletter-form" action="#" method="POST">
+                @csrf
+                <input type="email" name="email" class="email-input" placeholder="Enter your email address" required>
+                <button type="submit" class="subscribe-btn">Subscribe <i class="fa fa-arrow-right"></i></button>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- Newsletter Section End -->
+
 <!-- Footer Start -->
         <footer id="rs-footer" class="bg3 rs-footer">
 			
