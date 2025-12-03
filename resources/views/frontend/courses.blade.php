@@ -126,6 +126,9 @@
         height: 200px;
         background: linear-gradient(135deg, #000055 0%, #000088 50%, #1a1a5e 100%);
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .course-image img {
         width: 100%;
@@ -137,6 +140,27 @@
     .course-card:hover .course-image img {
         transform: scale(1.1);
         opacity: 1;
+    }
+    .no-image-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(0, 0, 0, 0.2);
+    }
+    .no-image-placeholder i {
+        font-size: 48px;
+        margin-bottom: 10px;
+        opacity: 0.6;
+    }
+    .no-image-placeholder span {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     .category-tag {
         position: absolute;
@@ -340,7 +364,10 @@
                         @if($course->file)
                             <img src="{{ asset($course->file) }}" alt="{{ $course->c_full_name }}">
                         @else
-                            <img src="{{ asset('frontend/images/courses/default.jpg') }}" alt="{{ $course->c_full_name }}">
+                            <div class="no-image-placeholder">
+                                <i class="fa fa-image"></i>
+                                <span>No Image</span>
+                            </div>
                         @endif
                         
                         @php

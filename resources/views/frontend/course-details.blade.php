@@ -11,10 +11,38 @@
         overflow: hidden;
         margin-bottom: 30px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        min-height: 400px;
+        background: linear-gradient(135deg, #000055 0%, #000088 50%, #1a1a5e 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .course-main-img img {
         width: 100%;
         height: auto;
+        min-height: 400px;
+        object-fit: cover;
+    }
+    .no-image-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 400px;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(0, 0, 0, 0.2);
+    }
+    .no-image-placeholder i {
+        font-size: 80px;
+        margin-bottom: 15px;
+        opacity: 0.6;
+    }
+    .no-image-placeholder span {
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     .course-info-card {
         background: #fff;
@@ -304,11 +332,16 @@
                     </div>
                 @else
                 <!-- Course Image -->
-                @if($data->file)
                 <div class="course-main-img">
-                    <img src="{{ asset($data->file) }}" alt="{{ $data->c_full_name }}">
+                    @if($data->file)
+                        <img src="{{ asset($data->file) }}" alt="{{ $data->c_full_name }}">
+                    @else
+                        <div class="no-image-placeholder">
+                            <i class="fa fa-image"></i>
+                            <span>No Image Available</span>
+                        </div>
+                    @endif
                 </div>
-                @endif
 
                 <!-- Course Info Card -->
                 <div class="course-info-card">
