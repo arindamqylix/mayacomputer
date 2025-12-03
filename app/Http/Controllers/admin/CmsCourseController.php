@@ -10,7 +10,10 @@ use Illuminate\Support\Str;
 class CmsCourseController extends Controller
 {
     public function index() {
-        $courses = DB::table('cms_course')->get();
+        $courses = DB::table('cms_course')
+            ->leftJoin('cms_course_category', 'cms_course.category_id', '=', 'cms_course_category.id')
+            ->select('cms_course.*', 'cms_course_category.name as category_name')
+            ->get();
         return view('admin.cms.course.index', compact('courses'));
     }
 
