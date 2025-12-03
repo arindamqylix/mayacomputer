@@ -13,6 +13,7 @@ use App\Http\Controllers\admin\BannerController;
 use App\Http\Controllers\admin\SiteSettingController;
 use App\Http\Controllers\admin\ContactRequestController;
 use App\Http\Controllers\admin\CmsCourseController;
+use App\Http\Controllers\admin\CmsCourseCategoryController;
 use App\Http\Controllers\admin\CmsDirectorController;
 
 
@@ -45,6 +46,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('student-status-update', [StudentController::class, 'student_status_updated'])->name('student_status_updated');
 	Route::get('print-student-application/{id}', [StudentController::class, 'student_application'])->name('student_application_view');
 	Route::get('get-reg-no', [StudentController::class, 'get_reg_no'])->name('get_reg_no');
+
+	
 
 	// Course
 	Route::get('course-list', [CourseController::class, 'course_list'])->name('course_list');
@@ -114,6 +117,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('/contact-requests', [ContactRequestController::class, 'index'])->name('contact.index');
 	Route::get('contact-requests/{id}', [ContactRequestController::class, 'destroy'])->name('contact.destroy');
 
+	// Course Category
+	Route::get('/courses-category', [CmsCourseCategoryController::class, 'courseCategory'])->name('course.category.list');
+    Route::get('/courses-category/add', [CmsCourseCategoryController::class, 'createCourseCategory'])->name('add.course.category');
+    Route::post('/courses-category/store', [CmsCourseCategoryController::class, 'storeCourseCategory'])->name('store.course.category');
+    Route::get('/courses-category/edit/{id}', [CmsCourseCategoryController::class, 'editCourseCategory'])->name('edit.course.category');
+    Route::post('/courses-category/update/{id}', [CmsCourseCategoryController::class, 'updateCourseCategory'])->name('update.course.category');
+    Route::get('/courses-category/delete/{id}', [CmsCourseCategoryController::class, 'destroyCourseCategory'])->name('delete.course.category');
+
 	// Course
 	Route::get('/courses', [CmsCourseController::class, 'index'])->name('course.list');
     Route::get('/courses/add', [CmsCourseController::class, 'create'])->name('add.course');
@@ -121,6 +132,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
     Route::get('/courses/edit/{id}', [CmsCourseController::class, 'edit'])->name('edit.course');
     Route::post('/courses/update/{id}', [CmsCourseController::class, 'update'])->name('update.course');
     Route::get('/courses/delete/{id}', [CmsCourseController::class, 'destroy'])->name('delete.course');
+
+
 
 	// Director
 	Route::get('/directors', [CmsDirectorController::class, 'index'])->name('director_list');

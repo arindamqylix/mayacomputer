@@ -104,19 +104,19 @@
 									</li>
 									<!--About Menu End-->
 
-									<!--Courses Menu Start-->
-									@php
-										$course = DB::table('course')->get();
-									@endphp
-									<li class="menu-item-has-children">
-										<a href="#">Courses</a>
-										<ul class="sub-menu">
-											@foreach ($course as $val)
-												<li><a href="{{route('courses.details',$val->slug??'')}}">{{$val->c_full_name ??''}}</a></li>
-											@endforeach
-										</ul>
-									</li>
-									<!--Courses Menu End-->
+								<!--Courses Menu Start-->
+								@php
+									$categories = DB::table('cms_course_category')->where('status', 1)->get();
+								@endphp
+								<li class="menu-item-has-children">
+									<a href="{{ route('courses') }}">Courses</a>
+									<ul class="sub-menu">
+										@foreach ($categories as $category)
+											<li><a href="{{ route('courses.category', $category->slug) }}">{{ $category->name }}</a></li>
+										@endforeach
+									</ul>
+								</li>
+								<!--Courses Menu End-->
 
 									<!--Verification Menu Start-->
 									<li class="menu-item-has-children">

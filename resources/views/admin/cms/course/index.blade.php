@@ -29,28 +29,30 @@
                                 <th>ID</th>
                                 <th>Image</th>
                                 <th>Course Name</th>
+                                <th>Price</th>
                                 <th>Duration</th>
-                                <th>Details</th>
+                                <th>Category</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($courses as $course)
                                 <tr>
-                                    <td>{{ $course->id }}</td>
+                                    <td>{{ $course->c_id }}</td>
                                     <td>
-                                        @if($course->course_image)
-                                            <img style="width: 74px;height: 71px;" src="{{ asset('storage/'.$course->course_image) }}" alt="Course Image" class="course-img">
+                                        @if($course->file)
+                                            <img style="width: 74px;height: 71px;" src="{{ asset($course->file) }}" alt="Course Image" class="course-img">
                                         @else
                                             <span class="badge bg-secondary">No Image</span>
                                         @endif
                                     </td>
-                                    <td>{{ $course->course_name }}</td>
-                                    <td>{{ $course->course_duration }}</td>
-                                    <td>{{ Str::limit($course->course_details, 50) }}</td>
+                                    <td>{{ $course->c_full_name ?? $course->c_short_name }}</td>
+                                    <td>{{ $course->c_price }}</td>
+                                    <td>{{ $course->c_duration }}</td>
+                                    <td>{{ $course->category_name ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('edit.course', $course->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="{{ route('delete.course', $course->id) }}" class="btn btn-danger btn-sm"
+                                        <a href="{{ route('edit.course', $course->c_id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="{{ route('delete.course', $course->c_id) }}" class="btn btn-danger btn-sm"
                                            onclick="return confirm('Are you sure you want to delete this course?')">Delete</a>
                                     </td>
                                 </tr>

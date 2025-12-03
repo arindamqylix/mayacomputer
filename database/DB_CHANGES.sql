@@ -469,3 +469,35 @@ ADD `breadcumb_image` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `site
 
 ALTER TABLE `cms_directors`
 ADD `description` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `designation`;
+
+-- 03-12-2025
+
+CREATE TABLE `course` (
+  `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file` varchar(255) DEFAULT NULL,
+  `c_short_name` varchar(255) DEFAULT NULL,
+  `c_full_name` text DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `c_price` float DEFAULT NULL,
+  `c_duration` varchar(255) DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `category_name` varchar(255) DEFAULT NULL,
+  `course_syllabus` longtext DEFAULT NULL,
+  `information` longtext DEFAULT NULL,
+  `c_module_cover` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`c_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `cms_course`
+ADD `categoy_id` int(11) NULL AFTER `c_id`;
+
+CREATE TABLE cms_course_category (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    status TINYINT(1) DEFAULT 1,          -- 1 = active, 0 = inactive
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL
+);

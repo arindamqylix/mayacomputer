@@ -30,6 +30,7 @@ Route::get('/about-us', [PagesController::class, 'aboutus'])->name('aboutus');
 
 // Courses
 Route::get('/courses', [PagesController::class, 'course'])->name('courses');
+Route::get('/courses/category/{slug}', [PagesController::class, 'coursesByCategory'])->name('courses.category');
 Route::get('/courses-details/{slug}', [PagesController::class, 'courseDetails'])->name('courses.details');
 
 // Verification

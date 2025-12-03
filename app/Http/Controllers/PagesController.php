@@ -100,8 +100,53 @@ class PagesController extends Controller
     }
 
     public function courseDetails($slug){
-        $data = DB::table('course')->where('slug',$slug)->first();
-        return view('frontend.course-details', compact('data'));
+        // Try to find by slug first
+        $data = DB::table('cms_course')->where('slug', $slug)->first();
+        
+        // If not found by slug, try by c_id (fallback)
+        if(!$data && is_numeric($slug)) {
+            $data = DB::table('cms_course')->where('c_id', $slug)->first();
+        }
+        
+        // If course still not found, return 404
+        if(!$data) {
+            abort(404, 'Course not found');
+        }
+        
+        // Get category name if exists
+        if($data->category_id) {
+            $category = DB::table('cms_course_category')->where('id', $data->category_id)->first();
+            $data->category_name = $category->name ?? null;
+        }
+        
+        // Get related courses from same category
+        $relatedCourses = [];
+        if($data->category_id) {
+            $relatedCourses = DB::table('cms_course')
+                ->where('category_id', $data->category_id)
+                ->where('c_id', '!=', $data->c_id)
+                ->whereNotNull('slug')
+                ->limit(3)
+                ->get();
+        }
+        
+        // Get all categories for sidebar
+        $allCategories = DB::table('cms_course_category')->where('status', 1)->get();
+        
+        return view('frontend.course-details', compact('data', 'relatedCourses', 'allCategories'));
+    }
+
+    public function coursesByCategory($slug){
+        $category = DB::table('cms_course_category')->where('slug', $slug)->where('status', 1)->first();
+        
+        if(!$category) {
+            abort(404);
+        }
+        
+        $courses = DB::table('cms_course')->where('category_id', $category->id)->get();
+        $categories = DB::table('cms_course_category')->where('status', 1)->get();
+        
+        return view('frontend.courses', compact('courses', 'category', 'categories'));
     }
 
     // Contact
@@ -137,7 +182,11 @@ class PagesController extends Controller
 
     public function course()
     {
-        return view('frontend.courses');
+        $courses = DB::table('cms_course')->get();
+        $categories = DB::table('cms_course_category')->where('status', 1)->get();
+        $category = null; // all courses
+        
+        return view('frontend.courses', compact('courses', 'categories', 'category'));
     }
 
     public function certificate()
@@ -148,7 +197,7 @@ class PagesController extends Controller
     // XML Sitemap for search engines
     public function sitemapXml()
     {
-        $courses = DB::table('course')->select('slug', 'updated_at')->get();
+        $courses = DB::table('cms_course')->select('slug', 'updated_at')->get();
         $downloads = DB::table('cms_downloads')->select('slug', 'updated_at')->get();
         
         return response()->view('frontend.sitemap-xml', [
