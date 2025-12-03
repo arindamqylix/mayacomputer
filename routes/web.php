@@ -24,12 +24,12 @@ Route::get('center/generate-pdf/{id}', [App\Http\Controllers\generatePdfControll
 Route::get('/', [PagesController::class, 'index'])->name('index');
 
 // About
-Route::get('/director', [PagesController::class, 'director'])->name('director');
+Route::get('/directors', [PagesController::class, 'director'])->name('director');
 Route::get('/teacher', [PagesController::class, 'teacher'])->name('teacher');
 Route::get('/about-us', [PagesController::class, 'aboutus'])->name('aboutus');
 
 // Courses
-Route::get('/courses', [PagesController::class, 'course'])->name('courses');
+Route::get('/course', [PagesController::class, 'course'])->name('courses');
 Route::get('/courses/category/{slug}', [PagesController::class, 'coursesByCategory'])->name('courses.category');
 Route::get('/courses-details/{slug}', [PagesController::class, 'courseDetails'])->name('courses.details');
 
@@ -58,7 +58,7 @@ Route::get('/sitemap.xml', [PagesController::class, 'sitemapXml'])->name('sitema
 Route::get('/disclaimer', [PagesController::class, 'disclaimer'])->name('disclaimer');
 
 // Gallery
-Route::get('/gallery', [PagesController::class, 'gallery'])->name('gallery');
+Route::get('/our-gallery', [PagesController::class, 'gallery'])->name('gallery');
 
 // Contact
 Route::get('/contact', [PagesController::class, 'contact'])->name('contact');

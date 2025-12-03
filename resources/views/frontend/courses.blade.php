@@ -72,9 +72,9 @@
         transition: all 0.3s ease;
     }
     .filter-btn:hover {
-        border-color: #000055;
-        color: #000055;
-        background: #fff;
+        border-color: #d00226;
+        color: #fff;
+        background: #d00226;
     }
     .filter-btn.active {
         background: #000055;
@@ -168,7 +168,7 @@
         transition: color 0.3s;
     }
     .course-name a:hover {
-        color: #000055;
+        color: #d00226;
     }
     .course-desc {
         color: #666;
@@ -217,7 +217,7 @@
         transition: all 0.3s ease;
     }
     .btn-explore:hover {
-        background: #ff6b35;
+        background: #d00226;
         color: #fff;
         gap: 15px;
     }
