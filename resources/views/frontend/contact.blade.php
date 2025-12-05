@@ -172,14 +172,22 @@
 							<div class="contact-card">
 								<i class="fa fa-map-marker"></i>
 								<h4>Register Office</h4>
+								@if(!empty($data->address))
+								<p>{!! nl2br(e($data->address)) !!}</p>
+								@else
 								<p>K-40/B, First Floor, New Govindpura Extension, Delhi-110051</p>
+								@endif
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-6">
 							<div class="contact-card">
 								<i class="fa fa-building"></i>
 								<h4>Corporate Office</h4>
+								@if(!empty($data->corporate_address))
+								<p>{!! nl2br(e($data->corporate_address)) !!}</p>
+								@else
 								<p>Siswar, Phulparas, Madhubani, Bihar - 847409</p>
+								@endif
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-6">

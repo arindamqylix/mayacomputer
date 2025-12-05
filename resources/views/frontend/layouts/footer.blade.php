@@ -397,7 +397,11 @@ section.newsletter-section + footer#rs-footer {
             <div class="footer-bottom">
                 <div class="container">
                     <div class="copyright">
-                        <p>© <?php date('Y');?> <a href="{{url('/')}}">Maya Computer Center Private Limited</a>. All Rights Reserved.</p>
+                        @if(!empty($data->copyright))
+                            <p>{!! $data->copyright !!}</p>
+                        @else
+                            <p><?php echo date('Y');?> <a href="{{url('/')}}">© Maya Computer Center Private Limited</a>. All Rights Reserved.</p>
+                        @endif
                     </div>
                 </div>
             </div>
