@@ -192,7 +192,7 @@
         transition: color 0.3s;
     }
     .course-name a:hover {
-        color: #d00226;
+        color: #d00226 !important;
     }
     .course-desc {
         color: #666;
