@@ -476,27 +476,166 @@
 
 
 <!-- Partner Start -->
-<div id="rs-partner" class="rs-partner pt-70 pb-70">
+<style>
+.partners-section {
+    background-color: #f9f9f9;
+    padding: 80px 0;
+    position: relative;
+}
+.partners-section .sec-title {
+    margin-bottom: 50px;
+}
+.partners-section .sec-title h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #212121;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 20px;
+}
+.partners-section .sec-title h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #d00226 0%, #ff6b35 100%);
+    border-radius: 2px;
+}
+.partners-section .sec-title p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.partner-carousel-wrapper {
+    position: relative;
+    padding: 20px 0;
+}
+.partner-item {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin: 10px;
+}
+.partner-item a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+.partner-item img {
+    max-width: 100%;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+.partner-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+}
+.partner-item:hover img {
+    transform: scale(1.05);
+}
+.partner-item:hover a {
+    color: inherit;
+}
+@media (max-width: 991px) {
+    .partners-section {
+        padding: 60px 0;
+    }
+    .partners-section .sec-title h2 {
+        font-size: 26px;
+    }
+    .partner-item {
+        height: 100px;
+    }
+    .partner-item img {
+        max-height: 60px;
+    }
+}
+@media (max-width: 767px) {
+    .partners-section {
+        padding: 50px 0;
+    }
+    .partners-section .sec-title {
+        margin-bottom: 30px;
+    }
+    .partners-section .sec-title h2 {
+        font-size: 22px;
+        padding-bottom: 15px;
+    }
+    .partners-section .sec-title p {
+        font-size: 14px;
+    }
+    .partner-item {
+        height: 90px;
+        margin: 8px;
+    }
+    .partner-item img {
+        max-height: 50px;
+    }
+}
+</style>
+<div id="rs-partner" class="partners-section">
     <div class="container">
-        <div class="rs-carousel owl-carousel" data-loop="true" data-items="5" data-margin="80" data-autoplay="true"
-            data-autoplay-timeout="5000" data-smart-speed="2000" data-dots="false" data-nav="false"
-            data-nav-speed="false" data-mobile-device="2" data-mobile-device-nav="false" data-mobile-device-dots="false"
-            data-ipad-device="4" data-ipad-device-nav="false" data-ipad-device-dots="false" data-md-device="5"
-            data-md-device-nav="false" data-md-device-dots="false">
-            <div class="partner-item">
-                <a href="#"><img src="{{asset('frontend/images/partner/1.png')}}" alt="Partner Image"></a>
-            </div>
-            <div class="partner-item">
-                <a href="#"><img src="{{asset('frontend/images/partner/2.png')}}" alt="Partner Image"></a>
-            </div>
-            <div class="partner-item">
-                <a href="#"><img src="{{asset('frontend/images/partner/3.png')}}" alt="Partner Image"></a>
-            </div>
-            <div class="partner-item">
-                <a href="#"><img src="{{asset('frontend/images/partner/4.png')}}" alt="Partner Image"></a>
-            </div>
-            <div class="partner-item">
-                <a href="#"><img src="{{asset('frontend/images/partner/5.png')}}" alt="Partner Image"></a>
+        <div class="sec-title text-center">
+            <h2>Our Partners</h2>
+            <p>We are proud to collaborate with leading organizations and institutions</p>
+        </div>
+        <div class="partner-carousel-wrapper">
+            <div class="rs-carousel owl-carousel" data-loop="true" data-items="5" data-margin="30" data-autoplay="true"
+                data-autoplay-timeout="4000" data-smart-speed="1500" data-dots="false" data-nav="false"
+                data-nav-speed="false" data-mobile-device="2" data-mobile-device-nav="false" data-mobile-device-dots="false"
+                data-ipad-device="3" data-ipad-device-nav="false" data-ipad-device-dots="false" data-md-device="4"
+                data-md-device-nav="false" data-md-device-dots="false">
+                <div class="partner-item">
+                    <a href="#" title="Partner 1">
+                        <img src="{{asset('frontend/images/partner/1.png')}}" alt="Partner Logo">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="#" title="Partner 2">
+                        <img src="{{asset('frontend/images/partner/2.png')}}" alt="Partner Logo">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="#" title="Partner 3">
+                        <img src="{{asset('frontend/images/partner/3.png')}}" alt="Partner Logo">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="#" title="Partner 4">
+                        <img src="{{asset('frontend/images/partner/4.png')}}" alt="Partner Logo">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="#" title="Partner 5">
+                        <img src="{{asset('frontend/images/partner/5.png')}}" alt="Partner Logo">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="#" title="Partner 6">
+                        <img src="{{asset('frontend/images/partner/6.jpg')}}" alt="Partner Logo">
+                    </a>
+                </div>
             </div>
         </div>
     </div>

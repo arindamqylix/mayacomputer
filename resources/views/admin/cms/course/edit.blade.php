@@ -54,6 +54,12 @@
                             <input type="text" class="form-control" name="course_duration" value="{{ $course->c_duration }}">
                         </div>
 
+                        <!-- Eligibility -->
+                        <div class="col-lg-6 mb-2">
+                            <label>Course Eligibility</label>
+                            <input type="text" class="form-control" name="course_eligibility" value="{{ $course->course_eligibility ?? '' }}" placeholder="e.g., Matric, Non Matric, 10+2">
+                        </div>
+
                         <!-- Category -->
                         <div class="col-lg-6 mb-2">
                             <label>Course Category</label>

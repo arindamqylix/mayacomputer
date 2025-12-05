@@ -16,7 +16,7 @@ class SiteSettingController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->only(['name', 'email', 'phone', 'address', 'copyright']);
+        $data = $request->only(['name', 'email', 'phone', 'address', 'corporate_address', 'copyright', 'facebook', 'twitter', 'instagram', 'youtube']);
 
         if ($request->hasFile('site_logo')) {
             $logo = $request->file('site_logo');

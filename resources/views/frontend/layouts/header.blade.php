@@ -1,6 +1,24 @@
 @php
 	$data = DB::table('site_settings')->where('id','1')->first();
 @endphp
+
+<style>
+/* Fix hover color for header call and email sections */
+.rs-header .rs-header-top .header-contact .widget-text .info-text a:hover,
+.rs-header .rs-header-top .header-contact .widget-text .info-text a:active,
+.rs-header .rs-header-top .header-contact .widget-text .info-text a:focus,
+#info-details .info-text a:hover,
+#phone-details .info-text a:hover {
+	color: #d00226 !important;
+}
+.rs-header .rs-header-top .header-contact .widget-text .info-text a:hover span,
+.rs-header .rs-header-top .header-contact .widget-text .info-text a:hover *,
+#info-details .info-text a:hover span,
+#phone-details .info-text a:hover span {
+	color: #d00226 !important;
+}
+</style>
+
 <!--Full width header Start-->
 <div class="full-width-header">
 
@@ -19,10 +37,18 @@
 					<div class="rs-toolbar-right">
 						<div class="toolbar-share-icon">
 							<ul>
-								<li><a href="#" style="color:#fff;"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#" style="color:#fff;"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#" style="color:#fff;"><i class="fa fa-google-plus"></i></a></li>
-								<li><a href="#" style="color:#fff;"><i class="fa fa-linkedin"></i></a></li>
+								@if(!empty($data->facebook))
+								<li><a href="{{ $data->facebook }}" target="_blank" rel="noopener noreferrer" style="color:#fff;"><i class="fa fa-facebook"></i></a></li>
+								@endif
+								@if(!empty($data->twitter))
+								<li><a href="{{ $data->twitter }}" target="_blank" rel="noopener noreferrer" style="color:#fff;"><i class="fa fa-twitter"></i></a></li>
+								@endif
+								@if(!empty($data->instagram))
+								<li><a href="{{ $data->instagram }}" target="_blank" rel="noopener noreferrer" style="color:#fff;"><i class="fa fa-instagram"></i></a></li>
+								@endif
+								@if(!empty($data->youtube))
+								<li><a href="{{ $data->youtube }}" target="_blank" rel="noopener noreferrer" style="color:#fff;"><i class="fa fa-youtube"></i></a></li>
+								@endif
 							</ul>
 						</div>
 						<!-- <a href="#" class="apply-btn">Apply Now</a> -->

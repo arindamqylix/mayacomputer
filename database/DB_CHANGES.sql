@@ -501,3 +501,12 @@ CREATE TABLE cms_course_category (
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL
 );
+
+-- 05-12-2025
+
+ALTER TABLE `site_settings`
+ADD `corporate_address` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `breadcumb_image`,
+ADD `facebook` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `corporate_address`,
+ADD `twitter` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `facebook`,
+ADD `instagram` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `twitter`,
+ADD `youtube` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `instagram`;

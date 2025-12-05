@@ -368,6 +368,16 @@
                         </div>
                         @endif
                         
+                        @if(isset($data->course_eligibility) && $data->course_eligibility)
+                        <div class="meta-item">
+                            <i class="fa fa-graduation-cap"></i>
+                            <div class="meta-content">
+                                <span>Eligibility</span>
+                                <strong>{{ $data->course_eligibility }}</strong>
+                            </div>
+                        </div>
+                        @endif
+                        
                         @if(isset($data->category_name))
                         <div class="meta-item">
                             <i class="fa fa-folder-open"></i>

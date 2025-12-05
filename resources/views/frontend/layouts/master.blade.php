@@ -1,3 +1,6 @@
+@php
+	$siteSettings = DB::table('site_settings')->where('id','1')->first();
+@endphp
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -10,8 +13,15 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- favicon -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="images/fav.png">
+    @if(!empty($siteSettings->site_fav_icon))
+        <link rel="icon" type="image/x-icon" href="{{ asset($siteSettings->site_fav_icon) }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset($siteSettings->site_fav_icon) }}">
+        <link rel="apple-touch-icon" href="{{ asset($siteSettings->site_fav_icon) }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('images/fav.png') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/fav.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('images/fav.png') }}">
+    @endif
     <!-- bootstrap v4 css -->
     <link rel="stylesheet" type="text/css" href="{{asset('frontend/css/bootstrap.min.css')}}">
     <!-- font-awesome css -->

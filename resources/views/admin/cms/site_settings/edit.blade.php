@@ -40,8 +40,13 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label>Address</label>
+                                <label>Register Address</label>
                                 <textarea name="address" class="form-control" rows="2" required>{{ $setting->address ?? '' }}</textarea>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Corporate Address</label>
+                                <textarea name="corporate_address" class="form-control" rows="2">{{ $setting->corporate_address ?? '' }}</textarea>
                             </div>
 
                             <div class="form-group mb-3">
@@ -80,6 +85,29 @@
                             <div class="form-group mb-3">
                                 <label>Copyright</label>
                                 <input type="text" name="copyright" value="{{ $setting->copyright ?? '' }}" class="form-control">
+                            </div>
+
+                            <hr class="my-4">
+                            <h5 class="mb-3">Social Media Links</h5>
+
+                            <div class="form-group mb-3">
+                                <label>Facebook</label>
+                                <input type="url" name="facebook" value="{{ $setting->facebook ?? '' }}" class="form-control" placeholder="https://facebook.com/yourpage">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Twitter</label>
+                                <input type="url" name="twitter" value="{{ $setting->twitter ?? '' }}" class="form-control" placeholder="https://twitter.com/yourhandle">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Instagram</label>
+                                <input type="url" name="instagram" value="{{ $setting->instagram ?? '' }}" class="form-control" placeholder="https://instagram.com/yourprofile">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>YouTube</label>
+                                <input type="url" name="youtube" value="{{ $setting->youtube ?? '' }}" class="form-control" placeholder="https://youtube.com/yourchannel">
                             </div>
 
                         </div>

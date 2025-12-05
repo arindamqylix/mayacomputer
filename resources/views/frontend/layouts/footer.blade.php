@@ -230,7 +230,7 @@ section.newsletter-section + footer#rs-footer {
 				margin-bottom: 12px;
 			}
 			.footer-new-style .info-link-list li a {
-				color: #a8b8d0;
+				color: #ffffff;
 				text-decoration: none;
 				display: flex;
 				align-items: center;
@@ -285,17 +285,43 @@ section.newsletter-section + footer#rs-footer {
 				font-size: 18px;
 			}
 			.footer-new-style .contact-info-list li .info-text {
-				color: #a8b8d0;
+				color: #ffffff;
 				font-size: 14px;
 				line-height: 1.5;
 			}
 			.footer-new-style .contact-info-list li .info-text a {
-				color: #a8b8d0;
+				color: #ffffff;
 				text-decoration: none;
 				transition: color 0.3s ease;
 			}
 			.footer-new-style .contact-info-list li .info-text a:hover {
 				color: #ff6b35;
+			}
+			/* All footer anchor tags should be white */
+			#rs-footer a,
+			footer#rs-footer a,
+			.rs-footer a,
+			.footer-bottom a,
+			.footer-bottom .copyright a,
+			.footer-bottom .copyright p a {
+				color: #ffffff !important;
+			}
+			#rs-footer a:hover,
+			footer#rs-footer a:hover,
+			.rs-footer a:hover,
+			.footer-bottom a:hover,
+			.footer-bottom .copyright a:hover {
+				color: #ff6b35 !important;
+			}
+			/* Make all text in footer white */
+			.footer-new-style .about-widget p,
+			.footer-new-style .about-widget,
+			.footer-new-style .about-widget * {
+				color: #ffffff !important;
+			}
+			.footer-new-style .contact-info-list li .info-text,
+			.footer-new-style .contact-info-list li .info-text * {
+				color: #ffffff !important;
 			}
 			</style>
 
@@ -334,16 +360,18 @@ section.newsletter-section + footer#rs-footer {
                         <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                             <h5 class="footer-title-new">Location</h5>
                             <ul class="contact-info-list">
+                                @if(!empty($data->address))
                                 <li>
                                     <span class="icon-box-lg orange"><i class="fa fa-map-marker"></i></span>
-                                    <span class="info-text">Corporate Office
-                                        Siswar, Phulparas, Madhubani, Bihar - 847409</span>
+                                    <span class="info-text">Registered Office<br>{{ nl2br(e($data->address)) }}</span>
                                 </li>
+                                @endif
+                                @if(!empty($data->corporate_address))
                                 <li>
                                     <span class="icon-box-lg orange"><i class="fa fa-map-marker"></i></span>
-                                    <span class="info-text">Registered Office
-                                        K-40/B, First Floor, New Govindpura Extension, Delhi-110051</span>
+                                    <span class="info-text">Corporate Office<br>{{ nl2br(e($data->corporate_address)) }}</span>
                                 </li>
+                                @endif
                                 <li>
                                     <span class="icon-box-lg blue"><i class="fa fa-phone"></i></span>
                                     <span class="info-text"><a href="tel:{{$data->phone ?? ''}}">{{$data->phone ?? '+918825148127'}}</a></span>

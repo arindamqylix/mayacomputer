@@ -57,6 +57,11 @@
                         </div>
 
                         <div class="col-lg-4 mb-2">
+                            <label>Course Eligibility</label>
+                            <input type="text" class="form-control" name="course_eligibility" placeholder="e.g., Matric, Non Matric, 10+2">
+                        </div>
+
+                        <div class="col-lg-4 mb-2">
                             <label>Course Category</label>
                             <select name="category_id" class="form-control">
                                 <option value="">-- Select Category --</option>

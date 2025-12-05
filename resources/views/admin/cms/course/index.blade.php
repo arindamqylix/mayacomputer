@@ -31,6 +31,7 @@
                                 <th>Course Name</th>
                                 <th>Price</th>
                                 <th>Duration</th>
+                                <th>Eligibility</th>
                                 <th>Category</th>
                                 <th>Actions</th>
                             </tr>
@@ -49,6 +50,7 @@
                                     <td>{{ $course->c_full_name ?? $course->c_short_name }}</td>
                                     <td>{{ $course->c_price }}</td>
                                     <td>{{ $course->c_duration }}</td>
+                                    <td>{{ $course->course_eligibility ?? '-' }}</td>
                                     <td>{{ $course->category_name ?? '-' }}</td>
                                     <td>
                                         <a href="{{ route('edit.course', $course->c_id) }}" class="btn btn-warning btn-sm">Edit</a>
