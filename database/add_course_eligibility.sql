@@ -4,3 +4,4 @@ ADD `course_eligibility` VARCHAR(255) NULL AFTER `c_duration`;
 
 
 
+

@@ -12,6 +12,9 @@
     <!-- responsive tag -->
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <!-- favicon -->
     @if(!empty($siteSettings->site_fav_icon))
         <link rel="icon" type="image/x-icon" href="{{ asset($siteSettings->site_fav_icon) }}">
