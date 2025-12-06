@@ -149,6 +149,27 @@
 			transform: translateY(-2px);
 			box-shadow: 0 5px 20px rgba(0, 0, 119, 0.3);
 		}
+		#form-messages {
+			margin-bottom: 20px;
+			padding: 15px;
+			border-radius: 8px;
+			display: none;
+		}
+		#form-messages.success {
+			display: block;
+			background: #d4edda;
+			color: #155724;
+			border: 1px solid #c3e6cb;
+		}
+		#form-messages.error {
+			display: block;
+			background: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
+		#form-messages i {
+			margin-right: 8px;
+		}
 		.map-wrapper {
 			border-radius: 15px;
 			overflow: hidden;
@@ -219,7 +240,8 @@
 							<h3>Get In Touch</h3>
 							<p class="subtitle">We'd love to hear from you. Send us a message!</p>
 							<div id="form-messages"></div>
-							<form id="contact-form" method="post">
+							<form id="contact-form" method="post" action="{{ route('contact.store') }}">
+								@csrf
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">

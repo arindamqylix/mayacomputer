@@ -56,10 +56,13 @@ Route::get('/refund-policy', [PagesController::class, 'paymentRefunds'])->name('
 Route::get('/sitemap', [PagesController::class, 'sitemap'])->name('sitemap');
 Route::get('/sitemap.xml', [PagesController::class, 'sitemapXml'])->name('sitemap.xml');
 Route::get('/disclaimer', [PagesController::class, 'disclaimer'])->name('disclaimer');
+// Dynamic page route (should be last to catch any page slugs)
+Route::get('/page/{slug}', [PagesController::class, 'page'])->name('page.show');
 
 // Gallery
 Route::get('/our-gallery', [PagesController::class, 'gallery'])->name('gallery');
 
 // Contact
 Route::get('/contact', [PagesController::class, 'contact'])->name('contact');
+Route::post('/contact', [PagesController::class, 'storeContact'])->name('contact.store');
 

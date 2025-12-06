@@ -351,9 +351,9 @@ section.newsletter-section + footer#rs-footer {
                         <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <h5 class="footer-title-new">Quick Links</h5>
                             <ul class="info-link-list">
-                                <li><a href="{{route('paymentTerms')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Terms & Conditions</a></li>
-                                <li><a href="{{route('paymentRefunds')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Privacy Policy</a></li>
-                                <li><a href="{{route('disclaimer')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Disclaimer</a></li>
+                                <li><a href="{{route('page.show', 'terms-and-conditions')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Terms & Conditions</a></li>
+                                <li><a href="{{route('page.show', 'privacy-policy')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Privacy Policy</a></li>
+                                <li><a href="{{route('page.show', 'disclaimer')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Disclaimer</a></li>
                                 <li><a href="{{route('sitemap')}}"><span class="icon-box"><i class="fa fa-angle-right"></i></span>Sitemap</a></li>
                             </ul>
                         </div>

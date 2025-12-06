@@ -32,6 +32,7 @@
                             <option value="">-- Type --</option>
                             <option value="Director">Director</option>
                             <option value="Teacher">Teacher</option>
+                            <option value="About Us">About Us</option>
                         </select>
                     </div>
                 </div>

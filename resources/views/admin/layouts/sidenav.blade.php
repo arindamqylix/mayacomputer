@@ -141,6 +141,7 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-aboutus" aria-expanded="false">
           <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('about_us.list') }}" class="nav-link"><span class="sidebar-text">About Us Sections</span></a></li>
             <li class="nav-item"><a href="{{ route('director_list') }}" class="nav-link"><span class="sidebar-text">Director & Teacher</span></a></li>
             
           </ul>
@@ -180,10 +181,17 @@
         </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item {{ Request::segment(2) == 'contact-requests' ? 'active' : '' }}">
         <a href="{{ route('contact.index') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-envelope"></i></span>
           <span class="sidebar-text">Contact Request</span>
+        </a>
+      </li>
+
+      <li class="nav-item {{ Request::segment(2) == 'pages' ? 'active' : '' }}">
+        <a href="{{ route('pages.list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
+          <span class="sidebar-text">Pages</span>
         </a>
       </li>
 

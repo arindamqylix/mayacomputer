@@ -155,13 +155,52 @@ class PagesController extends Controller
         return view('frontend.contact');
     }
 
+    // Store Contact Form Data
+    public function storeContact(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'fname' => 'required|string|max:255',
+            'lname' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        // Combine first name and last name into name
+        $name = trim($request->fname . ' ' . $request->lname);
+
+        // Insert data into contact_requests table using Query Builder
+        DB::table('contact_requests')->insert([
+            'name' => $name,
+            'email' => $request->email,
+            'phone' => $request->phone ?? null,
+            'subject' => $request->subject,
+            'message' => $request->message,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Thank you! Your message has been sent successfully.');
+    }
+
     public function paymentTerms()
     {
+        // Try to fetch from cms_pages table, fallback to static view
+        $page = DB::table('cms_pages')->where('slug', 'terms-and-conditions')->where('status', 1)->first();
+        if($page) {
+            return view('frontend.page', compact('page'));
+        }
         return view('frontend.payment-terms');
     }
 
     public function paymentRefunds()
     {
+        // Try to fetch from cms_pages table, fallback to static view
+        $page = DB::table('cms_pages')->where('slug', 'refund-policy')->where('status', 1)->first();
+        if($page) {
+            return view('frontend.page', compact('page'));
+        }
         return view('frontend.payment-refunds');
     }
 
@@ -172,7 +211,24 @@ class PagesController extends Controller
 
     public function disclaimer()
     {
+        // Try to fetch from cms_pages table, fallback to static view
+        $page = DB::table('cms_pages')->where('slug', 'disclaimer')->where('status', 1)->first();
+        if($page) {
+            return view('frontend.page', compact('page'));
+        }
         return view('frontend.disclaimer');
+    }
+
+    // Dynamic page view
+    public function page($slug)
+    {
+        $page = DB::table('cms_pages')->where('slug', $slug)->where('status', 1)->first();
+        
+        if(!$page) {
+            abort(404, 'Page not found');
+        }
+        
+        return view('frontend.page', compact('page'));
     }
 
     public function director()

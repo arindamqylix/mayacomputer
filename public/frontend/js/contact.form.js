@@ -38,8 +38,9 @@ jQuery(document).ready(function($) {
             $(formMessages).removeClass('error');
             $(formMessages).addClass('success');
 
-            // Set the message text.
-            $(formMessages).text(response);
+            // Set the message text (handle both string and JSON responses)
+            var message = typeof response === 'string' ? response : (response.message || 'Thank you! Your message has been sent successfully.');
+            $(formMessages).html('<i class="fa fa-check-circle"></i> ' + message);
 
             // Clear the form.
             $('#fname, #lname, #email, #subject, #message').val('');
@@ -49,12 +50,25 @@ jQuery(document).ready(function($) {
             $(formMessages).removeClass('success');
             $(formMessages).addClass('error');
 
-            // Set the message text.
-            if (data.responseText !== '') {
-                $(formMessages).text(data.responseText);
-            } else {
-                $(formMessages).text('Oops! An error occured and your message could not be sent.');
+            // Handle validation errors or other errors
+            var errorMessage = 'Oops! An error occurred and your message could not be sent.';
+            
+            if (data.responseJSON) {
+                // Handle JSON response (validation errors)
+                if (data.responseJSON.message) {
+                    errorMessage = data.responseJSON.message;
+                } else if (data.responseJSON.errors) {
+                    var errors = [];
+                    $.each(data.responseJSON.errors, function(key, value) {
+                        errors.push(value[0]);
+                    });
+                    errorMessage = errors.join('<br>');
+                }
+            } else if (data.responseText) {
+                errorMessage = data.responseText;
             }
+            
+            $(formMessages).html('<i class="fa fa-exclamation-circle"></i> ' + errorMessage);
         });
     });
 

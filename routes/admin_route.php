@@ -15,6 +15,8 @@ use App\Http\Controllers\admin\ContactRequestController;
 use App\Http\Controllers\admin\CmsCourseController;
 use App\Http\Controllers\admin\CmsCourseCategoryController;
 use App\Http\Controllers\admin\CmsDirectorController;
+use App\Http\Controllers\admin\PageController;
+use App\Http\Controllers\admin\AboutUsController;
 
 
 Route::get('admin/login', [AuthController::class, 'admin_login'])->name('admin_login');
@@ -115,7 +117,15 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 
 	// Contact Request 
 	Route::get('/contact-requests', [ContactRequestController::class, 'index'])->name('contact.index');
-	Route::get('contact-requests/{id}', [ContactRequestController::class, 'destroy'])->name('contact.destroy');
+	Route::delete('contact-requests/{id}', [ContactRequestController::class, 'destroy'])->name('contact.destroy');
+
+	// Pages Management
+	Route::get('/pages', [PageController::class, 'index'])->name('pages.list');
+	Route::get('/pages/create', [PageController::class, 'create'])->name('pages.create');
+	Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
+	Route::get('/pages/edit/{id}', [PageController::class, 'edit'])->name('pages.edit');
+	Route::put('/pages/update/{id}', [PageController::class, 'update'])->name('pages.update');
+	Route::delete('/pages/{id}', [PageController::class, 'destroy'])->name('pages.destroy');
 
 	// Course Category
 	Route::get('/courses-category', [CmsCourseCategoryController::class, 'courseCategory'])->name('course.category.list');
@@ -142,6 +152,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
     Route::get('/directors/edit/{id}', [CmsDirectorController::class, 'edit'])->name('edit_director');
     Route::post('/directors/update/{id}', [CmsDirectorController::class, 'update'])->name('update_director');
     Route::get('/directors/delete/{id}', [CmsDirectorController::class, 'destroy'])->name('delete_director');
+
+	// About Us
+	Route::get('/about-us', [AboutUsController::class, 'index'])->name('about_us.list');
+    Route::get('/about-us/create', [AboutUsController::class, 'create'])->name('about_us.create');
+    Route::post('/about-us/store', [AboutUsController::class, 'store'])->name('about_us.store');
+    Route::get('/about-us/edit/{id}', [AboutUsController::class, 'edit'])->name('about_us.edit');
+    Route::put('/about-us/update/{id}', [AboutUsController::class, 'update'])->name('about_us.update');
+    Route::delete('/about-us/{id}', [AboutUsController::class, 'destroy'])->name('about_us.destroy');
 
 	/* ============ CMS Route End =========== */
 });
