@@ -17,6 +17,7 @@ use App\Http\Controllers\admin\CmsCourseCategoryController;
 use App\Http\Controllers\admin\CmsDirectorController;
 use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\admin\AboutUsController;
+use App\Http\Controllers\admin\HomepageController;
 
 
 Route::get('admin/login', [AuthController::class, 'admin_login'])->name('admin_login');
@@ -126,6 +127,13 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('/pages/edit/{id}', [PageController::class, 'edit'])->name('pages.edit');
 	Route::put('/pages/update/{id}', [PageController::class, 'update'])->name('pages.update');
 	Route::delete('/pages/{id}', [PageController::class, 'destroy'])->name('pages.destroy');
+
+	// Homepage Sections Management
+	Route::get('/homepage', [HomepageController::class, 'index'])->name('homepage.index');
+	Route::post('/homepage/store', [HomepageController::class, 'store'])->name('homepage.store');
+	Route::get('/homepage/edit/{id}', [HomepageController::class, 'edit'])->name('homepage.edit');
+	Route::put('/homepage/update/{id}', [HomepageController::class, 'update'])->name('homepage.update');
+	Route::delete('/homepage/{id}', [HomepageController::class, 'destroy'])->name('homepage.destroy');
 
 	// Course Category
 	Route::get('/courses-category', [CmsCourseCategoryController::class, 'courseCategory'])->name('course.category.list');

@@ -13,13 +13,31 @@ class AddCorporateAddressAndSocialFieldsToSiteSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::table('site_settings', function (Blueprint $table) {
-            $table->text('corporate_address')->nullable()->after('address');
-            $table->string('facebook')->nullable()->after('copyright');
-            $table->string('twitter')->nullable()->after('facebook');
-            $table->string('instagram')->nullable()->after('twitter');
-            $table->string('youtube')->nullable()->after('instagram');
-        });
+        if (!Schema::hasColumn('site_settings', 'corporate_address')) {
+            Schema::table('site_settings', function (Blueprint $table) {
+                $table->text('corporate_address')->nullable()->after('address');
+            });
+        }
+        if (!Schema::hasColumn('site_settings', 'facebook')) {
+            Schema::table('site_settings', function (Blueprint $table) {
+                $table->string('facebook')->nullable()->after('copyright');
+            });
+        }
+        if (!Schema::hasColumn('site_settings', 'twitter')) {
+            Schema::table('site_settings', function (Blueprint $table) {
+                $table->string('twitter')->nullable()->after('facebook');
+            });
+        }
+        if (!Schema::hasColumn('site_settings', 'instagram')) {
+            Schema::table('site_settings', function (Blueprint $table) {
+                $table->string('instagram')->nullable()->after('twitter');
+            });
+        }
+        if (!Schema::hasColumn('site_settings', 'youtube')) {
+            Schema::table('site_settings', function (Blueprint $table) {
+                $table->string('youtube')->nullable()->after('instagram');
+            });
+        }
     }
 
     /**

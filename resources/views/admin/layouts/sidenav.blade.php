@@ -130,6 +130,13 @@
         </a>
       </li>
 
+      <li class="nav-item {{ Request::segment(2) == 'homepage' ? 'active' : '' }}">
+        <a href="{{ route('homepage.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-house"></i></span>
+          <span class="sidebar-text">Homepage Sections</span>
+        </a>
+      </li>
+
       <li class="nav-item">
         <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
           data-bs-target="#submenu-aboutus" aria-expanded="false">

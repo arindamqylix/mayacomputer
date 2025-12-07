@@ -10,7 +10,23 @@ class PagesController extends Controller
     // Home
     public function index()
     {
-        return view('frontend.index');
+        // Fetch all homepage sections
+        $counterStats = DB::table('cms_homepage_sections')->where('section_type', 'counter_stat')->where('status', 1)->orderBy('sort_order')->get();
+        $aboutUsHeader = DB::table('cms_homepage_sections')->where('section_type', 'about_us_header')->where('status', 1)->first();
+        $aboutUsItems = DB::table('cms_homepage_sections')->where('section_type', 'about_us_item')->where('status', 1)->orderBy('sort_order')->get();
+        $whyChooseHeader = DB::table('cms_homepage_sections')->where('section_type', 'why_choose_header')->where('status', 1)->first();
+        $whyChooseItems = DB::table('cms_homepage_sections')->where('section_type', 'why_choose_item')->where('status', 1)->orderBy('sort_order')->get();
+        $serviceItems = DB::table('cms_homepage_sections')->where('section_type', 'service_item')->where('status', 1)->orderBy('sort_order')->get();
+        $achievementHeader = DB::table('cms_homepage_sections')->where('section_type', 'achievement_header')->where('status', 1)->first();
+        $achievementCounters = DB::table('cms_homepage_sections')->where('section_type', 'achievement_counter')->where('status', 1)->orderBy('sort_order')->get();
+        $partnerHeader = DB::table('cms_homepage_sections')->where('section_type', 'partner_header')->where('status', 1)->first();
+        $partnerItems = DB::table('cms_homepage_sections')->where('section_type', 'partner_item')->where('status', 1)->orderBy('sort_order')->get();
+
+        return view('frontend.index', compact(
+            'counterStats', 'aboutUsHeader', 'aboutUsItems',
+            'whyChooseHeader', 'whyChooseItems', 'serviceItems',
+            'achievementHeader', 'achievementCounters', 'partnerHeader', 'partnerItems'
+        ));
     }
 
     // About

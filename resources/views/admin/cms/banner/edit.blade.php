@@ -8,7 +8,7 @@
 @section('content')
 <div class="row mt-3">
 	<div class="col-lg-6">
-		<form id='update_frm' method="post" enctype="multipart/form-data">
+		<form id='update_frm' method="post" action="{{ route('edit_banner', $banner->id) }}" enctype="multipart/form-data">
 			@csrf
 			<div class="card">
 				<div class="card-header bg-secondary text-white font-weight-bold">
@@ -17,20 +17,62 @@
 				<div class="card-body"> 
 					<div class='row'>
 						<div class="col-md-12">
-		
 							<div class="form-group mb-3">
-                                <label>Upload File</label><br>
-                                <input class="form-control" type="file" name="file" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg">
+                                <label>Banner Image</label><br>
+                                <input class="form-control" type="file" name="file" accept=".jpg,.png,.jpeg">
+                                <small class="text-muted">Leave empty to keep current image</small>
 
                                 {{-- Show existing file if available --}}
                                 @if($banner->file)
                                     <div class="mt-2">
-                                        <label class="text-muted">Current File:</label><br>
-                                        <img src="{{ asset($banner->file) }}" alt="Gallery Image" class="preview-img">
+                                        <label class="text-muted">Current Image:</label><br>
+                                        <img src="{{ asset($banner->file) }}" alt="Banner Image" class="preview-img" style="max-width: 300px; height: auto; border-radius: 5px;">
                                     </div>
                                 @endif
-                            </div>  
+                            </div>
 
+							<div class="form-group mb-3">
+								<label>Header Text</label>
+								<input type="text" name="header" class="form-control" placeholder="e.g., WELCOME TO EXCELLENCE" value="{{ old('header', $banner->header ?? '') }}">
+								<small class="text-muted">Main heading text displayed on banner</small>
+							</div>
+
+							<div class="form-group mb-3">
+								<label>Short Description</label>
+								<textarea name="short_description" class="form-control" rows="3" placeholder="e.g., Transform your career with industry-leading computer education...">{{ old('short_description', $banner->short_description ?? '') }}</textarea>
+								<small class="text-muted">Brief description text displayed below header</small>
+							</div>
+
+							<div class="form-group mb-3">
+								<label>Button Name</label>
+								<input type="text" name="button_name" class="form-control" placeholder="e.g., Explore Courses" value="{{ old('button_name', $banner->button_name ?? '') }}">
+								<small class="text-muted">Text for the call-to-action button</small>
+							</div>
+
+							<div class="form-group mb-3">
+								<label>Button URL</label>
+								<input type="url" name="button_url" class="form-control" placeholder="e.g., https://example.com/courses" value="{{ old('button_url', $banner->button_url ?? '') }}">
+								<small class="text-muted">Link URL when button is clicked</small>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label>Sort Order</label>
+										<input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $banner->sort_order ?? 0) }}" min="0">
+										<small class="text-muted">Lower numbers appear first</small>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label>Status</label>
+										<select name="status" class="form-control">
+											<option value="1" {{ old('status', $banner->status ?? 1) == 1 ? 'selected' : '' }}>Active</option>
+											<option value="0" {{ old('status', $banner->status ?? 1) == 0 ? 'selected' : '' }}>Inactive</option>
+										</select>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

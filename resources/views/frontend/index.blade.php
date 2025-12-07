@@ -611,25 +611,43 @@
         data-md-device-dots="false">
 
         @php
-            $banners = DB::table('cms_banner')->orderBy('id','DESC')->get();
+            $banners = DB::table('cms_banner')->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('id', 'DESC')->get();
         @endphp
 
         @foreach($banners as $banner)
         <div class="item">
-            <img src="{{ asset($banner->file) }}" alt="Banner"  style="height:40vh;" />
+            <img src="{{ asset($banner->file) }}" alt="{{ $banner->header ?? 'Banner' }}" style="height:40vh; width: 100%; object-fit: cover;" />
 
+            @if($banner->header || $banner->short_description || $banner->button_name)
             <div class="slide-content">
                 <div class="display-table">
                     <div class="display-table-cell">
                         <div class="container text-center">
-                            <!-- <a href="#" class="sl-readmore-btn mr-30" data-animation-in="lightSpeedIn"
-                               data-animation-out="animate-out">READ MORE</a>
-                            <a href="#" class="sl-get-started-btn" data-animation-in="lightSpeedIn"
-                               data-animation-out="animate-out">GET STARTED NOW</a> -->
+                            @if($banner->header)
+                            <h1 class="sl-title" style="font-size: 48px; font-weight: 700; color: #ffffff; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                {{ $banner->header }}
+                            </h1>
+                            @endif
+                            
+                            @if($banner->short_description)
+                            <p class="sl-description" style="font-size: 18px; color: #ffffff; margin-bottom: 30px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); max-width: 800px; margin-left: auto; margin-right: auto;">
+                                {{ $banner->short_description }}
+                            </p>
+                            @endif
+                            
+                            @if($banner->button_name && $banner->button_url)
+                            <a href="{{ $banner->button_url }}" class="sl-get-started-btn" 
+                               style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #d00226 0%, #ff6b35 100%); color: #ffffff; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(208, 2, 38, 0.3);"
+                               onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 20px rgba(208, 2, 38, 0.4)';"
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(208, 2, 38, 0.3)';">
+                                {{ $banner->button_name }}
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
+            @endif
         </div>
         @endforeach
 
@@ -639,201 +657,118 @@
 
 
 <!-- Counter Stats Start -->
+@if(isset($counterStats) && count($counterStats) > 0)
 <div class="counter-stats-section">
     <div class="container">
         <div class="row">
+            @foreach($counterStats as $counter)
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="counter-item">
                     <div class="counter-icon">
-                        <i class="fa fa-users"></i>
+                        <i class="{{ $counter->icon ?? 'fa fa-star' }}"></i>
                     </div>
                     <div class="counter-content">
-                        <h3>50707+</h3>
-                        <p>Students Enrolled</p>
+                        <h3>{{ $counter->number ?? '' }}</h3>
+                        <p>{{ $counter->label ?? '' }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="counter-item">
-                    <div class="counter-icon">
-                        <i class="fa fa-book"></i>
-                    </div>
-                    <div class="counter-content">
-                        <h3>129+</h3>
-                        <p>Courses Available</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="counter-item">
-                    <div class="counter-icon">
-                        <i class="fa fa-trophy"></i>
-                    </div>
-                    <div class="counter-content">
-                        <h3>8+</h3>
-                        <p>Years Experience</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="counter-item">
-                    <div class="counter-icon">
-                        <i class="fa fa-briefcase"></i>
-                    </div>
-                    <div class="counter-content">
-                        <h3>95%</h3>
-                        <p>Placement Rate</p>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>
+@endif
 <!-- Counter Stats End -->
 
 <!-- About Us Start -->
+@if(isset($aboutUsHeader) || (isset($aboutUsItems) && count($aboutUsItems) > 0))
 <div id="rs-about" class="rs-about sec-spacer">
     <div class="container">
+        @if(isset($aboutUsHeader))
         <div class="sec-title mb-50 text-center">
-            <h2>ABOUT US</h2>
-            <p>Fusce sem dolor, interdum in fficitur at, faucibus nec lorem. Sed nec molestie justo.</p>
+            <h2>{{ $aboutUsHeader->title ?? 'ABOUT US' }}</h2>
+            @if(!empty($aboutUsHeader->subtitle))
+            <p>{{ $aboutUsHeader->subtitle }}</p>
+            @endif
         </div>
+        @endif
         <div class="row">
             <div class="col-lg-6 col-md-12">
                 <div class="about-img rs-animation-hover">
-                    <img src="{{asset('frontend/images/about/about.jpg')}}" alt="img02" />
-                    <a class="popup-youtube rs-animation-fade" href="https://www.youtube.com/watch?v=tzMpWiGL8D8"
-                        title="Video Icon">
+                    @if(isset($aboutUsHeader) && !empty($aboutUsHeader->image))
+                    <img src="{{ asset($aboutUsHeader->image) }}" alt="{{ $aboutUsHeader->title ?? 'About Us' }}" />
+                    @else
+                    <img src="{{asset('frontend/images/about/about.jpg')}}" alt="About Us" />
+                    @endif
+                    @if(isset($aboutUsHeader) && !empty($aboutUsHeader->video_url))
+                    <a class="popup-youtube rs-animation-fade" href="{{ $aboutUsHeader->video_url }}" title="Video Icon">
                     </a>
+                    @endif
                     <div class="overly-border"></div>
                 </div>
             </div>
             <div class="col-lg-6 col-md-12">
+                @if(isset($aboutUsHeader) && !empty($aboutUsHeader->description))
                 <div class="about-desc">
-                    <h3>WELCOME TO EDULEARN</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua</p>
+                    <h3>{{ $aboutUsHeader->title ?? 'WELCOME' }}</h3>
+                    <p>{{ $aboutUsHeader->description }}</p>
                 </div>
+                @endif
+                @if(isset($aboutUsItems) && count($aboutUsItems) > 0)
                 <div id="accordion" class="rs-accordion-style1">
+                    @foreach($aboutUsItems as $index => $item)
                     <div class="card">
-                        <div class="card-header" id="headingOne">
-                            <h3 class="acdn-title" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                                aria-expanded="true" aria-controls="collapseOne">
-                                Our History
+                        <div class="card-header" id="heading{{ $item->id }}">
+                            <h3 class="acdn-title {{ $index > 0 ? 'collapsed' : '' }}" data-bs-toggle="collapse" data-bs-target="#collapse{{ $item->id }}"
+                                aria-expanded="{{ $index == 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $item->id }}">
+                                {{ $item->title }}
                             </h3>
                         </div>
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                        <div id="collapse{{ $item->id }}" class="collapse {{ $index == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $item->id }}"
                             data-bs-parent="#accordion">
                             <div class="card-body">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable.
+                                {!! $item->description !!}
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header" id="headingTwo">
-                            <h3 class="acdn-title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                aria-expanded="false" aria-controls="collapseTwo">
-                                Our Mission
-                            </h3>
-                        </div>
-                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion">
-                            <div class="card-body">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header mb-0" id="headingThree">
-                            <h3 class="acdn-title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                                aria-expanded="false" aria-controls="collapseThree">
-                                Our Vision
-                            </h3>
-                        </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
-                            data-bs-parent="#accordion">
-                            <div class="card-body">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable.
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
+@endif
 <!-- About Us End -->
 
 <!-- Why Choose Us Section Start -->
+@if((isset($whyChooseHeader) || isset($whyChooseItems)) && count($whyChooseItems) > 0)
 <div class="why-choose-section">
     <div class="container">
+        @if(isset($whyChooseHeader))
         <div class="section-header">
-            <h2>Why Choose Us</h2>
-            <p>Experience an excellence in computer education with our comprehensive programme and expert guidance</p>
+            <h2>{{ $whyChooseHeader->title ?? 'Why Choose Us' }}</h2>
+            @if(!empty($whyChooseHeader->subtitle))
+            <p>{{ $whyChooseHeader->subtitle }}</p>
+            @endif
         </div>
+        @endif
         <div class="row">
+            @foreach($whyChooseItems as $item)
             <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fa fa-certificate"></i>
+                        <i class="{{ $item->icon ?? 'fa fa-star' }}"></i>
                     </div>
-                    <h4 class="feature-title">Certified Courses</h4>
-                    <p class="feature-desc">All our courses are industry-recognized and certified, providing you with valuable credentials for your career.</p>
+                    <h4 class="feature-title">{{ $item->title }}</h4>
+                    <p class="feature-desc">{{ $item->description }}</p>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa fa-users"></i>
-                    </div>
-                    <h4 class="feature-title">Expert Instructors</h4>
-                    <p class="feature-desc">Learn from experienced professionals and industry experts who are passionate about teaching and student success.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa fa-laptop"></i>
-                    </div>
-                    <h4 class="feature-title">Modern Labs</h4>
-                    <p class="feature-desc">Practice in our well-equipped computer labs with the latest software and hardware infrastructure.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa fa-clock-o"></i>
-                    </div>
-                    <h4 class="feature-title">Flexible Timing</h4>
-                    <p class="feature-desc">Choose from various batch timings that fit your schedule, including weekend and evening classes.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa fa-briefcase"></i>
-                    </div>
-                    <h4 class="feature-title">Job Placement</h4>
-                    <p class="feature-desc">We provide placement assistance to help you secure rewarding job opportunities.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa fa-support"></i>
-                    </div>
-                    <h4 class="feature-title">24/7 Support</h4>
-                    <p class="feature-desc">Get assistance whenever you need it with our dedicated student support system available round the clock.</p>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>
+@endif
 <!-- Why Choose Us Section End -->
 
 <!-- Courses Start -->
@@ -929,54 +864,49 @@
 
 
 <!-- Counter Up Section Start-->
+@if(isset($achievementHeader) || (isset($achievementCounters) && count($achievementCounters) > 0))
 <div class="rs-counter pt-100 pb-70 bg3">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-md-12">
+                @if(isset($achievementHeader))
                 <div class="counter-content">
-                    <h2 class="counter-title">ACHEIVEMENTS</h2>
+                    <h2 class="counter-title">{{ $achievementHeader->title ?? 'ACHIEVEMENTS' }}</h2>
+                    @if(!empty($achievementHeader->description))
                     <div class="counter-text">
-                        <p>A wonderful serenity has taken possession of my entire soul, like these sweet mornings of
-                            spring which I enjoy with my whole heart like mine.</p>
+                        <p>{{ $achievementHeader->description }}</p>
                     </div>
+                    @endif
+                    @if(!empty($achievementHeader->image))
                     <div class="counter-img rs-image-effect-shine">
-                        <img src="{{asset('frontend/images/counter/1.jpg')}}" alt="Counter Discussion">
+                        <img src="{{ asset($achievementHeader->image) }}" alt="{{ $achievementHeader->title ?? 'Achievements' }}">
                     </div>
+                    @else
+                    <div class="counter-img rs-image-effect-shine">
+                        <img src="{{asset('frontend/images/counter/1.jpg')}}" alt="Achievements">
+                    </div>
+                    @endif
                 </div>
+                @endif
             </div>
+            @if(isset($achievementCounters) && count($achievementCounters) > 0)
             <div class="col-lg-6 col-md-12 mt-80">
                 <div class="row">
+                    @foreach($achievementCounters as $index => $counter)
                     <div class="col-md-6">
                         <div class="rs-counter-list">
-                            <h2 class="counter-number plus">60</h2>
-                            <h4 class="counter-desc">TEACHERS</h4>
+                            <h2 class="counter-number plus">{{ $counter->number ?? '' }}</h2>
+                            <h4 class="counter-desc">{{ $counter->label ?? '' }}</h4>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="rs-counter-list">
-                            <h2 class="counter-number plus">40</h2>
-                            <h4 class="counter-desc">COURSES</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="rs-counter-list">
-                            <h2 class="counter-number plus">900</h2>
-                            <h4 class="counter-desc">STUDENTS</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="rs-counter-list">
-                            <h2 class="counter-number plus">3675</h2>
-                            <h4 class="counter-desc">Satisfied Client</h4>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
+@endif
 <!-- Counter Down Section End -->
 
 
@@ -1003,52 +933,49 @@
 
 
 <!-- Partner Start -->
+@if((isset($partnerHeader) || isset($partnerItems)) && isset($partnerItems) && count($partnerItems) > 0)
 <div id="rs-partner" class="partners-section">
     <div class="container">
+        @if(isset($partnerHeader))
         <div class="sec-title text-center">
-            <h2>Our Partners</h2>
-            <p>We are proud to collaborate with leading organizations and institutions</p>
+            <h2>{{ $partnerHeader->title ?? 'Our Partners' }}</h2>
+            @if(!empty($partnerHeader->subtitle))
+            <p>{{ $partnerHeader->subtitle }}</p>
+            @endif
         </div>
+        @endif
         <div class="partner-carousel-wrapper">
             <div class="rs-carousel owl-carousel" data-loop="true" data-items="5" data-margin="30" data-autoplay="true"
                 data-autoplay-timeout="4000" data-smart-speed="1500" data-dots="false" data-nav="false"
                 data-nav-speed="false" data-mobile-device="2" data-mobile-device-nav="false" data-mobile-device-dots="false"
                 data-ipad-device="3" data-ipad-device-nav="false" data-ipad-device-dots="false" data-md-device="4"
                 data-md-device-nav="false" data-md-device-dots="false">
+                @foreach($partnerItems as $partner)
                 <div class="partner-item">
-                    <a href="#" title="Partner 1">
-                        <img src="{{asset('frontend/images/partner/1.png')}}" alt="Partner Logo">
+                    @if(!empty($partner->link))
+                    <a href="{{ $partner->link }}" title="{{ $partner->title }}" target="_blank">
+                        @if($partner->image)
+                        <img src="{{ asset($partner->image) }}" alt="{{ $partner->title }}">
+                        @else
+                        <img src="{{asset('frontend/images/partner/1.png')}}" alt="{{ $partner->title }}">
+                        @endif
                     </a>
-                </div>
-                <div class="partner-item">
-                    <a href="#" title="Partner 2">
-                        <img src="{{asset('frontend/images/partner/2.png')}}" alt="Partner Logo">
+                    @else
+                    <a href="#" title="{{ $partner->title }}">
+                        @if($partner->image)
+                        <img src="{{ asset($partner->image) }}" alt="{{ $partner->title }}">
+                        @else
+                        <img src="{{asset('frontend/images/partner/1.png')}}" alt="{{ $partner->title }}">
+                        @endif
                     </a>
+                    @endif
                 </div>
-                <div class="partner-item">
-                    <a href="#" title="Partner 3">
-                        <img src="{{asset('frontend/images/partner/3.png')}}" alt="Partner Logo">
-                    </a>
-                </div>
-                <div class="partner-item">
-                    <a href="#" title="Partner 4">
-                        <img src="{{asset('frontend/images/partner/4.png')}}" alt="Partner Logo">
-                    </a>
-                </div>
-                <div class="partner-item">
-                    <a href="#" title="Partner 5">
-                        <img src="{{asset('frontend/images/partner/5.png')}}" alt="Partner Logo">
-                    </a>
-                </div>
-                <div class="partner-item">
-                    <a href="#" title="Partner 6">
-                        <img src="{{asset('frontend/images/partner/6.jpg')}}" alt="Partner Logo">
-                    </a>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
 </div>
+@endif
 <!-- Partner End -->
 
 
