@@ -1,294 +1,445 @@
-<!-- <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Student ID Card</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Student ID Card - {{ $data->sl_name ?? 'Student' }}</title>
 	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+		
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		
 		body {
-			font-family: 'Segoe UI', sans-serif;
-			background: #f3f3f3;
+			font-family: 'Poppins', sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
 			display: flex;
 			justify-content: center;
-			padding: 30px;
+			align-items: center;
+			padding: 20px;
 		}
-
-		.id-card-holder {
-			width: 300px;
-			background: #fff;
-			border-radius: 12px;
-			box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+		
+		.print-container {
+			background: white;
+			border-radius: 20px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			padding: 2rem;
+			max-width: 400px;
+			width: 100%;
+		}
+		
+		.id-card {
+			width: 100%;
+			height: auto;
+			background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+			border-radius: 15px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 			overflow: hidden;
+			position: relative;
+			border: 3px solid #2563eb;
+		}
+		
+		.id-header {
+			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+			color: #fff;
 			text-align: center;
-			padding: 15px;
+			padding: 20px 15px;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.id-header::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			right: -20%;
+			width: 200px;
+			height: 200px;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 50%;
+		}
+		
+		.id-header::after {
+			content: '';
+			position: absolute;
+			bottom: -30%;
+			left: -10%;
+			width: 150px;
+			height: 150px;
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 50%;
+		}
+		
+		.id-header img {
+			width: 80px;
+			height: auto;
+			display: block;
+			margin: 0 auto 10px;
+			position: relative;
+			z-index: 1;
+			filter: brightness(0) invert(1);
+		}
+		
+		.id-header h2 {
+			font-size: 18px;
+			margin: 0;
+			letter-spacing: 1px;
+			font-weight: 700;
+			position: relative;
+			z-index: 1;
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		}
+		
+		.id-body {
+			padding: 25px 20px;
+			text-align: center;
 			position: relative;
 		}
-
-		.header img {
-			width: 140px;
-			display: block;
-			margin: 5px auto 10px;
+		
+		.photo-container {
+			margin: 0 auto 20px;
+			width: 120px;
+			height: 140px;
+			border: 4px solid #2563eb;
+			border-radius: 10px;
+			background: #f8f9fa;
+			overflow: hidden;
+			box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+			position: relative;
 		}
-
-		.photo {
-			margin: 12px 0;
+		
+		.photo-container::before {
+			content: '';
+			position: absolute;
+			top: -2px;
+			left: -2px;
+			right: -2px;
+			bottom: -2px;
+			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+			border-radius: 10px;
+			z-index: -1;
 		}
-		.photo img {
-			width: 95px;
-			height: 115px;
+		
+		.photo-container img {
+			width: 100%;
+			height: 100%;
 			object-fit: cover;
-			border-radius: 6px;
-			border: 3px solid #2a3042;
-			background: #eee;
+			display: block;
 		}
-
-		h2 {
-			font-size: 18px;
-			margin: 6px 0 2px;
-			font-weight: 600;
-			color: #2a3042;
+		
+		.student-name {
+			font-size: 22px;
+			font-weight: 700;
+			color: #1e3a8a;
+			margin: 15px 0 10px;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
 		}
-
-		h3 {
-			font-size: 13px;
-			margin: 2px 0;
-			color: #444;
-			font-weight: 500;
-		}
-
-		.details {
+		
+		.student-info {
+			background: #f8f9ff;
+			border-radius: 10px;
+			padding: 15px;
+			margin-top: 15px;
 			text-align: left;
-			margin: 12px 0;
-			font-size: 12px;
-			color: #333;
-			line-height: 1.4;
 		}
-		.details p { margin: 4px 0; }
-
-		.qr-code {
-			margin-top: 10px;
+		
+		.info-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 8px 0;
+			border-bottom: 1px solid #e9ecef;
 		}
-		.qr-code img {
-			width: 70px;
-			height: 70px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			padding: 4px;
-			background: #fff;
+		
+		.info-row:last-child {
+			border-bottom: none;
 		}
-
-		.signature {
-			margin-top: 14px;
-			font-size: 12px;
-			text-align: right;
-			color: #222;
+		
+		.info-label {
+			font-weight: 600;
+			color: #495057;
+			font-size: 13px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
 		}
-		.signature p {
-			margin: 3px 0;
-		}
-
-		.footer {
-			margin-top: 8px;
-			font-size: 11px;
-			color: #666;
-			text-align: center;
-			border-top: 1px solid #ddd;
-			padding-top: 6px;
-		}
-
-		.print-btn {
-			margin-top: 20px;
-			padding: 8px 20px;
-			border: none;
-			background: #0073e6;
-			color: #fff;
+		
+		.info-label i {
+			color: #2563eb;
 			font-size: 14px;
-			font-weight: 500;
-			border-radius: 6px;
-			cursor: pointer;
 		}
-
+		
+		.info-value {
+			font-weight: 500;
+			color: #1e3a8a;
+			font-size: 13px;
+			text-align: right;
+		}
+		
+		.id-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+			padding: 20px;
+			border-top: 2px solid #e9ecef;
+			margin-top: 15px;
+		}
+		
+		.qr-section {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+		}
+		
+		.qr-code {
+			width: 80px;
+			height: 80px;
+			border: 2px solid #2563eb;
+			border-radius: 8px;
+			overflow: hidden;
+			background: white;
+			padding: 5px;
+			box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+		}
+		
+		.qr-code img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+		
+		.qr-label {
+			font-size: 10px;
+			color: #6c757d;
+			font-weight: 600;
+			text-transform: uppercase;
+		}
+		
+		.signature-section {
+			text-align: right;
+			flex: 1;
+		}
+		
+		.signature-line {
+			width: 120px;
+			height: 2px;
+			background: #2563eb;
+			margin: 0 0 5px auto;
+			border-radius: 2px;
+		}
+		
+		.signature-label {
+			font-size: 12px;
+			color: #1e3a8a;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+		
+		.validity-note {
+			text-align: center;
+			margin-top: 15px;
+			padding-top: 15px;
+			border-top: 1px dashed #dee2e6;
+			font-size: 11px;
+			color: #6c757d;
+			font-style: italic;
+		}
+		
+		.action-buttons {
+			text-align: center;
+			margin-top: 30px;
+			display: flex;
+			gap: 15px;
+			justify-content: center;
+		}
+		
+		.btn-print {
+			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+			color: white;
+			border: none;
+			padding: 12px 30px;
+			border-radius: 10px;
+			font-weight: 600;
+			font-size: 14px;
+			cursor: pointer;
+			box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+		
+		.btn-print:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5);
+		}
+		
+		.btn-back {
+			background: #6c757d;
+			color: white;
+			border: none;
+			padding: 12px 30px;
+			border-radius: 10px;
+			font-weight: 600;
+			font-size: 14px;
+			cursor: pointer;
+			box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+			transition: all 0.3s ease;
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+		
+		.btn-back:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(108, 117, 125, 0.5);
+			color: white;
+			text-decoration: none;
+		}
+		
 		@media print {
-			.print-btn { display: none; }
-			body { background: none; }
+			body {
+				background: white;
+				padding: 0;
+			}
+			
+			.print-container {
+				box-shadow: none;
+				padding: 0;
+				max-width: 100%;
+			}
+			
+			.action-buttons {
+				display: none;
+			}
+			
+			.id-card {
+				box-shadow: none;
+				border: 2px solid #2563eb;
+			}
+			
+			@page {
+				margin: 0;
+				size: A4 landscape;
+			}
 		}
 	</style>
 </head>
 <body>
-	<div class="id-card-holder">
-		<div class="header">
-			<img src="https://mayacomputercenter.in/images/header.png" alt="Institute Logo">
+	<div class="print-container">
+		<div class="id-card">
+			<div class="id-header">
+				@if(file_exists(public_path('logo.png')))
+					<img src="{{ asset('logo.png') }}" alt="Maya Computer Center Logo">
+				@else
+					<div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 10px;"></div>
+				@endif
+				<h2>MAYA COMPUTER CENTER PVT LTD</h2>
+			</div>
+			
+			<div class="id-body">
+				<div class="photo-container">
+					@if(!empty($data->sl_photo))
+						<img src="{{ asset('storage/student/'.$data->sl_photo) }}" alt="Student Photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+						<div style="display: none; width: 100%; height: 100%; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">No Photo</div>
+					@else
+						<div style="width: 100%; height: 100%; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">No Photo</div>
+					@endif
+				</div>
+				
+				<div class="student-name">{{ $data->sl_name ?? 'N/A' }}</div>
+				
+				<div class="student-info">
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-hashtag"></i>
+							<span>Registration No:</span>
+						</div>
+						<div class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}</div>
+					</div>
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-graduation-cap"></i>
+							<span>Course:</span>
+						</div>
+						<div class="info-value">{{ $data->c_short_name ?? 'N/A' }}</div>
+					</div>
+					@if($data->sl_dob)
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-birthday-cake"></i>
+							<span>Date of Birth:</span>
+						</div>
+						<div class="info-value">{{ \Carbon\Carbon::parse($data->sl_dob)->format('d M, Y') }}</div>
+					</div>
+					@endif
+					@if($data->sl_mobile_no)
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-phone"></i>
+							<span>Contact:</span>
+						</div>
+						<div class="info-value">{{ $data->sl_mobile_no }}</div>
+					</div>
+					@endif
+					@if($data->cl_center_name)
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-building"></i>
+							<span>Center:</span>
+						</div>
+						<div class="info-value" style="font-size: 11px;">{{ $data->cl_center_name }}</div>
+					</div>
+					@endif
+				</div>
+			</div>
+			
+			<div class="id-footer">
+				<div class="qr-section">
+					@if(file_exists(public_path('center/student_doc/qr/'.$data->sl_reg_no.'.png')))
+						<div class="qr-code">
+							<img src="{{ asset('center/student_doc/qr/'.$data->sl_reg_no.'.png') }}" alt="QR Code">
+						</div>
+						<div class="qr-label">Scan QR Code</div>
+					@else
+						<div class="qr-code" style="display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px;">
+							No QR
+						</div>
+						<div class="qr-label">QR Code</div>
+					@endif
+				</div>
+				
+				<div class="signature-section">
+					<div class="signature-line"></div>
+					<div class="signature-label">Principal</div>
+				</div>
+			</div>
+			
+			<div class="validity-note">
+				<em>Valid for academic year only</em>
+			</div>
 		</div>
-
-		<div class="photo">
-			<img src="{{ asset('center/student_doc/').'/'.$data->sl_photo }}" alt="Student Photo">
-		</div>
-
-		<h2>{{ $data->sl_name }}</h2>
-		<h3>Reg. No: {{ $data->sl_reg_no }}</h3>
-		<h3>Course: {{ $data->c_short_name }}</h3>
-
-		<div class="qr-code">
-			<img src="{{ asset('center/student_doc/qr/'.$data->sl_reg_no.'.png') }}" alt="QR Code">
-		</div>
-
-		<div class="details">
-			<p><b>{{ $data->cl_center_name }}</b></p>
-			<p>{{ $data->cl_center_address }}</p>
-			<p>Ph: {{ $data->cl_mobile }}</p>
-		</div>
-
-		<div class="signature">
-			<p>___________________</p>
-			<p><b>Authorized Signature</b></p>
-		</div>
-
-		<div class="footer">
-			<p><em>Valid for academic year only</em></p>
+		
+		<div class="action-buttons">
+			<a href="{{ route('student_id_card') }}" class="btn-back">
+				<i class="fas fa-arrow-left"></i>
+				Back to List
+			</a>
+			<button class="btn-print" onclick="window.print();">
+				<i class="fas fa-print"></i>
+				Print ID Card
+			</button>
 		</div>
 	</div>
-
-	<center>
-		<button class="print-btn" onclick="this.style.display='none'; window.print();">Print</button>
-	</center>
-</body>
-</html> -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Student ID Card</title>
-<style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: #e9ecef;
-    }
-    .id-card {
-        width: 350px;
-        height: 520px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-        overflow: hidden;
-        margin: 30px auto;
-        position: relative;
-        border: 3px solid #2a3042;
-    }
-    .id-header {
-        background: #2a3042;
-        color: #fff;
-        text-align: center;
-        padding: 18px 10px;
-    }
-    .id-header img {
-        width: 70px;
-        display: block;
-        margin: 0 auto 10px;
-    }
-    .id-header h2 {
-        font-size: 20px;
-        margin: 0;
-        letter-spacing: 1px;
-    }
-    .id-body {
-        padding: 20px;
-        text-align: center;
-    }
-    .photo {
-        width: 110px;
-        height: 130px;
-        border: 2px solid #2a3042;
-        margin: 0 auto 15px;
-        background: #eee;
-        border-radius: 6px;
-        overflow: hidden;
-    }
-    .photo img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .id-body h3 {
-        margin: 8px 0 4px;
-        font-size: 20px;
-        color: #2a3042;
-    }
-    .id-body p {
-        margin: 2px 0;
-        font-size: 14px;
-        color: #444;
-    }
-    .details {
-        text-align: left;
-        margin-top: 18px;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-    .details p {
-        margin: 6px 0;
-    }
-    .details b {
-        color: #2a3042;
-    }
-    .id-footer {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .id-footer .qr {
-        width: 65px;
-        height: 65px;
-        border: 1px solid #2a3042;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .id-footer .qr img {
-        width: 100%;
-        height: 100%;
-    }
-    .id-footer .sign {
-        text-align: right;
-        font-size: 13px;
-    }
-    .id-footer .sign p {
-        margin: 4px 0;
-    }
-    .id-footer .sign b {
-        color: #2a3042;
-    }
-</style>
-</head>
-<body>
-    <div class="id-card">
-        <div class="id-header">
-            <img src="logo.png" alt="Logo">
-            <h2>MAYA COMPUTER CENTER PVT LTD</h2>
-        </div>
-        <div class="id-body">
-            <div class="photo">
-                <img src="{{asset('storage/student/'.$data->sl_photo)}}" alt="Student Photo">
-            </div>
-            <h3>{{ $data->sl_name??'' }}</h3>
-            <p><b>Reg No:</b> {{ $data->sl_reg_no }}</p>
-            <div class="details">
-                <p><b>Course:</b> {{ $data->c_short_name }}</p>
-                <!-- <p><b>Batch:</b> 2024-25</p> -->
-                <p><b>DOB:</b> {{$data->sl_dob??''}}</p>
-                <p><b>Contact:</b> {{ $data->sl_mobile_no }}</p>
-            </div>
-        </div>
-        <div class="id-footer">
-            <div>
-                <!-- <img src="qrcode.png" alt="QR Code"> -->
-            </div>
-            <div class="sign">
-                <p>________________</p>
-                <p><b>Principal</b></p>
-            </div>
-        </div>
-    </div>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 </body>
 </html>

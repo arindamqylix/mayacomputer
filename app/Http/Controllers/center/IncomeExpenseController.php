@@ -9,7 +9,7 @@ use Auth;
 use DB;
 class IncomeExpenseController extends Controller
 {
-    public function income_expense(){
+    public function income_expense(Request $request){
     	$wallet_balance = IncomeExpense::selectRaw('(SUM(CASE WHEN ie_type = "INCOME" THEN ie_amount ELSE 0 END) - SUM(CASE WHEN ie_type = "EXPENSE" THEN ie_amount ELSE 0 END)) AS wallet_balance')
                         ->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id)
                         ->first();
@@ -22,9 +22,16 @@ class IncomeExpenseController extends Controller
                         ->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id)
                         ->first();
 
-    	$income_expense['income_expense'] = DB::table('center_login')
-    					  ->join('income_expense', 'center_login.cl_id', 'income_expense.ie_FK_of_center_id')
-    					  ->get();
+    	$query = DB::table('income_expense')
+    				->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id);
+    	
+    	// Filter by transaction type if provided
+    	if($request->has('txn_type') && $request->txn_type != '') {
+    		$query->where('ie_type', $request->txn_type);
+    	}
+    	
+    	$income_expense['income_expense'] = $query->orderBy('ie_date', 'desc')->get();
+    	
     	return view('center.income_expense.index',$income_expense, compact('wallet_balance','total_income', 'total_expense'));
     }
 

@@ -143,7 +143,8 @@ class StudentController extends Controller
 			DB::commit();
 			Log::info("----- Student Registration SUCCESS -----");
 
-			return redirect()->route('student_list')->with('success', 'Student Registration Successfully! Registration No: ' . $registrationDisplay);
+			// Redirect to registration card after successful registration
+			return redirect()->route('student_registration_card', $insert->sl_id)->with('success', 'Student Registration Successfully! Registration No: ' . $registrationDisplay);
 
 		} catch (\Exception $e) {
 			DB::rollBack();
@@ -340,6 +341,21 @@ class StudentController extends Controller
 			->where('student_login.sl_id', $id)
 			->first();
 		return view('admin.student.student_application', compact('data'));
+	}
+
+	public function registration_card($id)
+	{
+		$data = DB::table('student_login')
+			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->where('student_login.sl_id', $id)
+			->first();
+		
+		if (!$data) {
+			return redirect()->route('student_list')->with('error', 'Student not found.');
+		}
+		
+		return view('admin.student.registration_card', compact('data'));
 	}
 
 	public function set_reg_fee()

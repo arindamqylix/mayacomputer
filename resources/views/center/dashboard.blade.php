@@ -1,233 +1,577 @@
 @extends('center.layouts.base')
 @section('title', 'Dashboard')
+@push('custom-css')
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Welcome Banner - Matching Logo Blue */
+.welcome-banner {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    border-radius: 20px;
+    padding: 2.5rem;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.welcome-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-banner h2 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welcome-banner p {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* Stats Cards */
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.stat-card.student-card::before {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.stat-card.pending-card::before {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.stat-card.verified-card::before {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card.dispatched-card::before {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.stat-card .icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-card.student-card .icon-wrapper {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.stat-card.pending-card .icon-wrapper {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.stat-card.verified-card .icon-wrapper {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card.dispatched-card .icon-wrapper {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 0 0 0.5rem 0;
+}
+
+.stat-card p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Profile Card */
+.profile-card {
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background: #fff;
+    padding: 2rem;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.profile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.profile-card-header h5 {
+    font-weight: 700;
+    color: #1e3a8a;
+    font-size: 1.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-edit-profile {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-edit-profile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.profile-info-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+.profile-info-table tr {
+    transition: all 0.3s ease;
+}
+
+.profile-info-table tr:hover {
+    transform: translateX(5px);
+}
+
+.profile-info-table th {
+    font-weight: 600;
+    color: #1e3a8a;
+    width: 30%;
+    font-size: 0.9rem;
+    padding: 12px 18px;
+    background: #f8f9ff;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.profile-info-table td {
+    color: #495057;
+    font-weight: 500;
+    padding: 12px 18px;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.profile-image-wrapper {
+    text-align: center;
+    padding: 1rem;
+}
+
+.profile-image-wrapper img {
+    width: 150px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+}
+
+.profile-image-wrapper img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+}
+
+/* Chart Card */
+.chart-card {
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background: #fff;
+    padding: 2rem;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.chart-card-header h5 {
+    font-weight: 700;
+    color: #1e3a8a;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.chart-stats {
+    text-align: right;
+}
+
+.chart-stats h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 0;
+}
+
+.chart-stats .growth {
+    color: #11998e;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.chart-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.chart-legend-dot.july {
+    background: #1e3a8a;
+}
+
+.chart-legend-dot.august {
+    background: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .welcome-banner {
+        padding: 1.5rem;
+    }
+    
+    .welcome-banner h2 {
+        font-size: 1.5rem;
+    }
+    
+    .stats-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-card, .chart-card {
+        padding: 1.5rem;
+    }
+}
+</style>
+@endpush
+
 @section('content')
-<div class="contai px-4">
-    {{-- Welcome Message --}}
-    
-    </div> 
-</div>
-<div class="row mt-4 mb-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm p-4 bg-primary text-white rounded-3">
-            <h2 class="fw-bold mb-1">👋 Welcome back, {{ Auth::user()->name ?? 'Admin' }}!</h2>
-            <p class="mb-0">Here’s a quick overview of your platform today.</p>
-        </div>
-    </div>
-</div>
-<div class="row mt-3">
-    
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
-                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="h5">Student</h2>
-                            <h3 class="fw-extrabold mb-1"></h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Student</h2>
-                            <h3 class="fw-extrabold mb-2">{{$all_student}}</h3>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Pending Student -->
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Clock Icon for Pending -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25a9.75 9.75 0 1 0 0 19.5 9.75 9.75 0 0 0 0-19.5zM12.75 7.5a.75.75 0 0 0-1.5 0v5.25c0 .2.08.39.22.53l3 3a.75.75 0 0 0 1.06-1.06l-2.78-2.78V7.5z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Pending Student</h2>
-                            <h3 class="mb-1">120</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Pending Student</h2>
-                            <h3 class="fw-extrabold mb-2">{{$pending_student}}</h3>
-                        </div>
-                    </div>
+<div class="container-fluid mt-4">
+    <!-- Welcome Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h2>👋 Welcome back, {{ Auth::guard('center')->user()->cl_director_name ?? 'Center Admin' }}!</h2>
+                    <p>Here's a quick overview of your center at Maya Computer Center.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Verified Student -->
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Check Badge Icon for Verified -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25a9.75 9.75 0 1 0 9.75 9.75A9.76 9.76 0 0 0 12 2.25zm4.28 8.03a.75.75 0 0 0-1.06-1.06l-3.47 3.47-1.47-1.47a.75.75 0 0 0-1.06 1.06l2 2a.75.75 0 0 0 1.06 0l4-4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Verified Student</h2>
-                            <h3 class="mb-1">350</h3>
-                        </div>
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="stats-section">
+                <div class="stat-card student-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Verified Student</h2>
-                            <h3 class="fw-extrabold mb-2">{{$verify_student}}</h3>
-                        </div>
+                    <h3>{{ $all_student ?? 0 }}</h3>
+                    <p>Total Students</p>
+                </div>
+                <div class="stat-card pending-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-clock"></i>
                     </div>
+                    <h3>{{ $pending_student ?? 0 }}</h3>
+                    <p>Pending Students</p>
+                </div>
+                <div class="stat-card verified-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>{{ $verify_student ?? 0 }}</h3>
+                    <p>Verified Students</p>
+                </div>
+                <div class="stat-card dispatched-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>{{ $dispatched_student ?? 0 }}</h3>
+                    <p>Dispatched Students</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Dispatched Student -->
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Truck Icon for Dispatched -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M3 4.5A1.5 1.5 0 0 1 4.5 3h11.25a1.5 1.5 0 0 1 1.5 1.5V9h2.25a1.5 1.5 0 0 1 1.5 1.5v5.25a3.75 3.75 0 1 1-7.5 0H9.75a3.75 3.75 0 1 1-7.5 0V4.5zM6.75 18a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5zm10.5 0a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5z" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Dispatched Student</h2>
-                            <h3 class="mb-1">85</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Dispatched Student</h2>
-                            <h3 class="fw-extrabold mb-2">{{$dispatched_student}}</h3>
-                        </div>
-                    </div>
+    <div class="row">
+        <!-- Institution Profile -->
+        <div class="col-lg-8 mb-4">
+            <div class="profile-card">
+                <div class="profile-card-header">
+                    <h5>
+                        <i class="fas fa-building"></i>
+                        Institution Profile
+                    </h5>
+                    <a href="#" class="btn-edit-profile">
+                        <i class="fas fa-edit"></i>
+                        Edit
+                    </a>
                 </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-<div class="row">
-    <div class="col-12 col-xl-8">
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div class="card border-0 shadow">
-                    <div class="card-header">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h2 class="fs-5 fw-bold mb-0">Institution Profile</h2>
-                            </div>
-                            <div class="col text-end">
-                                <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table align-items-center table-flush">
-                            <tbody>
-                                <tr>
-                                    <th class="text-gray-900" width="200">Center Code</th>
-                                    <td class="fw-bolder text-gray-500">{{ $data->cl_code }}</td>
-                                    <td rowspan="5" width="180" class="text-center">
-                                        <img src="{{ asset('storage/center_profile/'.$data->cl_photo) }}"
-                                            alt="Image Not Available" class="img-fluid rounded shadow-sm" width="120"
-                                            height="140">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="text-gray-900">Center Name</th>
-                                    <td class="fw-bolder text-gray-500">{{ $data->cl_center_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-gray-900">Director's Name</th>
-                                    <td class="fw-bolder text-gray-500">{{ $data->cl_director_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-gray-900">Address</th>
-                                    <td class="fw-bolder text-gray-500">{{ $data->cl_center_address }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-gray-900">Email ID</th>
-                                    <td class="fw-bolder text-gray-500">{{ $data->cl_email }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-gray-900">Mobile</th>
-                                    <td class="fw-bolder text-gray-500">{{ $data->cl_mobile }}</td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
+                <div class="row">
+                    <div class="col-md-8">
+                        <table class="profile-info-table">
+                            <tr>
+                                <th><i class="fas fa-hashtag me-2"></i>Center Code</th>
+                                <td><strong>{{ $data->cl_code ?? 'N/A' }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-building me-2"></i>Center Name</th>
+                                <td>{{ $data->cl_center_name ?? 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-user-tie me-2"></i>Director's Name</th>
+                                <td>{{ $data->cl_director_name ?? 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-map-marker-alt me-2"></i>Address</th>
+                                <td>{{ $data->cl_center_address ?? 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-envelope me-2"></i>Email ID</th>
+                                <td>
+                                    <a href="mailto:{{ $data->cl_email ?? '#' }}" class="text-decoration-none">
+                                        {{ $data->cl_email ?? 'N/A' }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-phone me-2"></i>Mobile</th>
+                                <td>
+                                    <a href="tel:{{ $data->cl_mobile ?? '#' }}" class="text-decoration-none">
+                                        {{ $data->cl_mobile ?? 'N/A' }}
+                                    </a>
+                                </td>
+                            </tr>
                         </table>
                     </div>
+                    <div class="col-md-4">
+                        <div class="profile-image-wrapper">
+                            @if(!empty($data->cl_photo) && file_exists(public_path('storage/center_profile/'.$data->cl_photo)))
+                                <img src="{{ asset('storage/center_profile/'.$data->cl_photo) }}" 
+                                     alt="Center Photo" 
+                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27150%27 height=%27180%27%3E%3Crect fill=%27%23ddd%27 width=%27150%27 height=%27180%27/%3E%3Ctext fill=%27%23999%27 font-family=%27sans-serif%27 font-size=%2716%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
+                            @else
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='180'%3E%3Crect fill='%23ddd' width='150' height='180'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Photo%3C/text%3E%3C/svg%3E" alt="No Photo">
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-12 col-xl-4">
-        <div class="col-12 px-0 mb-4">
-            <div class="card border-0 shadow">
-                <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-                    <div class="d-block">
-                        <div class="h6 fw-normal text-gray mb-2">Student Report</div>
-                        <h2 class="h3 fw-extrabold">452</h2>
-                        <div class="small mt-2">
-                            <span class="fas fa-angle-up text-success"></span>
-                            <span class="text-success fw-bold">18.2%</span>
-                        </div>
-                    </div>
-                    <div class="d-block ms-auto">
-                        <div class="d-flex align-items-center text-end mb-2">
-                            <span class="dot rounded-circle bg-gray-800 me-2"></span>
-                            <span class="fw-normal small">July</span>
-                        </div>
-                        <div class="d-flex align-items-center text-end">
-                            <span class="dot rounded-circle bg-secondary me-2"></span>
-                            <span class="fw-normal small">August</span>
+
+        <!-- Student Report Chart -->
+        <div class="col-lg-4 mb-4">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5>
+                        <i class="fas fa-chart-bar"></i>
+                        Student Report
+                    </h5>
+                    <div class="chart-stats">
+                        <h2>{{ $all_student ?? 0 }}</h2>
+                        <div class="growth">
+                            <i class="fas fa-arrow-up"></i> 18.2%
                         </div>
                     </div>
                 </div>
-                <div class="card-body p-2">
-                    <div class="ct-chart-ranking ct-golden-section ct-series-a"></div>
+                <div class="chart-legend">
+                    <div class="chart-legend-item">
+                        <span class="chart-legend-dot july"></span>
+                        <span>July</span>
+                    </div>
+                    <div class="chart-legend-item">
+                        <span class="chart-legend-dot august"></span>
+                        <span>August</span>
+                    </div>
+                </div>
+                <div class="mt-3" style="height: 200px;">
+                    <canvas id="studentChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 @endsection
+
+@push('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function() {
+        // Student Report Chart
+        const ctx = document.getElementById('studentChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    datasets: [
+                        {
+                            label: 'July',
+                            data: [12, 19, 15, 25, 22, 18],
+                            backgroundColor: '#1e3a8a',
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'August',
+                            data: [15, 22, 18, 30, 25, 20],
+                            backgroundColor: '#2563eb',
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f0f0f0'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+@endpush

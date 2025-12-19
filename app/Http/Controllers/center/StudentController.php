@@ -92,6 +92,22 @@ class StudentController extends Controller
         return view('center.student.student_application', compact('data'));
     }
 
+    public function registration_card($id)
+    {
+        $data = DB::table('student_login')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_id', $id)
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID) // Ensure center can only view their own students
+            ->first();
+        
+        if (!$data) {
+            return redirect()->route('pending_student')->with('error', 'Student not found.');
+        }
+        
+        return view('admin.student.registration_card', compact('data'));
+    }
+
     public function add_student(){
     	$course['course'] = Course::all();
         $student_reg_no = Student::where('sl_FK_of_center_id', auth::guard('center')->user()->cl_id)->latest()->first();
@@ -214,7 +230,8 @@ class StudentController extends Controller
 
             DB::commit();
 
-            return back()->with('success', 'Student Registration Successfully! Reg No: ' . $newRegNo);
+            // Redirect to registration card after successful registration
+            return redirect()->route('center.student_registration_card', $insert->sl_id)->with('success', 'Student Registration Successfully! Reg No: ' . $newRegNo);
         } catch (\Exception $e) {
             DB::rollBack();
             // log error if you want: \Log::error($e);

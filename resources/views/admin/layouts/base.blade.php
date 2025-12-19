@@ -105,6 +105,249 @@
             border: 1px solid #ddd;
             padding: 3px;
         }
+        
+        /* Modern Sidebar Styling - Matching Logo Blue Colors */
+        .sidebar {
+            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%) !important;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+            pointer-events: none;
+        }
+        
+        .sidebar-inner {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Logo/Brand Section - Proper Logo Display */
+        .sidebar .nav-item:first-child .nav-link {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(30, 64, 175, 0.2) 100%);
+            border-radius: 0.75rem;
+            padding: 1rem 0.75rem !important;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar .nav-item:first-child .nav-link:hover {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.3) 0%, rgba(30, 64, 175, 0.3) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .sidebar .nav-item:first-child .sidebar-icon {
+            margin-right: 0 !important;
+        }
+        
+        .sidebar .nav-item:first-child .sidebar-icon img {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 200px !important;
+            max-height: 80px !important;
+            min-height: 60px !important;
+            object-fit: contain;
+            border-radius: 0;
+            box-shadow: none;
+            display: block;
+        }
+        
+        .sidebar .nav-item:first-child .sidebar-text {
+            display: block; /* Show text if logo not available */
+            color: white !important;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        /* Navigation Links - Reduced Size */
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            border-radius: 0.5rem;
+            margin-bottom: 0.15rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.875rem !important;
+        }
+        
+        .sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(30, 64, 175, 0.2) 100%);
+            transform: translateX(3px);
+            padding-left: 0.75rem !important;
+        }
+        
+        .sidebar .nav-link:hover::before {
+            transform: scaleY(1);
+        }
+        
+        /* Active State */
+        .sidebar .nav-item.active > .nav-link,
+        .sidebar .nav-link.active {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            font-weight: 600;
+        }
+        
+        .sidebar .nav-item.active > .nav-link::before,
+        .sidebar .nav-link.active::before {
+            transform: scaleY(1);
+            width: 4px;
+        }
+        
+        /* Icons - Smaller Size */
+        .sidebar .sidebar-icon {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: all 0.3s ease;
+            width: 18px;
+            text-align: center;
+            font-size: 0.875rem !important;
+        }
+        
+        .sidebar .nav-link:hover .sidebar-icon,
+        .sidebar .nav-item.active .sidebar-icon {
+            color: #ffffff !important;
+            transform: scale(1.1);
+        }
+        
+        /* Submenu/Dropdown - Compact Size */
+        .sidebar .multi-level {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem;
+            margin-top: 0.2rem;
+            padding: 0.1rem 0;
+            border-left: 2px solid rgba(37, 99, 235, 0.3);
+        }
+        
+        .sidebar .multi-level .nav-link {
+            padding-left: 2.2rem !important;
+            font-size: 0.75rem !important;
+            padding-top: 0.2rem !important;
+            padding-bottom: 0.2rem !important;
+            padding-right: 0.5rem !important;
+            margin-bottom: 0.05rem !important;
+        }
+        
+        .sidebar .multi-level .nav-link:hover {
+            background: rgba(37, 99, 235, 0.15);
+            transform: translateX(2px);
+            padding-left: 2.4rem !important;
+        }
+        
+        .sidebar .multi-level .sidebar-text {
+            font-size: 0.75rem !important;
+            font-weight: 500;
+        }
+        
+        /* Dropdown Parent Items */
+        .sidebar .nav-link[data-bs-toggle="collapse"] {
+            padding: 0.4rem 0.6rem !important;
+        }
+        
+        .sidebar .nav-link[data-bs-toggle="collapse"] .sidebar-text {
+            font-size: 0.875rem !important;
+        }
+        
+        .sidebar .multi-level .nav-link:hover {
+            background: rgba(37, 99, 235, 0.15);
+        }
+        
+        /* Section Labels */
+        .sidebar .nav-item .text-uppercase {
+            color: rgba(255, 255, 255, 0.5) !important;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            margin-top: 1rem;
+            padding: 0.5rem 0.75rem;
+        }
+        
+        /* Link Arrow */
+        .sidebar .link-arrow {
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover .link-arrow {
+            color: #ffffff;
+        }
+        
+        .sidebar .nav-link[aria-expanded="true"] .link-arrow {
+            transform: rotate(90deg);
+            color: #ffffff;
+        }
+        
+        /* User Card (Mobile) */
+        .sidebar .user-card {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Scrollbar Styling */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            border-radius: 10px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+        }
+        
+        /* Text - Smaller Size */
+        .sidebar .sidebar-text {
+            color: rgba(255, 255, 255, 0.85);
+            transition: all 0.3s ease;
+            font-size: 0.875rem !important;
+        }
+        
+        .sidebar .nav-link:hover .sidebar-text {
+            color: #ffffff;
+        }
+        
+        /* Collapse Close Button */
+        .sidebar .collapse-close a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .collapse-close a:hover {
+            color: #ffffff;
+            transform: rotate(90deg);
+        }
     </style>
     
     @stack('custom-css')

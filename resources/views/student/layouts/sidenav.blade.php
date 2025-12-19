@@ -1,4 +1,4 @@
-<nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
+<nav id="sidebarMenu" class="sidebar d-lg-block text-white collapse" data-simplebar>
   <div class="sidebar-inner px-2 pt-3">
     <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
       <div class="d-flex align-items-center">
@@ -32,11 +32,30 @@
     <ul class="nav flex-column pt-3 pt-md-0">
 
       <li class="nav-item">
-        <a href="{{ route('student_dashboard') }}" class="nav-link d-flex align-items-center">
-          <span class="sidebar-icon me-3">
-            <img src="{{ asset('logo.png') }}" height="20" width="20" alt="Volt Logo">
+        <a href="{{ route('student_dashboard') }}" class="nav-link d-flex align-items-center justify-content-center">
+          <span class="sidebar-icon" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+            @php
+              $siteSettings = site_settings();
+              $logoPath = null;
+              $siteName = 'MAYA COMPUTER';
+              
+              if($siteSettings) {
+                $logoPath = !empty($siteSettings->site_logo) ? $siteSettings->site_logo : null;
+                $siteName = !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER';
+              }
+              
+              $logoExists = false;
+              if($logoPath) {
+                $fullPath = public_path($logoPath);
+                $logoExists = file_exists($fullPath);
+              }
+            @endphp
+            @if($logoExists)
+              <img src="{{ asset($logoPath) }}" alt="{{ $siteName }} Logo" style="max-width: 200px; max-height: 80px; min-height: 60px; width: auto; height: auto; object-fit: contain; display: block;">
+            @else
+              <span class="sidebar-text" style="display: block; font-size: 1.25rem; font-weight: 700; color: white; text-align: center; padding: 0.5rem;">{{ $siteName }}</span>
+            @endif
           </span>
-          <span class="mt-1 ms-1 sidebar-text">Mayacomputer</span>
         </a>
       </li>
 

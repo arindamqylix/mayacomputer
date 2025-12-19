@@ -52,6 +52,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('delete-student/{id}', [StudentController::class, 'delete_student'])->name('delete_student');
 	Route::get('student-status-update', [StudentController::class, 'student_status_updated'])->name('student_status_updated');
 	Route::get('print-student-application/{id}', [StudentController::class, 'student_application'])->name('student_application_view');
+	Route::get('student-registration-card/{id}', [StudentController::class, 'registration_card'])->name('student_registration_card');
 	Route::get('get-reg-no', [StudentController::class, 'get_reg_no'])->name('get_reg_no');
 
 	

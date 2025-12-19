@@ -46,6 +46,7 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	Route::get('dispatched-student-list', [StudentController::class, 'dispatched_student'])->name('dispatched_student');
 	Route::get('block-student-list', [StudentController::class, 'block_student'])->name('block_student');
 	Route::get('print-student-application/{id}', [StudentController::class, 'student_application'])->name('student_application');
+	Route::get('student-registration-card/{id}', [StudentController::class, 'registration_card'])->name('center.student_registration_card');
 	Route::get('set-attendance', [AttendanceSetController::class, 'attendance_set'])->name('attendance_set');
 
 	// Generate Student Id Card
