@@ -62,23 +62,29 @@ class StudentController extends Controller
 
 		if ($request->hasFile('student_photo')) {
 			Log::info("Uploading Student Photo...");
-			$path = $request->file('student_photo')->store('student', 'public');
-			Log::info("Student Photo stored at: " . $path);
-			$student_photo = 'storage/' . $path;
+			$uploadedFile = $request->file('student_photo');
+			$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+			$uploadedFile->move(public_path('student'), $fileName);
+			$student_photo = 'student/' . $fileName;
+			Log::info("Student Photo stored at: " . $student_photo);
 		}
 
 		if ($request->hasFile('student_id_card')) {
 			Log::info("Uploading Student ID Card...");
-			$path = $request->file('student_id_card')->store('student', 'public');
-			Log::info("Student ID Card stored at: " . $path);
-			$student_id_card = 'storage/' . $path;
+			$uploadedFile = $request->file('student_id_card');
+			$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+			$uploadedFile->move(public_path('student'), $fileName);
+			$student_id_card = 'student/' . $fileName;
+			Log::info("Student ID Card stored at: " . $student_id_card);
 		}
 
 		if ($request->hasFile('student_educational_certificate')) {
 			Log::info("Uploading Educational Certificate...");
-			$path = $request->file('student_educational_certificate')->store('student', 'public');
-			Log::info("Educational Certificate stored at: " . $path);
-			$student_educational_certificate = 'storage/' . $path;
+			$uploadedFile = $request->file('student_educational_certificate');
+			$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+			$uploadedFile->move(public_path('student'), $fileName);
+			$student_educational_certificate = 'student/' . $fileName;
+			Log::info("Educational Certificate stored at: " . $student_educational_certificate);
 		}
 
 		// REGISTRATION NUMBER LOGIC
@@ -231,39 +237,40 @@ class StudentController extends Controller
 			// Upload new Student Photo
 			if ($request->hasFile('student_photo')) {
 				// delete old file if exists
-				if ($currentPhoto && Storage::disk('public')->exists($currentPhoto)) {
-					Storage::disk('public')->delete($currentPhoto);
+				if ($currentPhoto && file_exists(public_path($currentPhoto))) {
+					@unlink(public_path($currentPhoto));
 				}
 
-				$image = $request->file('student_photo');
-				$filename = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
-				// store in storage/app/public/student
-				$image->storeAs('student', $filename, 'public');
-				$currentPhoto = 'student/' . $filename; // store relative path in DB
+				$uploadedFile = $request->file('student_photo');
+				$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+				$uploadedFile->move(public_path('student'), $fileName);
+				$currentPhoto = 'student/' . $fileName;
 			}
 
 			// Upload new ID Card
 			if ($request->hasFile('student_id_card')) {
-				if ($currentIdCard && Storage::disk('public')->exists($currentIdCard)) {
-					Storage::disk('public')->delete($currentIdCard);
+				// delete old file if exists
+				if ($currentIdCard && file_exists(public_path($currentIdCard))) {
+					@unlink(public_path($currentIdCard));
 				}
 
-				$file = $request->file('student_id_card');
-				$filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-				$file->storeAs('student', $filename, 'public');
-				$currentIdCard = 'student/' . $filename;
+				$uploadedFile = $request->file('student_id_card');
+				$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+				$uploadedFile->move(public_path('student'), $fileName);
+				$currentIdCard = 'student/' . $fileName;
 			}
 
 			// Upload new Educational Certificate
 			if ($request->hasFile('student_educational_certificate')) {
-				if ($currentEduCert && Storage::disk('public')->exists($currentEduCert)) {
-					Storage::disk('public')->delete($currentEduCert);
+				// delete old file if exists
+				if ($currentEduCert && file_exists(public_path($currentEduCert))) {
+					@unlink(public_path($currentEduCert));
 				}
 
-				$file = $request->file('student_educational_certificate');
-				$filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-				$file->storeAs('student', $filename, 'public');
-				$currentEduCert = 'student/' . $filename;
+				$uploadedFile = $request->file('student_educational_certificate');
+				$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+				$uploadedFile->move(public_path('student'), $fileName);
+				$currentEduCert = 'student/' . $fileName;
 			}
 
 			// Prepare update data
@@ -366,11 +373,18 @@ class StudentController extends Controller
 				'student_login.sl_id',
 				'student_login.sl_email',
 				'student_login.sl_reg_no',
-				'center_login.cl_center_name as center_name',
-				'center_login.cl_code as center_code'
+				'student_login.sl_father_name',
+				'student_login.sl_mother_name',
+				'student_login.sl_dob',
+				'student_login.sl_sex',
+				'student_login.sl_photo',
+				'center_login.cl_name as center_name',
+				'center_login.cl_center_name',
+				'center_login.cl_code as center_code',
+				'center_login.cl_code'
 			)
 			->get();
 
-		return view('admin.view_result', $result);
+		return view('admin.auth.view_result', $result);
 	}
 }

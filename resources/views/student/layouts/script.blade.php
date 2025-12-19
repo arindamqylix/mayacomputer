@@ -5,7 +5,9 @@
 <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
 <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
 <!-- dashboard init -->
+@if(request()->routeIs('student_dashboard') || request()->is('student/dashboard'))
 <script src="{{ asset('backend/assets/js/pages/dashboard.init.js') }}"></script>
+@endif
 <!-- Required datatable js -->
         <script src="{{ asset('backend/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('backend/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>

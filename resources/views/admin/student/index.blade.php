@@ -56,7 +56,11 @@
 				        			<td>{{ $data->sl_reg_no }}</td>
 				        			<td><a href="{{ route('student_application_view', $data->sl_id) }}" target="__blank">{{ $data->sl_name }}</a></td>
 				        			<td>
-				        				<img style="width: 35px;height: 37px;" src="{{ asset($data->sl_photo) }}">
+				        				@if(!empty($data->sl_photo))
+				        					<img style="width: 35px;height: 37px; object-fit: cover; border-radius: 3px;" src="{{ asset($data->sl_photo) }}" alt="{{ $data->sl_name }}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2735%27 height=%2737%27%3E%3Crect fill=%27%23ddd%27 width=%2735%27 height=%2737%27/%3E%3Ctext fill=%27%23999%27 font-family=%27sans-serif%27 font-size=%279%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
+				        				@else
+				        					<img style="width: 35px;height: 37px; object-fit: cover; border-radius: 3px;" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='35' height='37'%3E%3Crect fill='%23ddd' width='35' height='37'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='9' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Photo%3C/text%3E%3C/svg%3E" alt="No Photo">
+				        				@endif
 				        			</td>
 				        			<td>{{ date($data->sl_dob,strtotime(date('Y-m-d'))) }}</td>
 				        			<td>{{ $data->c_short_name }}</td>

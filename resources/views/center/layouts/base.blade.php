@@ -84,7 +84,9 @@
     <script src="{{asset('public/assets/js/custom-script.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- dashboard init -->
+@if(request()->routeIs('center_dashboard') || request()->is('center/dashboard'))
 <script src="{{ asset('backend/assets/js/pages/dashboard.init.js') }}"></script>
+@endif
 <!-- Required datatable js -->
         <script src="{{ asset('backend/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('backend/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
@@ -134,6 +136,7 @@
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     @stack('custom-script')
     @stack('custom-js')
+    <script src="{{ asset('vendor/livewire/livewire.js') }}"></script>
 
 </body>
 

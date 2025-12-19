@@ -15,6 +15,8 @@ use App\Http\Controllers\center\RechargeController;
 use App\Http\Controllers\center\ResultController;
 use App\Http\Controllers\center\ProfileController;
 use App\Http\Controllers\center\AttendanceSheetController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('center/login', [AuthController::class, 'center_login'])->name('center_login');
@@ -106,6 +108,15 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	// Change Password
 	Route::get('change-password', [ProfileController::class, 'change_password'])->name('change_password');
 	Route::post('change-password', [ProfileController::class, 'change_password_save'])->name('change_password_save');
+
+	// Chat
+	Route::get('chat', [ChatController::class, 'index'])->name('center.chat');
+	Route::get('chat/{recipientType}/{recipientId}', [ChatController::class, 'index'])->name('center.chat.with');
+
+	// Notifications
+	Route::get('notifications', [NotificationController::class, 'index'])->name('center.notifications.index');
+	Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('center.notifications.read');
+	Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('center.notifications.read-all');
 });
 Route::get('admin/center-recharge', [RechargeController::class, 'center_recharge_by_admin'])->name('center.recharge');
 Route::post('admin/center-recharge', [RechargeController::class, 'center_recharge_by_admin_now'])->name('center.recharge');

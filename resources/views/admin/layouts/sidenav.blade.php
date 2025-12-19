@@ -45,6 +45,14 @@
         </a>
       </li>
 
+      <!-- Chat -->
+      <li class="nav-item {{ Request::segment(2) == 'chat' ? 'active' : '' }}">
+        <a href="{{ route('admin.chat') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-comments"></i></span>
+          <span class="sidebar-text">Chat</span>
+        </a>
+      </li>
+
       <!-- Add Student -->
       <li class="nav-item {{ Request::segment(1) == 'student' ? 'active' : '' }}">
         <a href="{{ route('student_list') }}" class="nav-link">
@@ -79,15 +87,25 @@
 
       <!-- Admit Card -->
       <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-id-card"></i></span>
-          <span class="sidebar-text">View Admit Card</span>
-        </a>
+        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-admit" aria-expanded="false">
+          <span>
+            <span class="sidebar-icon"><i class="fa-solid fa-ticket"></i></span>
+            <span class="sidebar-text">Admit Card</span>
+          </span>
+          <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </span>
+        <div class="multi-level collapse" role="list" id="submenu-admit" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('admin.generate_admit_card') }}" class="nav-link"><span class="sidebar-text">Generate Admit Card</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.admit_card_list') }}" class="nav-link"><span class="sidebar-text">View Admit Card</span></a></li>
+          </ul>
+        </div>
       </li>
 
       <!-- Result -->
-      <li class="nav-item">
-        <a href="#" class="nav-link">
+      <li class="nav-item {{ Request::segment(2) == 'student-result-list' ? 'active' : '' }}">
+        <a href="{{ route('student_result_view') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
           <span class="sidebar-text">View Result</span>
         </a>
@@ -206,6 +224,13 @@
         <a href="{{ route('site_settings.edit') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-gear"></i></span>
           <span class="sidebar-text">Site Settings</span>
+        </a>
+      </li>
+
+      <li class="nav-item {{ Request::segment(2) == 'whatsapp-templates' ? 'active' : '' }}">
+        <a href="{{ route('admin.whatsapp_templates.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-brands fa-whatsapp"></i></span>
+          <span class="sidebar-text">WhatsApp Templates</span>
         </a>
       </li>
 

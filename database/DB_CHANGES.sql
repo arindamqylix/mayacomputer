@@ -562,3 +562,21 @@ CREATE TABLE `cms_homepage_sections` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 18-12-2025
+
+CREATE TABLE `whatsapp_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `template_name` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `variables` text DEFAULT NULL COMMENT 'JSON array of available variables like ["name", "course", "center"]',
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `template_name` (`template_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Add title field to cms_banner table for badge text at top
+ALTER TABLE `cms_banner`
+ADD `title` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `file`;

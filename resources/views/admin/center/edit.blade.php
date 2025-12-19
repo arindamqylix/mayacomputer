@@ -1,7 +1,9 @@
 @extends('admin.layouts.base')
 @section('title', 'Edit Center')
 @push('custom-css')
-
+<style type="text/css">
+	img.preview-img { max-width: 120px; max-height: 120px; display:block; margin-top:8px; }
+</style>
 @endpush
 @section('content')
 <!-- end page title -->
@@ -70,9 +72,12 @@
                         <div class="col-md-4 mb-3">
                             <div class="form-group mb-3">
                                 <label>Photo</label>
-                                <input class="form-control" type="file" name="photo">
+                                <input class="form-control" type="file" name="photo" accept="image/*">
                                 @if(!empty($data->cl_photo))
-                                    <img src="{{ asset($data->cl_photo) }}" alt="Photo" class="preview-img">
+                                    <div class="mt-2">
+                                        <a href="{{ asset($data->cl_photo) }}" target="_blank" class="btn btn-sm btn-info mb-2">View current photo</a>
+                                        <img src="{{ asset($data->cl_photo) }}" alt="Photo" class="preview-img" style="max-width: 120px; max-height: 120px; display:block; margin-top:8px;" onerror="this.style.display='none';">
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -87,9 +92,12 @@
                         <div class="col-lg-4 mb-3">
                             <div class="form-group mb-3">
                                 <label>Center Stamp</label>
-                                <input class="form-control" type="file" name="center_stamp">
+                                <input class="form-control" type="file" name="center_stamp" accept="image/*">
                                 @if(!empty($data->cl_center_stamp))
-                                    <img src="{{ asset($data->cl_center_stamp) }}" alt="Stamp" class="preview-img">
+                                    <div class="mt-2">
+                                        <a href="{{ asset($data->cl_center_stamp) }}" target="_blank" class="btn btn-sm btn-info mb-2">View current stamp</a>
+                                        <img src="{{ asset($data->cl_center_stamp) }}" alt="Stamp" class="preview-img" style="max-width: 120px; max-height: 120px; display:block; margin-top:8px;" onerror="this.style.display='none';">
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -97,9 +105,12 @@
                         <div class="col-lg-4 mb-3">
                             <div class="form-group mb-3">
                                 <label>Center Signature</label>
-                                <input class="form-control" type="file" name="center_signature">
+                                <input class="form-control" type="file" name="center_signature" accept="image/*">
                                 @if(!empty($data->cl_center_signature))
-                                    <img src="{{ asset($data->cl_center_signature) }}" alt="Signature" class="preview-img">
+                                    <div class="mt-2">
+                                        <a href="{{ asset($data->cl_center_signature) }}" target="_blank" class="btn btn-sm btn-info mb-2">View current signature</a>
+                                        <img src="{{ asset($data->cl_center_signature) }}" alt="Signature" class="preview-img" style="max-width: 120px; max-height: 120px; display:block; margin-top:8px;" onerror="this.style.display='none';">
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -107,9 +118,18 @@
                         <div class="col-lg-4 mb-3">
                             <div class="form-group mb-3">
                                 <label>Director Aadhaar</label>
-                                <input class="form-control" type="file" name="director_adhar">
+                                <input class="form-control" type="file" name="director_adhar" accept="image/*,application/pdf">
                                 @if(!empty($data->cl_director_adhar))
-                                    <img src="{{ asset($data->cl_director_adhar) }}" alt="Aadhaar" class="preview-img">
+                                    <div class="mt-2">
+                                        <a href="{{ asset($data->cl_director_adhar) }}" target="_blank" class="btn btn-sm btn-info mb-2">View current Aadhaar</a>
+                                        @php
+                                            $aadharExtension = strtolower(pathinfo($data->cl_director_adhar, PATHINFO_EXTENSION));
+                                            $isAadharImage = in_array($aadharExtension, ['jpg', 'jpeg', 'png', 'gif']);
+                                        @endphp
+                                        @if($isAadharImage)
+                                            <img src="{{ asset($data->cl_director_adhar) }}" alt="Aadhaar" class="preview-img" style="max-width: 120px; max-height: 120px; display:block; margin-top:8px;" onerror="this.style.display='none';">
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -117,9 +137,18 @@
                         <div class="col-lg-4 mb-3">
                             <div class="form-group mb-3">
                                 <label>Director PAN</label>
-                                <input class="form-control" type="file" name="director_pan">
+                                <input class="form-control" type="file" name="director_pan" accept="image/*,application/pdf">
                                 @if(!empty($data->cl_director_pan))
-                                    <img src="{{ asset($data->cl_director_pan) }}" alt="PAN" class="preview-img">
+                                    <div class="mt-2">
+                                        <a href="{{ asset($data->cl_director_pan) }}" target="_blank" class="btn btn-sm btn-info mb-2">View current PAN</a>
+                                        @php
+                                            $panExtension = strtolower(pathinfo($data->cl_director_pan, PATHINFO_EXTENSION));
+                                            $isPanImage = in_array($panExtension, ['jpg', 'jpeg', 'png', 'gif']);
+                                        @endphp
+                                        @if($isPanImage)
+                                            <img src="{{ asset($data->cl_director_pan) }}" alt="PAN" class="preview-img" style="max-width: 120px; max-height: 120px; display:block; margin-top:8px;" onerror="this.style.display='none';">
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                         </div>

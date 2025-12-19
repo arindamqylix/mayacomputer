@@ -24,9 +24,15 @@
 							</div>
 
 							<div class="form-group mb-3">
-								<label>Header Text</label>
-								<input type="text" name="header" class="form-control" placeholder="e.g., WELCOME TO EXCELLENCE" value="{{ old('header') }}">
-								<small class="text-muted">Main heading text displayed on banner</small>
+								<label>Title (Badge Text)</label>
+								<input type="text" name="title" class="form-control" placeholder="e.g., WELCOME TO EXCELLENCE" value="{{ old('title') }}">
+								<small class="text-muted">Small badge/tag text displayed at the top of banner</small>
+							</div>
+
+							<div class="form-group mb-3">
+								<label>Heading (Main Text)</label>
+								<input type="text" name="header" class="form-control" placeholder="e.g., METHOD MEDIA COMPUTER ACADEMY PRIVATE LIMITED" value="{{ old('header') }}">
+								<small class="text-muted">Large main heading text displayed on banner</small>
 							</div>
 
 							<div class="form-group mb-3">

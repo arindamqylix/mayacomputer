@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\admin\Admin;
 use Auth;
 use Session;
+use DB;
+use Carbon\Carbon;
 class AuthController extends Controller
 {
     public function admin_login()
@@ -33,7 +35,79 @@ class AuthController extends Controller
 
     public function admin_dashboard()
     {
-        return view('admin.dashboard');
+        // Student Statistics
+        $totalStudents = DB::table('student_login')->count();
+        $pendingStudents = DB::table('student_login')->where('sl_status', 'PENDING')->count();
+        $verifiedStudents = DB::table('student_login')->where('sl_status', 'VERIFIED')->count();
+        $resultUpdated = DB::table('student_login')->where('sl_status', 'RESULT UPDATED')->count();
+        $resultOut = DB::table('student_login')->where('sl_status', 'RESULT OUT')->count();
+        $dispatchedStudents = DB::table('student_login')->where('sl_status', 'DISPATCHED')->count();
+        
+        // Student registrations by month (last 6 months)
+        $studentMonthlyData = DB::table('student_login')
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('YEAR(created_at) as year'), DB::raw('COUNT(*) as count'))
+            ->where('created_at', '>=', Carbon::now()->subMonths(6))
+            ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('YEAR(created_at)'))
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+        
+        // Students by status
+        $studentsByStatus = DB::table('student_login')
+            ->select('sl_status', DB::raw('COUNT(*) as count'))
+            ->groupBy('sl_status')
+            ->get();
+        
+        // Recent students (last 30 days)
+        $recentStudents = DB::table('student_login')
+            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->count();
+        
+        // Center Statistics
+        $totalCenters = DB::table('center_login')->count();
+        $activeCenters = DB::table('center_login')->where('cl_account_status', 'ACTIVE')->count();
+        $inactiveCenters = DB::table('center_login')->where('cl_account_status', '!=', 'ACTIVE')->count();
+        
+        // Total wallet balance from centers
+        $totalWalletBalance = DB::table('center_login')->sum('cl_wallet_balance');
+        
+        // Center registrations by month (last 6 months)
+        $centerMonthlyData = DB::table('center_login')
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('YEAR(created_at) as year'), DB::raw('COUNT(*) as count'))
+            ->where('created_at', '>=', Carbon::now()->subMonths(6))
+            ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('YEAR(created_at)'))
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+        
+        // Top centers by student count
+        $topCentersByStudents = DB::table('center_login')
+            ->leftJoin('student_login', 'center_login.cl_id', '=', 'student_login.sl_FK_of_center_id')
+            ->select('center_login.cl_center_name', 'center_login.cl_id', DB::raw('COUNT(student_login.sl_id) as student_count'))
+            ->groupBy('center_login.cl_id', 'center_login.cl_center_name')
+            ->orderBy('student_count', 'desc')
+            ->limit(5)
+            ->get();
+        
+        // Course Statistics
+        $totalCourses = DB::table('course')->count();
+        
+        // Students by course
+        $studentsByCourse = DB::table('student_login')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->select('course.c_full_name', 'course.c_id', DB::raw('COUNT(student_login.sl_id) as student_count'))
+            ->groupBy('course.c_id', 'course.c_full_name')
+            ->orderBy('student_count', 'desc')
+            ->limit(5)
+            ->get();
+        
+        return view('admin.dashboard', compact(
+            'totalStudents', 'pendingStudents', 'verifiedStudents', 'resultUpdated', 
+            'resultOut', 'dispatchedStudents', 'studentMonthlyData', 'studentsByStatus',
+            'recentStudents', 'totalCenters', 'activeCenters', 'inactiveCenters',
+            'totalWalletBalance', 'centerMonthlyData', 'topCentersByStudents',
+            'totalCourses', 'studentsByCourse'
+        ));
     }
 
     // change password

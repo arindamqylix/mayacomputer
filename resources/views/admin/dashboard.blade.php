@@ -1,76 +1,60 @@
 @extends('admin.layouts.base')
 @section('title', 'Dashboard')
+@push('custom-css')
+<style>
+    .stat-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    }
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+    .stat-icon.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .stat-icon.success { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .stat-icon.warning { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .stat-icon.info { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .stat-icon.danger { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    .stat-icon.secondary { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+    .chart-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+</style>
+@endpush
 @section('content')
-<div class="contai px-4">
-    {{-- Welcome Message --}}
-    
-    </div> 
-</div>
-<div class="row mt-4 mb-4">
+<div class="container-fluid px-4 py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm p-4 bg-primary text-white rounded-3">
-            <h2 class="fw-bold mb-1">👋 Welcome back, {{ Auth::user()->name ?? 'Admin' }}!</h2>
-            <p class="mb-0">Here’s a quick overview of your platform today.</p>
-        </div>
-    </div>
-</div>
-<div class="row mt-3">
-    
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
-                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
-                                </path>
-                            </svg>
+            <div class="card border-0 shadow-sm stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body p-4 text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold mb-2">👋 Welcome back, {{ Auth::guard('admin')->user()->al_name ?? 'Admin' }}!</h2>
+                            <p class="mb-0 opacity-75">Here's a comprehensive overview of your platform analytics</p>
                         </div>
-                        <div class="d-sm-none">
-                            <h2 class="h5">Student</h2>
-                            <h3 class="fw-extrabold mb-1"></h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Student</h2>
-                            <h3 class="fw-extrabold mb-2">0</h3>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Pending Student -->
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Clock Icon for Pending -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25a9.75 9.75 0 1 0 0 19.5 9.75 9.75 0 0 0 0-19.5zM12.75 7.5a.75.75 0 0 0-1.5 0v5.25c0 .2.08.39.22.53l3 3a.75.75 0 0 0 1.06-1.06l-2.78-2.78V7.5z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Pending Student</h2>
-                            <h3 class="mb-1">120</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Pending Student</h2>
-                            <h3 class="fw-extrabold mb-2">0</h3>
+                        <div class="d-none d-md-block">
+                            <i class="fas fa-chart-line" style="font-size: 64px; opacity: 0.3;"></i>
                         </div>
                     </div>
                 </div>
@@ -78,164 +62,490 @@
         </div>
     </div>
 
-    <!-- Verified Student -->
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Check Badge Icon for Verified -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25a9.75 9.75 0 1 0 9.75 9.75A9.76 9.76 0 0 0 12 2.25zm4.28 8.03a.75.75 0 0 0-1.06-1.06l-3.47 3.47-1.47-1.47a.75.75 0 0 0-1.06 1.06l2 2a.75.75 0 0 0 1.06 0l4-4z"
-                                    clip-rule="evenodd" />
-                            </svg>
+    <!-- Student Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-12 mb-3">
+            <h4 class="section-title">
+                <i class="fas fa-users text-primary me-2"></i>Student Analytics
+            </h4>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Students</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($totalStudents) }}</h2>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up"></i> {{ $recentStudents }} new this month
+                            </small>
                         </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Verified Student</h2>
-                            <h3 class="mb-1">350</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Verified Student</h2>
-                            <h3 class="fw-extrabold mb-2">0</h3>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-user-graduate"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Dispatched Student -->
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Truck Icon for Dispatched -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M3 4.5A1.5 1.5 0 0 1 4.5 3h11.25a1.5 1.5 0 0 1 1.5 1.5V9h2.25a1.5 1.5 0 0 1 1.5 1.5v5.25a3.75 3.75 0 1 1-7.5 0H9.75a3.75 3.75 0 1 1-7.5 0V4.5zM6.75 18a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5zm10.5 0a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5z" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Dispatched Student</h2>
-                            <h3 class="mb-1">85</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Dispatched Student</h2>
-                            <h3 class="fw-extrabold mb-2">0</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Truck Icon for Dispatched -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M3 4.5A1.5 1.5 0 0 1 4.5 3h11.25a1.5 1.5 0 0 1 1.5 1.5V9h2.25a1.5 1.5 0 0 1 1.5 1.5v5.25a3.75 3.75 0 1 1-7.5 0H9.75a3.75 3.75 0 1 1-7.5 0V4.5zM6.75 18a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5zm10.5 0a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5z" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Total Center</h2>
-                            <h3 class="mb-1">85</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Total Center</h2>
-                            <h3 class="fw-extrabold mb-2">0</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block d-xl-flex align-items-center">
-                    <div
-                        class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                        <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <!-- Truck Icon for Dispatched -->
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M3 4.5A1.5 1.5 0 0 1 4.5 3h11.25a1.5 1.5 0 0 1 1.5 1.5V9h2.25a1.5 1.5 0 0 1 1.5 1.5v5.25a3.75 3.75 0 1 1-7.5 0H9.75a3.75 3.75 0 1 1-7.5 0V4.5zM6.75 18a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5zm10.5 0a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5z" />
-                            </svg>
-                        </div>
-                        <div class="d-sm-none">
-                            <h2 class="fw-extrabold h5">Total Center</h2>
-                            <h3 class="mb-1">85</h3>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-7 px-xl-0">
-                        <div class="d-none d-sm-block">
-                            <h2 class="h6 text-gray-400 mb-0">Total Course</h2>
-                            <h3 class="fw-extrabold mb-2">0</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-<div class="row d-none">
-    <div class="col-12 col-xl-8">
         
-    </div>
-    <div class="col-12 col-xl-4">
-        <div class="col-12 px-0 mb-4">
-            <div class="card border-0 shadow">
-                <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-                    <div class="d-block">
-                        <div class="h6 fw-normal text-gray mb-2">Student Report</div>
-                        <h2 class="h3 fw-extrabold">452</h2>
-                        <div class="small mt-2">
-                            <span class="fas fa-angle-up text-success"></span>
-                            <span class="text-success fw-bold">18.2%</span>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Pending</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($pendingStudents) }}</h2>
+                            <small class="text-warning">
+                                <i class="fas fa-clock"></i> Awaiting verification
+                            </small>
                         </div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-hourglass-half"></i>
                     </div>
-                    <div class="d-block ms-auto">
-                        <div class="d-flex align-items-center text-end mb-2">
-                            <span class="dot rounded-circle bg-gray-800 me-2"></span>
-                            <span class="fw-normal small">July</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Verified</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($verifiedStudents) }}</h2>
+                            <small class="text-success">
+                                <i class="fas fa-check-circle"></i> Active students
+                            </small>
                         </div>
-                        <div class="d-flex align-items-center text-end">
-                            <span class="dot rounded-circle bg-secondary me-2"></span>
-                            <span class="fw-normal small">August</span>
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-double"></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-body p-2">
-                    <div class="ct-chart-ranking ct-golden-section ct-series-a"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Dispatched</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($dispatchedStudents) }}</h2>
+                            <small class="text-info">
+                                <i class="fas fa-truck"></i> Certificates sent
+                            </small>
+                        </div>
+                        <div class="stat-icon info">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Center Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-12 mb-3">
+            <h4 class="section-title">
+                <i class="fas fa-building text-info me-2"></i>Center Analytics
+            </h4>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Centers</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($totalCenters) }}</h2>
+                            <small class="text-primary">
+                                <i class="fas fa-building"></i> All registered
+                            </small>
+                        </div>
+                        <div class="stat-icon secondary">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Active Centers</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($activeCenters) }}</h2>
+                            <small class="text-success">
+                                <i class="fas fa-check-circle"></i> Currently active
+                            </small>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Courses</h6>
+                            <h2 class="fw-bold mb-0">{{ number_format($totalCourses) }}</h2>
+                            <small class="text-info">
+                                <i class="fas fa-book"></i> Available courses
+                            </small>
+                        </div>
+                        <div class="stat-icon info">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm stat-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Wallet Balance</h6>
+                            <h2 class="fw-bold mb-0">₹{{ number_format($totalWalletBalance, 2) }}</h2>
+                            <small class="text-success">
+                                <i class="fas fa-wallet"></i> Center wallets
+                            </small>
+                        </div>
+                        <div class="stat-icon danger">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Student Registration Chart -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm chart-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-chart-line text-primary me-2"></i>Student Registrations (Last 6 Months)
+                    </h5>
+                        </div>
+                <div class="card-body p-4">
+                    <div id="studentChart" style="height: 350px;"></div>
+                        </div>
+                    </div>
+                        </div>
+
+        <!-- Students by Status Chart -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm chart-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-pie-chart text-success me-2"></i>Students by Status
+                    </h5>
+                    </div>
+                <div class="card-body p-4">
+                    <div id="statusChart" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Center Charts Row -->
+    <div class="row mb-4">
+        <!-- Center Registration Chart -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm chart-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-chart-area text-info me-2"></i>Center Registrations (Last 6 Months)
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div id="centerChart" style="height: 350px;"></div>
+                </div>
+            </div>
+</div>
+
+        <!-- Top Centers Chart -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm chart-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-trophy text-warning me-2"></i>Top 5 Centers by Students
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div id="topCentersChart" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Statistics Row -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm chart-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-book text-primary me-2"></i>Top 5 Courses by Enrollment
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div id="coursesChart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm chart-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-list-alt text-secondary me-2"></i>Student Status Breakdown
+                    </h5>
+                        </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th class="text-end">Count</th>
+                                    <th class="text-end">Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $statusLabels = [
+                                        'PENDING' => 'Pending',
+                                        'VERIFIED' => 'Verified',
+                                        'RESULT UPDATED' => 'Result Updated',
+                                        'RESULT OUT' => 'Result Out',
+                                        'DISPATCHED' => 'Dispatched',
+                                        'BLOCK' => 'Blocked'
+                                    ];
+                                @endphp
+                                @foreach($studentsByStatus as $status)
+                                    @if($status->count > 0)
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ $statusLabels[$status->sl_status] ?? $status->sl_status }}</span>
+                                        </td>
+                                        <td class="text-end fw-bold">{{ number_format($status->count) }}</td>
+                                        <td class="text-end">
+                                            <span class="text-muted">{{ number_format(($status->count / $totalStudents) * 100, 1) }}%</span>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 @endsection
+
+@push('custom-js')
+<script src="/vendor/apexcharts/apexcharts.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Student Monthly Chart
+    var studentMonthlyOptions = {
+        series: [{
+            name: 'Students Registered',
+            data: [
+                @foreach($studentMonthlyData as $data)
+                {{ $data->count }},
+                @endforeach
+            ]
+        }],
+        chart: {
+            type: 'area',
+            height: 350,
+            toolbar: { show: true },
+            zoom: { enabled: true }
+        },
+        dataLabels: { enabled: true },
+        stroke: { curve: 'smooth', width: 2 },
+        colors: ['#667eea'],
+        xaxis: {
+            categories: [
+                @foreach($studentMonthlyData as $data)
+                '{{ date("M Y", mktime(0, 0, 0, $data->month, 1, $data->year)) }}',
+                @endforeach
+            ]
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.7,
+                opacityTo: 0.3,
+                stops: [0, 90, 100]
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " students"
+                }
+            }
+        }
+    };
+    var studentChart = new ApexCharts(document.querySelector("#studentChart"), studentMonthlyOptions);
+    studentChart.render();
+
+    // Students by Status Pie Chart
+    var statusChartOptions = {
+        series: [
+            @foreach($studentsByStatus as $status)
+            @if($status->count > 0){{ $status->count }},@endif
+            @endforeach
+        ],
+        chart: {
+            type: 'donut',
+            height: 350
+        },
+        labels: [
+            @foreach($studentsByStatus as $status)
+            @if($status->count > 0)'{{ $statusLabels[$status->sl_status] ?? $status->sl_status }}',@endif
+            @endforeach
+        ],
+        colors: ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#30cfd0'],
+        legend: { position: 'bottom' },
+        dataLabels: { enabled: true }
+    };
+    var statusChart = new ApexCharts(document.querySelector("#statusChart"), statusChartOptions);
+    statusChart.render();
+
+    // Center Monthly Chart
+    var centerMonthlyOptions = {
+        series: [{
+            name: 'Centers Registered',
+            data: [
+                @foreach($centerMonthlyData as $data)
+                {{ $data->count }},
+                @endforeach
+            ]
+        }],
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: { show: true }
+        },
+        colors: ['#4facfe'],
+        xaxis: {
+            categories: [
+                @foreach($centerMonthlyData as $data)
+                '{{ date("M Y", mktime(0, 0, 0, $data->month, 1, $data->year)) }}',
+                @endforeach
+            ]
+        },
+        dataLabels: { enabled: true },
+        plotOptions: {
+            bar: {
+                borderRadius: 8,
+                horizontal: false
+            }
+        }
+    };
+    var centerChart = new ApexCharts(document.querySelector("#centerChart"), centerMonthlyOptions);
+    centerChart.render();
+
+    // Top Centers Chart
+    var topCentersOptions = {
+        series: [{
+            name: 'Students',
+            data: [
+                @foreach($topCentersByStudents as $center)
+                {{ $center->student_count }},
+                @endforeach
+            ]
+        }],
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: { show: false }
+        },
+        colors: ['#43e97b'],
+        plotOptions: {
+            bar: {
+                borderRadius: 8,
+                horizontal: true
+            }
+        },
+        dataLabels: { enabled: true },
+        xaxis: {
+            categories: [
+                @foreach($topCentersByStudents as $center)
+                '{{ \Illuminate\Support\Str::limit($center->cl_center_name, 20) }}',
+                @endforeach
+            ]
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " students"
+                }
+            }
+        }
+    };
+    var topCentersChart = new ApexCharts(document.querySelector("#topCentersChart"), topCentersOptions);
+    topCentersChart.render();
+
+    // Top Courses Chart
+    var coursesOptions = {
+        series: [{
+            name: 'Enrollments',
+            data: [
+                @foreach($studentsByCourse as $course)
+                {{ $course->student_count }},
+                @endforeach
+            ]
+        }],
+        chart: {
+            type: 'bar',
+            height: 300,
+            toolbar: { show: false }
+        },
+        colors: ['#fa709a'],
+        plotOptions: {
+            bar: {
+                borderRadius: 8,
+                horizontal: true
+            }
+        },
+        dataLabels: { enabled: true },
+        xaxis: {
+            categories: [
+                @foreach($studentsByCourse as $course)
+                '{{ \Illuminate\Support\Str::limit($course->c_full_name, 25) }}',
+                @endforeach
+            ]
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " students"
+                }
+            }
+        }
+    };
+    var coursesChart = new ApexCharts(document.querySelector("#coursesChart"), coursesOptions);
+    coursesChart.render();
+});
+</script>
+@endpush

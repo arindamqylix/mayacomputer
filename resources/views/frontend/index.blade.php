@@ -58,6 +58,53 @@
     }
 }
 
+/* Banner Section Styles */
+.banner-content-wrapper {
+    max-width: 700px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 15px !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Banner Section Responsive */
+@media (max-width: 991px) {
+    .banner-content-wrapper {
+        text-align: center !important;
+        max-width: 600px !important;
+        padding: 40px 30px !important;
+    }
+    .banner-heading {
+        font-size: 42px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .banner-content-wrapper {
+        max-width: 90% !important;
+        padding: 35px 25px !important;
+        border-radius: 12px !important;
+    }
+    .banner-heading {
+        font-size: 32px !important;
+        line-height: 1.4 !important;
+    }
+    .banner-description {
+        font-size: 16px !important;
+    }
+    .banner-button {
+        padding: 12px 30px !important;
+        font-size: 14px !important;
+        margin-right: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    .banner-title-badge {
+        font-size: 12px !important;
+        padding: 6px 15px !important;
+    }
+}
+
 /* Modern Courses Section */
 #rs-courses.courses-slider-section {
     background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%) !important;
@@ -616,33 +663,41 @@
 
         @foreach($banners as $banner)
         <div class="item">
-            <img src="{{ asset($banner->file) }}" alt="{{ $banner->header ?? 'Banner' }}" style="height:40vh; width: 100%; object-fit: cover;" />
+            <img src="{{ asset($banner->file) }}" alt="{{ $banner->header ?? $banner->title ?? 'Banner' }}" style="height:70vh; width: 100%; object-fit: cover;" />
 
-            @if($banner->header || $banner->short_description || $banner->button_name)
+            @if($banner->title || $banner->header || $banner->short_description || $banner->button_name)
             <div class="slide-content">
                 <div class="display-table">
                     <div class="display-table-cell">
-                        <div class="container text-center">
-                            @if($banner->header)
-                            <h1 class="sl-title" style="font-size: 48px; font-weight: 700; color: #ffffff; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                                {{ $banner->header }}
-                            </h1>
-                            @endif
-                            
-                            @if($banner->short_description)
-                            <p class="sl-description" style="font-size: 18px; color: #ffffff; margin-bottom: 30px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); max-width: 800px; margin-left: auto; margin-right: auto;">
-                                {{ $banner->short_description }}
-                            </p>
-                            @endif
-                            
-                            @if($banner->button_name && $banner->button_url)
-                            <a href="{{ $banner->button_url }}" class="sl-get-started-btn" 
-                               style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #d00226 0%, #ff6b35 100%); color: #ffffff; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(208, 2, 38, 0.3);"
-                               onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 20px rgba(208, 2, 38, 0.4)';"
-                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(208, 2, 38, 0.3)';">
-                                {{ $banner->button_name }}
-                            </a>
-                            @endif
+                        <div class="container">
+                            <div class="banner-content-wrapper" style="max-width: 700px; margin: 0 auto; text-align: left; padding: 50px 40px; background: rgba(0, 0, 0, 0.5); border-radius: 15px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); position: relative; z-index: 1;">
+                                @if($banner->title)
+                                <div class="banner-title-badge" style="display: inline-block; padding: 8px 20px; background: #ff6b35; color: #ffffff; border-radius: 25px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);">
+                                    {{ $banner->title }}
+                                </div>
+                                @endif
+                                
+                                @if($banner->header)
+                                <h1 class="banner-heading" style="font-size: 52px; font-weight: 700; color: #ffffff; margin-bottom: 25px; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); line-height: 1.3; word-wrap: break-word; max-width: 100%;">
+                                    {{ $banner->header }}
+                                </h1>
+                                @endif
+                                
+                                @if($banner->short_description)
+                                <p class="banner-description" style="font-size: 18px; color: #ffffff; margin-bottom: 35px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); line-height: 1.7; max-width: 100%; word-wrap: break-word;">
+                                    {{ $banner->short_description }}
+                                </p>
+                                @endif
+                                
+                                @if($banner->button_name && $banner->button_url)
+                                <a href="{{ $banner->button_url }}" class="banner-button" 
+                                   style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #d00226 0%, #ff6b35 100%); color: #ffffff; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(208, 2, 38, 0.3); margin-right: 15px;"
+                                   onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 20px rgba(208, 2, 38, 0.4)';"
+                                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(208, 2, 38, 0.3)';">
+                                    <i class="fa fa-graduation-cap" style="margin-right: 8px;"></i>{{ $banner->button_name }}
+                                </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

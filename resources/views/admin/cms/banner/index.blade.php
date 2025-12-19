@@ -21,7 +21,8 @@
 					        <tr class="table_main_row">
 					        	<th>ID</th>
                                 <th>Image</th>
-                                <th>Header</th>
+                                <th>Title</th>
+                                <th>Heading</th>
                                 <th>Button</th>
                                 <th>Sort Order</th>
                                 <th>Status</th>
@@ -36,6 +37,13 @@
                                     <td>
 										<img src="{{ asset($banner->file) }}" style="width: 60px;height: 55px; object-fit: cover; border-radius: 5px;" alt="">
 									</td>
+                                    <td>
+                                        @if($banner->title)
+                                            <span class="badge bg-warning text-dark">{{ \Illuminate\Support\Str::limit($banner->title, 25) }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($banner->header)
                                             <strong>{{ \Illuminate\Support\Str::limit($banner->header, 30) }}</strong>

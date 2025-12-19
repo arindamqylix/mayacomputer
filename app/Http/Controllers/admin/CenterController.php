@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\center\Center; 
 use Hash;
-use Illuminate\Support\Facades\Storage;
 class CenterController extends Controller
 {
     /**
@@ -50,52 +49,48 @@ class CenterController extends Controller
             $nextInvoiceNumber = str_pad($lastInvoiceNumber + 1, 8, '0', STR_PAD_LEFT);
         }
 
-        // File uploads (using Laravel storage/public)
+        // File uploads
         $photo = $center_stamp = $center_signature = $director_adhar = $director_pan = null;
-
-        // --------------- USE SYMLINK STORAGE -----------------
 
         // Save Center Photo
         if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('center', $file, $filename);
-            $photo = 'center/' . $filename;
+            $uploadedFile = $request->file('photo');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $photo = 'center/' . $fileName;
         }
 
         // Save Center Stamp
         if ($request->hasFile('center_stamp')) {
-            $file = $request->file('center_stamp');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('center', $file, $filename);
-            $center_stamp = 'center/' . $filename;
+            $uploadedFile = $request->file('center_stamp');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $center_stamp = 'center/' . $fileName;
         }
 
         // Save Center Signature
         if ($request->hasFile('center_signature')) {
-            $file = $request->file('center_signature');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('center', $file, $filename);
-            $center_signature = 'center/' . $filename;
+            $uploadedFile = $request->file('center_signature');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $center_signature = 'center/' . $fileName;
         }
 
         // Save Director Aadhar
         if ($request->hasFile('director_adhar')) {
-            $file = $request->file('director_adhar');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('center', $file, $filename);
-            $director_adhar = 'center/' . $filename;
+            $uploadedFile = $request->file('director_adhar');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $director_adhar = 'center/' . $fileName;
         }
 
         // Save Director PAN
         if ($request->hasFile('director_pan')) {
-            $file = $request->file('director_pan');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('center', $file, $filename);
-            $director_pan = 'center/' . $filename;
+            $uploadedFile = $request->file('director_pan');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $director_pan = 'center/' . $fileName;
         }
-
-        // ------------------------------------------------------
 
         // Insert data
         $data = [
@@ -160,39 +155,69 @@ class CenterController extends Controller
         $director_adhar   = $exist->cl_director_adhar;
         $director_pan     = $exist->cl_director_pan;
 
-        // Directory inside storage/app/public
-        $dir = 'center';
-
-        // Helper to upload file
-        $upload = function ($file) use ($dir) {
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs($dir, $file, $filename);
-            return $dir . '/' . $filename; // DB value
-        };
-
         // Upload new Center Photo
         if ($request->hasFile('photo')) {
-            $photo = $upload($request->file('photo'));
+            // delete old file if exists
+            if ($photo && file_exists(public_path($photo))) {
+                @unlink(public_path($photo));
+            }
+
+            $uploadedFile = $request->file('photo');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $photo = 'center/' . $fileName;
         }
 
         // Upload new Center Stamp
         if ($request->hasFile('center_stamp')) {
-            $center_stamp = $upload($request->file('center_stamp'));
+            // delete old file if exists
+            if ($center_stamp && file_exists(public_path($center_stamp))) {
+                @unlink(public_path($center_stamp));
+            }
+
+            $uploadedFile = $request->file('center_stamp');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $center_stamp = 'center/' . $fileName;
         }
 
         // Upload new Center Signature
         if ($request->hasFile('center_signature')) {
-            $center_signature = $upload($request->file('center_signature'));
+            // delete old file if exists
+            if ($center_signature && file_exists(public_path($center_signature))) {
+                @unlink(public_path($center_signature));
+            }
+
+            $uploadedFile = $request->file('center_signature');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $center_signature = 'center/' . $fileName;
         }
 
         // Upload Director Aadhar
         if ($request->hasFile('director_adhar')) {
-            $director_adhar = $upload($request->file('director_adhar'));
+            // delete old file if exists
+            if ($director_adhar && file_exists(public_path($director_adhar))) {
+                @unlink(public_path($director_adhar));
+            }
+
+            $uploadedFile = $request->file('director_adhar');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $director_adhar = 'center/' . $fileName;
         }
 
         // Upload Director PAN
         if ($request->hasFile('director_pan')) {
-            $director_pan = $upload($request->file('director_pan'));
+            // delete old file if exists
+            if ($director_pan && file_exists(public_path($director_pan))) {
+                @unlink(public_path($director_pan));
+            }
+
+            $uploadedFile = $request->file('director_pan');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('center'), $fileName);
+            $director_pan = 'center/' . $fileName;
         }
 
         // Prepare update data

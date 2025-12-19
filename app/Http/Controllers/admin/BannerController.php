@@ -22,6 +22,7 @@ class BannerController extends Controller
     {
         $request->validate([
             'file' => 'required|image|max:4096',
+            'title' => 'nullable|string|max:255',
             'header' => 'nullable|string|max:255',
             'short_description' => 'nullable|string',
             'button_name' => 'nullable|string|max:255',
@@ -41,6 +42,7 @@ class BannerController extends Controller
         // save path to DB
         DB::table('cms_banner')->insert([
             'file' => 'banner/' . $fileName,
+            'title' => $request->title,
             'header' => $request->header,
             'short_description' => $request->short_description,
             'button_name' => $request->button_name,
@@ -65,6 +67,7 @@ class BannerController extends Controller
     {
         $request->validate([
             'file' => 'nullable|image|max:4096',
+            'title' => 'nullable|string|max:255',
             'header' => 'nullable|string|max:255',
             'short_description' => 'nullable|string',
             'button_name' => 'nullable|string|max:255',
@@ -101,6 +104,7 @@ class BannerController extends Controller
         // DB update
         DB::table('cms_banner')->where('id', $id)->update([
             'file' => $filePath,
+            'title' => $request->title,
             'header' => $request->header,
             'short_description' => $request->short_description,
             'button_name' => $request->button_name,

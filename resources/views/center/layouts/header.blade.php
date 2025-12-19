@@ -37,6 +37,8 @@ use  App\Models\center\Center;
                            <a href='' class='btn   text-bold bg-danger text-light' title='Dues'>Wallet Balance - {{ $center->cl_wallet_balance }}</a>
                            <a href="{{route('make_attendance')}}" class='btn   text-bold bg-dark text-light' title='Dues'>Make Attendance </a>
                         </div>
+                        @livewire('notification-bell')
+                        
                         <div class="dropdown d-none d-lg-inline-block ms-1">
                             <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
                             <i class="bx bx-fullscreen" style="color: #74788d !important;"></i>

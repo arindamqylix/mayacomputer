@@ -18,6 +18,10 @@ use App\Http\Controllers\admin\CmsDirectorController;
 use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\admin\AboutUsController;
 use App\Http\Controllers\admin\HomepageController;
+use App\Http\Controllers\admin\GenerateAdmitController;
+use App\Http\Controllers\admin\WhatsAppTemplateController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('admin/login', [AuthController::class, 'admin_login'])->name('admin_login');
@@ -77,6 +81,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 
 	// View Result
 	Route::get('student-result-list', [StudentController::class, 'student_result_list'])->name('student_result_view');
+
+	// Generate Admit Card
+	Route::get('generate-admit-card', [GenerateAdmitController::class, 'generate_admit_card'])->name('admin.generate_admit_card');
+	Route::post('generate-admit-card', [GenerateAdmitController::class, 'handle_admit_card'])->name('admin.generate_admit_card');
+	Route::get('admit-card-list', [GenerateAdmitController::class, 'admit_card_list'])->name('admin.admit_card_list');
+	Route::get('admit-card/edit/{id}', [GenerateAdmitController::class, 'edit_admit_card'])->name('admin.edit_admit_card');
+	Route::post('admit-card/update/{id}', [GenerateAdmitController::class, 'update_admit_card'])->name('admin.update_admit_card');
+	Route::get('print-admit-card/{id}', [GenerateAdmitController::class, 'print_admit_card'])->name('admin.print_admit_card');
 
 	// Change Password
 	Route::get('change-password', [AuthController::class, 'change_password'])->name('admin_change_password');
@@ -170,4 +182,21 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
     Route::delete('/about-us/{id}', [AboutUsController::class, 'destroy'])->name('about_us.destroy');
 
 	/* ============ CMS Route End =========== */
+
+	// Chat
+	Route::get('chat', [ChatController::class, 'index'])->name('admin.chat');
+	Route::get('chat/{recipientType}/{recipientId}', [ChatController::class, 'index'])->name('admin.chat.with');
+
+	// Notifications
+	Route::get('notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
+	Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('admin.notifications.read');
+	Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('admin.notifications.read-all');
+
+	// WhatsApp Templates
+	Route::get('whatsapp-templates', [WhatsAppTemplateController::class, 'index'])->name('admin.whatsapp_templates.index');
+	Route::get('whatsapp-templates/create', [WhatsAppTemplateController::class, 'create'])->name('admin.whatsapp_templates.create');
+	Route::post('whatsapp-templates/store', [WhatsAppTemplateController::class, 'store'])->name('admin.whatsapp_templates.store');
+	Route::get('whatsapp-templates/edit/{id}', [WhatsAppTemplateController::class, 'edit'])->name('admin.whatsapp_templates.edit');
+	Route::put('whatsapp-templates/update/{id}', [WhatsAppTemplateController::class, 'update'])->name('admin.whatsapp_templates.update');
+	Route::delete('whatsapp-templates/delete/{id}', [WhatsAppTemplateController::class, 'destroy'])->name('admin.whatsapp_templates.destroy');
 });

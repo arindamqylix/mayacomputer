@@ -60,6 +60,7 @@
             }
         </style>
         @stack('custom-css')
+        @livewireStyles
     </head>
     <body data-sidebar="dark">
         <!-- <body data-layout="horizontal" data-topbar="dark"> -->
@@ -90,5 +91,6 @@
         </div>
     @include('center.layouts.script')
     @stack('custom-js')
+    @livewireScripts
     </body>
     </html>

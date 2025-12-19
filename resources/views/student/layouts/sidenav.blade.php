@@ -47,8 +47,15 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a href="#" class="nav-link">
+      <li class="nav-item {{ Request::segment(2) == 'chat' ? 'active' : '' }}">
+        <a href="{{ route('student.chat') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-comments"></i></span>
+          <span class="sidebar-text">Chat</span>
+        </a>
+      </li>
+
+      <li class="nav-item {{ Request::segment(2) == 'view-registration-card' ? 'active' : '' }}">
+        <a href="{{ route('view_registration_card') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-address-card"></i></span>
             <span class="sidebar-text">Registration Card</span>
         </a>
@@ -61,17 +68,17 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a href="#" class="nav-link">
+      <li class="nav-item {{ Request::segment(2) == 'view-admit-card' ? 'active' : '' }}">
+        <a href="{{ route('view_admit_card') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-ticket"></i></span>
             <span class="sidebar-text">Admit Card</span>
         </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item {{ Request::segment(2) == 'view-marksheet' ? 'active' : '' }}">
         <a href="{{ route('view_marksheet') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
-            <span class="sidebar-text">View Marksheet</span>
+            <span class="sidebar-text">View Result</span>
         </a>
       </li>
 
