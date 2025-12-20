@@ -143,19 +143,44 @@
         });
 
         // Syllabus Repeater
+        let syllRowCount = 0;
         $("#addSyll").on("click", function () {
+            syllRowCount++;
+            const textareaId = 'syll_desc_' + syllRowCount;
             $("#syllTable tbody").append(`
                 <tr>
                     <td><input type="text" class="form-control" name="syll_name[]" required></td>
-                    <td><textarea class="form-control" name="syll_desc[]" rows="1" required></textarea></td>
+                    <td><textarea class="form-control ckeditor-syllabus" name="syll_desc[]" id="${textareaId}" rows="3" required></textarea></td>
                     <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
                 </tr>
             `);
+            
+            // Initialize CKEditor for the new textarea
+            CKEDITOR.replace(textareaId, {
+                height: 150,
+                toolbar: [
+                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                    { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Blockquote'] },
+                    { name: 'links', items: ['Link', 'Unlink'] },
+                    { name: 'insert', items: ['Image', 'Table'] },
+                    { name: 'styles', items: ['Format'] },
+                    { name: 'tools', items: ['Source'] }
+                ]
+            });
         });
 
         // Remove Row Event
         $(document).on("click", ".remove-row", function () {
-            $(this).closest("tr").remove();
+            const row = $(this).closest("tr");
+            // Destroy CKEditor instance if it exists
+            const textarea = row.find('textarea.ckeditor-syllabus');
+            if (textarea.length) {
+                const editorId = textarea.attr('id');
+                if (editorId && CKEDITOR.instances[editorId]) {
+                    CKEDITOR.instances[editorId].destroy();
+                }
+            }
+            row.remove();
         });
 
 		$('#course_full_name').on('keyup', function() {

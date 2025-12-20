@@ -1,7 +1,7 @@
 @extends('center.layouts.base')
 @section('title', 'Admit Card List')
 @push('custom-css')
-<style type="text/css">
+	<style type="text/css">
 	.dataTables_wrapper{
 		overflow: scroll !important;
 	}
@@ -216,7 +216,7 @@
 		margin-bottom: 1rem;
 		opacity: 0.5;
 	}
-</style>
+	</style>
 @endpush
 
 @section('content')
@@ -227,7 +227,7 @@
 				<div class="d-flex justify-content-between align-items-center">
 					<h4>
 						<i class="fas fa-ticket-alt"></i>
-						Admit Card List
+					Admit Card List
 					</h4>
 					<a href="{{ route('generate_admit_card') }}" class="btn-generate">
 						<i class="fas fa-plus-circle"></i>
@@ -238,21 +238,21 @@
 			
 			<!-- Search Section -->
 			<div class="search-section">
-				<div class="row">
+						<div class="row">
 					<div class="col-md-6">
 						<div class="search-input-wrapper">
 							<i class="fas fa-search"></i>
 							<input type="text" id="searchInput" class="form-control" placeholder="Search by registration number, student name, venue...">
-						</div>
-					</div>
-				</div>
-			</div>
+							</div>
+							</div>
+							</div>
+						</div>	
 			
 			<div class="card-body p-0">
 				@if(count($admitCards) > 0)
 					<div class="table-responsive">
 						<table id="datatable-buttons" class="table modern-table table-hover mb-0">
-							<thead>
+				        <thead>
 								<tr>
 									<th><i class="fas fa-hashtag me-2"></i>Reg.No</th>
 									<th><i class="fas fa-user me-2"></i>Student Name</th>
@@ -261,11 +261,11 @@
 									<th><i class="fas fa-map-marker-alt me-2"></i>Venue</th>
 									<th><i class="fas fa-clock me-2"></i>Time</th>
 									<th><i class="fas fa-cog me-2"></i>Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach($admitCards as $val)
-									<tr>
+					        </tr>
+				        </thead>
+				        <tbody>
+							@foreach($admitCards as $val)
+							<tr>
 										<td>
 											<span class="badge-reg">{{ $val->sl_reg_no ?? 'N/A' }}</span>
 										</td>
@@ -304,25 +304,25 @@
 												@endif
 											</span>
 										</td>
-										<td>
+								<td>
 											<div class="d-flex gap-2">
 												<a href="{{ route('edit_admit_card', $val->ac_id) }}" class="btn-action btn-edit">
 													<i class="fas fa-edit"></i>
-													Edit
-												</a>
+										Edit
+									</a>
 												<a href="{{ route('print_admit_card', $val->ac_id) }}" 
 												   class="btn-action btn-print" 
 												   target="_blank">
 													<i class="fas fa-print"></i>
-													Print
-												</a>
+										Print
+									</a>
 											</div>
-										</td>
-									</tr>
-								@endforeach
-							</tbody>
-						</table>
-					</div>
+								</td>
+							</tr>
+							@endforeach
+						</tbody>
+				    </table>
+				</div>
 				@else
 					<div class="empty-state">
 						<i class="fas fa-ticket-alt"></i>
