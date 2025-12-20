@@ -47,7 +47,8 @@ nav.right_menu_togle {
 	background: rgba(0,0,0,0.9);
 	display: block;
 	height: 100%;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 	position: fixed;
 	right: -23em;
 	font-size: 15px;
@@ -58,6 +59,32 @@ nav.right_menu_togle {
 	-webkit-transition: right 0.3s ease-in-out 0s;
 	-moz-transition: right 0.3s ease-in-out 0s;
 	-o-transition: right 0.3s ease-in-out 0s;
+}
+
+/* Scrollbar Styling for Off-Canvas Menu */
+nav.right_menu_togle::-webkit-scrollbar {
+	width: 8px;
+}
+
+nav.right_menu_togle::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+}
+
+nav.right_menu_togle::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+nav.right_menu_togle::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox Scrollbar */
+nav.right_menu_togle {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
 }
 .nav-expanded nav {
   right: 0;
@@ -258,4 +285,37 @@ span#nav-close {
 .rs-menu.rs-menu-close,
 .sidebar_nav.navbar-inverse{
 	background: transparent;
+}
+
+/* Ensure sidebarnav_menu container is scrollable */
+.sidebarnav_menu {
+	max-height: calc(100vh - 200px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-bottom: 20px;
+}
+
+/* Scrollbar Styling for Sidebar Menu */
+.sidebarnav_menu::-webkit-scrollbar {
+	width: 6px;
+}
+
+.sidebarnav_menu::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 10px;
+}
+
+.sidebarnav_menu::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 10px;
+}
+
+.sidebarnav_menu::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.4);
+}
+
+/* Firefox Scrollbar for Sidebar Menu */
+.sidebarnav_menu {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
 }

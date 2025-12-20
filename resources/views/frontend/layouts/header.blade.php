@@ -17,6 +17,69 @@
 #phone-details .info-text a:hover span {
 	color: #d00226 !important;
 }
+
+/* Off-Canvas Menu Scrollbar Styling */
+nav.right_menu_togle {
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+}
+
+/* Ensure menu container is scrollable */
+.right_menu_togle .sidebarnav_menu {
+	max-height: calc(100vh - 150px);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Off-Canvas Menu */
+nav.right_menu_togle::-webkit-scrollbar {
+	width: 8px !important;
+}
+
+nav.right_menu_togle::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1) !important;
+	border-radius: 10px;
+}
+
+nav.right_menu_togle::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.3) !important;
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+nav.right_menu_togle::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Sidebar Menu Scrollbar */
+.sidebarnav_menu::-webkit-scrollbar {
+	width: 6px !important;
+}
+
+.sidebarnav_menu::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.05) !important;
+	border-radius: 10px;
+}
+
+.sidebarnav_menu::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2) !important;
+	border-radius: 10px;
+}
+
+.sidebarnav_menu::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Firefox Scrollbar */
+nav.right_menu_togle {
+	scrollbar-width: thin !important;
+	scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebarnav_menu {
+	scrollbar-width: thin !important;
+	scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05) !important;
+}
 </style>
 
 <!--Full width header Start-->

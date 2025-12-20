@@ -37,6 +37,119 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
 
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+        .login-logo {
+            max-width: 180px;
+            max-height: 80px;
+            margin-bottom: 1rem;
+            object-fit: contain;
+        }
+        .login-logo-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+        .login-body {
+            padding: 2.5rem 2rem;
+        }
+        .login-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        .login-subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .input-group-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px 0 0 10px;
+        }
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .alert-danger {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
+        }
+        .icon-wrapper {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 
     <!-- Core -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -91,74 +204,101 @@
 
 <body> 
 <main>
-    <title>Volt Laravel Dashboard - Sign In page</title>
-    <!-- Section -->
-    <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
-        <div class="container">
-            {{-- <p class="text-center"><a href="{{ route('dashboard') }}" class="text-gray-700"><i
-                class="fas fa-angle-left me-2"></i> Back to homepage</a></p> --}}
-            <div wire:ignore.self class="row justify-content-center form-bg-image"
-                data-background-lg="http://localhost/mayacomputercentre/assets/img/illustrations/signin.svg">
-                <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                        <div class="text-center text-md-center mb-4 mt-md-0">
-                            <h1 class="mb-3 h3">Welcome back</h1>
-                            
-                        </div>
-                        @if(Session::has('error'))
-                            <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('error') }}</p>
-                        @endif
-                        <form class="mt-4" method="POST">
-                            @csrf
-                            <!-- Form -->
-                            <div class="form-group mb-4">
-                                <label for="email">Registration No</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><svg
-                                            class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z">
-                                            </path>
-                                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                        </svg></span>
-                                    <input  type="text" name="reg_no" class="form-control"
-                                        placeholder="Registration No" id="reg_no" autofocus required>
-                                </div>
-                                @error('email') <div wire:key="form" class="invalid-feedback"> {{$message}} </div>
-                                @enderror
-                            </div>
-                            <!-- End of Form -->
-                            <div class="form-group">
-                                <!-- Form -->
-                                <div class="form-group mb-4">
-                                    <label for="password">Your Password</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon2"><svg
-                                                class="icon icon-xs text-gray-600" fill="currentColor"
-                                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg></span>
-                                        <input name="mobile" type="password" placeholder="Password"
-                                            class="form-control" id="password" required>
-                                    </div>
-                                    @error('password') <div class="invalid-feedback"> {{ $message }} </div> @enderror
-                                </div>
-                                <!-- End of Form -->
-                                
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-gray-800">Sign in</button>
-                            </div>
-                        </form>
-                       
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Login Header with Logo -->
+            <div class="login-header">
+                @php
+                    $siteSettings = site_settings();
+                    $logoPath = null;
+                    $siteName = 'MAYA COMPUTER';
+                    
+                    if($siteSettings) {
+                        $logoPath = !empty($siteSettings->site_logo) ? $siteSettings->site_logo : null;
+                        $siteName = !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER';
+                    }
+                    
+                    $logoExists = false;
+                    if($logoPath) {
+                        $fullPath = public_path($logoPath);
+                        $logoExists = file_exists($fullPath);
+                    }
+                @endphp
+                @if($logoExists)
+                    <img src="{{ asset($logoPath) }}" alt="{{ $siteName }} Logo" class="login-logo">
+                @else
+                    <h2 class="login-logo-text">{{ $siteName }}</h2>
+                @endif
+                <p class="mb-0" style="opacity: 0.9;">Student Portal</p>
+            </div>
+
+            <!-- Login Body -->
+            <div class="login-body">
+                <h2 class="login-title text-center">Welcome Back!</h2>
+                <p class="login-subtitle text-center">Sign in to access your student dashboard</p>
+
+                @if(Session::has('error'))
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>{{ Session::get('error') }}
                     </div>
-                </div>
+                @endif
+
+                <form method="POST" action="{{ route('student_login') }}">
+                    @csrf
+                    
+                    <!-- Registration Number Field -->
+                    <div class="mb-4">
+                        <label for="reg_no" class="form-label">
+                            <i class="fas fa-id-card me-2"></i>Registration Number
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                            </span>
+                            <input type="text" name="reg_no" class="form-control"
+                                placeholder="Enter your registration number" id="reg_no" autofocus required
+                                value="{{ old('reg_no') }}">
+                        </div>
+                        @error('reg_no')
+                            <div class="text-danger small mt-1">
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <label for="mobile" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon2">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </span>
+                            <input name="mobile" type="password" placeholder="Enter your password"
+                                class="form-control" id="mobile" required>
+                        </div>
+                        @error('mobile')
+                            <div class="text-danger small mt-1">
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-login">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
 </main>
 </body>
 
