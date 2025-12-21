@@ -130,6 +130,14 @@
         </a>
       </li>
 
+      <!-- Certificate -->
+      <li class="nav-item {{ Request::segment(2) == 'certificate-list' || Request::segment(2) == 'view-certificate' ? 'active' : '' }}">
+        <a href="{{ route('admin.certificate_list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
+          <span class="sidebar-text">Certificates</span>
+        </a>
+      </li>
+
       <!-- Center Transaction -->
       <li class="nav-item {{ Request::segment(1) == 'center_transaction_payment' ? 'active' : '' }}">
         <a href="{{ route('center_transaction_payment') }}" class="nav-link">

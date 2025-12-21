@@ -537,7 +537,11 @@ body {
                 <div class="photo-section">
                     <div class="photo-frame">
                         <div class="photo-placeholder">
-                            <img src="{{asset($center->cl_photo)}}" alt="">
+                            @if(!empty($center->cl_photo))
+                                <img src="{{asset($center->cl_photo)}}" alt="Center Photo" onerror="this.parentElement.innerHTML='<div style=\'display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 14px;\'>No Photo</div>'">
+                            @else
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 14px;">No Photo</div>
+                            @endif
                         </div>
                         <div class="signature-area">
                             <div class="signature-line"></div>
@@ -549,23 +553,22 @@ body {
             <!-- Logos Section -->
             <div class="logos-section">
                 <div class="logo-item">
+                    <img src="{{asset('document/images/iaf.jpg')}}" alt="IAF" class="logo-img">
+                </div>
+                <div class="logo-item">
+                    <img src="{{asset('document/images/MSME-Logo.png')}}" alt="MSME" class="logo-img">
+                </div>
+                <div class="logo-item">
+                    <img src="{{asset('document/images/iso_cert.png')}}" alt="ISO" class="logo-img">
+                </div>
+                <div class="logo-item">
+                    <img src="{{asset('document/images/startupindia.jpg')}}" alt="Startup India" class="logo-img">
+                </div>
+                <div class="logo-item">
                     <img src="{{asset('document/images/skill_india.jpg')}}" alt="Skill India" class="logo-img">
                 </div>
                 <div class="logo-item">
-                    <img src="ministry.png" alt="Ministry of Skill Development" class="logo-img">
-                    <p>MINISTRY OF SKILL DEVELOPMENT AND ENTREPRENEURSHIP</p>
-                </div>
-                <div class="logo-item">
-                    <img src="nsdc.png" alt="NSDC" class="logo-img">
-                    <p>NATIONAL SKILL DEVELOPMENT CORPORATION</p>
-                </div>
-                <div class="logo-item">
-                    <img src="corporate.png" alt="Ministry of Corporate Affairs" class="logo-img">
-                    <p>MINISTRY OF CORPORATE AFFAIRS<br>GOVERNMENT OF INDIA</p>
-                </div>
-                <div class="logo-item">
-                    <img src="dpiit.png" alt="DPIIT" class="logo-img">
-                    <p>#startupindia</p>
+                    <img src="{{asset('document/images/national_career_service.jpeg')}}" alt="NCS" class="logo-img">
                 </div>
             </div>
 
@@ -573,10 +576,10 @@ body {
             <div class="footer-section">
                 <div class="footer-item">
                     <p><strong><u>Date of Registration</u></strong></p>
-                    <p><strong>{{$center->created_at->format('d-M-Y')}}</strong></p>
+                    <p><strong>{{$center->created_at ? $center->created_at->format('d-M-Y') : 'N/A'}}</strong></p>
                 </div>
                 <div class="footer-item">
-                    <p><strong><u>Date of Registration</u></strong></p>
+                    <p><strong><u>Date of Expiry</u></strong></p>
                     <p><strong>{{ $expirationDate->format('d-M-Y') }}</strong></p>
                 </div>
                 <div class="footer-item">

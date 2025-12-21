@@ -527,6 +527,12 @@ body {
                         </div>
                         <span>Result</span>
                     </a>
+                    <a href="{{ route('student.view_certificate') }}" class="action-btn">
+                        <div class="icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <span>Certificate</span>
+                    </a>
                     <a href="{{ route('view_payment') }}" class="action-btn">
                         <div class="icon">
                             <i class="fas fa-credit-card"></i>

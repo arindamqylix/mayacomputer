@@ -101,8 +101,8 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a href="#" class="nav-link">
+      <li class="nav-item {{ Request::segment(2) == 'view-certificate' ? 'active' : '' }}">
+        <a href="{{ route('student.view_certificate') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
             <span class="sidebar-text">Certificate</span>
         </a>

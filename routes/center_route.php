@@ -15,6 +15,7 @@ use App\Http\Controllers\center\RechargeController;
 use App\Http\Controllers\center\ResultController;
 use App\Http\Controllers\center\ProfileController;
 use App\Http\Controllers\center\AttendanceSheetController;
+use App\Http\Controllers\center\CertificateController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -55,6 +56,9 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	
 	// Center ID Card
 	Route::get('center-id-card', [App\Http\Controllers\admin\CenterController::class, 'viewCenterIdCard'])->name('center.view_id_card');
+	
+	// Center Certificate
+	Route::get('center-certificate', [App\Http\Controllers\admin\CenterController::class, 'viewCenterCertificate'])->name('center.view_certificate');
 
 	// Generate Admit Card
 	Route::get('generate-admit-card', [GenerateAdmitController::class, 'generate_admit_card'])->name('generate_admit_card');
@@ -71,6 +75,12 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	Route::get('edit-result/{id}', [ResultController::class, 'edit_result'])->name('edit_result');
 	Route::post('edit-result/{id}', [ResultController::class, 'update_result'])->name('edit_result');
 	Route::get('student-result-list', [ResultController::class, 'student_result_list'])->name('student_result_list');
+
+	// Certificate
+	Route::get('certificate-list', [CertificateController::class, 'certificate_list'])->name('center.certificate_list');
+	Route::get('generate-certificate', [CertificateController::class, 'generate_certificate'])->name('center.certificate_generate');
+	Route::post('generate-certificate', [CertificateController::class, 'generate_certificate_now'])->name('center.certificate_generate_now');
+	Route::get('view-certificate/{id}', [CertificateController::class, 'view_certificate'])->name('center.certificate_view');
 
 	// View Transaction
 	Route::get('view-transaction', [TransactionController::class, 'view_transaction'])->name('view_transaction');

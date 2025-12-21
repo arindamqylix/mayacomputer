@@ -102,6 +102,12 @@
           </ul>
         </li>
         <li>
+          <a href="{{ route('admin.certificate_list') }}">
+            <i class="bx bx-award"></i>
+            <span key="t-layouts">Certificates</span>
+          </a>
+        </li>
+        <li>
           <a href="{{ route('view_transaction') }}">
             <i class="bx bx-chart"></i>
             <span key="t-layouts">View Transaction</span>

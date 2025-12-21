@@ -436,6 +436,10 @@ body {
                             <i class="fas fa-id-card"></i>
                             View ID Card
                         </a>
+                        <a href="{{ route('center.view_certificate') }}" class="btn-edit-profile" target="_blank" style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); color: #ffffff; border: none;">
+                            <i class="fas fa-certificate"></i>
+                            View Certificate
+                        </a>
                         <a href="#" class="btn-edit-profile">
                             <i class="fas fa-edit"></i>
                             Edit

@@ -20,6 +20,7 @@ use App\Http\Controllers\admin\AboutUsController;
 use App\Http\Controllers\admin\HomepageController;
 use App\Http\Controllers\admin\GenerateAdmitController;
 use App\Http\Controllers\admin\WhatsAppTemplateController;
+use App\Http\Controllers\admin\CertificateController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -201,4 +202,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('whatsapp-templates/edit/{id}', [WhatsAppTemplateController::class, 'edit'])->name('admin.whatsapp_templates.edit');
 	Route::put('whatsapp-templates/update/{id}', [WhatsAppTemplateController::class, 'update'])->name('admin.whatsapp_templates.update');
 	Route::delete('whatsapp-templates/delete/{id}', [WhatsAppTemplateController::class, 'destroy'])->name('admin.whatsapp_templates.destroy');
+
+	// Certificate
+	Route::get('certificate-list', [CertificateController::class, 'certificate_list'])->name('admin.certificate_list');
+	Route::get('view-certificate/{id}', [CertificateController::class, 'view_certificate'])->name('admin.certificate_view');
 });

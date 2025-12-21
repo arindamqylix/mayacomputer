@@ -140,6 +140,23 @@
       </li>
 
       <li class="nav-item">
+        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-certificate" aria-expanded="false">
+          <span>
+            <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
+            <span class="sidebar-text">Certificate</span>
+          </span>
+          <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </span>
+        <div class="multi-level collapse" role="list" id="submenu-certificate" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('center.certificate_generate') }}" class="nav-link"><span class="sidebar-text">Generate Certificate</span></a></li>
+            <li class="nav-item"><a href="{{ route('center.certificate_list') }}" class="nav-link"><span class="sidebar-text">Certificate List</span></a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
         <a href="{{ route('view_transaction') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-receipt"></i></span>
           <span class="sidebar-text">View Transaction</span>

@@ -68,15 +68,15 @@
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <div style="font-weight: bolder; font-size: xx-large;"><u>Authorization Certificate</u></div>
                 <div style="font-weight: bold; font-size: large;"><i>This is to certify that</i></div>
-                <div class="center-name" style="font-size: x-large; font-weight: bolder;"><i>M/s. Maya Computer Center</i></div>
-                <div class="represent" style="font-weight: bold; font-size: large;"><i>Represented by <span style="font-size: x-large;">Mr. Pappu Sah</span></i></div>
+                <div class="center-name" style="font-size: x-large; font-weight: bolder;"><i>{{ $center->cl_center_name ?? 'M/s. Maya Computer Center' }}</i></div>
+                <div class="represent" style="font-weight: bold; font-size: large;"><i>Represented by <span style="font-size: x-large;">{{ $center->cl_director_name ?? 'N/A' }}</span></i></div>
             </div>
             <div>
-                <img src="{{ asset($data->cl_photo) }}" alt="passport_photo" width="100%" height="100px">
+                <img src="{{ asset($center->cl_photo ?? '') }}" alt="passport_photo" width="100%" height="100px">
             </div>
         </div>
         <div class="center-details" style="display: flex; flex-direction: column; align-items: center; font-size: large;">
-            <div style="font-weight: 500;"><i>Having its Office at </i><span>Siswar Phulparas</span>, Dist : <span>Madhubani</span>, State : <span>Bihar</span>, PIN Code: <span>847409</span></div>
+            <div style="font-weight: 500;"><i>Having its Office at </i><span>{{ $center->cl_center_address ?? 'N/A' }}</span></div>
             <div style="font-weight: bold;">Authorised to conduct different academic technical programs</div>
             <div style="font-weight: bold;">under the symbol and banner of</div>
         </div>

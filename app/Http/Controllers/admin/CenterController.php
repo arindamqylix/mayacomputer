@@ -301,4 +301,10 @@ class CenterController extends Controller
         $data = \Illuminate\Support\Facades\Auth::guard('center')->user();
         return view('center.view_id_card', compact('data'));
     }
+    
+    // View Center Certificate from Center Panel
+    public function viewCenterCertificate(){
+        $center = \Illuminate\Support\Facades\Auth::guard('center')->user();
+        return view('center_certificate', compact('center'));
+    }
 }

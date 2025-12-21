@@ -32,4 +32,32 @@ class MarkSheetController extends Controller
     	// Use the new diploma marksheet template
     	return view('marksheet_diploma', compact('data'));
     }
+
+    // View certificate (student panel)
+    public function view_certificate(){
+    	$certificate = DB::table('student_certificates')
+    				->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+    				->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+    				->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+    				->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+    				->where('student_certificates.sc_FK_of_student_id', Auth::guard('student')->user()->sl_id)
+    				->select(
+    					'student_certificates.*',
+    					'student_login.*',
+    					'set_result.*',
+    					'course.*',
+    					'center_login.cl_center_name',
+    					'center_login.cl_name',
+    					'center_login.cl_code',
+    					'center_login.cl_center_address'
+    				)
+    				->orderBy('student_certificates.sc_id', 'DESC')
+    				->first();
+
+    	if (!$certificate) {
+    		return redirect()->route('student_dashboard')->with('error', 'Certificate not found. Please contact your center.');
+    	}
+
+    	return view('center.certificate.view', compact('certificate'));
+    }
 }

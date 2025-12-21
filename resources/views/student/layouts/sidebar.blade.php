@@ -102,6 +102,12 @@
           </ul>
         </li>
         <li>
+          <a href="{{ route('student.view_certificate') }}">
+            <i class="bx bx-award"></i>
+            <span key="t-layouts">Certificate</span>
+          </a>
+        </li>
+        <li>
           <a href="{{ route('view_transaction') }}">
             <i class="bx bx-chart"></i>
             <span key="t-layouts">View Transaction</span>

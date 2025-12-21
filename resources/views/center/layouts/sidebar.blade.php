@@ -102,6 +102,26 @@
           </ul>
         </li>
         <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-award"></i>
+            <span key="t-layouts">Certificate</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="true">
+            <li>
+              <a href="{{ route('center.certificate_generate') }}" class="waves-effect">
+                <i class="bx bx-file"></i>
+                <span key="t-file-manager">Generate Certificate</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('center.certificate_list') }}" class="waves-effect">
+                <i class="bx bx-file"></i>
+                <span key="t-file-manager">Certificate List</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="{{ route('view_transaction') }}">
             <i class="bx bx-chart"></i>
             <span key="t-layouts">View Transaction</span>

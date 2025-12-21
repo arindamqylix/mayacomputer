@@ -27,6 +27,9 @@ Route::group(['prefix'=>'student', 'middleware'=>'student:student'], function(){
 	// Marksheet
 	Route::get('view-marksheet', [MarkSheetController::class, 'view_marksheet'])->name('view_marksheet');
 
+	// Certificate
+	Route::get('view-certificate', [MarkSheetController::class, 'view_certificate'])->name('student.view_certificate');
+
 	// View Payment
 	Route::get('view-payment-history', [PaymentController::class, 'view_payment'])->name('view_payment');
 
