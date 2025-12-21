@@ -52,6 +52,9 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	// Generate Student Id Card
 	Route::get('student-id-card', [StudentController::class, 'student_id_card'])->name('student_id_card');
 	Route::get('view-student-id-card/{id}', [StudentController::class, 'view_student_id_card'])->name('view_student_id_card');
+	
+	// Center ID Card
+	Route::get('center-id-card', [App\Http\Controllers\admin\CenterController::class, 'viewCenterIdCard'])->name('center.view_id_card');
 
 	// Generate Admit Card
 	Route::get('generate-admit-card', [GenerateAdmitController::class, 'generate_admit_card'])->name('generate_admit_card');

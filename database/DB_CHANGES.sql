@@ -123,16 +123,16 @@ CREATE TABLE `center_recharge` (
   `cr_status` int(11) NOT NULL DEFAULT 0,
   `cr_type` varchar(255) NOT NULL DEFAULT 'CREDIT',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` time NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`cr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `center_recharge` (`cr_id`, `cr_payment_id`, `cr_razorpay_id`, `cr_FK_of_center_id`, `cr_amount`, `cr_status`, `cr_type`, `created_at`, `updated_at`) VALUES
-(9,	'order_O0SOFb6ghHsFt2',	'pay_O0SPjIuYBYvXFp',	1,	100,	1,	'CREDIT',	'2024-04-19 05:31:00',	'11:02:38'),
-(10,	'order_O0SRxG9WomYsFf',	'pay_O0SSUfEk8QD6Qb',	1,	60,	1,	'CREDIT',	'2024-04-19 05:34:30',	'11:05:11'),
-(11,	'order_O0UngpvybUYr3x',	'pay_O0Uo91jggVrX7R',	1,	300,	1,	'CREDIT',	'2024-04-19 07:52:28',	'13:23:04'),
-(12,	'order_O0lSUiAw9b2ucX',	'pay_O0lTGlche2CEAc',	1,	10000,	1,	'CREDIT',	'2024-04-20 00:10:12',	'05:41:06'),
-(13,	'order_O1a2v6eOzBiGxs',	'pay_O1a3PuK3OiX8Od',	1,	100,	1,	'CREDIT',	'2024-04-22 01:39:21',	'07:09:59');
+(9,	'order_O0SOFb6ghHsFt2',	'pay_O0SPjIuYBYvXFp',	1,	100,	1,	'CREDIT',	'2024-04-19 05:31:00',	'2024-04-19 11:02:38'),
+(10,	'order_O0SRxG9WomYsFf',	'pay_O0SSUfEk8QD6Qb',	1,	60,	1,	'CREDIT',	'2024-04-19 05:34:30',	'2024-04-19 11:05:11'),
+(11,	'order_O0UngpvybUYr3x',	'pay_O0Uo91jggVrX7R',	1,	300,	1,	'CREDIT',	'2024-04-19 07:52:28',	'2024-04-19 13:23:04'),
+(12,	'order_O0lSUiAw9b2ucX',	'pay_O0lTGlche2CEAc',	1,	10000,	1,	'CREDIT',	'2024-04-20 00:10:12',	'2024-04-20 05:41:06'),
+(13,	'order_O1a2v6eOzBiGxs',	'pay_O1a3PuK3OiX8Od',	1,	100,	1,	'CREDIT',	'2024-04-22 01:39:21',	'2024-04-22 07:09:59');
 
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course` (

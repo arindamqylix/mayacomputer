@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student ID Card - {{ $data->sl_name ?? 'Student' }}</title>
+<title>Center ID Card - {{ $data->cl_center_name ?? 'Center' }}</title>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
     
@@ -163,7 +163,7 @@
         min-width: 0;
     }
     
-    .student-name {
+    .center-name {
         font-size: 16px;
         font-weight: 700;
         color: #000077;
@@ -173,7 +173,7 @@
         line-height: 1.2;
     }
     
-    .student-info {
+    .center-info {
         background: #ffffff;
         border: 1px solid #e5e7eb;
         border-radius: 4px;
@@ -319,7 +319,7 @@
             width: 100%;
         }
         
-        .student-name {
+        .center-name {
             text-align: center;
             font-size: 18px;
         }
@@ -356,62 +356,60 @@
                 @endif
             </div>
             <div class="id-header-text">
-                <div class="card-type">Student ID Card</div>
+                <div class="card-type">Center ID Card</div>
             </div>
         </div>
         
         <div class="id-body">
             <div class="info-section">
-                <div class="student-name">{{ $data->sl_name ?? 'N/A' }}</div>
+                <div class="center-name">{{ $data->cl_center_name ?? 'N/A' }}</div>
                 
-                <div class="student-info">
+                <div class="center-info">
                     <div class="info-row">
                         <div class="info-label">
                             <i class="fas fa-hashtag"></i>
-                            <span>Reg. No:</span>
+                            <span>Center Code:</span>
                         </div>
-                        <div class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}</div>
+                        <div class="info-value">{{ $data->cl_code ?? 'N/A' }}</div>
                     </div>
                     
+                    @if($data->cl_director_name)
                     <div class="info-row">
                         <div class="info-label">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Course:</span>
+                            <i class="fas fa-user-tie"></i>
+                            <span>Director:</span>
                         </div>
-                        <div class="info-value">{{ $data->c_short_name ?? $data->c_full_name ?? 'N/A' }}</div>
-                    </div>
-                    
-                    @if($data->sl_dob)
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-birthday-cake"></i>
-                            <span>DOB:</span>
-                        </div>
-                        <div class="info-value">
-                            {{ \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') }}
-                        </div>
+                        <div class="info-value">{{ $data->cl_director_name }}</div>
                     </div>
                     @endif
                     
-                    @if($data->sl_mobile_no ?? $data->cl_mobile ?? null)
+                    @if($data->cl_center_address)
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Address:</span>
+                        </div>
+                        <div class="info-value" style="font-size: 9px;">{{ $data->cl_center_address }}</div>
+                    </div>
+                    @endif
+                    
+                    @if($data->cl_email)
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email:</span>
+                        </div>
+                        <div class="info-value" style="font-size: 9px;">{{ $data->cl_email }}</div>
+                    </div>
+                    @endif
+                    
+                    @if($data->cl_mobile)
                     <div class="info-row">
                         <div class="info-label">
                             <i class="fas fa-phone"></i>
                             <span>Mobile:</span>
                         </div>
-                        <div class="info-value">{{ $data->sl_mobile_no ?? $data->cl_mobile ?? 'N/A' }}</div>
-                    </div>
-                    @endif
-                    
-                    @if($data->cl_center_name ?? $data->cl_name ?? null)
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-building"></i>
-                            <span>Center:</span>
-                        </div>
-                        <div class="info-value" style="font-size: 9px;">
-                            {{ ($data->cl_center_name ?? $data->cl_name ?? 'N/A') . ($data->cl_code ? ' - ' . $data->cl_code : '') }}
-                        </div>
+                        <div class="info-value">{{ $data->cl_mobile }}</div>
                     </div>
                     @endif
                 </div>
@@ -419,11 +417,11 @@
             
             <div class="photo-section">
                 <div class="photo-container">
-                    @if(!empty($data->sl_photo))
-                        <img src="{{ asset('storage/student/' . $data->sl_photo) }}" alt="Student Photo" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-user\'></i></div>';">
+                    @if(!empty($data->cl_photo))
+                        <img src="{{ asset($data->cl_photo) }}" alt="Center Photo" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-building\'></i></div>';">
                     @else
                         <div class="photo-placeholder">
-                            <i class="fas fa-user"></i>
+                            <i class="fas fa-building"></i>
                         </div>
                     @endif
                 </div>
@@ -440,3 +438,4 @@
 </div>
 </body>
 </html>
+

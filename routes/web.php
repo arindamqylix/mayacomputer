@@ -35,8 +35,12 @@ Route::get('/courses-details/{slug}', [PagesController::class, 'courseDetails'])
 
 // Verification
 Route::get('/verification/registration', [PagesController::class, 'registration'])->name('verification.registration');
+Route::post('/verification/registration-card-data', [PagesController::class, 'getRegistrationCardData'])->name('verification.registration.card.data');
+Route::post('/verification/registration-card-pdf', [PagesController::class, 'generateRegistrationCardPDF'])->name('verification.registration.card.pdf');
 Route::get('/verification/icard', [PagesController::class, 'icard'])->name('verification.icard');
+Route::post('/verification/icard-data', [PagesController::class, 'getIcardData'])->name('verification.icard.data');
 Route::get('/verification/result', [PagesController::class, 'result'])->name('verification.result');
+Route::post('/verification/result-data', [PagesController::class, 'getResultData'])->name('verification.result.data');
 Route::get('/verification/certificate', [PagesController::class, 'certificate'])->name('verification.certificate');
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
 

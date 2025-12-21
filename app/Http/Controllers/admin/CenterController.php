@@ -289,4 +289,16 @@ class CenterController extends Controller
         $center = Center::where('cl_id',$id)->first();
         return view('center_certificate', compact('center'));
     }
+    
+    // View Center ID Card from Admin Panel
+    public function viewCenterIdCardAdmin($id){
+        $data = Center::where('cl_id',$id)->first();
+        return view('center.view_id_card', compact('data'));
+    }
+    
+    // View Center ID Card from Center Panel
+    public function viewCenterIdCard(){
+        $data = \Illuminate\Support\Facades\Auth::guard('center')->user();
+        return view('center.view_id_card', compact('data'));
+    }
 }

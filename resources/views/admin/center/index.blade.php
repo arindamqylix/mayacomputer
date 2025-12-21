@@ -206,6 +206,16 @@
 		color: white;
 	}
 	
+	.action-btn-idcard {
+		background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+		color: #000077;
+	}
+	
+	.action-btn-idcard:hover {
+		background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+		color: #000077;
+	}
+	
 	.action-btn-delete {
 		background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 		color: white;
@@ -388,8 +398,15 @@
 												</a>
 												<a href="{{ route('view_center_certificate', $data->cl_id) }}" 
 												   title="View Certificate" 
-												   class="btn btn-sm action-btn action-btn-certificate text-white">
+												   class="btn btn-sm action-btn action-btn-certificate text-white"
+												   target="_blank">
 													<i class="fas fa-certificate"></i>
+												</a>
+												<a href="{{ route('admin.view_center_id_card', $data->cl_id) }}" 
+												   title="View ID Card" 
+												   class="btn btn-sm action-btn action-btn-idcard"
+												   target="_blank">
+													<i class="fas fa-id-card"></i>
 												</a>
 												<a onclick="return confirm('Are you sure you want to delete this center?');" 
 												   href="{{ route('delete_center', $data->cl_id) }}" 

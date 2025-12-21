@@ -148,7 +148,7 @@
 
         <div class="note-section mt-4">
             <b>Notes & Explanation:</b>
-            <p>1. In case of any mistake being detected in the preparation of the Marks Statement at any stage or when it is brought to the notice of the concerned authority, we shall have the right to make necessary corrections.</p>
+            <p>1. In case of any mistake being detected in the preparation of the Marks Statement at any stage or when it is brought to the notice of the concerned authority, we shall have the right to make necessary corrections.</p>   
             <p>2. This is a computer-generated Provisional Marks Statement and hence does not require a signature. For verification, refer to the original Marks Statement.</p>
             <p>3. In case of any error in this statement of marks, it should be reported within 15 days.</p>
         </div>

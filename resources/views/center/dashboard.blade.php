@@ -431,10 +431,16 @@ body {
                         <i class="fas fa-building"></i>
                         Institution Profile
                     </h5>
-                    <a href="#" class="btn-edit-profile">
-                        <i class="fas fa-edit"></i>
-                        Edit
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('center.view_id_card') }}" class="btn-edit-profile" target="_blank" style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #000077; border: none;">
+                            <i class="fas fa-id-card"></i>
+                            View ID Card
+                        </a>
+                        <a href="#" class="btn-edit-profile">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </a>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-8">

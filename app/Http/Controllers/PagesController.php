@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use PDF;
 
 class PagesController extends Controller
 {
@@ -47,14 +48,263 @@ class PagesController extends Controller
         return view('frontend.registration');
     }
 
+    // AJAX endpoint to fetch registration card data
+    public function getRegistrationCardData(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration number and date of birth are required'
+            ], 400);
+        }
+
+        try {
+            // Fetch student data with related center and course information
+            $student = DB::table('student_login')
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_login.*',
+                    'center_login.cl_code',
+                    'center_login.cl_center_name',
+                    'center_login.cl_name',
+                    'center_login.cl_cin_no',
+                    'course.c_full_name',
+                    'course.c_duration',
+                    'course.c_short_name'
+                )
+                ->first();
+
+            if (!$student) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No record found with the provided registration number and date of birth'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $student
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Generate PDF for registration card
+    public function generateRegistrationCardPDF(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration number and date of birth are required'
+            ], 400);
+        }
+
+        try {
+            // Fetch student data with related center and course information
+            $student = DB::table('student_login')
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_login.*',
+                    'center_login.cl_code',
+                    'center_login.cl_center_name',
+                    'center_login.cl_name',
+                    'center_login.cl_cin_no',
+                    'course.c_full_name',
+                    'course.c_duration',
+                    'course.c_short_name'
+                )
+                ->first();
+
+            if (!$student) {
+                abort(404, 'No record found with the provided registration number and date of birth');
+            }
+
+            // Get site settings
+            $siteSettings = site_settings();
+            $siteLogo = $siteSettings && !empty($siteSettings->site_logo) ? $siteSettings->site_logo : 'logo.png';
+            $siteName = $siteSettings && !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
+            $siteEmail = $siteSettings && !empty($siteSettings->email) ? $siteSettings->email : 'mccsiswar@gmail.com';
+            $sitePhone = $siteSettings && !empty($siteSettings->phone) ? $siteSettings->phone : '+91 8825148127';
+
+            // Format dates - ensure proper date format handling
+            $dobFormatted = 'N/A';
+            if ($student->sl_dob) {
+                // Handle YYYY-MM-DD format from database
+                $dobTimestamp = strtotime($student->sl_dob);
+                if ($dobTimestamp !== false) {
+                    $dobFormatted = date('d-M-Y', $dobTimestamp);
+                } else {
+                    $dobFormatted = $student->sl_dob; // Use as-is if strtotime fails
+                }
+            }
+            
+            $validFrom = date('d-M-Y');
+            $validTill = date('d-M-Y', strtotime('+1 year'));
+            $issueDate = date('d-M-Y');
+            
+            if ($student->created_at) {
+                $createdTimestamp = strtotime($student->created_at);
+                if ($createdTimestamp !== false) {
+                    $validFrom = date('d-M-Y', $createdTimestamp);
+                    $validTill = date('d-M-Y', strtotime('+1 year', $createdTimestamp));
+                    $issueDate = date('d-M-Y', $createdTimestamp);
+                }
+            }
+
+            // Prepare data for PDF
+            $data = [
+                'student' => $student,
+                'siteLogo' => $siteLogo,
+                'siteName' => $siteName,
+                'siteEmail' => $siteEmail,
+                'sitePhone' => $sitePhone,
+                'cinNo' => $student->cl_cin_no ?? 'U47411DL2023PTC422329',
+                'dobFormatted' => $dobFormatted,
+                'validFrom' => $validFrom,
+                'validTill' => $validTill,
+                'issueDate' => $issueDate,
+            ];
+
+            // Generate PDF
+            $pdf = PDF::loadView('frontend.registration-card-pdf', $data);
+            $pdf->setPaper('A4', 'portrait');
+            
+            return $pdf->download('Registration_Card_' . $registrationNo . '.pdf');
+
+        } catch (\Exception $e) {
+            abort(500, 'An error occurred while generating PDF: ' . $e->getMessage());
+        }
+    }
+
     public function icard()
     {
         return view('frontend.icard');
     }
 
+    // AJAX endpoint to fetch I-Card data
+    public function getIcardData(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration number and date of birth are required'
+            ], 400);
+        }
+
+        try {
+            // Fetch student data with related center and course information
+            $student = DB::table('student_login')
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_login.*',
+                    'center_login.cl_code',
+                    'center_login.cl_center_name',
+                    'center_login.cl_name',
+                    'center_login.cl_mobile',
+                    'course.c_full_name',
+                    'course.c_short_name'
+                )
+                ->first();
+
+            if (!$student) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No record found with the provided registration number and date of birth'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $student
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function result()
     {
         return view('frontend.result');
+    }
+
+    // AJAX endpoint to fetch result/marksheet data
+    public function getResultData(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration number and date of birth are required'
+            ], 400);
+        }
+
+        try {
+            // Fetch result data with joins to student, course, and center tables
+            $result = DB::table('set_result')
+                ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'set_result.*',
+                    'student_login.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address'
+                )
+                ->first();
+
+            if (!$result) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No result found with the provided registration number and date of birth'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $result
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching data: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function downloadDocument($slug)

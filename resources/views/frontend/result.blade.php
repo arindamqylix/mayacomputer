@@ -259,6 +259,51 @@
 .verified-badge i {
     font-size: 16px;
 }
+/* Marksheet Styles */
+.marksheet-header {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+}
+.marksheet-header h4 {
+    margin: 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.student-photo {
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    padding: 3px;
+    background: #fff;
+}
+.marksheet-card {
+    background: #ffffff;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-top: 0;
+}
+.marksheet-card .table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+.grade-box {
+    font-size: 16px;
+    font-weight: 600;
+    background: #17a2b8;
+    color: #fff;
+    padding: 6px 15px;
+    border-radius: 6px;
+}
+.note-section {
+    font-size: 14px;
+    background: #fefefe;
+    border-left: 4px solid #007bff;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+}
 @media (max-width: 768px) {
     .verification-form-card {
         padding: 30px 20px;
@@ -293,6 +338,9 @@
     .info-table td {
         font-size: 14px;
         padding: 12px 15px;
+    }
+    .marksheet-card {
+        padding: 20px 15px;
     }
 }
 </style>
@@ -329,7 +377,7 @@
                 <h2>Verify Your Result</h2>
             </div>
             
-            <form action="{{ route('verification.registration') }}" method="GET" id="registrationVerifyForm">
+            <form id="resultVerifyForm">
                 <div class="form-row-aligned">
                     <div class="verification-form-group">
                         <label for="registration_no">
@@ -357,7 +405,7 @@
                         </div>
                     </div>
                     <div class="verify-btn-wrapper">
-                        <button type="submit" class="verify-btn">
+                        <button type="submit" class="verify-btn" id="verifyBtn">
                             <i class="fa fa-check-circle"></i>
                             <span>Verify Now</span>
                         </button>
@@ -366,88 +414,232 @@
             </form>
         </div>
 
-        <!-- Verification Result -->
-        @if(request('registration_no') && request('dob'))
-            @php
-                $student = DB::table('students')
-                    ->where('s_reg_no', request('registration_no'))
-                    ->where('s_dob', request('dob'))
-                    ->first();
-            @endphp
+        <!-- Loading Indicator -->
+        <div class="verification-result-card" id="loadingIndicator" style="display: none;">
+            <div style="text-align: center; padding: 30px;">
+                <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #000077;"></i>
+                <p style="margin-top: 15px; color: #000077; font-weight: 600;">Verifying Result...</p>
+            </div>
+        </div>
 
-            @if($student)
-                <div class="verification-result-card">
-                    <div class="success-alert">
-                        <i class="fa fa-check-circle"></i>
-                        <div>
-                            <strong style="font-size: 18px;">Registration Verified Successfully!</strong>
-                            <p style="margin: 5px 0 0 0; font-size: 14px;">Your registration details have been verified and displayed below.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="student-info-wrapper">
-                        <div class="student-photo-section">
-                            @if($student->s_photo)
-                                <img src="{{ asset($student->s_photo) }}" alt="Student Photo" class="student-photo">
-                            @else
-                                <div class="student-photo-placeholder">
-                                    <i class="fa fa-user"></i>
-                                </div>
-                            @endif
-                        </div>
-                        
-                        <div class="student-details-section">
-                            <table class="info-table">
-                                <tr>
-                                    <th><i class="fa fa-id-card"></i> Registration No</th>
-                                    <td><strong>{{ $student->s_reg_no }}</strong></td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-user"></i> Student Name</th>
-                                    <td>{{ $student->s_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-user-tie"></i> Father's Name</th>
-                                    <td>{{ $student->s_father_name ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-calendar"></i> Date of Birth</th>
-                                    <td>{{ \Carbon\Carbon::parse($student->s_dob)->format('d-M-Y') }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-book"></i> Course</th>
-                                    <td>{{ $student->s_course ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-building"></i> Center Name</th>
-                                    <td>{{ $student->s_center_name ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-check-circle"></i> Status</th>
-                                    <td>
-                                        <span class="verified-badge">
-                                            <i class="fa fa-check"></i>
-                                            Verified
-                                        </span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="verification-result-card">
-                    <div class="error-alert">
-                        <i class="fa fa-times-circle"></i>
-                        <div>
-                            <strong style="font-size: 18px;">No Record Found!</strong>
-                            <p style="margin: 5px 0 0 0; font-size: 14px;">Please check your Registration Number and Date of Birth. If the problem persists, please contact the administration.</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endif
+        <!-- Error Message Container -->
+        <div id="errorMessage" style="display: none;"></div>
+
+        <!-- Marksheet Display Container -->
+        <div id="marksheetContainer" style="display: none;"></div>
     </div>
 </div>
 <!-- Registration Verification Section End -->
 @endsection
+
+@push('custom-js')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#resultVerifyForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var registrationNo = $('#registration_no').val();
+        var dob = $('#dob').val();
+        
+        if (!registrationNo || !dob) {
+            alert('Please enter both Registration Number and Date of Birth');
+            return;
+        }
+        
+        // Ensure date is in YYYY-MM-DD format (matching database format)
+        dob = formatDateForDB(dob);
+        
+        if (!dob) {
+            alert('Please enter a valid date of birth');
+            return;
+        }
+        
+        // Hide previous results
+        $('#marksheetContainer').hide().empty();
+        $('#errorMessage').hide().empty();
+        
+        // Show loading
+        $('#loadingIndicator').show();
+        $('#verifyBtn').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> <span>Verifying...</span>');
+        
+        // AJAX request
+        $.ajax({
+            url: "{{ route('verification.result.data') }}",
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                registration_no: registrationNo,
+                dob: dob
+            },
+            dataType: 'json',
+            success: function(response) {
+                $('#loadingIndicator').hide();
+                $('#verifyBtn').prop('disabled', false).html('<i class="fa fa-check-circle"></i> <span>Verify Now</span>');
+                
+                if (response.success && response.data) {
+                    // Generate marksheet HTML
+                    var marksheetHtml = generateMarksheet(response.data);
+                    $('#marksheetContainer').html(marksheetHtml).show();
+                    
+                    // Scroll to marksheet
+                    $('html, body').animate({
+                        scrollTop: $('#marksheetContainer').offset().top - 100
+                    }, 500);
+                } else {
+                    showError(response.message || 'No result found');
+                }
+            },
+            error: function(xhr) {
+                $('#loadingIndicator').hide();
+                $('#verifyBtn').prop('disabled', false).html('<i class="fa fa-check-circle"></i> <span>Verify Now</span>');
+                
+                var errorMsg = 'An error occurred. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+                showError(errorMsg);
+            }
+        });
+    });
+    
+    function formatDateForDB(dateString) {
+        if (!dateString) return '';
+        var date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString;
+        return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+    }
+    
+    function showError(message) {
+        var errorHtml = '<div class="verification-result-card">' +
+            '<div class="error-alert">' +
+            '<i class="fa fa-times-circle"></i>' +
+            '<div>' +
+            '<strong style="font-size: 18px;">Error!</strong>' +
+            '<p style="margin: 5px 0 0 0; font-size: 14px;">' + message + '</p>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        $('#errorMessage').html(errorHtml).show();
+    }
+    
+    function generateMarksheet(data) {
+        var baseUrl = '{{ url("/") }}';
+        var photoUrl = data.sl_photo ? baseUrl + '/center/student_doc/' + data.sl_photo : baseUrl + '/default-avatar.png';
+        
+        var marksheetHtml = '<div class="verification-result-card">' +
+            '<div class="success-alert">' +
+            '<i class="fa fa-check-circle"></i>' +
+            '<div>' +
+            '<strong style="font-size: 18px;">Result Verified Successfully!</strong>' +
+            '<p style="margin: 5px 0 0 0; font-size: 14px;">Your result details have been verified and displayed below.</p>' +
+            '</div>' +
+            '</div>' +
+            '<div class="row mt-3">' +
+            '<div class="col-12">' +
+            '<div class="marksheet-header d-flex justify-content-between align-items-center">' +
+            '<h4>PROVISIONAL MARKS STATEMENT</h4>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="marksheet-card">' +
+            '<div class="row mb-4">' +
+            '<div class="col-md-9">' +
+            '<table class="table table-borderless">' +
+            '<tr>' +
+            '<td><strong>Course Name:</strong></td>' +
+            '<td>' + (data.c_full_name || '') + ' (' + (data.c_short_name || '') + ')</td>' +
+            '<td><strong>Reg. No:</strong></td>' +
+            '<td>' + (data.sl_reg_no || '') + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td><strong>Student Name:</strong></td>' +
+            '<td>' + (data.sl_name || '') + '</td>' +
+            '<td><strong>Center Code:</strong></td>' +
+            '<td>' + (data.cl_code || '') + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td><strong>Mother\'s Name:</strong></td>' +
+            '<td>' + (data.sl_mother_name || '') + '</td>' +
+            '<td><strong>Center Name:</strong></td>' +
+            '<td>' + (data.cl_center_name || '') + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td><strong>Father\'s Name:</strong></td>' +
+            '<td>' + (data.sl_father_name || '') + '</td>' +
+            '<td><strong>Center Address:</strong></td>' +
+            '<td>' + (data.cl_center_address || '') + '</td>' +
+            '</tr>' +
+            '</table>' +
+            '</div>' +
+            '<div class="col-md-3 text-center">' +
+            '<img src="' + photoUrl + '" alt="Student Photo" class="student-photo" width="120" height="140" onerror="this.src=\'' + baseUrl + '/default-avatar.png\'">' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="table-responsive">' +
+            '<table class="table table-striped table-bordered text-center align-middle">' +
+            '<thead class="table-primary">' +
+            '<tr>' +
+            '<th>Exam</th>' +
+            '<th>Full Marks</th>' +
+            '<th>Pass Marks</th>' +
+            '<th>Marks Obtained</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+            '<tr>' +
+            '<td>' + (data.sr_written || '') + '</td>' +
+            '<td>' + (data.sr_wr_full_marks || '') + '</td>' +
+            '<td>' + (data.sr_wr_pass_marks || '') + '</td>' +
+            '<td>' + (data.sr_wr_marks_obtained || '') + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>' + (data.sr_practical || '') + '</td>' +
+            '<td>' + (data.sr_pr_full_marks || '') + '</td>' +
+            '<td>' + (data.sr_pr_pass_marks || '') + '</td>' +
+            '<td>' + (data.sr_pr_marks_obtained || '') + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>' + (data.sr_project || '') + '</td>' +
+            '<td>' + (data.sr_ap_full_marks || '') + '</td>' +
+            '<td>' + (data.sr_ap_pass_marks || '') + '</td>' +
+            '<td>' + (data.sr_ap_marks_obtained || '') + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>' + (data.sr_viva || '') + '</td>' +
+            '<td>' + (data.sr_vv_full_marks || '') + '</td>' +
+            '<td>' + (data.sr_vv_pass_marks || '') + '</td>' +
+            '<td>' + (data.sr_vv_marks_obtained || '') + '</td>' +
+            '</tr>' +
+            '<tr class="fw-bold table-secondary">' +
+            '<td>Total</td>' +
+            '<td>' + (data.sr_total_full_marks || '') + '</td>' +
+            '<td>' + (data.sr_total_pass_marks || '') + '</td>' +
+            '<td>' + (data.sr_total_marks_obtained || '') + '</td>' +
+            '</tr>' +
+            '</tbody>' +
+            '</table>' +
+            '</div>' +
+            '<div class="d-flex justify-content-between align-items-center mt-3">' +
+            '<div class="grade-box">' +
+            'Percentage: ' + (data.sr_percentage || 'N/A') + '%' +
+            '</div>' +
+            '<div class="grade-box">' +
+            'Grade: ' + (data.sr_grade || 'N/A') +
+            '</div>' +
+            '</div>' +
+            '<div class="note-section mt-4">' +
+            '<b>Notes & Explanation:</b>' +
+            '<p>1. In case of any mistake being detected in the preparation of the Marks Statement at any stage or when it is brought to the notice of the concerned authority, we shall have the right to make necessary corrections.</p>' +
+            '<p>2. This is a computer-generated Provisional Marks Statement and hence does not require a signature. For verification, refer to the original Marks Statement.</p>' +
+            '<p>3. In case of any error in this statement of marks, it should be reported within 15 days.</p>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        
+        return marksheetHtml;
+    }
+});
+</script>
+@endpush

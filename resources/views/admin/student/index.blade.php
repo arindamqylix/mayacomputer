@@ -334,7 +334,7 @@
 			<!-- Table Section -->
 			<div class="card-body p-0">
 				<div class="table-responsive">
-					<table id="datatable-buttons" class="table modern-table table-hover w-100">
+					<table id="student-list-table" class="table modern-table table-hover w-100">
 						<thead>
 							<tr>
 								<th><i class="fas fa-building me-2"></i>Center Code</th>
@@ -407,7 +407,7 @@
 									<td>
 										<select name="student_status" 
 										        class="action-select" 
-										        onchange="studentStatus(this.value, {{ $data->sl_id }});"
+										        data-student-id="{{ $data->sl_id }}"
 										        data-current-status="{{ $data->sl_status }}">
 											<option value="">--Select--</option>
 											<option value="PENDING" {{ $data->sl_status == 'PENDING' ? 'selected' : '' }}>PENDING</option>
@@ -444,24 +444,57 @@
 
 @push('custom-js')
 <script type="text/javascript">
-	function studentStatus(status, student_id) {
-		if (!status) {
+	// Prevent global DataTable initialization from running on this table
+	$(document).ready(function() {
+		// Destroy any existing DataTable instance immediately (in case global script ran)
+		if ($.fn.DataTable.isDataTable('#student-list-table')) {
+			$('#student-list-table').DataTable().destroy();
+		}
+		if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+			$('#datatable-buttons').DataTable().destroy();
+		}
+	});
+	
+	// Define studentStatus function globally
+	window.studentStatus = function(status, student_id) {
+		console.log('studentStatus called:', status, student_id); // Debug
+		
+		if (!status || !student_id) {
+			console.log('Missing status or student_id');
 			return;
 		}
 		
+		// Find the select element
+		var $select = $('select[name="student_status"][data-student-id="' + student_id + '"]');
+		var currentStatus = $select.attr('data-current-status');
+		
+		console.log('Current status:', currentStatus, 'New status:', status); // Debug
+		
+		// Show confirmation
+		if (!confirm('Are you sure you want to change the student status to ' + status + '?')) {
+			// Reset select to previous value
+			$select.val(currentStatus);
+			return;
+		}
+		
+		var ajaxUrl = "{{ route('student_status_updated') }}";
+		console.log('AJAX URL:', ajaxUrl); // Debug
+		
 		$.ajax({
-			url: "{{ route('student_status_updated') }}",
-			method: "get",
+			url: ajaxUrl,
+			method: "GET",
 			data: {
 				status: status,
 				student_id: student_id
 			},
 			dataType: "json",
 			beforeSend: function() {
+				console.log('Sending AJAX request...'); // Debug
 				// Show loading indicator
-				$('body').append('<div class="loading-overlay"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+				$('body').append('<div class="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
 			},
 			success: function(response) {
+				console.log('AJAX Success:', response); // Debug
 				if (response.status == 1) {
 					// Use toastr if available, otherwise alert
 					if (typeof toastr !== 'undefined') {
@@ -474,33 +507,118 @@
 					}, 1000);
 				} else {
 					if (typeof toastr !== 'undefined') {
-						toastr.error(response.msg);
+						toastr.error(response.msg || 'Failed to update status');
 					} else {
-						alert(response.msg);
+						alert(response.msg || 'Failed to update status');
 					}
+					// Reset select on error
+					$select.val(currentStatus);
 				}
 			},
 			error: function(xhr, status, error) {
+				console.log('AJAX Error:', xhr, status, error); // Debug
+				console.log('Response:', xhr.responseText); // Debug
 				if (typeof toastr !== 'undefined') {
 					toastr.error('An error occurred. Please try again.');
 				} else {
 					alert('An error occurred. Please try again.');
 				}
+				// Reset select on error
+				$select.val(currentStatus);
 			},
 			complete: function() {
 				$('.loading-overlay').remove();
 			}
 		});
-	}
+	};
 	
-	// Enhanced search functionality
-	$(document).ready(function() {
-		var table = $('#datatable-buttons').DataTable();
+	// Enhanced search functionality and DataTable initialization
+	// Use setTimeout to ensure this runs after global scripts
+	setTimeout(function() {
+		// Check if DataTable is already initialized and destroy it
+		if ($.fn.DataTable.isDataTable('#student-list-table')) {
+			$('#student-list-table').DataTable().destroy();
+		}
+		
+		// Initialize DataTable without colvis button to avoid error
+		var table = $('#student-list-table').DataTable({
+			lengthChange: false,
+			buttons: ['copy', 'excel', 'pdf'],
+			dom: 'Bfrtip',
+			pageLength: 10,
+			responsive: true,
+			drawCallback: function() {
+				// Re-bind event handlers after DataTable redraws
+				bindStatusChangeHandlers();
+			}
+		});
+		
+		// Append buttons to wrapper if it exists
+		if ($('#student-list-table_wrapper .col-md-6').length) {
+			table.buttons().container().appendTo('#student-list-table_wrapper .col-md-6:eq(0)');
+		} else {
+			// Create wrapper if it doesn't exist
+			$('#student-list-table').before('<div id="student-list-table_wrapper"><div class="row"><div class="col-md-6"></div></div></div>');
+			table.buttons().container().appendTo('#student-list-table_wrapper .col-md-6:eq(0)');
+		}
 		
 		// Custom search input
 		$('#searchInput').on('keyup', function() {
 			table.search(this.value).draw();
 		});
-	});
+		
+		// Function to bind status change handlers
+		function bindStatusChangeHandlers() {
+			// Remove existing handlers to avoid duplicates
+			$('select[name="student_status"]').off('change.statusChange');
+			
+			// Bind new handlers
+			$('select[name="student_status"]').on('change.statusChange', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				var $select = $(this);
+				var status = $select.val();
+				var studentId = $select.data('student-id');
+				
+				console.log('Status changed event fired:', status, 'Student ID:', studentId); // Debug
+				console.log('Select element:', $select); // Debug
+				
+				if (status && studentId) {
+					console.log('Calling studentStatus function...'); // Debug
+					window.studentStatus(status, studentId);
+				} else if (!status) {
+					// Reset to current status if empty value selected
+					var currentStatus = $select.attr('data-current-status');
+					$select.val(currentStatus);
+				}
+			});
+			
+			console.log('Bound handlers to', $('select[name="student_status"]').length, 'select elements'); // Debug
+		}
+		
+		// Initial bind
+		bindStatusChangeHandlers();
+		
+		// Also use event delegation as fallback (with higher priority)
+		$(document).off('change', 'select[name="student_status"]').on('change', 'select[name="student_status"]', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var $select = $(this);
+			var status = $select.val();
+			var studentId = $select.data('student-id');
+			
+			console.log('Delegated event fired:', status, 'Student ID:', studentId); // Debug
+			
+			if (status && studentId) {
+				console.log('Calling studentStatus from delegated handler...'); // Debug
+				window.studentStatus(status, studentId);
+			} else if (!status) {
+				var currentStatus = $select.attr('data-current-status');
+				$select.val(currentStatus);
+			}
+		});
+	}, 100); // Run after global scripts
 </script>
 @endpush
