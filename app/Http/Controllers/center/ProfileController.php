@@ -84,33 +84,14 @@ class ProfileController extends Controller
 	}
 
 
-	// change password
+	// change password - DISABLED: Only admin can reset password
 	public function change_password()
 	{
-		return view('center.auth.change_password');
+		return redirect()->route('center_dashboard')->with('error', 'Password change is not available. Please contact admin to reset your password.');
 	}
 
 	public function change_password_save(Request $request)
 	{
-		// dd($request->all());
-		$request->validate([
-			'new_password' => 'required|min:6',
-			'confirm_password' => 'required|same:new_password',
-		], [
-			'new_password.required' => 'Please enter a new password.',
-			'new_password.min' => 'The new password must be at least 6 characters.',
-			'confirm_password.required' => 'Please confirm your new password.',
-			'confirm_password.same' => 'Confirm password does not match new password.',
-		]);
-		$center = Auth::guard('center')->user();
-		$login = Center::where('cl_code', $center->cl_code)->first();
-
-		if (!$login) {
-			return back()->with('error', 'Login record not found.');
-		}
-		$login->password = bcrypt($request->new_password);
-		$login->save();
-
-		return back()->with('success', 'Password Changed Successfully!');
+		return redirect()->route('center_dashboard')->with('error', 'Password change is not available. Please contact admin to reset your password.');
 	}
 }

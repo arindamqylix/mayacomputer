@@ -320,6 +320,44 @@ class CenterController extends Controller
         return response()->json($data);
     }
     
+    public function reset_center_password(Request $request){
+        $center = Center::where('cl_code', $request->center_code)->first();
+        
+        if(!$center):
+            return response()->json([
+                'msg' => 'Center not found!',
+                'status' => 0,
+            ]);
+        endif;
+        
+        // Reset password to mobile number
+        $mobileNumber = $center->cl_mobile;
+        if(!$mobileNumber):
+            return response()->json([
+                'msg' => 'Center mobile number not found!',
+                'status' => 0,
+            ]);
+        endif;
+        
+        $update = Center::where('cl_code', $request->center_code)->update([
+            'password' => Hash::make($mobileNumber)
+        ]);
+        
+        if($update):
+            $data = [
+                'msg' => 'Password Reset Successfully! New password is: ' . $mobileNumber,
+                'status' => 1,
+            ];
+        else:
+            $data = [
+                'msg' => 'Something Went Wrong!',
+                'status' => 0,
+            ];
+        endif;
+        
+        return response()->json($data);
+    }
+    
     public function center_certificate($id){
         $center = Center::where('cl_id',$id)->first();
         return view('center_certificate', compact('center'));

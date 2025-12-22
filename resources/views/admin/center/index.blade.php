@@ -416,6 +416,13 @@
 												   target="_blank">
 													<i class="fas fa-id-card"></i>
 												</a>
+												<button type="button" 
+												        onclick="resetCenterPassword('{{ $data->cl_code }}', '{{ $data->cl_mobile }}');" 
+												        class="btn btn-sm action-btn text-white"
+												        style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);"
+												        title="Reset Password to Mobile Number">
+													<i class="fas fa-key"></i>
+												</button>
 												<a onclick="return confirm('Are you sure you want to delete this center?');" 
 												   href="{{ route('delete_center', $data->cl_id) }}" 
 												   class="btn btn-sm action-btn action-btn-delete text-white"
@@ -524,6 +531,49 @@
 					alert('An error occurred. Please try again.');
 				}
 				$(buttonElement).prop('disabled', false);
+			}
+		});
+	}
+	
+	function resetCenterPassword(center_code, mobile_number) {
+		if (!confirm('Are you sure you want to reset password for center code: ' + center_code + '?\n\nPassword will be reset to mobile number: ' + mobile_number)) {
+			return;
+		}
+		
+		$.ajax({
+			url: "{{ route('center.reset_password') }}",
+			type: "get",
+			data: {
+				center_code: center_code
+			},
+			dataType: "json",
+			beforeSend: function() {
+				$('body').append('<div class="loading-overlay"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+			},
+			success: function(response) {
+				if (response.status == 1) {
+					if (typeof toastr !== 'undefined') {
+						toastr.success(response.msg);
+					} else {
+						alert(response.msg);
+					}
+				} else {
+					if (typeof toastr !== 'undefined') {
+						toastr.error(response.msg);
+					} else {
+						alert(response.msg);
+					}
+				}
+			},
+			error: function(xhr, status, error) {
+				if (typeof toastr !== 'undefined') {
+					toastr.error('An error occurred. Please try again.');
+				} else {
+					alert('An error occurred. Please try again.');
+				}
+			},
+			complete: function() {
+				$('.loading-overlay').remove();
 			}
 		});
 	}
