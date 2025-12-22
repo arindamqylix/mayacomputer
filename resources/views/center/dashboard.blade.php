@@ -485,8 +485,8 @@ body {
                     </div>
                     <div class="col-md-4">
                         <div class="profile-image-wrapper">
-                            @if(!empty($data->cl_photo) && file_exists(public_path('storage/center_profile/'.$data->cl_photo)))
-                                <img src="{{ asset('storage/center_profile/'.$data->cl_photo) }}" 
+                            @if(!empty($data->cl_photo))
+                                <img src="{{ asset($data->cl_photo) }}" 
                                      alt="Center Photo" 
                                      onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27150%27 height=%27180%27%3E%3Crect fill=%27%23ddd%27 width=%27150%27 height=%27180%27/%3E%3Ctext fill=%27%23999%27 font-family=%27sans-serif%27 font-size=%2716%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
                             @else
