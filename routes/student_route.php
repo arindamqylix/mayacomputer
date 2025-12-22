@@ -7,6 +7,7 @@ use App\Http\Controllers\student\PaymentController;
 use App\Http\Controllers\student\IdCardController;
 use App\Http\Controllers\student\RegistrationCardController;
 use App\Http\Controllers\student\AdmitCardController;
+use App\Http\Controllers\student\DocumentReissueController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -34,6 +35,13 @@ Route::group(['prefix'=>'student', 'middleware'=>'student:student'], function(){
 	Route::get('view-payment-history', [PaymentController::class, 'view_payment'])->name('view_payment');
 
 	Route::get('view-id-card', [IdCardController::class, 'view_id_card'])->name('view_id_card');
+
+	// Document Reissue
+	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('student.document_reissue');
+	Route::post('document-reissue', [DocumentReissueController::class, 'store'])->name('student.document_reissue.store');
+	Route::get('document-reissue/payment/{id}', [DocumentReissueController::class, 'payment'])->name('student.document_reissue.payment');
+	Route::post('document-reissue/payment/{id}', [DocumentReissueController::class, 'processPayment'])->name('student.document_reissue.payment.process');
+	Route::get('document-reissue/{id}', [DocumentReissueController::class, 'show'])->name('student.document_reissue.show');
 
 	// Chat
 	Route::get('chat', [ChatController::class, 'index'])->name('student.chat');

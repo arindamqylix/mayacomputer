@@ -108,6 +108,13 @@
         </a>
       </li>
 
+      <li class="nav-item {{ Request::segment(2) == 'document-reissue' ? 'active' : '' }}">
+        <a href="{{ route('student.document_reissue') }}" class="nav-link">
+            <span class="sidebar-icon"><i class="fa-solid fa-file-circle-plus"></i></span>
+            <span class="sidebar-text">Reissue Documents</span>
+        </a>
+      </li>
+
       <li class="nav-item d-none">
         <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
           data-bs-target="#submenu-study" aria-expanded="false">

@@ -166,6 +166,14 @@
         </a>
       </li>
 
+      <!-- Document Reissue -->
+      <li class="nav-item {{ Request::segment(2) == 'document-reissue' ? 'active' : '' }}">
+        <a href="{{ route('admin.document_reissue.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-file-circle-plus"></i></span>
+          <span class="sidebar-text">Document Reissue</span>
+        </a>
+      </li>
+
       <!-- Center Transaction -->
       <li class="nav-item {{ Request::segment(1) == 'center_transaction_payment' ? 'active' : '' }}">
         <a href="{{ route('center_transaction_payment') }}" class="nav-link">

@@ -22,6 +22,7 @@ use App\Http\Controllers\admin\GenerateAdmitController;
 use App\Http\Controllers\admin\WhatsAppTemplateController;
 use App\Http\Controllers\admin\CertificateController;
 use App\Http\Controllers\admin\CourierController;
+use App\Http\Controllers\admin\DocumentReissueController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -221,4 +222,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('courier', [CourierController::class, 'index'])->name('admin.courier.index');
 	Route::get('courier/dispatch/{id}', [CourierController::class, 'dispatch'])->name('admin.courier.dispatch');
 	Route::post('courier/dispatch/{id}', [CourierController::class, 'update_dispatch'])->name('admin.courier.update');
+	
+	// Document Reissue
+	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('admin.document_reissue.index');
+	Route::get('document-reissue/{id}', [DocumentReissueController::class, 'show'])->name('admin.document_reissue.show');
+	Route::post('document-reissue/{id}/status', [DocumentReissueController::class, 'updateStatus'])->name('admin.document_reissue.update_status');
+	Route::get('document-reissue/{id}/approve', [DocumentReissueController::class, 'approve'])->name('admin.document_reissue.approve');
+	Route::get('document-reissue/{id}/complete', [DocumentReissueController::class, 'complete'])->name('admin.document_reissue.complete');
+	Route::post('document-reissue/{id}/reject', [DocumentReissueController::class, 'reject'])->name('admin.document_reissue.reject');
 });
