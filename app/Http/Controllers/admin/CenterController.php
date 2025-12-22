@@ -109,7 +109,7 @@ class CenterController extends Controller
             'cl_mobile'             => $request->center_mobile,
             'password'              => Hash::make($request->center_mobile),
             'cl_account_status'     => 'PENDING',
-            'cl_profile_edit_enabled' => 1, // Default: Enable profile edit for new centers
+            'cl_profile_edit_enabled' => 0, // Default: Disabled (locked) - Admin needs to enable it
             'cl_email'              => $request->center_email,
         ];
 
