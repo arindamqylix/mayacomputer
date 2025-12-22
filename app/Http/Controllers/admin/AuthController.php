@@ -36,12 +36,30 @@ class AuthController extends Controller
     public function admin_dashboard()
     {
         // Student Statistics
-        $totalStudents = DB::table('student_login')->count();
-        $pendingStudents = DB::table('student_login')->where('sl_status', 'PENDING')->count();
-        $verifiedStudents = DB::table('student_login')->where('sl_status', 'VERIFIED')->count();
-        $resultUpdated = DB::table('student_login')->where('sl_status', 'RESULT UPDATED')->count();
-        $resultOut = DB::table('student_login')->where('sl_status', 'RESULT OUT')->count();
-        $dispatchedStudents = DB::table('student_login')->where('sl_status', 'DISPATCHED')->count();
+        $totalStudents = DB::table('student_login')
+        ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+        ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+        ->count();
+        $pendingStudents = DB::table('student_login')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('sl_status', 'PENDING')->count();
+        $verifiedStudents = DB::table('student_login')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('sl_status', 'VERIFIED')->count();
+        $resultUpdated = DB::table('student_login')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('sl_status', 'RESULT UPDATED')->count();
+        $resultOut = DB::table('student_login')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('sl_status', 'RESULT OUT')->count();
+        $dispatchedStudents = DB::table('student_login')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('sl_status', 'DISPATCHED')->count();
         
         // Student registrations by month (last 6 months)
         $studentMonthlyData = DB::table('student_login')

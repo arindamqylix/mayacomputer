@@ -18,14 +18,41 @@ class AuthController extends Controller
     }
 
     public function center_login_now(Request $request){
-        $center = Center::where('cl_code',$request->center_code)->where('cl_account_status','PENDING')->first();
-        if($center):
-            Session::flash('error', 'Your Account Not Verified! Please Wait for Approval');
-    	    return redirect()->back();
+        // First check if center exists and get status
+        $center = Center::where('cl_code', $request->center_code)->first();
+        
+        if (!$center):
+            Session::flash('error', 'Invalid credential');
+            return redirect()->back();
         endif;
         
+        // Check if center status is PENDING or BLOCKED
+        if($center->cl_account_status == 'PENDING'):
+            Session::flash('error', 'Your Account is Not Approved Yet! Please Wait for Admin Approval.');
+            return redirect()->back();
+        endif;
+        
+        if($center->cl_account_status == 'BLOCKED'):
+            Session::flash('error', 'Your Account is Blocked! Please Contact Admin.');
+            return redirect()->back();
+        endif;
+        
+        // Only allow ACTIVE or APPROVED centers to login
+        if($center->cl_account_status != 'ACTIVE' && $center->cl_account_status != 'APPROVED'):
+            Session::flash('error', 'Your Account is Not Active! Please Contact Admin.');
+            return redirect()->back();
+        endif;
+        
+        // Attempt authentication
     	if (Auth::guard('center')->attempt(['cl_code'=>$request->center_code,'password'=>$request->mobile])) {
-    	   return redirect('center/dashboard');
+            // Double check status after authentication
+            $authenticatedCenter = Auth::guard('center')->user();
+            if($authenticatedCenter->cl_account_status != 'ACTIVE' && $authenticatedCenter->cl_account_status != 'APPROVED'):
+                Auth::guard('center')->logout();
+                Session::flash('error', 'Your Account is Not Active! Please Contact Admin.');
+                return redirect()->back();
+            endif;
+            return redirect('center/dashboard');
     	}
     	Session::flash('error', 'Invalid credential');
     	return redirect()->back();
@@ -37,6 +64,14 @@ class AuthController extends Controller
     }
 
     public function center_dashboard(){
+        // Check if center status is active
+        $authenticatedCenter = Auth::guard('center')->user();
+        if($authenticatedCenter->cl_account_status != 'ACTIVE' && $authenticatedCenter->cl_account_status != 'APPROVED'):
+            Auth::guard('center')->logout();
+            Session::flash('error', 'Your Account is Not Active! Please Contact Admin.');
+            return redirect()->route('center_login');
+        endif;
+        
         $data = Center::where('cl_id',Auth::guard('center')->user()->cl_id)->first();
         $all_student = Student::where('sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)->count();
         $pending_student = Student::where('sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)->where('sl_status', 'PENDING')->count();

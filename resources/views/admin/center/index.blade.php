@@ -382,7 +382,7 @@
 									<td>
 										<div class="d-flex flex-column align-items-start">
 											<select class="action-select" 
-											        onchange="centerStatus({{ $data->cl_code }}, this.value);"
+											        onchange="centerStatus('{{ $data->cl_code }}', this.value);"
 											        data-current-status="{{ $data->cl_account_status ?? 'PENDING' }}">
 												<option value="">--Select Status--</option>
 												<option value="ACTIVE" {{ ($data->cl_account_status ?? '') == 'ACTIVE' ? 'selected' : '' }}>ACTIVE</option>
@@ -428,7 +428,7 @@
 </div>
 @endsection
 
-@push('custom-js')
+@push('custom-script')
 <script type="text/javascript">
 	function centerStatus(center_code, center_status) {
 		if (!center_status) {

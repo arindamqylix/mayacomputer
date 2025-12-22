@@ -442,7 +442,7 @@
 </div>
 @endsection
 
-@push('custom-js')
+@push('custom-script')
 <script type="text/javascript">
 	// Prevent global DataTable initialization from running on this table
 	$(document).ready(function() {

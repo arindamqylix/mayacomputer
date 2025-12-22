@@ -108,7 +108,7 @@ class CenterController extends Controller
             'cl_director_education' => $request->director_education,
             'cl_mobile'             => $request->center_mobile,
             'password'              => Hash::make($request->center_mobile),
-            'cl_account_status'     => 'APPROVED',
+            'cl_account_status'     => 'PENDING',
             'cl_email'              => $request->center_email,
         ];
 
