@@ -11,12 +11,23 @@ class ProfileController extends Controller
 	public function profile_update()
 	{
 		$data = Center::where('cl_id', Auth::guard('center')->user()->cl_id)->first();
+		
+		// Check if profile edit is enabled
+		if(($data->cl_profile_edit_enabled ?? 0) == 0) {
+			return redirect()->route('center_dashboard')->with('error', 'Profile editing is currently disabled by admin. Please contact admin to enable profile editing.');
+		}
+		
 		return view('center.profile_update', compact('data'));
 	}
 
 	public function profile_update_now(Request $request)
 	{
 		$center = Center::where('cl_id', Auth::guard('center')->user()->cl_id)->first();
+		
+		// Check if profile edit is enabled
+		if(($center->cl_profile_edit_enabled ?? 0) == 0) {
+			return redirect()->route('center_dashboard')->with('error', 'Profile editing is currently disabled by admin. Please contact admin to enable profile editing.');
+		}
 
 		// Default data array
 		$data = [

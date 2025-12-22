@@ -440,7 +440,7 @@ body {
                             <i class="fas fa-certificate"></i>
                             View Certificate
                         </a>
-                        <a href="#" class="btn-edit-profile">
+                        <a href="{{ route('profile_update') }}" class="btn-edit-profile">
                             <i class="fas fa-edit"></i>
                             Edit
                         </a>

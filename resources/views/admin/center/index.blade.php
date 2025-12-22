@@ -390,6 +390,14 @@
 												<option value="APPROVED" {{ ($data->cl_account_status ?? '') == 'APPROVED' ? 'selected' : '' }}>APPROVED</option>
 												<option value="BLOCKED" {{ ($data->cl_account_status ?? '') == 'BLOCKED' ? 'selected' : '' }}>BLOCKED</option>
 											</select>
+											<button type="button" 
+											        class="btn btn-sm action-select mt-2" 
+											        onclick="toggleProfileEdit('{{ $data->cl_code }}', this);"
+											        style="width: 100%; {{ ($data->cl_profile_edit_enabled ?? 0) == 1 ? 'background-color: #28a745; color: white;' : 'background-color: #dc3545; color: white;' }}"
+											        title="{{ ($data->cl_profile_edit_enabled ?? 0) == 1 ? 'Profile Edit Enabled - Click to Disable' : 'Profile Edit Disabled - Click to Enable' }}">
+												<i class="fas {{ ($data->cl_profile_edit_enabled ?? 0) == 1 ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
+												{{ ($data->cl_profile_edit_enabled ?? 0) == 1 ? 'Edit Enabled' : 'Edit Disabled' }}
+											</button>
 											<div class="mt-2">
 												<a href="{{ route('edit_center', $data->cl_id) }}" 
 												   title="Edit Center" 
@@ -475,6 +483,47 @@
 			},
 			complete: function() {
 				$('.loading-overlay').remove();
+			}
+		});
+	}
+	
+	function toggleProfileEdit(center_code, buttonElement) {
+		$.ajax({
+			url: "{{ route('center.toggle_profile_edit') }}",
+			type: "get",
+			data: {
+				center_code: center_code
+			},
+			dataType: "json",
+			beforeSend: function() {
+				$(buttonElement).prop('disabled', true);
+			},
+			success: function(response) {
+				if (response.status == 1) {
+					if (typeof toastr !== 'undefined') {
+						toastr.success(response.msg);
+					} else {
+						alert(response.msg);
+					}
+					setTimeout(function() {
+						location.reload();
+					}, 1000);
+				} else {
+					if (typeof toastr !== 'undefined') {
+						toastr.error(response.msg);
+					} else {
+						alert(response.msg);
+					}
+					$(buttonElement).prop('disabled', false);
+				}
+			},
+			error: function(xhr, status, error) {
+				if (typeof toastr !== 'undefined') {
+					toastr.error('An error occurred. Please try again.');
+				} else {
+					alert('An error occurred. Please try again.');
+				}
+				$(buttonElement).prop('disabled', false);
 			}
 		});
 	}

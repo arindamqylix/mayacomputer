@@ -109,6 +109,7 @@ class CenterController extends Controller
             'cl_mobile'             => $request->center_mobile,
             'password'              => Hash::make($request->center_mobile),
             'cl_account_status'     => 'PENDING',
+            'cl_profile_edit_enabled' => 1, // Default: Enable profile edit for new centers
             'cl_email'              => $request->center_email,
         ];
 
@@ -279,6 +280,40 @@ class CenterController extends Controller
             $data = [
                 'msg'   => 'Something Went Wrong!',
                 'status'    => 0,
+            ];
+        endif;
+        
+        return response()->json($data);
+    }
+    
+    public function toggle_profile_edit(Request $request){
+        $center = Center::where('cl_code', $request->center_code)->first();
+        
+        if(!$center):
+            return response()->json([
+                'msg' => 'Center not found!',
+                'status' => 0,
+            ]);
+        endif;
+        
+        // Toggle the profile edit enabled status
+        $newStatus = $center->cl_profile_edit_enabled == 1 ? 0 : 1;
+        
+        $update = Center::where('cl_code', $request->center_code)->update([
+            'cl_profile_edit_enabled' => $newStatus
+        ]);
+        
+        if($update):
+            $statusText = $newStatus == 1 ? 'Enabled' : 'Disabled';
+            $data = [
+                'msg' => 'Profile Edit ' . $statusText . ' Successfully!',
+                'status' => 1,
+                'new_status' => $newStatus,
+            ];
+        else:
+            $data = [
+                'msg' => 'Something Went Wrong!',
+                'status' => 0,
             ];
         endif;
         

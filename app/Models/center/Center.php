@@ -31,6 +31,7 @@ class Center extends Authenticatable
     	'cl_mobile',
     	'cl_email',
         'cl_account_status',
+        'cl_profile_edit_enabled',
     	'password'
     ];
 

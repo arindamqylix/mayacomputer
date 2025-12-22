@@ -40,6 +40,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::post('edit-center/{id}', [CenterController::class, 'update_center'])->name('edit_center'); 
 	Route::get('delete-center/{id}', [CenterController::class, 'delete_center'])->name('delete_center'); 
 	Route::get('center-account-status', [CenterController::class, 'center_status'])->name('center.status');
+	Route::get('center-toggle-profile-edit', [CenterController::class, 'toggle_profile_edit'])->name('center.toggle_profile_edit');
 	Route::get('center-certificate/{id}', [CenterController::class, 'center_certificate'])->name('view_center_certificate');
 	Route::get('center-id-card/{id}', [CenterController::class, 'viewCenterIdCardAdmin'])->name('admin.view_center_id_card');
 
