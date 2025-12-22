@@ -97,10 +97,16 @@
 		<div class="col-12">
 			<div class="modern-card">
 				<div class="certificate-list-header">
-					<h4>
-						<i class="fas fa-certificate"></i>
-						All Certificates
-					</h4>
+					<div class="d-flex justify-content-between align-items-center">
+						<h4>
+							<i class="fas fa-certificate"></i>
+							All Certificates
+						</h4>
+						<a href="{{ route('admin.certificate_generate') }}" class="btn-view">
+							<i class="fas fa-plus-circle"></i>
+							Generate Certificate
+						</a>
+					</div>
 				</div>
 				<div class="card-body">
 					@if($certificates->count() > 0)
@@ -147,7 +153,7 @@
 												</span>
 											</td>
 											<td>
-												<a href="{{ route('admin.certificate_view', $cert->sc_id) }}" 
+												<a href="{{ route('admin.view_certificate', $cert->sc_id) }}" 
 												   class="btn-view"
 												   target="_blank"
 												   title="View Certificate">

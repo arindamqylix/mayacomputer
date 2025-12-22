@@ -207,5 +207,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 
 	// Certificate
 	Route::get('certificate-list', [CertificateController::class, 'certificate_list'])->name('admin.certificate_list');
-	Route::get('view-certificate/{id}', [CertificateController::class, 'view_certificate'])->name('admin.certificate_view');
+	Route::get('certificate/generate', [CertificateController::class, 'generate_certificate'])->name('admin.certificate_generate');
+	Route::post('certificate/generate', [CertificateController::class, 'generate_certificate_now'])->name('admin.certificate_store');
+	Route::get('certificate/view/{id}', [CertificateController::class, 'view_certificate'])->name('admin.view_certificate');
+	
+	// Result
+	Route::get('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result'])->name('admin.set_result');
+	Route::post('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result_now'])->name('admin.set_result');
+	Route::get('result-list', [App\Http\Controllers\admin\ResultController::class, 'result_list'])->name('admin.result_list');
 });

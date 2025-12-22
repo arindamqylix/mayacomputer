@@ -123,19 +123,39 @@
       </li>
 
       <!-- Result -->
-      <li class="nav-item {{ Request::segment(2) == 'student-result-list' ? 'active' : '' }}">
-        <a href="{{ route('student_result_view') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
-          <span class="sidebar-text">View Result</span>
-        </a>
+      <li class="nav-item">
+        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-result" aria-expanded="false">
+          <span>
+            <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
+            <span class="sidebar-text">Result</span>
+          </span>
+          <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </span>
+        <div class="multi-level collapse" role="list" id="submenu-result" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('admin.set_result') }}" class="nav-link"><span class="sidebar-text">Set Result</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.result_list') }}" class="nav-link"><span class="sidebar-text">Result List</span></a></li>
+          </ul>
+        </div>
       </li>
 
       <!-- Certificate -->
-      <li class="nav-item {{ Request::segment(2) == 'certificate-list' || Request::segment(2) == 'view-certificate' ? 'active' : '' }}">
-        <a href="{{ route('admin.certificate_list') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
-          <span class="sidebar-text">Certificates</span>
-        </a>
+      <li class="nav-item">
+        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-certificate" aria-expanded="false">
+          <span>
+            <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
+            <span class="sidebar-text">Certificates</span>
+          </span>
+          <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </span>
+        <div class="multi-level collapse" role="list" id="submenu-certificate" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('admin.certificate_generate') }}" class="nav-link"><span class="sidebar-text">Generate Certificate</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.certificate_list') }}" class="nav-link"><span class="sidebar-text">Certificate List</span></a></li>
+          </ul>
+        </div>
       </li>
 
       <!-- Center Transaction -->

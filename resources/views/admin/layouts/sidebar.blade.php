@@ -88,13 +88,13 @@
           </a>
           <ul class="sub-menu" aria-expanded="true">
             <li>
-              <a href="{{ route('set_result') }}" class="waves-effect">
+              <a href="{{ route('admin.set_result') }}" class="waves-effect">
                 <i class="bx bx-file"></i>
                 <span key="t-file-manager">Set Result</span>
               </a>
             </li>
             <li>
-              <a href="{{ route('student_result_list') }}" class="waves-effect">
+              <a href="{{ route('admin.result_list') }}" class="waves-effect">
                 <i class="bx bx-file"></i>
                 <span key="t-file-manager">Result List</span>
               </a>
@@ -102,10 +102,24 @@
           </ul>
         </li>
         <li>
-          <a href="{{ route('admin.certificate_list') }}">
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-award"></i>
             <span key="t-layouts">Certificates</span>
           </a>
+          <ul class="sub-menu" aria-expanded="true">
+            <li>
+              <a href="{{ route('admin.certificate_generate') }}" class="waves-effect">
+                <i class="bx bx-file"></i>
+                <span key="t-file-manager">Generate Certificate</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('admin.certificate_list') }}" class="waves-effect">
+                <i class="bx bx-file"></i>
+                <span key="t-file-manager">Certificate List</span>
+              </a>
+            </li>
+          </ul>
         </li>
         <li>
           <a href="{{ route('view_transaction') }}">
