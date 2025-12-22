@@ -221,6 +221,16 @@
 		background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
 		color: white;
 	}
+
+	.action-btn-block {
+		background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+		color: white;
+	}
+	
+	.action-btn-block:hover {
+		background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
+		color: white;
+	}
 	
 	/* Add Button */
 	.btn-add-student {
@@ -420,16 +430,22 @@
 									</td>
 									<td>
 										<a href="{{ route('edit_student', $data->sl_id) }}" 
-										   title="Edit Student" 
+										   title="Edit Student (All Status Allowed)" 
 										   class="btn btn-sm action-btn action-btn-edit text-white">
 											<i class="fas fa-edit"></i>
 										</a>
-										<a onclick="return confirm('Are you sure you want to delete this student?');" 
+										<a onclick="return confirm('Are you sure you want to delete this student? This will delete all related records (results, certificates, fees, etc.). This action cannot be undone!');" 
 										   href="{{ route('delete_student', $data->sl_id) }}" 
 										   class="btn btn-sm action-btn action-btn-delete text-white"
-										   title="Delete Student">
+										   title="Delete Student (All Status Allowed)">
 											<i class="fas fa-trash-alt"></i>
 										</a>
+										<button type="button" 
+										        onclick="blockStudent({{ $data->sl_id }})" 
+										        class="btn btn-sm action-btn action-btn-block text-white {{ $data->sl_status == 'BLOCK' ? 'btn-warning' : 'btn-secondary' }}"
+										        title="Block/Unblock Student">
+											<i class="fas fa-ban"></i>
+										</button>
 									</td>
 								</tr>
 							@endforeach
@@ -620,5 +636,55 @@
 			}
 		});
 	}, 100); // Run after global scripts
+	
+	// Block/Unblock Student Function
+	window.blockStudent = function(studentId) {
+		if (!confirm('Are you sure you want to block/unblock this student?')) {
+			return;
+		}
+		
+		var ajaxUrl = "{{ route('student_status_updated') }}";
+		
+		$.ajax({
+			url: ajaxUrl,
+			method: "GET",
+			data: {
+				status: 'BLOCK',
+				student_id: studentId
+			},
+			dataType: "json",
+			beforeSend: function() {
+				$('body').append('<div class="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+			},
+			success: function(response) {
+				if (response.status == 1) {
+					if (typeof toastr !== 'undefined') {
+						toastr.success(response.msg);
+					} else {
+						alert(response.msg);
+					}
+					setTimeout(function() {
+						location.reload();
+					}, 1000);
+				} else {
+					if (typeof toastr !== 'undefined') {
+						toastr.error(response.msg || 'Failed to update status');
+					} else {
+						alert(response.msg || 'Failed to update status');
+					}
+				}
+			},
+			error: function(xhr, status, error) {
+				if (typeof toastr !== 'undefined') {
+					toastr.error('An error occurred. Please try again.');
+				} else {
+					alert('An error occurred. Please try again.');
+				}
+			},
+			complete: function() {
+				$('.loading-overlay').remove();
+			}
+		});
+	};
 </script>
 @endpush

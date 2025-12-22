@@ -308,9 +308,55 @@ class StudentController extends Controller
 
 	public function delete_student($id)
 	{
-		$student = DB::table('student_login')->where('sl_id', $id)->first();
-		DB::table('student_login')->where('sl_id', $id)->delete();
-		return redirect()->back()->with('success', 'Student Deleted Successfully!');
+		try {
+			DB::beginTransaction();
+			
+			$student = DB::table('student_login')->where('sl_id', $id)->first();
+			
+			if (!$student) {
+				return redirect()->back()->with('error', 'Student not found!');
+			}
+			
+			// Delete related records first (if needed, database should handle CASCADE)
+			// Delete student results if any
+			DB::table('set_result')->where('sr_FK_of_student_id', $id)->delete();
+			
+			// Delete student certificates if any
+			DB::table('student_certificates')->where('sc_FK_of_student_id', $id)->delete();
+			
+			// Delete student fees if any
+			DB::table('set_fee')->where('sf_FK_of_student_id', $id)->delete();
+			
+			// Delete fees payments if any
+			DB::table('fees_payment')->where('fp_FK_of_student_id', $id)->delete();
+			
+			// Delete student admit cards if any
+			DB::table('student_admit_cards')->where('student_id', $id)->delete();
+			
+			// Delete transactions if any
+			DB::table('transaction')->where('t_student_reg_no', $student->sl_reg_no)->delete();
+			
+			// Delete student files if exist
+			if ($student->sl_photo && file_exists(public_path($student->sl_photo))) {
+				@unlink(public_path($student->sl_photo));
+			}
+			if ($student->sl_id_card && file_exists(public_path($student->sl_id_card))) {
+				@unlink(public_path($student->sl_id_card));
+			}
+			if ($student->sl_educational_certificate && file_exists(public_path($student->sl_educational_certificate))) {
+				@unlink(public_path($student->sl_educational_certificate));
+			}
+			
+			// Finally delete the student
+			DB::table('student_login')->where('sl_id', $id)->delete();
+			
+			DB::commit();
+			return redirect()->back()->with('success', 'Student and all related records deleted successfully!');
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::error('delete_student error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+			return redirect()->back()->with('error', 'Failed to delete student. Please try again.');
+		}
 	}
 
 	public function student_status_updated(Request $request)
