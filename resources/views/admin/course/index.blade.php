@@ -35,22 +35,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($course as $course)
+                            @foreach($course as $item)
                                 <tr>
-                                    <td>{{ $course->id }}</td>
+                                    <td>{{ $item->c_id }}</td>
                                     <td>
-                                        @if($course->course_image)
-                                            <img style="width: 74px;height: 71px;" src="{{ asset('storage/'.$course->course_image) }}" alt="Course Image" class="course-img">
+                                        @if($item->file)
+                                            <img style="width: 74px;height: 71px;" src="{{ asset($item->file) }}" alt="Course Image" class="course-img">
                                         @else
                                             <span class="badge bg-secondary">No Image</span>
                                         @endif
                                     </td>
-                                    <td>{{ $course->course_name }}</td>
-                                    <td>{{ $course->course_duration }}</td>
-                                    <td>{{ Str::limit($course->course_details, 50) }}</td>
+                                    <td>{{ $item->c_full_name ?? $item->c_short_name }}</td>
+                                    <td>{{ $item->c_duration ?? 'N/A' }}</td>
+                                    <td>{{ Str::limit($item->description ?? '', 50) }}</td>
                                     <td>
-                                        <a href="{{ route('edit.course', $course->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="{{ route('delete.course', $course->id) }}" class="btn btn-danger btn-sm"
+                                        <a href="{{ route('edit_course', $item->c_id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="{{ route('delete_course', $item->c_id) }}" class="btn btn-danger btn-sm"
                                            onclick="return confirm('Are you sure you want to delete this course?')">Delete</a>
                                     </td>
                                 </tr>
