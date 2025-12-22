@@ -16,9 +16,13 @@ class Certificate extends Model
         'sc_FK_of_result_id',
         'sc_certificate_number',
         'sc_issue_date',
-        'sc_status'
+        'sc_status',
+        'sc_dispatch_thru',
+        'sc_dispatch_date',
+        'sc_tracking_number',
+        'sc_doc_quantity'
     ];
 
-    protected $dates = ['sc_issue_date'];
+    protected $dates = ['sc_issue_date', 'sc_dispatch_date'];
 }
 

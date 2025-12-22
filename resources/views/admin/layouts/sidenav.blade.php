@@ -158,6 +158,14 @@
         </div>
       </li>
 
+      <!-- Courier -->
+      <li class="nav-item {{ Request::segment(2) == 'courier' ? 'active' : '' }}">
+        <a href="{{ route('admin.courier.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-truck"></i></span>
+          <span class="sidebar-text">Courier</span>
+        </a>
+      </li>
+
       <!-- Center Transaction -->
       <li class="nav-item {{ Request::segment(1) == 'center_transaction_payment' ? 'active' : '' }}">
         <a href="{{ route('center_transaction_payment') }}" class="nav-link">

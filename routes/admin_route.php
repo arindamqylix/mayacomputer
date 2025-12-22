@@ -21,6 +21,7 @@ use App\Http\Controllers\admin\HomepageController;
 use App\Http\Controllers\admin\GenerateAdmitController;
 use App\Http\Controllers\admin\WhatsAppTemplateController;
 use App\Http\Controllers\admin\CertificateController;
+use App\Http\Controllers\admin\CourierController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -215,4 +216,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result'])->name('admin.set_result');
 	Route::post('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result_now'])->name('admin.set_result');
 	Route::get('result-list', [App\Http\Controllers\admin\ResultController::class, 'result_list'])->name('admin.result_list');
+	
+	// Courier
+	Route::get('courier', [CourierController::class, 'index'])->name('admin.courier.index');
+	Route::get('courier/dispatch/{id}', [CourierController::class, 'dispatch'])->name('admin.courier.dispatch');
+	Route::post('courier/dispatch/{id}', [CourierController::class, 'update_dispatch'])->name('admin.courier.update');
 });

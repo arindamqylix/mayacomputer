@@ -58,11 +58,31 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
+		margin-right: 0.5rem;
 	}
 	
 	.btn-view:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 4px 8px rgba(17, 153, 142, 0.4);
+		color: white;
+	}
+
+	.btn-dispatch {
+		background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 0.375rem;
+		font-weight: 600;
+		font-size: 0.875rem;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	
+	.btn-dispatch:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
 		color: white;
 	}
 	
@@ -121,6 +141,8 @@
 										<th>Course</th>
 										<th>Center</th>
 										<th>Issue Date</th>
+										<th>Dispatch Date</th>
+										<th>Tracking No.</th>
 										<th>Status</th>
 										<th>Action</th>
 									</tr>
@@ -145,6 +167,20 @@
 													{{ \Carbon\Carbon::parse($cert->sc_issue_date)->format('d-M-Y') }}
 												@else
 													N/A
+												@endif
+											</td>
+											<td>
+												@if($cert->sc_dispatch_date)
+													{{ \Carbon\Carbon::parse($cert->sc_dispatch_date)->format('d-M-Y') }}
+												@else
+													<span class="text-muted">Not Dispatched</span>
+												@endif
+											</td>
+											<td>
+												@if($cert->sc_tracking_number)
+													<strong>{{ $cert->sc_tracking_number }}</strong>
+												@else
+													<span class="text-muted">-</span>
 												@endif
 											</td>
 											<td>
