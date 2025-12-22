@@ -15,6 +15,7 @@ class GenerateAdmitController extends Controller
         // Fetch Students + Course + Center (Only students of center)
         $students = DB::table('student_login')
             ->leftJoin('course', 'course.c_id', '=', 'student_login.sl_FK_of_course_id')
+            ->where('student_login.sl_FK_of_center_id', $centerId)
             ->select(
                 'student_login.*',
                 'course.c_full_name',
@@ -46,10 +47,11 @@ class GenerateAdmitController extends Controller
 
         $centerId = Auth::guard('center')->user()->cl_id;
 
-        // Get student details
+        // Get student details - verify student belongs to this center
         $student = DB::table('student_login')
             ->leftJoin('course', 'course.c_id', '=', 'student_login.sl_FK_of_course_id')
             ->where('student_login.sl_id', $request->reg_no)
+            ->where('student_login.sl_FK_of_center_id', $centerId)
             ->select(
                 'student_login.sl_id',
                 'student_login.sl_reg_no',
