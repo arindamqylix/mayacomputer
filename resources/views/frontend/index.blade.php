@@ -61,19 +61,17 @@
 /* Banner Section Styles */
 .banner-content-wrapper {
     max-width: 700px !important;
-    background: rgba(0, 0, 0, 0.5) !important;
-    border-radius: 15px !important;
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    background: transparent !important;
 }
 
 /* Banner Section Responsive */
 @media (max-width: 991px) {
     .banner-content-wrapper {
-        text-align: center !important;
+        text-align: right !important;
         max-width: 600px !important;
         padding: 40px 30px !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
     }
     .banner-heading {
         font-size: 42px !important;
@@ -84,7 +82,9 @@
     .banner-content-wrapper {
         max-width: 90% !important;
         padding: 35px 25px !important;
-        border-radius: 12px !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+        text-align: right !important;
     }
     .banner-heading {
         font-size: 32px !important;
@@ -670,7 +670,7 @@
                 <div class="display-table">
                     <div class="display-table-cell">
                         <div class="container">
-                            <div class="banner-content-wrapper" style="max-width: 700px; margin: 0 auto; text-align: left; padding: 50px 40px; background: rgba(0, 0, 0, 0.5); border-radius: 15px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); position: relative; z-index: 1;">
+                            <div class="banner-content-wrapper" style="max-width: 700px; margin-left: auto; margin-right: 0; text-align: right; padding: 50px 40px; background: transparent; position: relative; z-index: 1;">
                                 @if($banner->title)
                                 <div class="banner-title-badge" style="display: inline-block; padding: 8px 20px; background: #ff6b35; color: #ffffff; border-radius: 25px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);">
                                     {{ $banner->title }}
