@@ -307,6 +307,86 @@ class PagesController extends Controller
         }
     }
 
+    // AJAX endpoint to fetch certificate data
+    public function getCertificateData(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration number and date of birth are required'
+            ], 400);
+        }
+
+        try {
+            // First try to fetch from student_certificates table
+            $certificate = DB::table('student_certificates')
+                ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'set_result.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'course.c_duration',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_cin_no'
+                )
+                ->first();
+
+            // If certificate not found, try fetching from set_result table directly (like result verification)
+            if (!$certificate) {
+                $certificate = DB::table('set_result')
+                    ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                    ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                    ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                    ->where('student_login.sl_reg_no', $registrationNo)
+                    ->where('student_login.sl_dob', $dob)
+                    ->select(
+                        'set_result.*',
+                        'student_login.*',
+                        'course.c_full_name',
+                        'course.c_short_name',
+                        'course.c_duration',
+                        'center_login.cl_name',
+                        'center_login.cl_center_name',
+                        'center_login.cl_code',
+                        'center_login.cl_center_address',
+                        'center_login.cl_cin_no'
+                    )
+                    ->first();
+            }
+
+            if (!$certificate) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No certificate found with the provided registration number and date of birth'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $certificate
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function downloadDocument($slug)
     {
         $data = DB::table('cms_downloads')->where('slug',$slug)->first();
@@ -514,6 +594,76 @@ class PagesController extends Controller
     public function certificate()
     {
         return view('frontend.certificate');
+    }
+
+    public function showCertificate(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->route('verification.certificate')
+                ->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            // First try to fetch from student_certificates table
+            $certificate = DB::table('student_certificates')
+                ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'set_result.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'course.c_duration',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_cin_no'
+                )
+                ->first();
+
+            // If certificate not found, try fetching from set_result table directly
+            if (!$certificate) {
+                $certificate = DB::table('set_result')
+                    ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                    ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                    ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                    ->where('student_login.sl_reg_no', $registrationNo)
+                    ->where('student_login.sl_dob', $dob)
+                    ->select(
+                        'set_result.*',
+                        'student_login.*',
+                        'course.c_full_name',
+                        'course.c_short_name',
+                        'course.c_duration',
+                        'center_login.cl_name',
+                        'center_login.cl_center_name',
+                        'center_login.cl_code',
+                        'center_login.cl_center_address',
+                        'center_login.cl_cin_no'
+                    )
+                    ->first();
+            }
+
+            if (!$certificate) {
+                return redirect()->route('verification.certificate')
+                    ->with('error', 'No certificate found with the provided registration number and date of birth');
+            }
+
+            return view('frontend.certificate-view', compact('certificate'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('verification.certificate')
+                ->with('error', 'An error occurred while fetching certificate: ' . $e->getMessage());
+        }
     }
 
     // XML Sitemap for search engines

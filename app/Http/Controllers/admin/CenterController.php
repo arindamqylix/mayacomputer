@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\center\Center; 
 use Hash;
+use Carbon\Carbon;
 class CenterController extends Controller
 {
     /**
@@ -92,6 +93,10 @@ class CenterController extends Controller
             $director_pan = 'center/' . $fileName;
         }
 
+        // Set default registration date and valid till date (5 years from registration)
+        $registrationDate = Carbon::parse('2024-04-01');
+        $validTillDate = $registrationDate->copy()->addYears(5);
+
         // Insert data
         $data = [
             'cl_code'               => $nextInvoiceNumber,
@@ -111,6 +116,8 @@ class CenterController extends Controller
             'cl_account_status'     => 'PENDING',
             'cl_profile_edit_enabled' => 0, // Default: Disabled (locked) - Admin needs to enable it
             'cl_email'              => $request->center_email,
+            'cl_registration_date'  => $registrationDate->format('Y-m-d'),
+            'cl_valid_till'         => $validTillDate->format('Y-m-d'),
         ];
 
         $insert = Center::create($data);

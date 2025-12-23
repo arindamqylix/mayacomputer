@@ -525,7 +525,8 @@ $(document).ready(function() {
     
     function generateMarksheet(data) {
         var baseUrl = '{{ url("/") }}';
-        var photoUrl = data.sl_photo ? baseUrl + '/center/student_doc/' + data.sl_photo : baseUrl + '/default-avatar.png';
+        var photoUrl = data.sl_photo ? baseUrl + '/' + data.sl_photo : baseUrl + '/default-avatar.png';
+        alert(photoUrl);
         
         var marksheetHtml = '<div class="verification-result-card">' +
             '<div class="success-alert">' +

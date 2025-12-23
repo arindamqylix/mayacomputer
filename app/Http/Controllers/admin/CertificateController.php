@@ -72,12 +72,15 @@ class CertificateController extends Controller
     // Generate certificate for a student (admin panel)
     public function generate_certificate_now(Request $request)
     {
+        $request->validate([
+            'student_id' => 'required|integer',
+            'result_id' => 'required|integer',
+            'issue_date' => 'required|date',
+        ]);
+
         $studentId = $request->input('student_id');
         $resultId = $request->input('result_id');
-
-        if (!$studentId || !$resultId) {
-            return back()->with('error', 'Student ID and Result ID are required!');
-        }
+        $issueDate = $request->input('issue_date');
 
         // Get student to find center_id
         $student = Student::findOrFail($studentId);
@@ -100,7 +103,7 @@ class CertificateController extends Controller
             'sc_FK_of_center_id' => $student->sl_FK_of_center_id,
             'sc_FK_of_result_id' => $resultId,
             'sc_certificate_number' => $certificateNumber,
-            'sc_issue_date' => Carbon::now()->format('Y-m-d'),
+            'sc_issue_date' => $issueDate,
             'sc_status' => 'GENERATED'
         ]);
 

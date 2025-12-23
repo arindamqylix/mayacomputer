@@ -8,6 +8,8 @@ use App\Http\Controllers\student\IdCardController;
 use App\Http\Controllers\student\RegistrationCardController;
 use App\Http\Controllers\student\AdmitCardController;
 use App\Http\Controllers\student\DocumentReissueController;
+use App\Http\Controllers\student\InvoiceController;
+use App\Http\Controllers\student\SyllabusController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -51,4 +53,12 @@ Route::group(['prefix'=>'student', 'middleware'=>'student:student'], function(){
 	Route::get('notifications', [NotificationController::class, 'index'])->name('student.notifications.index');
 	Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('student.notifications.read');
 	Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('student.notifications.read-all');
+	
+	// Invoice
+	Route::get('invoices/fee-payment', [InvoiceController::class, 'feePaymentInvoices'])->name('student.invoice.fee_payment_list');
+	Route::get('invoices/fee-payment/{id}', [InvoiceController::class, 'viewFeePaymentInvoice'])->name('student.invoice.fee_payment_view');
+	Route::get('invoices/fee-payment/{id}/download', [InvoiceController::class, 'downloadFeePaymentInvoice'])->name('student.invoice.fee_payment_download');
+	
+	// Syllabus
+	Route::get('syllabus', [SyllabusController::class, 'index'])->name('student.syllabus.index');
 });

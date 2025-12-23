@@ -32,7 +32,11 @@ class Center extends Authenticatable
     	'cl_email',
         'cl_account_status',
         'cl_profile_edit_enabled',
+        'cl_registration_date',
+        'cl_valid_till',
     	'password'
     ];
+
+    protected $dates = ['cl_registration_date', 'cl_valid_till'];
 
 }

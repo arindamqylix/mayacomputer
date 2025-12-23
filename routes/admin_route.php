@@ -23,6 +23,7 @@ use App\Http\Controllers\admin\WhatsAppTemplateController;
 use App\Http\Controllers\admin\CertificateController;
 use App\Http\Controllers\admin\CourierController;
 use App\Http\Controllers\admin\DocumentReissueController;
+use App\Http\Controllers\admin\InvoiceController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -46,6 +47,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('center-reset-password', [CenterController::class, 'reset_center_password'])->name('center.reset_password');
 	Route::get('center-certificate/{id}', [CenterController::class, 'center_certificate'])->name('view_center_certificate');
 	Route::get('center-id-card/{id}', [CenterController::class, 'viewCenterIdCardAdmin'])->name('admin.view_center_id_card');
+	Route::get('center-renew/{id}', [App\Http\Controllers\admin\CenterRenewalController::class, 'renew'])->name('admin.center.renew');
+	Route::post('center-renew/{id}', [App\Http\Controllers\admin\CenterRenewalController::class, 'renewNow'])->name('admin.center.renew.now');
 
 	// Student
 	Route::get('add-new-student', [StudentController::class, 'add_student'])->name('add_new_student');
@@ -70,6 +73,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('edit-course/{id}', [CourseController::class, 'edit_course'])->name('edit_course');
 	Route::post('edit-course/{id}', [CourseController::class, 'update_course'])->name('edit_course');
 	Route::get('delete-course/{id}', [CourseController::class, 'delete_course'])->name('delete_course');
+
+	// Course Syllabus
+	Route::get('syllabus-list', [App\Http\Controllers\admin\SyllabusController::class, 'index'])->name('admin.syllabus.index');
+	Route::get('syllabus-add', [App\Http\Controllers\admin\SyllabusController::class, 'create'])->name('admin.syllabus.create');
+	Route::post('syllabus-store', [App\Http\Controllers\admin\SyllabusController::class, 'store'])->name('admin.syllabus.store');
+	Route::get('syllabus-edit/{id}', [App\Http\Controllers\admin\SyllabusController::class, 'edit'])->name('admin.syllabus.edit');
+	Route::post('syllabus-update/{id}', [App\Http\Controllers\admin\SyllabusController::class, 'update'])->name('admin.syllabus.update');
+	Route::get('syllabus-delete/{id}', [App\Http\Controllers\admin\SyllabusController::class, 'destroy'])->name('admin.syllabus.delete');
 
 	// Upadate Student Registration Fees
 	Route::get('set-student-registration-fees', [StudentController::class, 'set_reg_fee'])->name('set_reg_fee');
@@ -230,4 +241,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('document-reissue/{id}/approve', [DocumentReissueController::class, 'approve'])->name('admin.document_reissue.approve');
 	Route::get('document-reissue/{id}/complete', [DocumentReissueController::class, 'complete'])->name('admin.document_reissue.complete');
 	Route::post('document-reissue/{id}/reject', [DocumentReissueController::class, 'reject'])->name('admin.document_reissue.reject');
+	
+	// Invoice
+	Route::get('invoices/center-recharge', [InvoiceController::class, 'centerRechargeInvoices'])->name('admin.invoice.center_recharge_list');
+	Route::get('invoices/center-recharge/{id}', [InvoiceController::class, 'viewCenterRechargeInvoice'])->name('admin.invoice.center_recharge_view');
+	Route::get('invoices/center-recharge/{id}/download', [InvoiceController::class, 'downloadCenterRechargeInvoice'])->name('admin.invoice.center_recharge_download');
 });

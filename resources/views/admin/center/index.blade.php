@@ -226,6 +226,16 @@
 		color: white;
 	}
 	
+	.action-btn-renew {
+		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		color: white;
+	}
+	
+	.action-btn-renew:hover {
+		background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+		color: white;
+	}
+	
 	/* Add Button */
 	.btn-add-center {
 		background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -338,6 +348,8 @@
 								<th><i class="fas fa-envelope me-2"></i>Email</th>
 								<th><i class="fas fa-phone me-2"></i>Mobile</th>
 								<th><i class="fas fa-wallet me-2"></i>Balance</th>
+								<th><i class="fas fa-calendar me-2"></i>Reg. Date</th>
+								<th><i class="fas fa-calendar-check me-2"></i>Valid Till</th>
 								<th><i class="fas fa-info-circle me-2"></i>Status</th>
 								<th><i class="fas fa-tools me-2"></i>Action</th>
 							</tr>
@@ -370,6 +382,37 @@
 										<span class="balance-badge">
 											₹{{ number_format($data->cl_wallet_balance ?? 0, 2) }}
 										</span>
+									</td>
+									<td>
+										@if($data->cl_registration_date)
+											{{ \Carbon\Carbon::parse($data->cl_registration_date)->format('d/m/Y') }}
+										@else
+											<span class="text-muted">N/A</span>
+										@endif
+									</td>
+									<td>
+										@php
+											$validTill = $data->cl_valid_till ? \Carbon\Carbon::parse($data->cl_valid_till) : null;
+											$isExpired = $validTill && $validTill->isPast();
+											$isExpiringSoon = $validTill && $validTill->isFuture() && $validTill->diffInDays(now()) <= 30;
+										@endphp
+										@if($validTill)
+											@if($isExpired)
+												<span class="badge bg-danger" title="Expired on {{ $validTill->format('d/m/Y') }}">
+													<i class="fas fa-exclamation-triangle"></i> Expired ({{ $validTill->format('d/m/Y') }})
+												</span>
+											@elseif($isExpiringSoon)
+												<span class="badge bg-warning text-dark" title="Expiring on {{ $validTill->format('d/m/Y') }}">
+													<i class="fas fa-clock"></i> {{ $validTill->format('d/m/Y') }}
+												</span>
+											@else
+												<span class="badge bg-success" title="Valid till {{ $validTill->format('d/m/Y') }}">
+													<i class="fas fa-check-circle"></i> {{ $validTill->format('d/m/Y') }}
+												</span>
+											@endif
+										@else
+											<span class="text-muted">N/A</span>
+										@endif
 									</td>
 									<td>
 										@php
@@ -423,6 +466,12 @@
 												        title="Reset Password to Mobile Number">
 													<i class="fas fa-key"></i>
 												</button>
+												<a href="{{ route('admin.center.renew', $data->cl_id) }}" 
+												   class="btn btn-sm action-btn action-btn-renew text-white"
+												   title="Renew Registration (Extend by 5 years)"
+												   onclick="return confirm('Are you sure you want to renew this center registration for 5 years?');">
+													<i class="fas fa-sync-alt"></i>
+												</a>
 												<a onclick="return confirm('Are you sure you want to delete this center?');" 
 												   href="{{ route('delete_center', $data->cl_id) }}" 
 												   class="btn btn-sm action-btn action-btn-delete text-white"

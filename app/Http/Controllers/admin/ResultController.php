@@ -29,8 +29,9 @@ class ResultController extends Controller
 
     // Store result (admin panel)
     public function set_result_now(Request $request){
-        $total_full_marks = $request->wr_full_marks + $request->pr_full_marks + $request->ap_full_marks + $request->vv_full_marks;
-        $total_pass_marks = $request->wr_pass_marks + $request->pr_pass_marks + $request->ap_pass_marks + $request->vv_pass_marks;
+        // Fixed values: Full Marks = 100, Pass Marks = 40 for each subject
+        $total_full_marks = 100 + 100 + 100 + 100; // 400 total
+        $total_pass_marks = 40 + 40 + 40 + 40; // 160 total
         $total_marks_obtained = $request->wr_marks_obtained + $request->pr_marks_obtained + $request->ap_marks_obtained + $request->vv_marks_obtained;
 
         // Total marks for each subject (assuming each subject has a maximum of 100 marks)
@@ -65,20 +66,20 @@ class ResultController extends Controller
             'sr_FK_of_student_id'         => $request->student_id,
             'sr_FK_of_center_id'          => $student->sl_FK_of_center_id,
             'sr_written'                  => $request->written,
-            'sr_wr_full_marks'            => $request->wr_full_marks,
-            'sr_wr_pass_marks'            => $request->wr_pass_marks,
+            'sr_wr_full_marks'            => 100,
+            'sr_wr_pass_marks'            => 40,
             'sr_wr_marks_obtained'        => $request->wr_marks_obtained,
             'sr_practical'                => $request->practical,
-            'sr_pr_full_marks'            => $request->pr_full_marks,
-            'sr_pr_pass_marks'            => $request->pr_pass_marks,
+            'sr_pr_full_marks'            => 100,
+            'sr_pr_pass_marks'            => 40,
             'sr_pr_marks_obtained'        => $request->pr_marks_obtained,
             'sr_project'                  => $request->project,
-            'sr_ap_full_marks'            => $request->ap_full_marks,
-            'sr_ap_pass_marks'            => $request->ap_pass_marks,
+            'sr_ap_full_marks'            => 100,
+            'sr_ap_pass_marks'            => 40,
             'sr_ap_marks_obtained'        => $request->ap_marks_obtained,
             'sr_viva'                     => $request->viva,
-            'sr_vv_full_marks'            => $request->vv_full_marks,
-            'sr_vv_pass_marks'            => $request->vv_pass_marks,
+            'sr_vv_full_marks'            => 100,
+            'sr_vv_pass_marks'            => 40,
             'sr_vv_marks_obtained'        => $request->vv_marks_obtained,
             'sr_total_full_marks'         => $total_full_marks,
             'sr_total_pass_marks'         => $total_pass_marks,

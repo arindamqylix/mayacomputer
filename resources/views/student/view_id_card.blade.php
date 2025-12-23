@@ -420,7 +420,7 @@
             <div class="photo-section">
                 <div class="photo-container">
                     @if(!empty($data->sl_photo))
-                        <img src="{{ asset('storage/student/' . $data->sl_photo) }}" alt="Student Photo" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-user\'></i></div>';">
+                        <img src="{{ asset($data->sl_photo) }}" alt="Student Photo" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-user\'></i></div>';">
                     @else
                         <div class="photo-placeholder">
                             <i class="fas fa-user"></i>

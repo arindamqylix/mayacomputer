@@ -16,6 +16,8 @@ use App\Http\Controllers\center\ResultController;
 use App\Http\Controllers\center\ProfileController;
 use App\Http\Controllers\center\AttendanceSheetController;
 use App\Http\Controllers\center\CertificateController;
+use App\Http\Controllers\center\InvoiceController;
+use App\Http\Controllers\center\SyllabusController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 
@@ -131,6 +133,18 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	Route::get('notifications', [NotificationController::class, 'index'])->name('center.notifications.index');
 	Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('center.notifications.read');
 	Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('center.notifications.read-all');
+	
+	// Invoice
+	Route::get('invoices/wallet-recharge', [InvoiceController::class, 'walletRechargeInvoices'])->name('center.invoice.wallet_recharge_list');
+	Route::get('invoices/wallet-recharge/{id}', [InvoiceController::class, 'viewWalletRechargeInvoice'])->name('center.invoice.wallet_recharge_view');
+	Route::get('invoices/wallet-recharge/{id}/download', [InvoiceController::class, 'downloadWalletRechargeInvoice'])->name('center.invoice.wallet_recharge_download');
+	Route::get('invoices/student-payment', [InvoiceController::class, 'studentPaymentInvoices'])->name('center.invoice.student_payment_list');
+	Route::get('invoices/student-payment/{id}', [InvoiceController::class, 'viewStudentPaymentInvoice'])->name('center.invoice.student_payment_view');
+	Route::get('invoices/student-payment/{id}/download', [InvoiceController::class, 'downloadStudentPaymentInvoice'])->name('center.invoice.student_payment_download');
+	
+	// Syllabus
+	Route::get('syllabus', [SyllabusController::class, 'index'])->name('center.syllabus.index');
+	Route::get('syllabus/course/{id}', [SyllabusController::class, 'viewCourse'])->name('center.syllabus.view');
 });
 Route::get('admin/center-recharge', [RechargeController::class, 'center_recharge_by_admin'])->name('center.recharge');
 Route::post('admin/center-recharge', [RechargeController::class, 'center_recharge_by_admin_now'])->name('center.recharge');

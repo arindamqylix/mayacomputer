@@ -247,13 +247,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="wr_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="wr_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="wr_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="wr_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -281,13 +281,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="pr_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="pr_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="pr_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="pr_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -315,13 +315,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="ap_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="ap_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="ap_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="ap_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -349,13 +349,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="vv_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="vv_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="vv_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="vv_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -405,15 +405,16 @@
 <script>
 	$(document).ready(function() {
 		function calculateSummary() {
-			const wr_full = parseFloat($('input[name="wr_full_marks"]').val()) || 0;
-			const pr_full = parseFloat($('input[name="pr_full_marks"]').val()) || 0;
-			const ap_full = parseFloat($('input[name="ap_full_marks"]').val()) || 0;
-			const vv_full = parseFloat($('input[name="vv_full_marks"]').val()) || 0;
+			// Fixed values: Full Marks = 100, Pass Marks = 40
+			const wr_full = 100;
+			const pr_full = 100;
+			const ap_full = 100;
+			const vv_full = 100;
 			
-			const wr_pass = parseFloat($('input[name="wr_pass_marks"]').val()) || 0;
-			const pr_pass = parseFloat($('input[name="pr_pass_marks"]').val()) || 0;
-			const ap_pass = parseFloat($('input[name="ap_pass_marks"]').val()) || 0;
-			const vv_pass = parseFloat($('input[name="vv_pass_marks"]').val()) || 0;
+			const wr_pass = 40;
+			const pr_pass = 40;
+			const ap_pass = 40;
+			const vv_pass = 40;
 			
 			const wr_obtained = parseFloat($('input[name="wr_marks_obtained"]').val()) || 0;
 			const pr_obtained = parseFloat($('input[name="pr_marks_obtained"]').val()) || 0;

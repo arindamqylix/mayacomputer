@@ -244,13 +244,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="wr_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="wr_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="wr_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="wr_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -278,13 +278,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="pr_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="pr_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="pr_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="pr_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -312,13 +312,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="ap_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="ap_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="ap_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="ap_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -346,13 +346,13 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Full Marks</label>
-									<input type="number" class="form-control" name="vv_full_marks" placeholder="Full Marks" required>
+									<input type="number" class="form-control" name="vv_full_marks" value="100" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Pass Marks</label>
-									<input type="number" class="form-control" name="vv_pass_marks" placeholder="Pass Marks" required>
+									<input type="number" class="form-control" name="vv_pass_marks" value="40" readonly required>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -414,17 +414,17 @@
 			var ap_marks = parseFloat($('input[name="ap_marks_obtained"]').val()) || 0;
 			var vv_marks = parseFloat($('input[name="vv_marks_obtained"]').val()) || 0;
 			
-			// Get all full marks
-			var wr_full = parseFloat($('input[name="wr_full_marks"]').val()) || 0;
-			var pr_full = parseFloat($('input[name="pr_full_marks"]').val()) || 0;
-			var ap_full = parseFloat($('input[name="ap_full_marks"]').val()) || 0;
-			var vv_full = parseFloat($('input[name="vv_full_marks"]').val()) || 0;
+			// Get all full marks (fixed at 100)
+			var wr_full = 100;
+			var pr_full = 100;
+			var ap_full = 100;
+			var vv_full = 100;
 			
-			// Get all pass marks
-			var wr_pass = parseFloat($('input[name="wr_pass_marks"]').val()) || 0;
-			var pr_pass = parseFloat($('input[name="pr_pass_marks"]').val()) || 0;
-			var ap_pass = parseFloat($('input[name="ap_pass_marks"]').val()) || 0;
-			var vv_pass = parseFloat($('input[name="vv_pass_marks"]').val()) || 0;
+			// Get all pass marks (fixed at 40)
+			var wr_pass = 40;
+			var pr_pass = 40;
+			var ap_pass = 40;
+			var vv_pass = 40;
 			
 			// Calculate totals
 			var total_full = wr_full + pr_full + ap_full + vv_full;

@@ -96,6 +96,14 @@
         </a>
       </li>
 
+      <!-- Course Syllabus -->
+      <li class="nav-item {{ Request::segment(2) == 'syllabus' ? 'active' : '' }}">
+        <a href="{{ route('admin.syllabus.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-book-open"></i></span>
+          <span class="sidebar-text">Course Syllabus</span>
+        </a>
+      </li>
+
       <!-- Student Reg Fee -->
       <li class="nav-item {{ Request::segment(1) == 'set_reg_fee' ? 'active' : '' }}">
         <a href="{{ route('set_reg_fee') }}" class="nav-link">
@@ -187,6 +195,14 @@
         <a href="{{ route('center_payment') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
           <span class="sidebar-text">Center Payment History</span>
+        </a>
+      </li>
+
+      <!-- Invoice -->
+      <li class="nav-item {{ Request::segment(2) == 'invoices' ? 'active' : '' }}">
+        <a href="{{ route('admin.invoice.center_recharge_list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-file-invoice"></i></span>
+          <span class="sidebar-text">Invoices</span>
         </a>
       </li>
 

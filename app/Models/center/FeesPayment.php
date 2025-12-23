@@ -9,7 +9,7 @@ class FeesPayment extends Model
 {
     use HasFactory;
     protected $table = 'fees_payment';
-    protected $primaryKey = 'sf_id ';
+    protected $primaryKey = 'fp_id';
     protected $fillable = [
         'fp_receipt_no',
         'fp_FK_of_student_id',
@@ -19,4 +19,16 @@ class FeesPayment extends Model
     	'fp_amount',
     	'fp_remarks'
     ];
+    
+    // Relationship with Student
+    public function student()
+    {
+        return $this->belongsTo(\App\Models\student\Student::class, 'fp_FK_of_student_id', 'sl_id');
+    }
+    
+    // Relationship with Center
+    public function center()
+    {
+        return $this->belongsTo(Center::class, 'fp_FK_of_center_id', 'cl_id');
+    }
 }

@@ -209,8 +209,31 @@
         </a>
       </li>
 
-      
+      <!-- Invoice -->
+      <li class="nav-item">
+        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-invoice" aria-expanded="false">
+          <span>
+            <span class="sidebar-icon"><i class="fa-solid fa-file-invoice"></i></span>
+            <span class="sidebar-text">Invoices</span>
+          </span>
+          <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </span>
+        <div class="multi-level collapse" role="list" id="submenu-invoice" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('center.invoice.wallet_recharge_list') }}" class="nav-link"><span class="sidebar-text">Wallet Recharge</span></a></li>
+            <li class="nav-item"><a href="{{ route('center.invoice.student_payment_list') }}" class="nav-link"><span class="sidebar-text">Student Payment</span></a></li>
+          </ul>
+        </div>
+      </li>
 
+      <!-- Course Syllabus -->
+      <li class="nav-item {{ Request::segment(2) == 'syllabus' ? 'active' : '' }}">
+        <a href="{{ route('center.syllabus.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-book-open"></i></span>
+          <span class="sidebar-text">Course Syllabus</span>
+        </a>
+      </li>
 
       
 

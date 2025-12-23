@@ -115,6 +115,13 @@
         </a>
       </li>
 
+      <li class="nav-item {{ Request::segment(2) == 'syllabus' ? 'active' : '' }}">
+        <a href="{{ route('student.syllabus.index') }}" class="nav-link">
+            <span class="sidebar-icon"><i class="fa-solid fa-book-open"></i></span>
+            <span class="sidebar-text">Course Syllabus</span>
+        </a>
+      </li>
+
       <li class="nav-item d-none">
         <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
           data-bs-target="#submenu-study" aria-expanded="false">
@@ -143,6 +150,13 @@
         <a href="#" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-pen-to-square"></i></span>
             <span class="sidebar-text">Final Exam</span>
+        </a>
+      </li>
+
+      <li class="nav-item {{ Request::segment(2) == 'invoices' ? 'active' : '' }}">
+        <a href="{{ route('student.invoice.fee_payment_list') }}" class="nav-link">
+            <span class="sidebar-icon"><i class="fa-solid fa-file-invoice"></i></span>
+            <span class="sidebar-text">Invoices</span>
         </a>
       </li>
 

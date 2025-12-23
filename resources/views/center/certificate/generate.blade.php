@@ -70,6 +70,19 @@
 		font-size: 0.75rem;
 		font-weight: 600;
 	}
+	
+	.cert-form-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+	
+	.cert-form-wrapper .form-control-sm {
+		max-width: 150px;
+		font-size: 0.875rem;
+		padding: 0.375rem 0.5rem;
+	}
 </style>
 @endpush
 
@@ -111,7 +124,7 @@
 										<th>Percentage</th>
 										<th>Grade</th>
 										<th>Status</th>
-										<th>Action</th>
+										<th>Issue Date & Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -137,10 +150,16 @@
 											</td>
 											<td>
 												@if(!$student->certificate_id)
-													<form action="{{ route('center.certificate_generate_now') }}" method="POST" style="display: inline;">
+													<form action="{{ route('center.certificate_generate_now') }}" method="POST" class="cert-form-wrapper">
 														@csrf
 														<input type="hidden" name="student_id" value="{{ $student->sl_id }}">
 														<input type="hidden" name="result_id" value="{{ $student->result_id }}">
+														<input type="date" 
+														       name="issue_date" 
+														       class="form-control form-control-sm" 
+														       value="{{ date('Y-m-d') }}" 
+														       required
+														       title="Select Certificate Issue Date">
 														<button type="submit" class="btn-generate" onclick="return confirm('Are you sure you want to generate certificate for {{ $student->sl_name }}?')">
 															<i class="fas fa-certificate"></i>
 															Generate

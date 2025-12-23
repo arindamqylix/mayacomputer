@@ -15,4 +15,10 @@ class Recharge extends Model
     	'cr_FK_of_center_id',
     	'cr_amount',
     ];
+    
+    // Relationship with Center
+    public function center()
+    {
+        return $this->belongsTo(Center::class, 'cr_FK_of_center_id', 'cl_id');
+    }
 }
