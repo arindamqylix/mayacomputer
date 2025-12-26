@@ -104,6 +104,11 @@ class StudentController extends Controller
         if (!$data) {
             return redirect()->route('pending_student')->with('error', 'Student not found.');
         }
+
+        // Check if student is approved (status should be VERIFIED or higher)
+        if ($data->sl_status == 'PENDING' || $data->sl_status == 'BLOCK') {
+            return redirect()->route('pending_student')->with('error', 'Student registration is pending approval. Registration card cannot be generated until admin approves the student.');
+        }
         
         return view('admin.student.registration_card', compact('data'));
     }
@@ -374,8 +379,18 @@ class StudentController extends Controller
         $data = DB::table('student_login')
                 ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
                 ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                ->where('student_login.sl_id',$id)
+                ->where('student_login.sl_id', $id)
+                ->where('student_login.sl_FK_of_center_id', CENTER_ID) // Ensure center can only view their own students
                 ->first();
+
+        if (!$data) {
+            return redirect()->route('student_id_card')->with('error', 'Student not found.');
+        }
+
+        // Check if student is approved (status should be VERIFIED or higher)
+        if ($data->sl_status == 'PENDING' || $data->sl_status == 'BLOCK') {
+            return redirect()->route('student_id_card')->with('error', 'Student registration is pending approval. ID Card cannot be generated until admin approves the student.');
+        }
 
         return view('center.student.view_student_id_card', compact('data'));
     }

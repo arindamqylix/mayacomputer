@@ -178,6 +178,13 @@
       </li>
 
       <li class="nav-item">
+        <a href="{{ route('search_to_pay') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-magnifying-glass-dollar"></i></span>
+          <span class="sidebar-text">Search To Pay</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
           data-bs-target="#submenu-attendance" aria-expanded="false">
           <span>
@@ -202,12 +209,7 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a href="{{ route('search_to_pay') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-magnifying-glass-dollar"></i></span>
-          <span class="sidebar-text">Search To Pay</span>
-        </a>
-      </li>
+      
 
       <!-- Invoice -->
       <li class="nav-item">

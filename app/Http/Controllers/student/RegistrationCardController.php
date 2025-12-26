@@ -28,6 +28,11 @@ class RegistrationCardController extends Controller
             return redirect()->route('student_dashboard')->with('error', 'Student information not found.');
         }
 
+        // Check if student is approved (status should be VERIFIED or higher)
+        if ($data->sl_status == 'PENDING' || $data->sl_status == 'BLOCK') {
+            return redirect()->route('student_dashboard')->with('error', 'Your registration is pending approval. Registration card will be available after admin approval.');
+        }
+
         return view('registration_card', compact('data'));
     }
 }

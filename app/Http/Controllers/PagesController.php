@@ -87,6 +87,14 @@ class PagesController extends Controller
                 ], 404);
             }
 
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($student->sl_status == 'PENDING' || $student->sl_status == 'BLOCK') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student registration is pending approval. Please contact your center or wait for admin approval.'
+                ], 403);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $student
@@ -134,6 +142,11 @@ class PagesController extends Controller
 
             if (!$student) {
                 abort(404, 'No record found with the provided registration number and date of birth');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($student->sl_status == 'PENDING' || $student->sl_status == 'BLOCK') {
+                abort(403, 'Student registration is pending approval. Please contact your center or wait for admin approval.');
             }
 
             // Get site settings
@@ -234,6 +247,14 @@ class PagesController extends Controller
                     'success' => false,
                     'message' => 'No record found with the provided registration number and date of birth'
                 ], 404);
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($student->sl_status == 'PENDING' || $student->sl_status == 'BLOCK') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student registration is pending approval. Please contact your center or wait for admin approval.'
+                ], 403);
             }
 
             return response()->json([
@@ -372,6 +393,14 @@ class PagesController extends Controller
                     'success' => false,
                     'message' => 'No certificate found with the provided registration number and date of birth'
                 ], 404);
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($certificate->sl_status == 'PENDING' || $certificate->sl_status == 'BLOCK') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student registration is pending approval. Certificate cannot be verified until admin approves the student.'
+                ], 403);
             }
 
             return response()->json([
@@ -656,6 +685,12 @@ class PagesController extends Controller
             if (!$certificate) {
                 return redirect()->route('verification.certificate')
                     ->with('error', 'No certificate found with the provided registration number and date of birth');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($certificate->sl_status == 'PENDING' || $certificate->sl_status == 'BLOCK') {
+                return redirect()->route('verification.certificate')
+                    ->with('error', 'Student registration is pending approval. Certificate cannot be verified until admin approves the student.');
             }
 
             return view('frontend.certificate-view', compact('certificate'));

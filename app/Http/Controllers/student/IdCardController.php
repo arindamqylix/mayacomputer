@@ -16,6 +16,15 @@ class IdCardController extends Controller
 			->where('student_login.sl_id', Auth::guard('student')->user()->sl_id)
 			->first();
 
+		if (!$data) {
+			return redirect()->route('student_dashboard')->with('error', 'Student information not found.');
+		}
+
+		// Check if student is approved (status should be VERIFIED or higher)
+		if ($data->sl_status == 'PENDING' || $data->sl_status == 'BLOCK') {
+			return redirect()->route('student_dashboard')->with('error', 'Your registration is pending approval. ID Card will be available after admin approval.');
+		}
+
 		return view('student.view_id_card', compact('data'));
 	}
 }

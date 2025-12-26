@@ -92,19 +92,23 @@
     <table>
         <tr>
             <td style="width: 50%;">
-                <strong>Bill To:</strong><br>
+                <strong>From:</strong><br>
+                {{ $siteName }}<br>
+                @if(!empty($siteAddress))
+                    {!! nl2br(e($siteAddress)) !!}
+                @endif<br>
+                <strong>Email:</strong> {{ $siteEmail }}<br>
+                <strong>Phone:</strong> {{ $sitePhone }}
+            </td>
+            <td style="width: 50%;">
+                <strong>To:</strong><br>
                 {{ $recharge->center->cl_center_name ?? 'N/A' }}<br>
-                {{ $recharge->center->cl_center_address ?? '' }}<br>
+                @if(!empty($recharge->center->cl_center_address))
+                    {!! nl2br(e($recharge->center->cl_center_address)) !!}
+                @endif<br>
                 <strong>Center Code:</strong> {{ $recharge->center->cl_code ?? 'N/A' }}<br>
                 <strong>Email:</strong> {{ $recharge->center->cl_email ?? 'N/A' }}<br>
                 <strong>Mobile:</strong> {{ $recharge->center->cl_mobile ?? 'N/A' }}
-            </td>
-            <td style="width: 50%;">
-                <strong>From:</strong><br>
-                {{ $siteName }}<br>
-                {{ $siteAddress }}<br>
-                <strong>Email:</strong> {{ $siteEmail }}<br>
-                <strong>Phone:</strong> {{ $sitePhone }}
             </td>
         </tr>
     </table>
