@@ -517,7 +517,13 @@
                     <tr>
                         <td width="25%">
                             <p class="footer-label">Date of Issue</p>
-                            <p class="footer-value">{{ \Carbon\Carbon::parse($data->created_at ?? now())->format('d-M-Y') }}</p>
+                            <p class="footer-value">
+                                @if(!empty($data->sc_issue_date))
+                                    {{ \Carbon\Carbon::parse($data->sc_issue_date)->format('d-M-Y') }}
+                                @else
+                                    {{ \Carbon\Carbon::parse($data->created_at ?? now())->format('d-M-Y') }}
+                                @endif
+                            </p>
                         </td>
                         <td width="25%">
                             <div class="stamp-box">Stamp</div>

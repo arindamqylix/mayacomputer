@@ -73,9 +73,9 @@
                 @endif
             </td>
             <td style="width: 70%; text-align: right;">
-                <h1 class="invoice-title">FEE PAYMENT RECEIPT</h1>
+                <h1 class="invoice-title">INVOICE</h1>
                 <div class="company-info">
-                    <p style="margin: 2px 0;"><strong>Receipt No:</strong> {{ $invoice_no }}</p>
+                    <p style="margin: 2px 0;"><strong>Invoice No:</strong> {{ $invoice_no }}</p>
                     <p style="margin: 2px 0;"><strong>Date:</strong> {{ $invoice_date }}</p>
                 </div>
             </td>
@@ -87,20 +87,24 @@
     <table>
         <tr>
             <td style="width: 50%;">
-                <strong>Student Details:</strong><br>
-                <strong>Name:</strong> {{ $student->sl_name ?? 'N/A' }}<br>
-                <strong>Registration No:</strong> {{ $student->sl_reg_no ?? 'N/A' }}<br>
-                <strong>Course:</strong> {{ $student->course_name ?? 'N/A' }}<br>
-                <strong>Mobile:</strong> {{ $student->sl_mobile_no ?? 'N/A' }}<br>
-                <strong>Email:</strong> {{ $student->sl_email ?? 'N/A' }}
-            </td>
-            <td style="width: 50%;">
-                <strong>Center Details:</strong><br>
-                <strong>Center Name:</strong> {{ $student->cl_center_name ?? 'N/A' }}<br>
+                <strong>From:</strong><br>
+                {{ $student->cl_center_name ?? 'N/A' }}<br>
+                @if(!empty($student->cl_center_address))
+                    {!! nl2br(e($student->cl_center_address)) !!}
+                @endif<br>
                 <strong>Center Code:</strong> {{ $student->cl_code ?? 'N/A' }}<br>
-                <strong>Address:</strong> {{ $student->cl_center_address ?? '' }}<br>
                 <strong>Email:</strong> {{ $student->cl_email ?? 'N/A' }}<br>
                 <strong>Mobile:</strong> {{ $student->cl_mobile ?? 'N/A' }}
+            </td>
+            <td style="width: 50%;">
+                <strong>To:</strong><br>
+                {{ $student->sl_name ?? 'N/A' }}<br>
+                @if(!empty($student->sl_address))
+                    {!! nl2br(e($student->sl_address)) !!}
+                @endif<br>
+                <strong>Registration No:</strong> {{ $student->sl_reg_no ?? 'N/A' }}<br>
+                <strong>Mobile:</strong> {{ $student->sl_mobile_no ?? 'N/A' }}<br>
+                <strong>Email:</strong> {{ $student->sl_email ?? 'N/A' }}
             </td>
         </tr>
     </table>
@@ -108,24 +112,33 @@
     <table>
         <thead>
             <tr>
-                <th>Description</th>
-                <th class="text-right">Total Amount (₹)</th>
-                <th class="text-right">Paid Amount (₹)</th>
-                <th class="text-right">Due Amount (₹)</th>
+                <th>S.N.</th>
+                <th>Item Name</th>
+                <th class="text-right">Quantity</th>
+                <th class="text-right">Amount (₹)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Course Fee Payment</td>
-                <td class="text-right">₹ {{ number_format($payment->fp_total_amount, 2) }}</td>
-                <td class="text-right">₹ {{ number_format($payment->fp_amount, 2) }}</td>
-                <td class="text-right">₹ {{ number_format($payment->fp_total_amount - $payment->fp_amount, 2) }}</td>
+                <td>1</td>
+                <td>
+                    @php
+                        $courseName = $student->course_name ?? 'Course Fee';
+                        $courseShort = $student->c_short_name ?? '';
+                        if ($courseShort) {
+                            $courseName .= ' (' . $courseShort . ')';
+                        }
+                    @endphp
+                    {{ $courseName }}
+                </td>
+                <td class="text-right">1</td>
+                <td class="text-right">₹ {{ number_format($student->total_course_fee ?? $payment->fp_total_amount ?? 0, 2) }}</td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
-                <th class="text-right">Total Paid:</th>
-                <th colspan="3" class="text-right">₹ {{ number_format($payment->fp_amount, 2) }}</th>
+                <th colspan="3" class="text-right">Total Amount:</th>
+                <th class="text-right">₹ {{ number_format($student->total_course_fee ?? $payment->fp_total_amount ?? 0, 2) }}</th>
             </tr>
         </tfoot>
     </table>

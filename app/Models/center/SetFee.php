@@ -15,6 +15,8 @@ class SetFee extends Model
     	'sf_FK_of_center_id',
     	'sf_amount',
     	'sf_paid',
-    	'sf_due'
+    	'sf_due',
+    	'sf_invoice_generated',
+    	'sf_invoice_id'
     ];
 }

@@ -11,7 +11,7 @@
                             <i class="fa-solid fa-download"></i> Download PDF
                         </a>
                     </div>
-                    @include('center.invoice.wallet_recharge_invoice_pdf', ['invoice_no' => 'INV-WLT-' . str_pad($recharge->cr_id, 6, '0', STR_PAD_LEFT), 'invoice_date' => date('d-M-Y', strtotime($recharge->created_at))])
+                    @include('center.invoice.wallet_recharge_invoice_pdf', ['invoice_no' => $invoice_no, 'invoice_date' => $invoice_date])
                 </div>
             </div>
         </div>

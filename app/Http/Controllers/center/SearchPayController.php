@@ -61,12 +61,31 @@ class SearchPayController extends Controller
     	$fees_payment = FeesPayment::create($data);
 
     	$set_fee = SetFee::where('sf_FK_of_student_id', $request->student_id)->first();
-  		$update_set_fee_table = SetFee::where('sf_FK_of_student_id', $request->student_id)->update([
-  				'sf_paid'		=> $set_fee->sf_paid + $request->paid_amount,
-  				'sf_due'		=> $set_fee->sf_due - $request->paid_amount
-  			]);
+    	$newPaid = $set_fee->sf_paid + $request->paid_amount;
+    	$newDue = $set_fee->sf_due - $request->paid_amount;
+    	
+    	// Check if payment is complete (due = 0 or paid = total amount)
+    	$paymentComplete = ($newDue <= 0 || abs($newPaid - $set_fee->sf_amount) < 0.01);
+    	
+    	$updateData = [
+    		'sf_paid' => $newPaid,
+    		'sf_due' => max(0, $newDue) // Ensure due doesn't go negative
+    	];
+    	
+    	// If payment is complete and invoice not generated yet, mark this payment as invoice
+    	if ($paymentComplete && !$set_fee->sf_invoice_generated) {
+    	    // Mark this payment as invoice
+    	    FeesPayment::where('fp_id', $fees_payment->fp_id)->update(['fp_is_invoice' => 1]);
+    	    $updateData['sf_invoice_generated'] = 1;
+    	    $updateData['sf_invoice_id'] = $fees_payment->fp_id;
+    	}
+    	
+  		SetFee::where('sf_FK_of_student_id', $request->student_id)->update($updateData);
 
-  		return back()->with('success', 'Payment Created Successfully!');
+  		$message = $paymentComplete && !$set_fee->sf_invoice_generated 
+  		    ? 'Payment Created Successfully! Invoice has been generated.' 
+  		    : 'Payment Created Successfully!';
+  		return back()->with('success', $message);
     }
 
     public function print_receipt($id){

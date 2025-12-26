@@ -231,8 +231,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	
 	// Courier
 	Route::get('courier', [CourierController::class, 'index'])->name('admin.courier.index');
+	Route::get('courier/center-students/{centerId}', [CourierController::class, 'getCenterStudents'])->name('admin.courier.center_students');
+	Route::post('courier/dispatch', [CourierController::class, 'update_dispatch'])->name('admin.courier.update');
 	Route::get('courier/dispatch/{id}', [CourierController::class, 'dispatch'])->name('admin.courier.dispatch');
-	Route::post('courier/dispatch/{id}', [CourierController::class, 'update_dispatch'])->name('admin.courier.update');
+	Route::post('courier/dispatch/{id}', [CourierController::class, 'update_single_dispatch'])->name('admin.courier.update_single');
 	
 	// Document Reissue
 	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('admin.document_reissue.index');

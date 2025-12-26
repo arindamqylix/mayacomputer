@@ -17,7 +17,8 @@ class FeesPayment extends Model
     	'fp_date',
         'fp_total_amount',
     	'fp_amount',
-    	'fp_remarks'
+    	'fp_remarks',
+    	'fp_is_invoice'
     ];
     
     // Relationship with Student
