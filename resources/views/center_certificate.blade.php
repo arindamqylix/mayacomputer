@@ -478,12 +478,33 @@ body {
             <!-- Decorative Border -->
             <div class="border-decoration"></div>
             
+            <!-- Logo Section - Big Size at Top -->
+            @php
+                $siteSettings = site_settings();
+                $logoPath = null;
+                if($siteSettings && !empty($siteSettings->site_logo)) {
+                    $logoPath = $siteSettings->site_logo;
+                    $fullLogoPath = public_path($logoPath);
+                    $logoExists = file_exists($fullLogoPath);
+                } else {
+                    $logoExists = file_exists(public_path('document/images/logo.png'));
+                    $logoPath = $logoExists ? 'document/images/logo.png' : null;
+                }
+            @endphp
+            @if($logoExists)
+            <div style="width: 100%; text-align: center; padding: 20px 0; margin-bottom: 15px; border-bottom: 2px solid #1a4c8c;">
+                <img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo" style="max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;">
+            </div>
+            @endif
+            
             <!-- Header Section -->
             <div class="header">
                 
                 <div class="title-section">
                     <!-- Logo instead of H1 -->
+                    @if(file_exists(public_path('document/images/logo.png')))
                     <img src="{{asset('document/images/logo.png')}}" alt="Maya Computer Center Logo" class="main-logo">
+                    @endif
 
                     <h2 class="hindi-title">माया कम्प्यूटर सेंटर</h2>
 

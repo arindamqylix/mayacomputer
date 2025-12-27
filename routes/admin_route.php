@@ -228,6 +228,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result'])->name('admin.set_result');
 	Route::post('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result_now'])->name('admin.set_result');
 	Route::get('result-list', [App\Http\Controllers\admin\ResultController::class, 'result_list'])->name('admin.result_list');
+	Route::get('result/edit/{id}', [App\Http\Controllers\admin\ResultController::class, 'edit_result'])->name('admin.edit_result');
+	Route::post('result/update/{id}', [App\Http\Controllers\admin\ResultController::class, 'update_result'])->name('admin.update_result');
 	
 	// Courier
 	Route::get('courier', [CourierController::class, 'index'])->name('admin.courier.index');

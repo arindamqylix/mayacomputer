@@ -44,37 +44,31 @@
     }
     
     .id-header {
-        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-        padding: 10px 15px;
+        background: #ffffff;
+        padding: 0;
         text-align: center;
         position: relative;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
     
     .id-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100px;
-        height: 100%;
-        background: linear-gradient(135deg, #000077 0%, #000099 100%);
-        clip-path: ellipse(100% 100% at 0% 50%);
-        z-index: 1;
+        display: none;
     }
     
     .id-header-logo {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 6px;
+        width: 100%;
+        height: 160px;
+        margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         position: relative;
         z-index: 2;
         background: #ffffff;
-        border-radius: 50%;
-        padding: 5px;
+        border-radius: 0;
+        padding: 10px 15px;
     }
     
     .id-header-logo img {
@@ -82,28 +76,31 @@
         height: 100%;
         object-fit: contain;
         max-width: 100%;
-        max-height: 100%;
+        max-height: 160px;
     }
     
     .logo-placeholder {
         width: 100%;
-        height: 100%;
+        height: 160px;
         background: #f0f0f0;
-        border: 2px solid #000077;
-        border-radius: 50%;
+        border: none;
+        border-radius: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
         color: #000077;
-        font-size: 10px;
+        font-size: 24px;
         text-align: center;
     }
     
     .id-header-text {
         text-align: center;
         position: relative;
-        z-index: 2;
+        z-index: 3;
+        background: linear-gradient(135deg, #000077 0%, #000099 100%);
+        padding: 10px 15px;
+        width: 100%;
     }
     
     .id-header-text .card-type {

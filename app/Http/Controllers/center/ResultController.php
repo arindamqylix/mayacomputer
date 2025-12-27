@@ -81,6 +81,7 @@ class ResultController extends Controller
         
 
         if($insert):
+            // Update student status to RESULT OUT (removes from RESULT UPDATED list)
             Student::where('sl_id',$request->student_id)->update(['sl_status'=> 'RESULT OUT']);
             return back()->with('success', 'Result Set Successfully!');
         else:
@@ -163,6 +164,7 @@ class ResultController extends Controller
         
 
         if($insert):
+            // Update student status to RESULT OUT (removes from RESULT UPDATED list)
             Student::where('sl_id',$request->student_id)->update(['sl_status'=> 'RESULT OUT']);
             return back()->with('success', 'Result Updated Successfully!');
         else:

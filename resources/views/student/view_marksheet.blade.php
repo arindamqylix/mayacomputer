@@ -42,6 +42,28 @@
 </style>
 
 @section('content')
+<!-- Logo Section - Big Size at Top -->
+@php
+    $siteSettings = site_settings();
+    $logoPath = null;
+    $logoExists = false;
+    if($siteSettings && !empty($siteSettings->site_logo)) {
+        $logoPath = $siteSettings->site_logo;
+        $fullLogoPath = public_path($logoPath);
+        $logoExists = file_exists($fullLogoPath);
+    } else {
+        $logoExists = file_exists(public_path('logo.png'));
+        $logoPath = $logoExists ? 'logo.png' : null;
+    }
+@endphp
+@if($logoExists)
+<div class="row mt-3 mb-3">
+    <div class="col-12 text-center" style="padding: 20px 0; border-bottom: 2px solid #007bff;">
+        <img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo" style="max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;">
+    </div>
+</div>
+@endif
+
 <div class="row mt-3">
     <div class="col-12">
         <div class="marksheet-header d-flex justify-content-between align-items-center">

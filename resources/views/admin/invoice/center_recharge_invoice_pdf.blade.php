@@ -67,6 +67,13 @@
     }
 </style>
 
+<!-- Logo Section - Big Size at Top -->
+@if($siteSettings && !empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo)))
+<div style="width: 100%; text-align: center; padding: 20px 0; margin-bottom: 20px; border-bottom: 2px solid #333;">
+    <img src="{{ $siteLogo }}" alt="{{ $siteName }} Logo" style="max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;">
+</div>
+@endif
+
 <div class="invoice-header">
     <table>
         <tr>

@@ -104,6 +104,7 @@ class ResultController extends Controller
         $result['result'] = DB::table('set_result')
             ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
             ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
             ->select(
                 'set_result.*',
                 'student_login.sl_name',
@@ -118,11 +119,108 @@ class ResultController extends Controller
                 'center_login.cl_name as center_name',
                 'center_login.cl_center_name',
                 'center_login.cl_code as center_code',
-                'center_login.cl_code'
+                'center_login.cl_code',
+                'course.c_full_name',
+                'course.c_short_name'
             )
+            ->orderBy('set_result.sr_id', 'DESC')
             ->get();
 
         return view('admin.result.index', $result);
+    }
+    
+    // Edit result (admin panel)
+    public function edit_result($id)
+    {
+        $result_data = DB::table('set_result')
+            ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+            ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->where('set_result.sr_id', $id)
+            ->select(
+                'set_result.*',
+                'student_login.*',
+                'center_login.cl_center_name',
+                'center_login.cl_code',
+                'course.c_full_name',
+                'course.c_short_name'
+            )
+            ->first();
+        
+        if (!$result_data) {
+            return redirect()->route('admin.result_list')->with('error', 'Result not found!');
+        }
+        
+        return view('admin.result.edit', compact('result_data'));
+    }
+    
+    // Update result (admin panel)
+    public function update_result(Request $request, $id)
+    {
+        // Fixed values: Full Marks = 100, Pass Marks = 40 for each subject
+        $total_full_marks = 100 + 100 + 100 + 100; // 400 total
+        $total_pass_marks = 40 + 40 + 40 + 40; // 160 total
+        $total_marks_obtained = $request->wr_marks_obtained + $request->pr_marks_obtained + $request->ap_marks_obtained + $request->vv_marks_obtained;
+
+        // Total marks for each subject (assuming each subject has a maximum of 100 marks)
+        $totalPossibleMarks = 100 * 4; // 4 subjects, each with 100 marks
+
+        // Calculate percentage
+        $percentage = ($total_marks_obtained / $totalPossibleMarks) * 100;
+
+        // Define grade boundaries and corresponding grades
+        $gradeBoundaries = array(
+            'A+' => 90,
+            'A' => 80,
+            'B' => 70,
+            'C' => 60,
+            'D' => 50,
+            'F' => 0
+        );
+
+        // Calculate grade
+        $grade = 'F'; // Default grade
+        foreach ($gradeBoundaries as $gradeSymbol => $boundary) {
+            if ($percentage >= $boundary) {
+                $grade = $gradeSymbol;
+                break;
+            }
+        }
+
+        // Get result to find student_id and center_id
+        $resultRecord = Result::findOrFail($id);
+
+        $data = [
+            'sr_written'                  => $request->written,
+            'sr_wr_full_marks'            => 100,
+            'sr_wr_pass_marks'            => 40,
+            'sr_wr_marks_obtained'        => $request->wr_marks_obtained,
+            'sr_practical'                => $request->practical,
+            'sr_pr_full_marks'            => 100,
+            'sr_pr_pass_marks'            => 40,
+            'sr_pr_marks_obtained'        => $request->pr_marks_obtained,
+            'sr_project'                  => $request->project,
+            'sr_ap_full_marks'            => 100,
+            'sr_ap_pass_marks'            => 40,
+            'sr_ap_marks_obtained'        => $request->ap_marks_obtained,
+            'sr_viva'                     => $request->viva,
+            'sr_vv_full_marks'            => 100,
+            'sr_vv_pass_marks'            => 40,
+            'sr_vv_marks_obtained'        => $request->vv_marks_obtained,
+            'sr_total_full_marks'         => $total_full_marks,
+            'sr_total_pass_marks'         => $total_pass_marks,
+            'sr_total_marks_obtained'     => $total_marks_obtained,
+            'sr_percentage'               => $percentage,
+            'sr_grade'                    => $grade,
+        ];
+
+        $update = Result::where('sr_id', $id)->update($data);
+
+        if($update):
+            return redirect()->route('admin.result_list')->with('success', 'Result Updated Successfully!');
+        else:
+            return back()->with('error', 'Something Went Wrong!');
+        endif;
     }
 }
 

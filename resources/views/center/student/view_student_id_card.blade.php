@@ -43,6 +43,24 @@
 			border: 3px solid #2563eb;
 		}
 		
+		/* Logo Section - Big Size at Top */
+		.logo-top-section {
+			width: 100%;
+			text-align: center;
+			padding: 20px 0;
+			margin-bottom: 15px;
+			border-bottom: 2px solid #2563eb;
+			background: #ffffff;
+		}
+		
+		.logo-top-section img {
+			max-width: 100%;
+			max-height: 200px;
+			height: auto;
+			width: auto;
+			object-fit: contain;
+		}
+		
 		.id-header {
 			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
 			color: #fff;
@@ -336,9 +354,29 @@
 <body>
 	<div class="print-container">
 		<div class="id-card">
+			<!-- Logo Section - Big Size at Top -->
+			@php
+				$siteSettings = site_settings();
+				$logoPath = null;
+				$logoExists = false;
+				if($siteSettings && !empty($siteSettings->site_logo)) {
+					$logoPath = $siteSettings->site_logo;
+					$fullLogoPath = public_path($logoPath);
+					$logoExists = file_exists($fullLogoPath);
+				} else {
+					$logoExists = file_exists(public_path('logo.png'));
+					$logoPath = $logoExists ? 'logo.png' : null;
+				}
+			@endphp
+			@if($logoExists)
+			<div class="logo-top-section">
+				<img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo">
+			</div>
+			@endif
+			
 			<div class="id-header">
-				@if(file_exists(public_path('logo.png')))
-					<img src="{{ asset('logo.png') }}" alt="Maya Computer Center Logo">
+				@if($logoExists)
+					<img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo" style="width: 80px; height: auto; display: block; margin: 0 auto 10px; position: relative; z-index: 1; filter: brightness(0) invert(1);">
 				@else
 					<div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 10px;"></div>
 				@endif

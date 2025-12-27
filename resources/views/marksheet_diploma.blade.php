@@ -330,11 +330,33 @@
     <div class="marksheet-wrapper">
         <div class="outer-border">
             <div class="inner-border">
+                <!-- Logo Section - Big Size at Top -->
+                @php
+                    $siteSettings = site_settings();
+                    $logoPath = null;
+                    $logoExists = false;
+                    if($siteSettings && !empty($siteSettings->site_logo)) {
+                        $logoPath = $siteSettings->site_logo;
+                        $fullLogoPath = public_path($logoPath);
+                        $logoExists = file_exists($fullLogoPath);
+                    } else {
+                        $logoExists = file_exists(public_path('logo.png'));
+                        $logoPath = $logoExists ? 'logo.png' : null;
+                    }
+                @endphp
+                @if($logoExists)
+                <div style="width: 100%; text-align: center; padding: 20px 0; margin-bottom: 15px; border-bottom: 2px solid #1e3a8a;">
+                    <img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo" style="max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;">
+                </div>
+                @endif
+                
                 <!-- Header -->
                 <table class="header-table">
                     <tr>
                         <td class="logo-cell">
-                            <img src="{{ asset('logo.png') }}" alt="Logo">
+                            @if($logoExists)
+                                <img src="{{ asset($logoPath) }}" alt="Logo">
+                            @endif
                         </td>
                         <td class="center-cell">
                             <h1 class="main-title">MAYA COMPUTER CENTER</h1>

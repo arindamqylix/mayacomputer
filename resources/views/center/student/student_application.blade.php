@@ -15,10 +15,22 @@ hr{solid 1px #000;}
 		<tr>
 			<td class='head' colspan='5'>
 				<center>
-				<img src="{{ asset('logo.png') }}" height='120px' width='930px' >
-				
-				
-				
+				@php
+					$siteSettings = site_settings();
+					$logoPath = null;
+					$logoExists = false;
+					if($siteSettings && !empty($siteSettings->site_logo)) {
+						$logoPath = $siteSettings->site_logo;
+						$fullLogoPath = public_path($logoPath);
+						$logoExists = file_exists($fullLogoPath);
+					} else {
+						$logoExists = file_exists(public_path('logo.png'));
+						$logoPath = $logoExists ? 'logo.png' : null;
+					}
+				@endphp
+				@if($logoExists)
+					<img src="{{ asset($logoPath) }}" style='max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;'>
+				@endif
 			</td>
 		</tr>
 		<tr><td colspan='5' style='border-top:solid 2px gray;border-bottom:solid 2px gray;'>  <center><h2>  Application Form  </h2></center> </td></tr>

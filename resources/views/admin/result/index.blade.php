@@ -127,6 +127,20 @@
 		background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
 	}
 	
+	.btn-edit {
+		background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+		color: white;
+		box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+		margin-left: 0.5rem;
+	}
+	
+	.btn-edit:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+		color: white;
+		background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+	}
+	
 	.btn-set-result {
 		background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 		border: none;
@@ -348,7 +362,13 @@
 												   target="_blank"
 												   title="View Marksheet">
 													<i class="fas fa-eye"></i>
-													View Marksheet
+													View
+												</a>
+												<a href="{{ route('admin.edit_result', $data->sr_id) }}" 
+												   class="btn-action btn-edit"
+												   title="Edit Result">
+													<i class="fas fa-edit"></i>
+													Edit
 												</a>
 												@else
 													<span class="text-muted">No Marksheet</span>

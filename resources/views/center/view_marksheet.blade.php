@@ -16,6 +16,28 @@
     </div>
     <!-- end page title -->
 
+    <!-- Logo Section - Big Size at Top -->
+    @php
+        $siteSettings = site_settings();
+        $logoPath = null;
+        $logoExists = false;
+        if($siteSettings && !empty($siteSettings->site_logo)) {
+            $logoPath = $siteSettings->site_logo;
+            $fullLogoPath = public_path($logoPath);
+            $logoExists = file_exists($fullLogoPath);
+        } else {
+            $logoExists = file_exists(public_path('logo.png'));
+            $logoPath = $logoExists ? 'logo.png' : null;
+        }
+    @endphp
+    @if($logoExists)
+    <div class="row mb-3">
+        <div class="col-12 text-center" style="padding: 20px 0; border-bottom: 2px solid #dee2e6;">
+            <img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo" style="max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;">
+        </div>
+    </div>
+    @endif
+
     <div class="card mb-4">
         <div class="card-body">
             <div class="table-responsive">

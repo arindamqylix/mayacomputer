@@ -43,6 +43,24 @@
         margin: 0 auto;
     }
     
+    /* Logo Section - Big Size at Top */
+    .logo-top-section {
+        width: 100%;
+        text-align: center;
+        padding: 20px 0;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #000077;
+        background: #ffffff;
+    }
+    
+    .logo-top-section img {
+        max-width: 100%;
+        max-height: 200px;
+        height: auto;
+        width: auto;
+        object-fit: contain;
+    }
+    
     .id-header {
         background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
         padding: 10px 15px;

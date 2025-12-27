@@ -44,6 +44,23 @@
         position: relative;
     }
     
+    /* Logo Section - Big Size at Top */
+    .logo-section {
+        width: 100%;
+        text-align: center;
+        padding: 20px 0;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #1a4c8c;
+    }
+    
+    .logo-section img {
+        max-width: 100%;
+        max-height: 200px;
+        height: auto;
+        width: auto;
+        object-fit: contain;
+    }
+    
     /* Header Section */
     .header {
         display: flex;
@@ -496,6 +513,13 @@
 <div class="certificate-wrapper">
     <div class="certificate">
         <div class="certificate-inner">
+            <!-- Logo Section - Big Size at Top -->
+            @if($logoExists && $siteLogo)
+            <div class="logo-section">
+                <img src="{{ $siteLogo }}" alt="{{ $siteName }} Logo">
+            </div>
+            @endif
+            
             <!-- Header Section -->
             <div class="header">
                 <div class="logo-left">
