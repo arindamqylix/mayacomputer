@@ -366,10 +366,18 @@ class StudentController extends Controller
     }
 
     public function student_id_card(){
-        $student['student'] = DB::table('center_login')
-                    ->join('student_login', 'center_login.cl_id', 'student_login.sl_FK_of_center_id')
+        $student['student'] = DB::table('student_login')
+                    ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
                     ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
                     ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+                    ->select(
+                        'student_login.*',
+                        'center_login.cl_code',
+                        'center_login.cl_center_name',
+                        'course.c_full_name',
+                        'course.c_short_name'
+                    )
+                    ->orderBy('student_login.sl_id', 'DESC')
                     ->get();
         
         return view('center.student.id_card_list',$student);

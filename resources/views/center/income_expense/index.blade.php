@@ -536,7 +536,8 @@
 </style>
 @endpush
 @section('content')
-
+<div class="row mt-3">
+	<div class="col-lg-12">
 <!-- Success/Error Messages -->
 @if(session('success'))
 	<div class="alert-success-custom">
@@ -554,9 +555,9 @@
 
 <!-- Stats Cards -->
 @php
-	$totalIncome = $total_income->total_income ?? 0;
-	$totalExpense = $total_expense->total_expense ?? 0;
-	$balance = $wallet_balance->wallet_balance ?? 0;
+	$totalIncome = isset($total_income) && isset($total_income->total_income) ? (float)$total_income->total_income : 0;
+	$totalExpense = isset($total_expense) && isset($total_expense->total_expense) ? (float)$total_expense->total_expense : 0;
+	$balance = isset($wallet_balance) && isset($wallet_balance->wallet_balance) ? (float)$wallet_balance->wallet_balance : 0;
 @endphp
 <div class="stats-section">
 	<div class="stat-card income-card">
@@ -692,11 +693,11 @@
 				<p>Start by adding your first income or expense transaction.</p>
 			</div>
 		@endif
+		</div>
 	</div>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="appmodal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<!-- Modal -->
+	<div class="modal fade" id="appmodal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-md modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -707,12 +708,12 @@
 				<form action="{{ route('income_expense_create') }}" method="POST" id="insert_frm" enctype="multipart/form-data">
 					@csrf
 					<div class="form-group mb-3">
-						<label for="txn_type">
+						<label for="modal_txn_type">
 							<i class="fas fa-tag"></i>
 							Transaction Type
 						</label>
 						<input id="created_by" type="hidden" required>
-						<input class="form-control" id="txn_type" name="txn_type" maxlength="8" readonly required>
+						<input class="form-control" id="modal_txn_type" name="txn_type" maxlength="8" readonly required style="background-color: #f8f9fa; font-weight: 600; color: #2563eb; cursor: not-allowed; text-transform: uppercase;">
 					</div>
 					<div class="form-group mb-3">
 						<label for="txn_date">
@@ -758,7 +759,8 @@
 		</div>
 	</div>
 </div>
-
+	</div>
+</div>
 @endsection
 
 @push('custom-js')
@@ -788,22 +790,25 @@
 		// Modal handling
 		$(document).on('click', '.ls-modal', function(e) {
 			e.preventDefault();
-			var modal = new bootstrap.Modal(document.getElementById('appmodal'));
-			modal.show();
 			
 			var txn_type = $(this).attr("data-txn");
-			$("#created_by").val($(this).attr("data-user"));
-			$("#txn_type").val(txn_type);
+			var user_id = $(this).attr("data-user");
+			
+			// Reset form first
+			$("#insert_frm")[0].reset();
+			
+			// Set values after reset to ensure they are displayed
+			$("#modal_txn_type").val(txn_type);
+			$("#created_by").val(user_id);
 			$("#exampleModalCenterTitle").html(txn_type + " ENTRY");
 			
 			// Set today's date as default
 			var today = new Date().toISOString().split('T')[0];
 			$("#txn_date").val(today);
 			
-			// Reset form
-			$("#insert_frm")[0].reset();
-			$("#txn_type").val(txn_type);
-			$("#created_by").val($(this).attr("data-user"));
+			// Show modal
+			var modal = new bootstrap.Modal(document.getElementById('appmodal'));
+			modal.show();
 		});
 	});
 	

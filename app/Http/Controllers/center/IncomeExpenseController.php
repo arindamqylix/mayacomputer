@@ -10,20 +10,26 @@ use DB;
 class IncomeExpenseController extends Controller
 {
     public function income_expense(Request $request){
-    	$wallet_balance = IncomeExpense::selectRaw('(SUM(CASE WHEN ie_type = "INCOME" THEN ie_amount ELSE 0 END) - SUM(CASE WHEN ie_type = "EXPENSE" THEN ie_amount ELSE 0 END)) AS wallet_balance')
-                        ->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+    	$centerId = Auth::guard('center')->user()->cl_id;
+    	
+    	// Calculate totals using DB::table for better null handling
+    	$wallet_balance = DB::table('income_expense')
+                        ->selectRaw('COALESCE(SUM(CASE WHEN ie_type = "INCOME" THEN ie_amount ELSE 0 END) - SUM(CASE WHEN ie_type = "EXPENSE" THEN ie_amount ELSE 0 END), 0) AS wallet_balance')
+                        ->where('ie_FK_of_center_id', $centerId)
                         ->first();
         
-        $total_income = IncomeExpense::selectRaw('(SUM(CASE WHEN ie_type = "INCOME" THEN ie_amount ELSE 0 END)) AS total_income')
-                        ->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+        $total_income = DB::table('income_expense')
+                        ->selectRaw('COALESCE(SUM(CASE WHEN ie_type = "INCOME" THEN ie_amount ELSE 0 END), 0) AS total_income')
+                        ->where('ie_FK_of_center_id', $centerId)
                         ->first();
 
-        $total_expense = IncomeExpense::selectRaw('(SUM(CASE WHEN ie_type = "EXPENSE" THEN ie_amount ELSE 0 END)) AS total_expense')
-                        ->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+        $total_expense = DB::table('income_expense')
+                        ->selectRaw('COALESCE(SUM(CASE WHEN ie_type = "EXPENSE" THEN ie_amount ELSE 0 END), 0) AS total_expense')
+                        ->where('ie_FK_of_center_id', $centerId)
                         ->first();
 
     	$query = DB::table('income_expense')
-    				->where('ie_FK_of_center_id', Auth::guard('center')->user()->cl_id);
+    				->where('ie_FK_of_center_id', $centerId);
     	
     	// Filter by transaction type if provided
     	if($request->has('txn_type') && $request->txn_type != '') {

@@ -11,10 +11,24 @@ use Auth;
 class ResultController extends Controller
 {
     public function set_result(){
-    	$student['student']	= DB::table('student_login')
+    	$centerId = Auth::guard('center')->user()->cl_id;
+    	
+    	// Fetch only VERIFIED students who don't have results published yet
+    	$student['student'] = DB::table('student_login')
     						 ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-    				// 		 ->where('student_login.sl_status', 'VERIFIED')
-    						 ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+    						 ->leftJoin('set_result', function($join) use ($centerId) {
+    						 	$join->on('set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+    						 		 ->where('set_result.sr_FK_of_center_id', $centerId);
+    						 })
+    						 ->where('student_login.sl_FK_of_center_id', $centerId)
+    						 ->where('student_login.sl_status', 'VERIFIED') // Only VERIFIED students - exclude PENDING, BLOCKED, etc.
+    						 ->whereNull('set_result.sr_id') // Exclude students who already have results published
+    						 ->select(
+    						 	'student_login.*',
+    						 	'course.c_full_name',
+    						 	'course.c_short_name'
+    						 )
+    						 ->orderBy('student_login.sl_id', 'DESC')
     						 ->get();
     	return view('center.result.create',$student);
     }
@@ -90,18 +104,48 @@ class ResultController extends Controller
     } 
 
     public function edit_result($id){
+        $centerId = Auth::guard('center')->user()->cl_id;
+        
+        // Check if result already exists - if yes, disable editing
+        $result = Result::where('sr_FK_of_student_id', $id)
+                        ->where('sr_FK_of_center_id', $centerId)
+                        ->first();
+        
+        if ($result) {
+            // Result already generated, editing is disabled for centers
+            return redirect()->route('student_result_list')
+                            ->with('error', 'Result has already been generated. Editing is disabled. Please contact admin for any changes.');
+        }
+        
         $student['student'] = DB::table('student_login')
                              ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
                              ->where('student_login.sl_status', 'VERIFIED')
-                             ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+                             ->where('student_login.sl_FK_of_center_id', $centerId)
                              ->get();
         $student_data = Student::where('sl_id',$id)->first();
-        $result = Result::where('sr_FK_of_student_id', $id)->first();
-        // dd($student_id);
+        
+        if (!$student_data) {
+            return redirect()->route('student_result_list')
+                            ->with('error', 'Student not found.');
+        }
+        
         return view('center.result.edit', $student, compact('student_data','result'));
     } 
 
     public function update_result(Request $request,$id){
+        $centerId = Auth::guard('center')->user()->cl_id;
+        
+        // Check if result already exists - if yes, prevent update
+        $existingResult = Result::where('sr_FK_of_student_id', $id)
+                                ->where('sr_FK_of_center_id', $centerId)
+                                ->first();
+        
+        if ($existingResult) {
+            // Result already generated, updating is disabled for centers
+            return redirect()->route('student_result_list')
+                            ->with('error', 'Result has already been generated. Updating is disabled. Please contact admin for any changes.');
+        }
+        
         $total_full_marks = $request->wr_full_marks + $request->pr_full_marks + $request->ap_full_marks + $request->vv_full_marks;
 
         $total_pass_marks = $request->wr_pass_marks + $request->pr_pass_marks + $request->ap_pass_marks + $request->vv_pass_marks;

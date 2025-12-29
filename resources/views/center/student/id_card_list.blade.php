@@ -294,7 +294,7 @@
 										<td>
 											@if(!empty($data->sl_photo))
 												<img class="student-image" 
-													 src="{{ asset('storage/student/').'/'.$data->sl_photo }}" 
+													 src="{{ asset($data->sl_photo) }}" 
 													 alt="Student Photo"
 													 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2750%27 height=%2750%27%3E%3Crect fill=%27%23ddd%27 width=%2750%27 height=%2750%27/%3E%3Ctext fill=%27%23999%27 font-family=%27sans-serif%27 font-size=%2712%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
 											@else
@@ -333,6 +333,11 @@
 @push('custom-js')
 <script>
 	$(document).ready(function() {
+		// Check if DataTable is already initialized and destroy it first
+		if ($.fn.DataTable && $.fn.DataTable.isDataTable('#datatable-buttons')) {
+			$('#datatable-buttons').DataTable().destroy();
+		}
+		
 		// Initialize DataTable if available
 		if ($.fn.DataTable) {
 			var table = $('#datatable-buttons').DataTable({

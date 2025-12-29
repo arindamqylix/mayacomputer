@@ -26,7 +26,7 @@
 										<label>Center Code</label>
 									</div>
 									<div class="col-lg-6">
-										<input type="text" name="center_code" value="{{ $data->cl_code }}" class="form-control" required name="" placeholder="Center Code">
+										<input readonly type="text" name="center_code" value="{{ $data->cl_code }}" class="form-control" required name="" placeholder="Center Code">
 									</div>
 								</div>
 								<div class="row mb-2">

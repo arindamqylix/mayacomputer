@@ -343,22 +343,30 @@
 @push('custom-js')
 <script>
 	$(document).ready(function() {
-		// Initialize DataTable if available
+		// Check if DataTable is already initialized and destroy it first
 		if ($.fn.DataTable) {
-			var table = $('#datatable-buttons').DataTable({
-				"order": [[3, "desc"]], // Sort by exam date descending
-				"pageLength": 25,
-				"language": {
-					"search": "",
-					"searchPlaceholder": "Search..."
-				},
-				"dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-			});
+			// Destroy existing DataTable instance if it exists
+			if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+				$('#datatable-buttons').DataTable().destroy();
+			}
 			
-			// Custom search input
-			$('#searchInput').on('keyup', function() {
-				table.search(this.value).draw();
-			});
+			// Initialize DataTable only if table exists
+			if ($('#datatable-buttons').length) {
+				var table = $('#datatable-buttons').DataTable({
+					"order": [[3, "desc"]], // Sort by exam date descending
+					"pageLength": 25,
+					"language": {
+						"search": "",
+						"searchPlaceholder": "Search..."
+					},
+					"dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+				});
+				
+				// Custom search input
+				$('#searchInput').on('keyup', function() {
+					table.search(this.value).draw();
+				});
+			}
 		} else {
 			// Fallback search if DataTable is not available
 			$('#searchInput').on('keyup', function() {

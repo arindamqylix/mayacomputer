@@ -325,20 +325,27 @@
 										</td>
 										<td>
 											<div class="d-flex gap-2">
-												<a href="{{ route('edit_result', $data->sl_id) }}" 
-												   class="btn-action btn-edit"
-												   title="Edit Result">
-													<i class="fas fa-edit"></i>
-													Edit
-												</a>
 												@if(isset($data->sr_id))
-												<a href="{{ route('generatePDF', $data->sr_id) }}" 
-												   class="btn-action btn-view"
-												   target="_blank"
-												   title="View Marksheet">
-													<i class="fas fa-eye"></i>
-													View
-												</a>
+													{{-- Edit disabled once result is generated --}}
+													<span class="btn-action btn-edit" style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" title="Result already generated. Editing is disabled.">
+														<i class="fas fa-edit"></i>
+														Edit (Disabled)
+													</span>
+													<a href="{{ route('generatePDF', $data->sr_id) }}" 
+													   class="btn-action btn-view"
+													   target="_blank"
+													   title="View Marksheet">
+														<i class="fas fa-eye"></i>
+														View
+													</a>
+												@else
+													{{-- No result yet, can set result --}}
+													<a href="{{ route('set_result') }}" 
+													   class="btn-action btn-edit"
+													   title="Set Result">
+														<i class="fas fa-plus-circle"></i>
+														Set Result
+													</a>
 												@endif
 											</div>
 										</td>

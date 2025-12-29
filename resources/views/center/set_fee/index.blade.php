@@ -370,7 +370,10 @@
 @if(request()->get('course_id'))
 	@php
 		$totalStudents = count($student);
-		$totalFeeAmount = collect($student)->sum('c_price');
+		// Calculate total fee: Use existing fee if set, otherwise use course price
+		$totalFeeAmount = collect($student)->sum(function($s) {
+			return $s->existing_fee ?? $s->c_price ?? 0;
+		});
 	@endphp
 	<div class="stats-section">
 		<div class="stat-card">
@@ -459,9 +462,10 @@
 												type="number" 
 												id="fees_amount_{{ $data->sl_id }}" 
 												name="fees" 
-												value="{{ $data->c_price }}"
+												value="{{ $data->existing_fee ?? $data->c_price ?? '' }}"
 												min="0"
 												step="0.01"
+												placeholder="Enter fee amount"
 											>
 										</div>
 										<button 
@@ -471,7 +475,7 @@
 											id="btn_set_fee_{{ $data->sl_id }}"
 										>
 											<i class="fas fa-check-circle"></i>
-											Set Fee
+											{{ $data->existing_fee ? 'Update Fee' : 'Set Fee' }}
 										</button>
 									</div>
 								</td>
