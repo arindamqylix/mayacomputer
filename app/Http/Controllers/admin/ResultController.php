@@ -13,9 +13,13 @@ class ResultController extends Controller
 {
     // Show result creation form for admin
     public function set_result(){
+        // Fetch only VERIFIED students who don't have results published yet
         $student['student'] = DB::table('student_login')
             ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
             ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->leftJoin('set_result', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+            ->where('student_login.sl_status', 'VERIFIED') // Only verified/approved students
+            ->whereNull('set_result.sr_id') // Exclude students who already have results
             ->select(
                 'student_login.*',
                 'course.c_full_name',
@@ -23,6 +27,7 @@ class ResultController extends Controller
                 'center_login.cl_center_name',
                 'center_login.cl_code'
             )
+            ->orderBy('student_login.sl_id', 'DESC')
             ->get();
         return view('admin.result.create', $student);
     }
@@ -221,6 +226,34 @@ class ResultController extends Controller
         else:
             return back()->with('error', 'Something Went Wrong!');
         endif;
+    }
+    
+    // Delete result (admin panel)
+    public function delete_result($id)
+    {
+        try {
+            $result = Result::find($id);
+            
+            if (!$result) {
+                return back()->with('error', 'Result not found!');
+            }
+            
+            // Get student ID before deleting
+            $studentId = $result->sr_FK_of_student_id;
+            
+            // Delete the result
+            $delete = Result::where('sr_id', $id)->delete();
+            
+            if($delete):
+                // Update student status back to VERIFIED if result is deleted
+                Student::where('sl_id', $studentId)->update(['sl_status' => 'VERIFIED']);
+                return back()->with('success', 'Result deleted successfully!');
+            else:
+                return back()->with('error', 'Something Went Wrong!');
+            endif;
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error deleting result: ' . $e->getMessage());
+        }
     }
 }
 

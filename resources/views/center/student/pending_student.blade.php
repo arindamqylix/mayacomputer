@@ -338,6 +338,11 @@
 	$(document).ready(function() {
 		// Initialize DataTable if available
 		if ($.fn.DataTable) {
+			// Destroy existing DataTable instance if it exists
+			if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+				$('#datatable-buttons').DataTable().destroy();
+			}
+			
 			var table = $('#datatable-buttons').DataTable({
 				"order": [[1, "desc"]], // Sort by registration number descending
 				"pageLength": 25,

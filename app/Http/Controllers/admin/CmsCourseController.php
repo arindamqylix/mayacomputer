@@ -10,16 +10,14 @@ use Illuminate\Support\Str;
 class CmsCourseController extends Controller
 {
     public function index() {
-        $courses = DB::table('cms_course')
-            ->leftJoin('cms_course_category', 'cms_course.category_id', '=', 'cms_course_category.id')
-            ->select('cms_course.*', 'cms_course_category.name as category_name')
+        $courses = DB::table('course')
+            ->orderBy('c_id', 'DESC')
             ->get();
         return view('admin.cms.course.index', compact('courses'));
     }
 
     public function create() {
-        $categories = DB::table('cms_course_category')->where('status', 1)->get();
-        return view('admin.cms.course.create', compact('categories'));
+        return view('admin.cms.course.create');
     }
 
     public function store(Request $request) {
@@ -27,93 +25,34 @@ class CmsCourseController extends Controller
 		$request->validate([
 			'course_short_name' => 'required|string|max:255',
 			'course_full_name'  => 'required|string|max:255',
-			'course_price'      => 'required|numeric',
-			'course_duration'   => 'required|string|max:100',
-			'course_eligibility' => 'nullable|string|max:255',
-			'category_id'       => 'nullable|integer|exists:cms_course_category,id',
-			'file'              => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-			'description'       => 'nullable|string',
-			'info_title.*'      => 'nullable|string|max:255',
-			'info_value.*'      => 'nullable|string|max:255',
-			'syll_name.*'       => 'nullable|string|max:255',
-			'syll_desc.*'       => 'nullable|string',
+			'course_price'      => 'required|string|max:255',
+			'course_duration'   => 'required|string|max:255',
 		]);
 
-		// File upload to public/courses
-		$filePath = null;
-		if ($request->hasFile('file')) {
-			$file = $request->file('file');
-			$filename = time().'_'.$file->getClientOriginalName();
-			$file->move(public_path('courses'), $filename);
-			$filePath = 'courses/' . $filename;
-		}
+		try {
+			// Insert into DB - using 'course' table
+			$insert = DB::table('course')->insert([
+				'c_short_name'     => $request->course_short_name,
+				'c_full_name'      => $request->course_full_name,
+				'c_price'          => $request->course_price,
+				'c_duration'       => $request->course_duration,
+				'created_at'       => now(),
+				'updated_at'       => now(),
+			]);
 
-		// Prepare repeaters
-		$information = [];
-		if ($request->info_title && $request->info_value) {
-			foreach ($request->info_title as $i => $title) {
-				$information[] = [
-					'title' => $title,
-					'value' => $request->info_value[$i] ?? '',
-				];
+			if($insert){
+				return back()->with('success', 'Course Added Successfully!');
+			} else {
+				return back()->with('error', 'Something Went Wrong!');
 			}
-		}
-
-		$syllabus = [];
-		if ($request->syll_name && $request->syll_desc) {
-			foreach ($request->syll_name as $i => $name) {
-				$syllabus[] = [
-					'name' => $name,
-					'desc' => $request->syll_desc[$i] ?? '',
-				];
-			}
-		}
-
-		// Generate slug if not provided or empty
-		$slug = $request->slug;
-		if(empty($slug)) {
-			$slug = Str::slug($request->course_full_name);
-		} else {
-			$slug = Str::slug($slug);
-		}
-		
-		// Ensure slug is unique
-		$originalSlug = $slug;
-		$counter = 1;
-		while(DB::table('cms_course')->where('slug', $slug)->exists()) {
-			$slug = $originalSlug . '-' . $counter;
-			$counter++;
-		}
-
-		// Insert into DB
-		$insert = DB::table('cms_course')->insert([
-            'c_short_name'     => $request->course_short_name,
-            'category_id'      => $request->category_id,
-            'c_full_name'      => $request->course_full_name,
-            'c_price'          => $request->course_price,
-            'c_duration'       => $request->course_duration,
-            'course_eligibility' => $request->course_eligibility,
-            'file'             => $filePath,
-            'description'      => $request->description,
-            'information'      => json_encode($information),
-            'course_syllabus'  => json_encode($syllabus),
-            'slug'             => $slug,
-            'created_at'       => now(),
-            'updated_at'       => now(),
-        ]);
-        
-
-		if($insert){
-			return back()->with('success', 'Course Added Successfully!');
-		} else {
-			return back()->with('error', 'Something Went Wrong!');
+		} catch (\Exception $e) {
+			return back()->with('error', 'Error: ' . $e->getMessage());
 		}
     }
 
     public function edit($id) {
-        $course = DB::table('cms_course')->where('c_id', $id)->first();
-        $categories = DB::table('cms_course_category')->where('status', 1)->get();
-        return view('admin.cms.course.edit', compact('course', 'categories'));
+        $course = DB::table('course')->where('c_id', $id)->first();
+        return view('admin.cms.course.edit', compact('course'));
     }
 
     public function update(Request $request, $id) {
@@ -121,80 +60,35 @@ class CmsCourseController extends Controller
         $request->validate([
             'course_short_name' => 'required|string|max:255',
             'course_full_name'  => 'required|string|max:255',
-            'course_price'      => 'required|numeric',
-            'course_duration'   => 'required|string|max:100',
-            'course_eligibility' => 'nullable|string|max:255',
-            'category_id'       => 'nullable|integer|exists:cms_course_category,id',
-            'file'              => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'description'       => 'nullable|string',
+            'course_price'      => 'required|string|max:255',
+            'course_duration'   => 'required|string|max:255',
         ]);
 
-        // File upload
-        $filePath = DB::table('cms_course')->where('c_id', $id)->value('file');
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('courses'), $filename);
-            $filePath = 'courses/' . $filename;
-        }
+        try {
+            $update = DB::table('course')->where('c_id', $id)->update([
+                'c_short_name'     => $request->course_short_name,
+                'c_full_name'      => $request->course_full_name,
+                'c_price'          => $request->course_price,
+                'c_duration'       => $request->course_duration,
+                'updated_at'       => now(),
+            ]);
 
-        // Prepare repeaters
-        $information = [];
-        if ($request->info_title && $request->info_value) {
-            foreach ($request->info_title as $i => $title) {
-                $information[] = [
-                    'title' => $title,
-                    'value' => $request->info_value[$i] ?? '',
-                ];
+            if($update){
+                return redirect()->route('course.list')->with('success', 'Course updated successfully!');
+            } else {
+                return back()->with('error', 'Something Went Wrong!');
             }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage());
         }
-
-        $syllabus = [];
-        if ($request->syll_name && $request->syll_desc) {
-            foreach ($request->syll_name as $i => $name) {
-                $syllabus[] = [
-                    'name' => $name,
-                    'desc' => $request->syll_desc[$i] ?? '',
-                ];
-            }
-        }
-
-        // Generate slug if not provided or empty
-        $slug = $request->slug;
-        if(empty($slug)) {
-            $slug = Str::slug($request->course_full_name);
-        } else {
-            $slug = Str::slug($slug);
-        }
-        
-        // Ensure slug is unique (excluding current course)
-        $originalSlug = $slug;
-        $counter = 1;
-        while(DB::table('cms_course')->where('slug', $slug)->where('c_id', '!=', $id)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-
-        DB::table('cms_course')->where('c_id', $id)->update([
-            'c_short_name'     => $request->course_short_name,
-            'category_id'      => $request->category_id,
-            'c_full_name'      => $request->course_full_name,
-            'c_price'          => $request->course_price,
-            'c_duration'       => $request->course_duration,
-            'course_eligibility' => $request->course_eligibility,
-            'file'             => $filePath,
-            'description'      => $request->description,
-            'information'      => json_encode($information),
-            'course_syllabus'  => json_encode($syllabus),
-            'slug'             => $slug,
-            'updated_at'       => now(),
-        ]);
-
-        return redirect()->route('course.list')->with('success', 'Course updated successfully!');
     }
 
     public function destroy($id) {
-        DB::table('cms_course')->where('c_id', $id)->delete();
-        return redirect()->route('course.list')->with('success', 'Course deleted successfully!');
+        try {
+            DB::table('course')->where('c_id', $id)->delete();
+            return redirect()->route('course.list')->with('success', 'Course deleted successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
 }

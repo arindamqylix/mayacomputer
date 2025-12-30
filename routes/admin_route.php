@@ -102,11 +102,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 
 	// Generate Admit Card
 	Route::get('generate-admit-card', [GenerateAdmitController::class, 'generate_admit_card'])->name('admin.generate_admit_card');
-	Route::post('generate-admit-card', [GenerateAdmitController::class, 'handle_admit_card'])->name('admin.generate_admit_card');
+	Route::post('generate-admit-card', [GenerateAdmitController::class, 'handle_admit_card'])->name('admin.handle_admit_card');
 	Route::get('admit-card-list', [GenerateAdmitController::class, 'admit_card_list'])->name('admin.admit_card_list');
 	Route::get('admit-card/edit/{id}', [GenerateAdmitController::class, 'edit_admit_card'])->name('admin.edit_admit_card');
 	Route::post('admit-card/update/{id}', [GenerateAdmitController::class, 'update_admit_card'])->name('admin.update_admit_card');
 	Route::get('print-admit-card/{id}', [GenerateAdmitController::class, 'print_admit_card'])->name('admin.print_admit_card');
+	Route::get('admit-card/delete/{id}', [GenerateAdmitController::class, 'delete_admit_card'])->name('admin.delete_admit_card');
 
 	// Change Password
 	Route::get('change-password', [AuthController::class, 'change_password'])->name('admin_change_password');
@@ -223,6 +224,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('certificate/generate', [CertificateController::class, 'generate_certificate'])->name('admin.certificate_generate');
 	Route::post('certificate/generate', [CertificateController::class, 'generate_certificate_now'])->name('admin.certificate_store');
 	Route::get('certificate/view/{id}', [CertificateController::class, 'view_certificate'])->name('admin.view_certificate');
+	Route::get('certificate/delete/{id}', [CertificateController::class, 'delete_certificate'])->name('admin.delete_certificate');
 	
 	// Result
 	Route::get('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result'])->name('admin.set_result');
@@ -230,6 +232,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('result-list', [App\Http\Controllers\admin\ResultController::class, 'result_list'])->name('admin.result_list');
 	Route::get('result/edit/{id}', [App\Http\Controllers\admin\ResultController::class, 'edit_result'])->name('admin.edit_result');
 	Route::post('result/update/{id}', [App\Http\Controllers\admin\ResultController::class, 'update_result'])->name('admin.update_result');
+	Route::get('result/delete/{id}', [App\Http\Controllers\admin\ResultController::class, 'delete_result'])->name('admin.delete_result');
 	
 	// Courier
 	Route::get('courier', [CourierController::class, 'index'])->name('admin.courier.index');

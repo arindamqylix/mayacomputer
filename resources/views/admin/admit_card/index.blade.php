@@ -140,6 +140,19 @@
 		background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
 	}
 	
+	.btn-delete {
+		background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+		color: white;
+		box-shadow: 0 2px 4px rgba(235, 51, 73, 0.3);
+	}
+	
+	.btn-delete:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(235, 51, 73, 0.4);
+		color: white;
+		background: linear-gradient(135deg, #f45c43 0%, #eb3349 100%);
+	}
+	
 	/* Generate Button */
 	.btn-generate {
 		background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -339,6 +352,12 @@
 												<i class="fas fa-print"></i>
 												Print
 											</a>
+											<a href="{{ route('admin.delete_admit_card', $val->ac_id) }}" 
+											   class="btn-action btn-delete"
+											   onclick="return confirm('Are you sure you want to delete this admit card? This action cannot be undone.');">
+												<i class="fas fa-trash"></i>
+												Delete
+											</a>
 										</div>
 									</td>
 								</tr>
@@ -368,6 +387,11 @@
 	$(document).ready(function() {
 		// Initialize DataTable if available
 		if ($.fn.DataTable) {
+			// Destroy existing DataTable instance if it exists
+			if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+				$('#datatable-buttons').DataTable().destroy();
+			}
+			
 			var table = $('#datatable-buttons').DataTable({
 				"order": [[4, "desc"]], // Sort by exam date descending
 				"pageLength": 25,

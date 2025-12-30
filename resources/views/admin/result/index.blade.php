@@ -141,6 +141,20 @@
 		background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
 	}
 	
+	.btn-delete {
+		background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+		color: white;
+		box-shadow: 0 2px 4px rgba(235, 51, 73, 0.3);
+		margin-left: 0.5rem;
+	}
+	
+	.btn-delete:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(235, 51, 73, 0.4);
+		color: white;
+		background: linear-gradient(135deg, #f45c43 0%, #eb3349 100%);
+	}
+	
 	.btn-set-result {
 		background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 		border: none;
@@ -370,6 +384,13 @@
 													<i class="fas fa-edit"></i>
 													Edit
 												</a>
+												<a href="{{ route('admin.delete_result', $data->sr_id) }}" 
+												   class="btn-action btn-delete"
+												   title="Delete Result"
+												   onclick="return confirm('Are you sure you want to delete this result? This action cannot be undone.');">
+													<i class="fas fa-trash"></i>
+													Delete
+												</a>
 												@else
 													<span class="text-muted">No Marksheet</span>
 												@endif
@@ -402,6 +423,11 @@
 	$(document).ready(function() {
 		// Initialize DataTable if available
 		if ($.fn.DataTable) {
+			// Destroy existing DataTable instance if it exists
+			if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+				$('#datatable-buttons').DataTable().destroy();
+			}
+			
 			var table = $('#datatable-buttons').DataTable({
 				"order": [[4, "desc"]], // Sort by percentage descending
 				"pageLength": 25,

@@ -13,10 +13,16 @@ class GenerateAdmitController extends Controller
         $centerId = Auth::guard('center')->user()->cl_id;
 
         // Fetch only VERIFIED students + Course (Only approved students)
+        // Exclude students who already have admit cards generated
         $students = DB::table('student_login')
             ->leftJoin('course', 'course.c_id', '=', 'student_login.sl_FK_of_course_id')
+            ->leftJoin('student_admit_cards', function($join) use ($centerId) {
+                $join->on('student_admit_cards.student_id', '=', 'student_login.sl_id')
+                     ->where('student_admit_cards.center_id', $centerId);
+            })
             ->where('student_login.sl_FK_of_center_id', $centerId)
             ->where('student_login.sl_status', 'VERIFIED') // Only approved/verified students
+            ->whereNull('student_admit_cards.ac_id') // Exclude students who already have admit cards
             ->select(
                 'student_login.*',
                 'course.c_full_name',
@@ -35,8 +41,14 @@ class GenerateAdmitController extends Controller
             ->orderBy('course.c_full_name', 'ASC')
             ->get();
 
+        // Fetch all active centers for exam venue dropdown
+        $activeCenters = DB::table('center_login')
+            ->whereIn('cl_account_status', ['ACTIVE', 'APPROVED'])
+            ->select('cl_id', 'cl_code', 'cl_center_name', 'cl_center_address')
+            ->orderBy('cl_center_name', 'ASC')
+            ->get();
 
-        return view('center.admit_card.create', compact('students', 'courseList'));
+        return view('center.admit_card.create', compact('students', 'courseList', 'activeCenters'));
     }
 
     public function handle_admit_card(Request $request){
@@ -160,7 +172,14 @@ class GenerateAdmitController extends Controller
             ->select('student_login.*', 'course.c_full_name')
             ->get();
 
-        return view('center.admit_card.edit', compact('admit', 'students'));
+        // Fetch all active centers for exam venue dropdown
+        $activeCenters = DB::table('center_login')
+            ->whereIn('cl_account_status', ['ACTIVE', 'APPROVED'])
+            ->select('cl_id', 'cl_code', 'cl_center_name', 'cl_center_address')
+            ->orderBy('cl_center_name', 'ASC')
+            ->get();
+
+        return view('center.admit_card.edit', compact('admit', 'students', 'activeCenters'));
     }
 
 

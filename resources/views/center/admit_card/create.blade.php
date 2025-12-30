@@ -370,7 +370,12 @@
 								<i class="fas fa-map-marker-alt"></i>
 								Exam Venue <span class="text-danger">*</span>
 							</label>
-							<input type="text" class="form-control" name="exam_venue" placeholder="Enter exam venue address" required>
+							<select name="exam_venue" class="form-control" required>
+								<option value="">-- Select Exam Venue (Center) --</option>
+								@foreach($activeCenters as $center)
+									<option value="{{ $center->cl_center_name }}">{{ $center->cl_center_name }} ({{ $center->cl_code }})</option>
+								@endforeach
+							</select>
 						</div>
 						
 						<div class="form-group mb-3">
@@ -499,9 +504,9 @@
 					</h6>
 					<ul>
 						<li>Only verified/approved students are shown in this list</li>
+						<li>Students who already have admit cards generated are excluded from this list</li>
 						<li>You can select multiple students at once for bulk admit card generation</li>
 						<li>Use filters to quickly find students by name, registration number, or course</li>
-						<li>If an admit card already exists for a student, it will be updated with new exam details</li>
 					</ul>
 				</div>
 				

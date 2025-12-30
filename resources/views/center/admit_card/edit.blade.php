@@ -164,7 +164,14 @@
 									<i class="fas fa-map-marker-alt"></i>
 									Exam Venue <span class="text-danger">*</span>
 								</label>
-								<input type="text" class="form-control" name="exam_venue" value="{{ $admit->exam_venue }}" required>
+								<select name="exam_venue" class="form-control" required>
+									<option value="">-- Select Exam Venue (Center) --</option>
+									@foreach($activeCenters as $center)
+										<option value="{{ $center->cl_center_name }}" {{ $admit->exam_venue == $center->cl_center_name ? 'selected' : '' }}>
+											{{ $center->cl_center_name }} ({{ $center->cl_code }})
+										</option>
+									@endforeach
+								</select>
 							</div>
 
 							<div class="form-group mb-4">

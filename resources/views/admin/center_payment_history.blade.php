@@ -49,10 +49,12 @@
 							<td>{{ $data->cl_center_name }}</td>
 							<td>{{ $data->cr_amount }} ₹</td>
 							<td>
-							    @if($data->cr_deposit_by)
+							    @if(isset($data->cr_deposit_by) && $data->cr_deposit_by)
 							        Admin
-							    @else
+							    @elseif(isset($data->cr_razorpay_id) && $data->cr_razorpay_id)
 							        Razorpay
+							    @else
+							        Admin
 							    @endif
 							</td>
 							<td>

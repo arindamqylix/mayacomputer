@@ -141,5 +141,28 @@ class CertificateController extends Controller
 
         return view('center.certificate.view', compact('certificate'));
     }
+
+    // Delete certificate (admin panel)
+    public function delete_certificate($id)
+    {
+        try {
+            $certificate = Certificate::find($id);
+            
+            if (!$certificate) {
+                return back()->with('error', 'Certificate not found!');
+            }
+            
+            // Delete the certificate
+            $delete = Certificate::where('sc_id', $id)->delete();
+            
+            if($delete):
+                return back()->with('success', 'Certificate deleted successfully!');
+            else:
+                return back()->with('error', 'Something Went Wrong!');
+            endif;
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error deleting certificate: ' . $e->getMessage());
+        }
+    }
 }
 

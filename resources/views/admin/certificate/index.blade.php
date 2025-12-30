@@ -86,6 +86,26 @@
 		color: white;
 	}
 	
+	.btn-delete {
+		background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 0.375rem;
+		font-weight: 600;
+		font-size: 0.875rem;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-left: 0.5rem;
+	}
+	
+	.btn-delete:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(235, 51, 73, 0.4);
+		color: white;
+	}
+	
 	.badge-status {
 		padding: 0.25rem 0.75rem;
 		border-radius: 0.25rem;
@@ -195,6 +215,13 @@
 												   title="View Certificate">
 													<i class="fas fa-eye"></i>
 													View
+												</a>
+												<a href="{{ route('admin.delete_certificate', $cert->sc_id) }}" 
+												   class="btn-delete"
+												   title="Delete Certificate"
+												   onclick="return confirm('Are you sure you want to delete this certificate? This action cannot be undone.');">
+													<i class="fas fa-trash"></i>
+													Delete
 												</a>
 											</td>
 										</tr>
