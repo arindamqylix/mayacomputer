@@ -343,7 +343,7 @@
                                         </td>
                                         <td class="text-end fw-bold">{{ number_format($status->count) }}</td>
                                         <td class="text-end">
-                                            <span class="text-muted">{{ number_format(($status->count / $totalStudents) * 100, 1) }}%</span>
+                                            <span class="text-muted">{{ $totalStudents > 0 ? number_format(($status->count / $totalStudents) * 100, 1) : 0 }}%</span>
                                         </td>
                                     </tr>
                                     @endif
