@@ -10,32 +10,79 @@ use App\Models\center\Student;
 
 class CourierController extends Controller
 {
-    // List all centers for courier selection
+    // List all centers for courier selection and global dashboard
     public function index(Request $request)
     {
         // Get all registered centers
         $centers = DB::table('center_login')
-            ->where('cl_account_status', 'ACTIVE')
+
             ->orderBy('cl_center_name', 'ASC')
             ->get();
         
         $selectedCenterId = $request->get('center_id');
+        $viewType = $request->get('view', 'dashboard'); // pending, history, dashboard
         $students = collect();
+        $shipments = collect();
         
-        // If center is selected, get students with certificates that are not dispatched
-        if ($selectedCenterId) {
-            $students = DB::table('student_login')
+        // Advanced Dashboard View (All Shipments)
+        if ($viewType === 'dashboard') {
+            $shipmentQuery = DB::table('student_certificates')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->whereNotNull('student_certificates.sc_dispatch_date')
+                ->whereNotNull('student_certificates.sc_tracking_number');
+            
+            // Filter by center if selected
+            if ($selectedCenterId) {
+                $shipmentQuery->where('center_login.cl_id', $selectedCenterId);
+            }
+
+            $shipments = $shipmentQuery->select(
+                    'student_certificates.sc_dispatch_date',
+                    'student_certificates.sc_tracking_number',
+                    'student_certificates.sc_dispatch_thru',
+                    'student_certificates.sc_status as courier_status',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_id as center_id',
+                    DB::raw('COUNT(student_certificates.sc_id) as total_items')
+                )
+                ->groupBy(
+                    'student_certificates.sc_tracking_number', 
+                    'student_certificates.sc_dispatch_date',
+                    'student_certificates.sc_dispatch_thru',
+                    'student_certificates.sc_status',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_id'
+                )
+                ->orderBy('student_certificates.sc_dispatch_date', 'DESC')
+                ->get();
+        }
+        
+        // Student List View (Pending or History)
+        else {
+            $query = DB::table('student_login')
                 ->join('student_certificates', 'student_login.sl_id', '=', 'student_certificates.sc_FK_of_student_id')
                 ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
-                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
-                ->where('student_login.sl_FK_of_center_id', $selectedCenterId)
-                ->where('student_login.sl_status', '!=', 'DISPATCHED') // Exclude already dispatched
-                ->where(function($query) {
-                    // Only show certificates that haven't been dispatched (no dispatch date or tracking number)
-                    $query->whereNull('student_certificates.sc_dispatch_date')
-                          ->orWhereNull('student_certificates.sc_tracking_number');
-                })
-                ->select(
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id');
+            
+            // Filter by center if selected
+            if ($selectedCenterId) {
+                $query->where('student_login.sl_FK_of_center_id', $selectedCenterId);
+            }
+                
+            if ($viewType === 'history') {
+                $query->whereNotNull('student_certificates.sc_dispatch_date');
+            } else {
+                // Pending Dispatch
+                $query->where('student_login.sl_status', '!=', 'DISPATCHED')
+                      ->where(function($q) {
+                          $q->whereNull('student_certificates.sc_dispatch_date')
+                            ->orWhereNull('student_certificates.sc_tracking_number');
+                      });
+            }
+                
+            $students = $query->select(
                     'student_login.sl_id',
                     'student_login.sl_name',
                     'student_login.sl_reg_no',
@@ -46,6 +93,8 @@ class CourierController extends Controller
                     'student_certificates.sc_issue_date',
                     'student_certificates.sc_dispatch_date',
                     'student_certificates.sc_tracking_number',
+                    'student_certificates.sc_dispatch_thru',
+                    'student_certificates.sc_status as courier_status',
                     'course.c_full_name',
                     'course.c_short_name',
                     'center_login.cl_center_name',
@@ -55,8 +104,10 @@ class CourierController extends Controller
                 ->get();
         }
 
-        return view('admin.courier.index', compact('centers', 'students', 'selectedCenterId'));
+        return view('admin.courier.index', compact('centers', 'students', 'selectedCenterId', 'viewType', 'shipments'));
     }
+
+
     
     // Get students for selected center (AJAX)
     public function getCenterStudents($centerId)

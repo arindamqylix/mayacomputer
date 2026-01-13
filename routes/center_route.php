@@ -145,6 +145,9 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	// Syllabus
 	Route::get('syllabus', [SyllabusController::class, 'index'])->name('center.syllabus.index');
 	Route::get('syllabus/course/{id}', [SyllabusController::class, 'viewCourse'])->name('center.syllabus.view');
+	// Courier Management
+	Route::get('courier-details', [App\Http\Controllers\center\CourierController::class, 'index'])->name('center.courier.index');
+	Route::post('courier-received', [App\Http\Controllers\center\CourierController::class, 'update_received'])->name('center.courier.received');
 });
 Route::get('admin/center-recharge', [RechargeController::class, 'center_recharge_by_admin'])->name('center.recharge');
 Route::post('admin/center-recharge', [RechargeController::class, 'center_recharge_by_admin_now'])->name('center.recharge');

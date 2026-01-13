@@ -157,6 +157,13 @@
       </li>
 
       <li class="nav-item">
+        <a href="{{ route('center.courier.index') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-truck"></i></span>
+          <span class="sidebar-text">Courier Details</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a href="{{ route('view_transaction') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-receipt"></i></span>
           <span class="sidebar-text">View Transaction</span>

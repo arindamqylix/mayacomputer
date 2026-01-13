@@ -146,21 +146,39 @@
 				<!-- Center Selection Section -->
 				<div class="center-select-section">
 					<form method="GET" action="{{ route('admin.courier.index') }}" id="centerSelectForm">
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group mb-3">
+						<input type="hidden" name="view" value="{{ $viewType ?? 'dashboard' }}">
+						<div class="row align-items-end">
+							<div class="col-md-5">
+								<div class="form-group mb-0">
 									<label for="center_id">
 										<i class="fas fa-building"></i>
-										Select Center <span class="text-danger">*</span>
+										Select Center (for details)
 									</label>
-									<select name="center_id" id="center_id" class="form-select" required onchange="document.getElementById('centerSelectForm').submit();">
-										<option value="">-- Select Center --</option>
+									<select name="center_id" id="center_id" class="form-select" onchange="document.getElementById('centerSelectForm').submit();">
+										<option value="">-- View Global Dashboard --</option>
 										@foreach($centers as $center)
 											<option value="{{ $center->cl_id }}" {{ $selectedCenterId == $center->cl_id ? 'selected' : '' }}>
 												{{ $center->cl_center_name ?? $center->cl_name }} ({{ $center->cl_code }})
 											</option>
 										@endforeach
 									</select>
+								</div>
+							</div>
+							
+							<div class="col-md-7">
+								<div class="btn-group w-100" role="group">
+									<a href="{{ route('admin.courier.index', array_merge(request()->query(), ['view' => 'dashboard'])) }}" 
+									   class="btn {{ ($viewType ?? 'dashboard') == 'dashboard' ? 'btn-primary' : 'btn-outline-primary' }}">
+										<i class="fas fa-chart-pie me-2"></i> Dashboard
+									</a>
+									<a href="{{ route('admin.courier.index', array_merge(request()->query(), ['view' => 'pending'])) }}" 
+									   class="btn {{ ($viewType ?? 'dashboard') == 'pending' ? 'btn-primary' : 'btn-outline-primary' }}">
+										<i class="fas fa-clock me-2"></i> Pending
+									</a>
+									<a href="{{ route('admin.courier.index', array_merge(request()->query(), ['view' => 'history'])) }}" 
+									   class="btn {{ ($viewType ?? 'dashboard') == 'history' ? 'btn-primary' : 'btn-outline-primary' }}">
+										<i class="fas fa-history me-2"></i> History
+									</a>
 								</div>
 							</div>
 						</div>
@@ -182,135 +200,237 @@
 						</div>
 					@endif
 
-					@if($selectedCenterId && $students->count() > 0)
+					@if(($viewType ?? 'dashboard') === 'dashboard')
+						<!-- Global Shipments Dashboard -->
+						<div class="table-responsive">
+							<table class="table modern-table" id="shipmentsTable">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Dispatch Date</th>
+										<th>Center Details</th>
+										<th>Tracking Number</th>
+										<th>Items</th>
+										<th>Status</th>
+										<th>Days</th>
+									</tr>
+								</thead>
+								<tbody>
+									@forelse($shipments as $index => $shipment)
+										<tr>
+											<td>{{ $index + 1 }}</td>
+											<td>
+												{{ \Carbon\Carbon::parse($shipment->sc_dispatch_date)->format('d M, Y') }}
+											</td>
+											<td>
+												<strong class="text-primary">{{ $shipment->cl_center_name }}</strong><br>
+												<span class="text-muted small">{{ $shipment->cl_code }}</span>
+											</td>
+											<td>
+												<div class="d-flex align-items-center">
+													<div class="me-2">
+														<i class="fas fa-barcode text-secondary"></i>
+													</div>
+													<div>
+														<span class="fw-bold">{{ $shipment->sc_tracking_number }}</span><br>
+														<span class="text-muted small">{{ $shipment->sc_dispatch_thru }}</span>
+													</div>
+												</div>
+											</td>
+											<td>
+												<span class="badge bg-info text-dark">{{ $shipment->total_items }} Student(s)</span>
+											</td>
+											<td>
+												@if($shipment->courier_status === 'RECEIVED')
+													<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> RECEIVED</span>
+												@else
+													<span class="badge bg-warning text-dark"><i class="fas fa-truck me-1"></i> IN TRANSIT</span>
+												@endif
+											</td>
+											<td>
+												@php
+													$dispatchDate = \Carbon\Carbon::parse($shipment->sc_dispatch_date);
+													$days = $dispatchDate->diffInDays(now());
+												@endphp
+												@if($shipment->courier_status === 'RECEIVED')
+													<span class="text-success small">Completed</span>
+												@else
+													<span class="small {{ $days > 5 ? 'text-danger fw-bold' : 'text-muted' }}">
+														{{ $days }} Day(s) ago
+													</span>
+												@endif
+											</td>
+										</tr>
+									@empty
+										<tr>
+											<td colspan="7" class="text-center py-5">
+												<i class="fas fa-truck fa-3x text-muted mb-3 opacity-25"></i>
+												<h5 class="text-muted">No shipments found</h5>
+												<p class="text-muted small">Dispatched items will appear here.</p>
+											</td>
+										</tr>
+									@endforelse
+								</tbody>
+							</table>
+						</div>
+
+					@elseif($students->count() > 0)
 						<div class="table-responsive">
 							<table class="table modern-table" id="studentsTable">
 								<thead>
 									<tr>
-										<th>
-											<input type="checkbox" id="selectAll" class="student-checkbox" title="Select All">
-										</th>
+										@if(($viewType ?? 'pending') == 'pending')
+											<th>
+												<input type="checkbox" id="selectAll" class="student-checkbox" title="Select All">
+											</th>
+										@endif
 										<th>#</th>
 										<th>Student Name</th>
 										<th>Registration No.</th>
 										<th>Course</th>
 										<th>Certificate No.</th>
-										<th>Issue Date</th>
-										<th>Status</th>
+										
+										@if(($viewType ?? 'pending') == 'history')
+											<th>Dispatch Date</th>
+											<th>Tracking Info</th>
+											<th>Status</th>
+										@else
+											<th>Issue Date</th>
+											<th>Status</th>
+										@endif
 									</tr>
 								</thead>
 								<tbody>
 									@php $i=1; @endphp
 									@foreach($students as $student)
 										<tr>
-											<td>
-												<input type="checkbox" 
-													   name="student_ids[]" 
-													   value="{{ $student->sl_id }}" 
-													   class="student-checkbox student-checkbox-item"
-													   data-certificate-id="{{ $student->certificate_id }}">
-											</td>
+											@if(($viewType ?? 'pending') == 'pending')
+												<td>
+													<input type="checkbox" 
+														   name="student_ids[]" 
+														   value="{{ $student->sl_id }}" 
+														   class="student-checkbox student-checkbox-item"
+														   data-certificate-id="{{ $student->certificate_id }}">
+												</td>
+											@endif
 											<td>{{ $i++ }}</td>
 											<td>{{ $student->sl_name ?? 'N/A' }}</td>
 											<td>{{ $student->sl_reg_no ?? 'N/A' }}</td>
 											<td>{{ $student->c_short_name ?? $student->c_full_name ?? 'N/A' }}</td>
 											<td><strong>{{ $student->sc_certificate_number ?? 'N/A' }}</strong></td>
-											<td>
-												@if($student->sc_issue_date)
-													{{ \Carbon\Carbon::parse($student->sc_issue_date)->format('d-M-Y') }}
-												@else
-													<span class="text-muted">N/A</span>
-												@endif
-											</td>
-											<td>
-												<span class="badge-pending">Pending Dispatch</span>
-											</td>
+											
+											@if(($viewType ?? 'pending') == 'history')
+												<td>
+													{{ \Carbon\Carbon::parse($student->sc_dispatch_date)->format('d-M-Y') }}
+												</td>
+												<td>
+													<div style="font-size: 0.85rem;">
+														<strong>{{ $student->sc_tracking_number }}</strong><br>
+														<span class="text-muted">{{ $student->sc_dispatch_thru }}</span>
+													</div>
+												</td>
+												<td>
+													@if($student->courier_status === 'RECEIVED')
+														<span class="badge bg-success">RECEIVED</span>
+													@else
+														<span class="badge bg-warning text-dark">DISPATCHED</span>
+													@endif
+												</td>
+											@else
+												<td>
+													@if($student->sc_issue_date)
+														{{ \Carbon\Carbon::parse($student->sc_issue_date)->format('d-M-Y') }}
+													@else
+														<span class="text-muted">N/A</span>
+													@endif
+												</td>
+												<td>
+													<span class="badge-pending">Pending Dispatch</span>
+												</td>
+											@endif
 										</tr>
 									@endforeach
 								</tbody>
 							</table>
 						</div>
 						
-						<!-- Dispatch Form Section -->
-						<div class="dispatch-form-section" id="dispatchFormSection">
-							<h5 class="mb-3">
-								<i class="fas fa-truck"></i>
-								Dispatch Selected Documents
-							</h5>
-							
-							<div class="mb-3">
-								<strong>Total Documents Selected: <span class="total-docs" id="totalDocs">0</span></strong>
+						@if(($viewType ?? 'pending') == 'pending')
+							<!-- Dispatch Form Section -->
+							<div class="dispatch-form-section" id="dispatchFormSection">
+								<h5 class="mb-3">
+									<i class="fas fa-truck"></i>
+									Dispatch Selected Documents
+								</h5>
+								
+								<div class="mb-3">
+									<strong>Total Documents Selected: <span class="total-docs" id="totalDocs">0</span></strong>
+								</div>
+								
+								<form action="{{ route('admin.courier.update') }}" method="POST" id="dispatchForm">
+									@csrf
+									<input type="hidden" name="student_ids[]" id="selectedStudentIds" value="">
+									
+									<div class="row">
+										<div class="col-md-6 mb-3">
+											<div class="form-group">
+												<label for="dispatch_thru">
+													<i class="fas fa-truck"></i>
+													Dispatch Thru (Courier/Company Name) <span class="text-danger">*</span>
+												</label>
+												<input type="text" 
+													   class="form-control" 
+													   id="dispatch_thru" 
+													   name="dispatch_thru" 
+													   placeholder="e.g., Blue Dart, DTDC, India Post" 
+													   required>
+											</div>
+										</div>
+										
+										<div class="col-md-6 mb-3">
+											<div class="form-group">
+												<label for="dispatch_date">
+													<i class="fas fa-calendar-alt"></i>
+													Dispatch Date <span class="text-danger">*</span>
+												</label>
+												<input type="date" 
+													   class="form-control" 
+													   id="dispatch_date" 
+													   name="dispatch_date" 
+													   value="{{ date('Y-m-d') }}"
+													   required>
+											</div>
+										</div>
+										
+										<div class="col-md-6 mb-3">
+											<div class="form-group">
+												<label for="tracking_number">
+													<i class="fas fa-barcode"></i>
+													Tracking Number <span class="text-danger">*</span>
+												</label>
+												<input type="text" 
+													   class="form-control" 
+													   id="tracking_number" 
+													   name="tracking_number" 
+													   placeholder="Enter tracking/AWB number" 
+													   required>
+											</div>
+										</div>
+									</div>
+									
+									<div class="mt-3">
+										<button type="submit" class="btn-dispatch-multiple">
+											<i class="fas fa-save"></i>
+											Dispatch Selected Documents
+										</button>
+									</div>
+								</form>
 							</div>
-							
-							<form action="{{ route('admin.courier.update') }}" method="POST" id="dispatchForm">
-								@csrf
-								<input type="hidden" name="student_ids[]" id="selectedStudentIds" value="">
-								
-								<div class="row">
-									<div class="col-md-6 mb-3">
-										<div class="form-group">
-											<label for="dispatch_thru">
-												<i class="fas fa-truck"></i>
-												Dispatch Thru (Courier/Company Name) <span class="text-danger">*</span>
-											</label>
-											<input type="text" 
-												   class="form-control" 
-												   id="dispatch_thru" 
-												   name="dispatch_thru" 
-												   placeholder="e.g., Blue Dart, DTDC, India Post" 
-												   required>
-										</div>
-									</div>
-									
-									<div class="col-md-6 mb-3">
-										<div class="form-group">
-											<label for="dispatch_date">
-												<i class="fas fa-calendar-alt"></i>
-												Dispatch Date <span class="text-danger">*</span>
-											</label>
-											<input type="date" 
-												   class="form-control" 
-												   id="dispatch_date" 
-												   name="dispatch_date" 
-												   value="{{ date('Y-m-d') }}"
-												   required>
-										</div>
-									</div>
-									
-									<div class="col-md-6 mb-3">
-										<div class="form-group">
-											<label for="tracking_number">
-												<i class="fas fa-barcode"></i>
-												Tracking Number <span class="text-danger">*</span>
-											</label>
-											<input type="text" 
-												   class="form-control" 
-												   id="tracking_number" 
-												   name="tracking_number" 
-												   placeholder="Enter tracking/AWB number" 
-												   required>
-										</div>
-									</div>
-								</div>
-								
-								<div class="mt-3">
-									<button type="submit" class="btn-dispatch-multiple">
-										<i class="fas fa-save"></i>
-										Dispatch Selected Documents
-									</button>
-								</div>
-							</form>
-						</div>
+						@endif
 						
-					@elseif($selectedCenterId && $students->count() == 0)
+					@elseif(($viewType ?? 'dashboard') != 'dashboard' && $students->count() == 0)
 						<div class="alert alert-info text-center">
 							<i class="fas fa-info-circle"></i>
-							No pending documents found for this center. All documents have been dispatched.
-						</div>
-					@else
-						<div class="alert alert-info text-center">
-							<i class="fas fa-info-circle"></i>
-							Please select a center to view students with pending documents.
+							No documents found for this view.
 						</div>
 					@endif
 				</div>

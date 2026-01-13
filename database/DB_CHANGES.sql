@@ -580,3 +580,8 @@ CREATE TABLE `whatsapp_templates` (
 -- Add title field to cms_banner table for badge text at top
 ALTER TABLE `cms_banner`
 ADD `title` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `file`;
+
+-- 13-01-2026
+
+ALTER TABLE `student_certificates`
+CHANGE `sc_status` `sc_status` enum('GENERATED','ISSUED','VERIFIED','RECEIVED') COLLATE 'utf8mb4_general_ci' NULL DEFAULT 'GENERATED' AFTER `sc_issue_date`;
