@@ -594,7 +594,7 @@
 </div>
 @endsection
 
-@push('custom-js')
+@push('custom-script')
 <script>
 	$(document).ready(function() {
 		// Modal trigger handler

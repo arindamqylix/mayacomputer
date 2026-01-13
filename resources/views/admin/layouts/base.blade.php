@@ -93,6 +93,7 @@
             <!-- Buttons examples -->
             <script src="{{ asset('backend/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
             <script src="{{ asset('backend/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+            <script src="{{ asset('backend/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/select2/js/select2.min.js') }}"></script>
     <!-- Datatable init js -->
     <script src="{{ asset('backend/assets/js/pages/datatables.init.js') }}"></script>  
@@ -388,6 +389,7 @@
 
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     @stack('custom-script')
+    @stack('custom-js')
     <script src="{{ asset('vendor/livewire/livewire.js') }}"></script>
 
 </body>
