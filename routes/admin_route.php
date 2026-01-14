@@ -49,6 +49,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('center-id-card/{id}', [CenterController::class, 'viewCenterIdCardAdmin'])->name('admin.view_center_id_card');
 	Route::get('center-renew/{id}', [App\Http\Controllers\admin\CenterRenewalController::class, 'renew'])->name('admin.center.renew');
 	Route::post('center-renew/{id}', [App\Http\Controllers\admin\CenterRenewalController::class, 'renewNow'])->name('admin.center.renew.now');
+	Route::get('login-as-center/{id}', [CenterController::class, 'login_as_center'])->name('admin.login_as_center');
 
 	// Student
 	Route::get('add-new-student', [StudentController::class, 'add_student'])->name('add_new_student');
@@ -63,6 +64,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('print-student-application/{id}', [StudentController::class, 'student_application'])->name('student_application_view');
 	Route::get('student-registration-card/{id}', [StudentController::class, 'registration_card'])->name('student_registration_card');
 	Route::get('get-reg-no', [StudentController::class, 'get_reg_no'])->name('get_reg_no');
+	Route::get('login-as-student/{id}', [StudentController::class, 'login_as_student'])->name('admin.login_as_student');
 
 	
 

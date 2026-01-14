@@ -161,6 +161,16 @@ class StudentController extends Controller
 
 
 
+	public function login_as_student($id)
+	{
+		$student = Student::where('sl_id', $id)->first();
+		if ($student) {
+			Auth::guard('student')->login($student);
+			return redirect()->route('student_dashboard')->with('success', 'Logged in as ' . $student->sl_name);
+		}
+		return back()->with('error', 'Student not found');
+	}
+
 	public function get_reg_no(Request $request)
 	{
 		$student_reg = Student::where('sl_FK_of_center_id', $request->center_id)->first();

@@ -387,4 +387,14 @@ class CenterController extends Controller
         $center = \Illuminate\Support\Facades\Auth::guard('center')->user();
         return view('center_certificate', compact('center'));
     }
+
+    public function login_as_center($id)
+    {
+        $center = Center::where('cl_id', $id)->first();
+        if ($center) {
+            \Illuminate\Support\Facades\Auth::guard('center')->login($center);
+            return redirect()->route('center_dashboard')->with('success', 'Logged in as ' . $center->cl_center_name);
+        }
+        return back()->with('error', 'Center not found');
+    }
 }

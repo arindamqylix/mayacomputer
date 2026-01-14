@@ -231,6 +231,16 @@
 		background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
 		color: white;
 	}
+
+	.action-btn-login {
+		background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+		color: white;
+	}
+	
+	.action-btn-login:hover {
+		background: linear-gradient(135deg, #0aa2c0 0%, #0dcaf0 100%);
+		color: white;
+	}
 	
 	/* Add Button */
 	.btn-add-student {
@@ -429,6 +439,12 @@
 										</select>
 									</td>
 									<td>
+										<a href="{{ route('admin.login_as_student', $data->sl_id) }}" 
+										   target="_blank"
+										   title="Login as Student" 
+										   class="btn btn-sm action-btn action-btn-login text-white">
+											<i class="fas fa-sign-in-alt"></i>
+										</a>
 										<a href="{{ route('edit_student', $data->sl_id) }}" 
 										   title="Edit Student (All Status Allowed)" 
 										   class="btn btn-sm action-btn action-btn-edit text-white">

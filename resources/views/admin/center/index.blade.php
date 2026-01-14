@@ -235,6 +235,16 @@
 		background: linear-gradient(135deg, #059669 0%, #10b981 100%);
 		color: white;
 	}
+
+	.action-btn-login {
+		background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+		color: white;
+	}
+	
+	.action-btn-login:hover {
+		background: linear-gradient(135deg, #0aa2c0 0%, #0dcaf0 100%);
+		color: white;
+	}
 	
 	/* Add Button */
 	.btn-add-center {
@@ -442,7 +452,13 @@
 												{{ ($data->cl_profile_edit_enabled ?? 0) == 1 ? 'Edit Enabled' : 'Edit Disabled' }}
 											</button>
 											<div class="mt-2">
-												<a href="{{ route('edit_center', $data->cl_id) }}" 
+												<a href="{{ route('admin.login_as_center', $data->cl_id) }}" 
+												   target="_blank"
+												   title="Login as Center" 
+												   class="btn btn-sm action-btn action-btn-login text-white">
+													<i class="fas fa-sign-in-alt"></i>
+												</a>
+												<a href="{{ route('edit_center', $data->cl_id) }}"  
 												   title="Edit Center" 
 												   class="btn btn-sm action-btn action-btn-edit text-white">
 													<i class="fas fa-edit"></i>
