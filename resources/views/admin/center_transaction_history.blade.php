@@ -380,7 +380,7 @@
 	$(document).ready(function() {
 		// Initialize DataTable if available
 		if ($.fn.DataTable) {
-			var table = $('#datatable-buttons').DataTable({
+			var table = $('#transaction-history-table').DataTable({
 				"order": [[1, "desc"]], // Sort by transaction date descending
 				"pageLength": 25,
 				"language": {
