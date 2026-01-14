@@ -88,6 +88,14 @@
         </a>
       </li>
 
+      <!-- ID Card (Centers) -->
+      <li class="nav-item {{ Request::segment(2) == 'center-id-cards' ? 'active' : '' }}">
+        <a href="{{ route('admin.center_id_cards') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-id-card"></i></span>
+          <span class="sidebar-text">Center ID Cards</span>
+        </a>
+      </li>
+
       <!-- Course -->
       <li class="nav-item {{ Request::segment(1) == 'course' ? 'active' : '' }}">
         <a href="{{ route('course_list') }}" class="nav-link">

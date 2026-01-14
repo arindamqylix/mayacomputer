@@ -397,4 +397,10 @@ class CenterController extends Controller
         }
         return back()->with('error', 'Center not found');
     }
+
+    public function center_id_card_list()
+    {
+        $center = Center::orderBy('cl_id', 'DESC')->get();
+        return view('admin.center.id_card_list', ['center' => $center]);
+    }
 }

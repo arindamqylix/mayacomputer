@@ -50,6 +50,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('center-renew/{id}', [App\Http\Controllers\admin\CenterRenewalController::class, 'renew'])->name('admin.center.renew');
 	Route::post('center-renew/{id}', [App\Http\Controllers\admin\CenterRenewalController::class, 'renewNow'])->name('admin.center.renew.now');
 	Route::get('login-as-center/{id}', [CenterController::class, 'login_as_center'])->name('admin.login_as_center');
+	Route::get('center-id-cards', [CenterController::class, 'center_id_card_list'])->name('admin.center_id_cards');
 
 	// Student
 	Route::get('add-new-student', [StudentController::class, 'add_student'])->name('add_new_student');
