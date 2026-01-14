@@ -469,7 +469,11 @@ body {
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card-profile">
                 <div class="profile-image-wrapper">
-                   
+                    @if(!empty($data->sl_photo))
+                        <img src="{{ asset($data->sl_photo) }}" alt="{{ $data->sl_name }}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27140%27 height=%27140%27%3E%3Crect fill=%27%23e9ecef%27 width=%27140%27 height=%27140%27/%3E%3Ctext fill=%27%236c757d%27 font-family=%27sans-serif%27 font-size=%2714%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
+                    @else
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Crect fill='%23e9ecef' width='140' height='140'/%3E%3Ctext fill='%236c757d' font-family='sans-serif' font-size='14' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Photo%3C/text%3E%3C/svg%3E" alt="No Photo">
+                    @endif
                     <span class="status-indicator"></span>
                 </div>
                 <h5>{{ $data->sl_name ?? 'N/A' }}</h5>
