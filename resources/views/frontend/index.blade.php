@@ -678,13 +678,13 @@
                                 @endif
                                 
                                 @if($banner->header)
-                                <h1 class="banner-heading" style="font-size: 52px; font-weight: 700; color: #ffffff; margin-bottom: 25px; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); line-height: 1.3; word-wrap: break-word; max-width: 100%;">
+                                <h1 class="banner-heading" style="font-size: 52px; font-weight: 700; color: #000077; margin-bottom: 25px; text-shadow: 2px 2px 6px rgba(255,255,255,0.6); line-height: 1.3; word-wrap: break-word; max-width: 100%;">
                                     {{ $banner->header }}
                                 </h1>
                                 @endif
                                 
                                 @if($banner->short_description)
-                                <p class="banner-description" style="font-size: 18px; color: #ffffff; margin-bottom: 35px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); line-height: 1.7; max-width: 100%; word-wrap: break-word;">
+                                <p class="banner-description" style="font-size: 18px; color: #444444; margin-bottom: 35px; text-shadow: 1px 1px 3px rgba(255,255,255,0.5); line-height: 1.7; max-width: 100%; word-wrap: break-word;">
                                     {{ $banner->short_description }}
                                 </p>
                                 @endif
