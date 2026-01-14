@@ -97,7 +97,7 @@ class AttendanceController extends Controller
 
         foreach ($request->student_id as $studentId) {
 
-            $status = isset($request->attd[$studentId]) ? 'PRESENT' : 'ABSENT';
+            $status = $request->attd[$studentId] ?? 'ABSENT';
 
             MarkAttendance::updateOrCreate(
                 [
@@ -145,66 +145,61 @@ class AttendanceController extends Controller
 
     public function attendance_report(Request $request)
     {
-        $batch = Attendance::all();
+        $centerId = Auth::guard('center')->user()->cl_id;
 
-        // Month selection
-        $monthTable = $request->tbl_name; // e.g. jan_2024
-        $monthMap = [
-            'jan_2024' => [1, 2024],
-            'feb_2024' => [2, 2024],
-            'mar_2024' => [3, 2024],
-            'apr_2024' => [4, 2024],
-            'may_2024' => [5, 2024],
-            'jun_2024' => [6, 2024],
-            'jul_2024' => [7, 2024],
-            'aug_2024' => [8, 2024],
-            'sep_2024' => [9, 2024],
-            'oct_2024' => [10, 2024],
-            'nov_2024' => [11, 2024],
-            'dec_2024' => [12, 2024],
-        ];
+        // 1. Fetch Batches for Dropdown
+        $batches = DB::table('attendence_batch')
+            ->where('ab_FK_of_center_id', $centerId)
+            ->get();
 
-        // Default → current month
-        if ($monthTable && isset($monthMap[$monthTable])) {
-            [$month, $year] = $monthMap[$monthTable];
-        } else {
-            $month = now()->month;
-            $year = now()->year;
-        }
+        // 2. Get Filters (Defaults: Current Month/Year)
+        $year    = $request->input('year', now()->year);
+        $month   = $request->input('month', now()->month);
+        $batchId = $request->input('batch_id');
 
-        // Create date range
-        $startDate = Carbon::create($year, $month, 1);
+        // 3. Generate Date Range for the selected Month
+        $startDate = \Carbon\Carbon::create($year, $month, 1);
         $endDate   = $startDate->copy()->endOfMonth();
 
-        // Prepare dates array
         $dates = [];
-        $loop = $startDate->copy();
+        $loop  = $startDate->copy();
         while ($loop <= $endDate) {
             $dates[] = $loop->toDateString();
             $loop->addDay();
         }
 
-        // Fetch students
-        $students = Student::where('sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)->get();
+        // 4. Fetch Students based on filters
+        $studentQuery = Student::where('sl_FK_of_center_id', $centerId);
 
-        // Prepare Attendance
+        if ($batchId) {
+            $studentQuery->join('attendence_set', 'attendence_set.as_FK_of_student_id', '=', 'student_login.sl_id')
+                         ->where('attendence_set.as_FK_of_attendance_batch_id', $batchId);
+        }
+
+        $students = $studentQuery->select('student_login.*')->distinct()->get();
+
+        // 5. Build Attendance Matrix
+        $attendanceData = MarkAttendance::where('am_FK_of_center_id', $centerId)
+            ->whereBetween('am_date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->get()
+            ->groupBy('am_FK_of_student_id');
+
         $attendanceReport = [];
-        foreach ($students as $student) {
 
-            $attendance = MarkAttendance::select('am_date', 'am_status')
-                ->where('am_FK_of_student_id', $student->sl_id)
-                ->where('am_FK_of_center_id', Auth::guard('center')->user()->cl_id)
-                ->whereBetween('am_date', [$startDate, $endDate])
-                ->get()
-                ->groupBy('am_date')
-                ->map(fn($dayGroup) => $dayGroup->max('am_status'));
+        foreach ($students as $student) {
+            // Get this student's attendance records
+            $studentAtts = $attendanceData->get($student->sl_id, collect());
+            
+            // Map by date => status
+            $attMap = $studentAtts->pluck('am_status', 'am_date')->toArray();
 
             foreach ($dates as $date) {
-                $attendanceReport[$student->sl_name][$date] = $attendance[$date] ?? 'No';
+                $status = $attMap[$date] ?? 'NONE';
+                $attendanceReport[$student->sl_name][$date] = $status;
             }
         }
 
-        return view('center.attendance.attndance_report', compact('attendanceReport', 'dates', 'batch', 'month', 'year'));
+        return view('center.attendance.attndance_report', compact('attendanceReport', 'dates', 'batches', 'year', 'month', 'batchId'));
     }
 
 }

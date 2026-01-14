@@ -384,7 +384,7 @@
 								<tr>
 									<th style="width: 15%;">Roll No</th>
 									<th style="width: 60%;">Student Name</th>
-									<th style="width: 25%;">Present</th>
+									<th style="width: 25%;">Status</th>
 								</tr>
 							</thead>
 
@@ -399,13 +399,35 @@
 										</td>
 										<td>
 											<input type="hidden" name="student_id[]" value="{{ $stu->sl_id }}">
-											<div class="checkbox-wrapper">
-												<input 
-													type="checkbox"
-													name="attd[{{ $stu->sl_id }}]"
-													value="PRESENT"
-													{{ isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'PRESENT' ? 'checked' : '' }}
-												>
+											<div class="d-flex gap-4 align-items-center">
+												<div class="form-check">
+													<input 
+														class="form-check-input" 
+														type="radio" 
+														name="attd[{{ $stu->sl_id }}]" 
+														id="present_{{ $stu->sl_id }}" 
+														value="PRESENT"
+														style="width: 20px; height: 20px; cursor: pointer; accent-color: #11998e;"
+														{{ (isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'PRESENT') ? 'checked' : '' }}
+													>
+													<label class="form-check-label fw-bold text-success ms-2" for="present_{{ $stu->sl_id }}" style="cursor: pointer;">
+														Present
+													</label>
+												</div>
+												<div class="form-check">
+													<input 
+														class="form-check-input" 
+														type="radio" 
+														name="attd[{{ $stu->sl_id }}]" 
+														id="absent_{{ $stu->sl_id }}" 
+														value="ABSENT" 
+														style="width: 20px; height: 20px; cursor: pointer; accent-color: #d00226;"
+														{{ (isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'ABSENT') ? 'checked' : '' }}
+													>
+													<label class="form-check-label fw-bold text-danger ms-2" for="absent_{{ $stu->sl_id }}" style="cursor: pointer;">
+														Absent
+													</label>
+												</div>
 											</div>
 										</td>
 									</tr>

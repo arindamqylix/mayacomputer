@@ -419,40 +419,54 @@
 		
 		<!-- Filter Form -->
 		<div class="filter-section">
-			<form method="GET" action="{{ route('attendance_report') }}" class="row">
-				<div class="col-lg-6 mb-3">
-					<label for="tbl_name">
-						<i class="fas fa-calendar-alt"></i>
-						Select Month
+			<form method="GET" action="{{ route('attendance_report') }}" class="row align-items-end">
+				
+				<div class="col-lg-3 mb-3">
+					<label for="batch_id">
+						<i class="fas fa-users"></i>
+						Select Batch
 					</label>
-					<select name="tbl_name" id="tbl_name" class="form-control" onchange="this.form.submit()">
-						@php
-							$months = [
-								'jan_2024' => 'January 2024',
-								'feb_2024' => 'February 2024',
-								'mar_2024' => 'March 2024',
-								'apr_2024' => 'April 2024',
-								'may_2024' => 'May 2024',
-								'jun_2024' => 'June 2024',
-								'jul_2024' => 'July 2024',
-								'aug_2024' => 'August 2024',
-								'sep_2024' => 'September 2024',
-								'oct_2024' => 'October 2024',
-								'nov_2024' => 'November 2024',
-								'dec_2024' => 'December 2024',
-							];
-						@endphp
-						@foreach($months as $key => $label)
-							<option value="{{ $key }}" {{ request('tbl_name') == $key ? 'selected' : '' }}>
-								{{ $label }}
+					<select name="batch_id" id="batch_id" class="form-control">
+						<option value="">-- All Batches --</option>
+						@foreach($batches as $b)
+							<option value="{{ $b->ab_id }}" {{ request('batch_id') == $b->ab_id ? 'selected' : '' }}>
+								{{ $b->ab_name }}
 							</option>
 						@endforeach
 					</select>
 				</div>
-				<div class="col-lg-6 mb-3">
-					<label>&nbsp;</label><br>
-					<button type="submit" class="btn-filter">
-						<i class="fas fa-filter"></i> Filter
+
+				<div class="col-lg-3 mb-3">
+					<label for="year">
+						<i class="fas fa-calendar"></i>
+						Select Year
+					</label>
+					<select name="year" id="year" class="form-control">
+						@for($y = date('Y') - 1; $y <= date('Y') + 1; $y++)
+							<option value="{{ $y }}" {{ (request('year') ?? date('Y')) == $y ? 'selected' : '' }}>
+								{{ $y }}
+							</option>
+						@endfor
+					</select>
+				</div>
+
+				<div class="col-lg-3 mb-3">
+					<label for="month">
+						<i class="fas fa-calendar-alt"></i>
+						Select Month
+					</label>
+					<select name="month" id="month" class="form-control">
+						@foreach(range(1, 12) as $m)
+							<option value="{{ $m }}" {{ (request('month') ?? date('n')) == $m ? 'selected' : '' }}>
+								{{ \Carbon\Carbon::create()->month($m)->format('F') }}
+							</option>
+						@endforeach
+					</select>
+				</div>
+
+				<div class="col-lg-3 mb-3">
+					<button type="submit" class="btn-filter w-100">
+						<i class="fas fa-filter"></i> Apply Filter
 					</button>
 				</div>
 			</form>
