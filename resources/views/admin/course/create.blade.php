@@ -68,7 +68,7 @@
 
                         <div class="col-lg-12 mb-2">
                             <label>Description</label>
-                            <textarea class="form-control" rows="3" name="description"></textarea>
+                            <textarea class="form-control" rows="3" name="description" id="description"></textarea>
                         </div>
 
                         {{-- Information Repeater --}}

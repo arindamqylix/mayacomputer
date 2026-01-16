@@ -36,6 +36,11 @@
                             <input type="text" class="form-control" name="course_duration" value="{{ $data->c_duration ?? '' }}" required>
                         </div>
 
+                        <div class="col-lg-12 mb-2">
+                            <label>Description</label>
+                            <textarea class="form-control" rows="3" name="description" id="description">{{ $data->description ?? '' }}</textarea>
+                        </div>
+
                         <div class="col-lg-12 mt-4">
                             <button type="submit" class="btn btn-secondary">
                                 <i class="fa fa-save"></i> Update Course
@@ -49,3 +54,10 @@
 
 </div>
 @endsection
+
+@push('custom-js')
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('description');
+</script>
+@endpush

@@ -100,6 +100,7 @@ class CourseController extends Controller
             'course_full_name'  => 'required|string|max:255',
             'course_price'      => 'required|string|max:255',
             'course_duration'   => 'required|string|max:255',
+            'description'       => 'nullable|string',
         ]);
 
         try {
@@ -111,6 +112,7 @@ class CourseController extends Controller
                 'c_full_name'     => $request->course_full_name,
                 'c_price'         => $request->course_price,
                 'c_duration'      => $request->course_duration,
+                'description'     => $request->description,
             ]);
 
             if ($update) {
