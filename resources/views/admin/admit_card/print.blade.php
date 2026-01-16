@@ -363,9 +363,9 @@
                     <div class="detail-label">Date of Birth:</div>
                     <div class="detail-value">{{ \Carbon\Carbon::parse($student->sl_dob)->format('d/m/Y') }}</div>
                     <div class="detail-label" style="width: 60px;">Gender:</div>
-                    <div class="detail-value">{{ ucfirst($student->sl_gender ?? 'N/A') }}</div>
+                    <div class="detail-value">{{ ucfirst($student->sl_sex ?? 'N/A') }}</div>
                     <div class="detail-label" style="width: 70px;">Category:</div>
-                    <div class="detail-value">{{ strtoupper($student->sl_category ?? 'N/A') }}</div>
+                    <div class="detail-value">{{ strtoupper($student->sl_category ?? 'GENERAL') }}</div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Center Code & Name:</div>
@@ -408,7 +408,7 @@
                     <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
                     <td>{{ \Carbon\Carbon::parse($admit->exam_time)->format('h:i A') }}</td>
                     <td>{{ $admit->exam_venue }}</td>
-                    <td>{{ $center->cl_address ?? 'N/A' }}</td>
+                    <td>{{ $center->cl_center_address ?? $center->cl_address ?? 'N/A' }}</td>
                 </tr>
             </tbody>
         </table>

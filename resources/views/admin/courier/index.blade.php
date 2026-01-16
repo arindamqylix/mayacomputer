@@ -294,6 +294,7 @@
 											<th>Dispatch Date</th>
 											<th>Tracking Info</th>
 											<th>Status</th>
+											<th>Action</th>
 										@else
 											<th>Issue Date</th>
 											<th>Status</th>
@@ -335,6 +336,19 @@
 													@else
 														<span class="badge bg-warning text-dark">DISPATCHED</span>
 													@endif
+												</td>
+												<td>
+													<button type="button" 
+															class="btn btn-sm btn-info text-white btn-edit-courier"
+															data-bs-toggle="modal" 
+															data-bs-target="#editCourierModal"
+															data-id="{{ $student->certificate_id }}"
+															data-dispatch-thru="{{ $student->sc_dispatch_thru }}"
+															data-dispatch-date="{{ $student->sc_dispatch_date }}"
+															data-tracking-number="{{ $student->sc_tracking_number }}"
+															data-status="{{ $student->courier_status }}">
+														<i class="fas fa-edit"></i> Edit
+													</button>
 												</td>
 											@else
 												<td>
@@ -440,6 +454,47 @@
 </div>
 @endsection
 
+<!-- Edit Courier Modal -->
+<div class="modal fade" id="editCourierModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title">Edit Courier Details</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form id="editCourierForm" method="POST">
+				@csrf
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="edit_dispatch_thru" class="form-label">Dispatch Thru</label>
+						<input type="text" class="form-control" id="edit_dispatch_thru" name="dispatch_thru" required>
+					</div>
+					<div class="mb-3">
+						<label for="edit_dispatch_date" class="form-label">Dispatch Date</label>
+						<input type="date" class="form-control" id="edit_dispatch_date" name="dispatch_date" required>
+					</div>
+					<div class="mb-3">
+						<label for="edit_tracking_number" class="form-label">Tracking Number</label>
+						<input type="text" class="form-control" id="edit_tracking_number" name="tracking_number" required>
+					</div>
+					<div class="mb-3">
+						<label for="edit_courier_status" class="form-label">Status</label>
+						<select class="form-select" id="edit_courier_status" name="courier_status" required>
+							<option value="DISPATCHED">DISPATCHED</option>
+							<option value="RECEIVED">RECEIVED</option>
+							<option value="RETURNED">RETURNED</option>
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Update Details</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 @push('custom-script')
 <script>
 	$(document).ready(function() {
@@ -485,6 +540,39 @@
 			}
 		}
 		
+		// Edit Courier Modal Data Population
+		$('.btn-edit-courier').on('click', function() {
+			var id = $(this).data('id');
+			var dispatchThru = $(this).data('dispatch-thru');
+			var dispatchDate = $(this).data('dispatch-date');
+			var trackingNumber = $(this).data('tracking-number');
+			var status = $(this).data('status');
+			
+			// Format date to YYYY-MM-DD for input type="date"
+			var formattedDate = '';
+			if(dispatchDate) {
+				var d = new Date(dispatchDate);
+				var month = '' + (d.getMonth() + 1);
+				var day = '' + d.getDate();
+				var year = d.getFullYear();
+
+				if (month.length < 2) month = '0' + month;
+				if (day.length < 2) day = '0' + day;
+
+				formattedDate = [year, month, day].join('-');
+			}
+
+			$('#edit_dispatch_thru').val(dispatchThru);
+			$('#edit_dispatch_date').val(formattedDate);
+			$('#edit_tracking_number').val(trackingNumber);
+			$('#edit_courier_status').val(status);
+			
+			// Set form action
+			var actionUrl = "{{ route('admin.courier.update_details', ':id') }}";
+			actionUrl = actionUrl.replace(':id', id);
+			$('#editCourierForm').attr('action', actionUrl);
+		});
+
 		// Initialize on page load
 		updateTotalDocs();
 	});

@@ -459,4 +459,45 @@ class StudentController extends Controller
 
 		return view('admin.auth.view_result', $result);
 	}
+public function student_reg_card_list()
+	{
+		$student = DB::table('student_login')
+			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->get();
+		return view('admin.student.reg_card_list', compact('student'));
+	}
+
+	public function student_id_card_list()
+	{
+		$student = DB::table('student_login')
+			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->get();
+		return view('admin.student.id_card_list', compact('student'));
+	}
+
+    public function student_id_card($id)
+    {
+        $data = DB::table('student_login')
+			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->where('student_login.sl_id', $id)
+			->select(
+				'student_login.*',
+				'center_login.cl_center_name', 
+				'center_login.cl_name',
+				'center_login.cl_code', 
+				'center_login.cl_mobile',
+				'course.c_short_name', 
+				'course.c_full_name'
+			)
+			->first();
+
+        if (!$data) {
+			return redirect()->back()->with('error', 'Student not found.');
+		}
+
+        return view('admin.student.id_card', compact('data'));
+    }
 }

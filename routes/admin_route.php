@@ -67,6 +67,11 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('get-reg-no', [StudentController::class, 'get_reg_no'])->name('get_reg_no');
 	Route::get('login-as-student/{id}', [StudentController::class, 'login_as_student'])->name('admin.login_as_student');
 
+    // Student Reg & ID Cards
+	Route::get('student-reg-card-list', [StudentController::class, 'student_reg_card_list'])->name('admin.student.reg_card_list');
+    Route::get('student-id-card-list', [StudentController::class, 'student_id_card_list'])->name('admin.student.id_card_list');
+    Route::get('student-id-card-view/{id}', [StudentController::class, 'student_id_card'])->name('student_id_card_view');
+
 	
 
 	// Course
@@ -243,6 +248,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::post('courier/dispatch', [CourierController::class, 'update_dispatch'])->name('admin.courier.update');
 	Route::get('courier/dispatch/{id}', [CourierController::class, 'dispatch'])->name('admin.courier.dispatch');
 	Route::post('courier/dispatch/{id}', [CourierController::class, 'update_single_dispatch'])->name('admin.courier.update_single');
+	Route::post('courier/update-details/{id}', [CourierController::class, 'update_courier_details'])->name('admin.courier.update_details');
 	
 	// Document Reissue
 	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('admin.document_reissue.index');

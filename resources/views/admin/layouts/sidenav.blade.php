@@ -112,13 +112,29 @@
         </a>
       </li>
 
+      <!-- Student Reg Card List -->
+      <li class="nav-item {{ Request::routeIs('admin.student.reg_card_list') ? 'active' : '' }}">
+        <a href="{{ route('admin.student.reg_card_list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-address-card"></i></span>
+          <span class="sidebar-text">Student Reg Card</span>
+        </a>
+      </li>
+
+      <!-- Student ID Card List -->
+      <li class="nav-item {{ Request::routeIs('admin.student.id_card_list') ? 'active' : '' }}">
+        <a href="{{ route('admin.student.id_card_list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-id-card"></i></span>
+          <span class="sidebar-text">Student ID Card</span>
+        </a>
+      </li>
+
       <!-- Student Reg Fee -->
-      <li class="nav-item {{ Request::segment(1) == 'set_reg_fee' ? 'active' : '' }}">
+      <!-- <li class="nav-item {{ Request::segment(1) == 'set_reg_fee' ? 'active' : '' }}">
         <a href="{{ route('set_reg_fee') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-money-bill-wave"></i></span>
           <span class="sidebar-text">Student Reg Fee</span>
         </a>
-      </li>
+      </li> -->
 
       <!-- Admit Card -->
       <li class="nav-item">

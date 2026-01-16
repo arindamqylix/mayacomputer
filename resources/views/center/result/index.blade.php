@@ -376,6 +376,11 @@
 	$(document).ready(function() {
 		// Initialize DataTable if available
 		if ($.fn.DataTable) {
+			// Check if DataTable is already initialized and destroy it
+			if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+				$('#datatable-buttons').DataTable().destroy();
+			}
+
 			var table = $('#datatable-buttons').DataTable({
 				"order": [[3, "desc"]], // Sort by percentage descending
 				"pageLength": 25,

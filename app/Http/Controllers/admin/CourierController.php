@@ -238,5 +238,34 @@ class CourierController extends Controller
 
         return redirect()->route('admin.courier.index')->with('success', 'Certificate dispatch information updated successfully!');
     }
+
+    // Update courier details (Edit Status & Info)
+    public function update_courier_details(Request $request, $id)
+    {
+        $request->validate([
+            'dispatch_thru' => 'required|string|max:255',
+            'dispatch_date' => 'required|date',
+            'tracking_number' => 'required|string|max:255',
+            'courier_status' => 'required|string|in:DISPATCHED,RECEIVED,RETURNED',
+        ]);
+
+        $certificate = DB::table('student_certificates')->where('sc_id', $id)->first();
+
+        if (!$certificate) {
+             return redirect()->back()->with('error', 'Certificate not found!');
+        }
+
+        DB::table('student_certificates')
+            ->where('sc_id', $id)
+            ->update([
+                'sc_dispatch_thru' => $request->dispatch_thru,
+                'sc_dispatch_date' => $request->dispatch_date,
+                'sc_tracking_number' => $request->tracking_number,
+                'sc_status' => $request->courier_status,
+                'updated_at' => now(),
+            ]);
+            
+        return redirect()->back()->with('success', 'Courier details updated successfully!');
+    }
 }
 
