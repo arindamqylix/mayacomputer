@@ -27,9 +27,10 @@
                         <thead>
                             <tr class="table_main_row">
                                 <th>ID</th>
-                                <th>Image</th>
-                                <th>Course Name</th>
+                                <th>Full Name</th>
+                                <th>Short Name</th>
                                 <th>Duration</th>
+                                <th>Price</th>
                                 <th>Details</th>
                                 <th>Actions</th>
                             </tr>
@@ -38,15 +39,10 @@
                             @foreach($course as $item)
                                 <tr>
                                     <td>{{ $item->c_id }}</td>
-                                    <td>
-                                        @if($item->file)
-                                            <img style="width: 74px;height: 71px;" src="{{ asset($item->file) }}" alt="Course Image" class="course-img">
-                                        @else
-                                            <span class="badge bg-secondary">No Image</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->c_full_name ?? $item->c_short_name }}</td>
+                                    <td>{{ $item->c_full_name }}</td>
+                                    <td>{{ $item->c_short_name }}</td>
                                     <td>{{ $item->c_duration ?? 'N/A' }}</td>
+                                    <td>{{ $item->c_price ?? 'N/A' }}</td>
                                     <td>{{ Str::limit($item->description ?? '', 50) }}</td>
                                     <td>
                                         <a href="{{ route('edit_course', $item->c_id) }}" class="btn btn-warning btn-sm">Edit</a>
