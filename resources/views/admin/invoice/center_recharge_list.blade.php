@@ -11,6 +11,24 @@
                     </h4>
                 </div>
                 <div class="card-body">
+                    <!-- Filter Section -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="centerFilter" class="form-label">Filter by Center:</label>
+                            <select class="form-select" id="centerFilter" onchange="window.location.href='{{ route('admin.invoice.center_recharge_list') }}?center_id='+this.value">
+                                <option value="">-- Show All Invoices --</option>
+                                @foreach($centers as $center)
+                                    <option value="{{ $center->cl_id }}" {{ isset($selectedCenterId) && $selectedCenterId == $center->cl_id ? 'selected' : '' }}>
+                                        {{ $center->cl_center_name }} ({{ $center->cl_code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 text-end align-self-end">
+                            <span class="text-muted">Total Invoices: <strong>{{ count($invoices) }}</strong></span>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>

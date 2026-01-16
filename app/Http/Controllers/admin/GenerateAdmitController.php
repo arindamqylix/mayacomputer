@@ -129,9 +129,11 @@ class GenerateAdmitController extends Controller
         }
     }
 
-    public function admit_card_list(){
+    public function admit_card_list(Request $request){
         // Admin can see ALL admit cards from ALL centers
-        $admitCards = DB::table('student_admit_cards AS a')
+        $centers = DB::table('center_login')->orderBy('cl_name', 'asc')->get();
+
+        $query = DB::table('student_admit_cards AS a')
             ->join('student_login AS s', 's.sl_id', '=', 'a.student_id')
             ->join('course AS c', 'c.c_id', '=', 's.sl_FK_of_course_id')
             ->leftJoin('center_login AS cl', 'cl.cl_id', '=', 'a.center_id')
@@ -141,10 +143,16 @@ class GenerateAdmitController extends Controller
                 'c.c_full_name',
                 'cl.cl_name as center_name'
             )
-            ->orderBy('a.ac_id', 'DESC')
-            ->get();
+            ->orderBy('a.ac_id', 'DESC');
 
-        return view('admin.admit_card.index', compact('admitCards'));
+        if ($request->has('center_id') && !empty($request->center_id)) {
+            $query->where('a.center_id', $request->center_id);
+        }
+
+        $admitCards = $query->get();
+        $selectedCenterId = $request->center_id;
+
+        return view('admin.admit_card.index', compact('admitCards', 'centers', 'selectedCenterId'));
     }
 
     public function edit_admit_card($id)

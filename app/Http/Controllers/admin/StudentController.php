@@ -15,12 +15,29 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
 {
-	public function student_list()
+	public function student_list(Request $request)
 	{
-		$student['student'] = DB::table('student_login')
-			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+		$centers = DB::table('center_login')
+			->orderBy('cl_center_name', 'asc')
 			->get();
+
+		$query = DB::table('student_login')
+			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id');
+
+		if ($request->has('center_id') && !empty($request->center_id)) {
+			$query->where('student_login.sl_FK_of_center_id', $request->center_id);
+		}
+
+		if ($request->has('status') && !empty($request->status)) {
+			$query->where('student_login.sl_status', $request->status);
+		}
+
+		$student['student'] = $query->get();
+		$student['centers'] = $centers;
+		$student['selectedCenterId'] = $request->center_id;
+		$student['selectedStatus'] = $request->status;
+
 		return view('admin.student.index', $student);
 	}
 
@@ -460,24 +477,46 @@ class StudentController extends Controller
 
 		return view('admin.auth.view_result', $result);
 	}
-	public function student_reg_card_list()
+	public function student_reg_card_list(Request $request)
 	{
-		$student = DB::table('student_login')
+		$centers = DB::table('center_login')
+			->orderBy('cl_center_name', 'asc')
+			->get();
+
+		$query = DB::table('student_login')
 			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
 			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-			->orderBy('student_login.sl_id', 'desc')
-			->get();
-		return view('admin.student.reg_card_list', compact('student'));
+			->orderBy('student_login.sl_id', 'desc');
+
+		if ($request->has('center_id') && !empty($request->center_id)) {
+			$query->where('student_login.sl_FK_of_center_id', $request->center_id);
+		}
+
+		$student = $query->get();
+		$selectedCenterId = $request->center_id;
+
+		return view('admin.student.reg_card_list', compact('student', 'centers', 'selectedCenterId'));
 	}
 
-	public function student_id_card_list()
+	public function student_id_card_list(Request $request)
 	{
-		$student = DB::table('student_login')
+		$centers = DB::table('center_login')
+			->orderBy('cl_center_name', 'asc')
+			->get();
+
+		$query = DB::table('student_login')
 			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
 			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-			->orderBy('student_login.sl_id', 'desc')
-			->get();
-		return view('admin.student.id_card_list', compact('student'));
+			->orderBy('student_login.sl_id', 'desc');
+
+		if ($request->has('center_id') && !empty($request->center_id)) {
+			$query->where('student_login.sl_FK_of_center_id', $request->center_id);
+		}
+
+		$student = $query->get();
+		$selectedCenterId = $request->center_id;
+
+		return view('admin.student.id_card_list', compact('student', 'centers', 'selectedCenterId'));
 	}
 
     public function student_id_card($id)

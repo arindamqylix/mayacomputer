@@ -250,12 +250,28 @@
 			
 			<!-- Search Section -->
 			<div class="search-section">
-				<div class="row">
-					<div class="col-md-6">
+				<div class="row align-items-center">
+					<div class="col-md-4">
 						<div class="search-input-wrapper">
 							<i class="fas fa-search"></i>
 							<input type="text" id="searchInput" class="form-control" placeholder="Search by registration number, student name, center, venue...">
 						</div>
+					</div>
+					<div class="col-md-4">
+						<select class="form-select" id="centerFilter" onchange="window.location.href='{{ route('admin.admit_card_list') }}?center_id='+this.value">
+							<option value="">-- Unfilter (Show All) --</option>
+							@foreach($centers as $center)
+								<option value="{{ $center->cl_id }}" {{ isset($selectedCenterId) && $selectedCenterId == $center->cl_id ? 'selected' : '' }}>
+									{{ $center->cl_name }} ({{ $center->cl_code }})
+								</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="col-md-4 text-end">
+						<span class="text-muted">
+							<i class="fas fa-info-circle me-1"></i>
+							Total Admit Cards: <strong>{{ count($admitCards) }}</strong>
+						</span>
 					</div>
 				</div>
 			</div>

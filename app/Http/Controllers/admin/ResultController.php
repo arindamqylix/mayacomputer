@@ -104,9 +104,12 @@ class ResultController extends Controller
     }
 
     // List all results (admin panel)
-    public function result_list()
+    // List all results (admin panel)
+    public function result_list(Request $request)
     {
-        $result['result'] = DB::table('set_result')
+        $centers = DB::table('center_login')->orderBy('cl_name', 'asc')->get();
+
+        $query = DB::table('set_result')
             ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
             ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
             ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
@@ -128,8 +131,15 @@ class ResultController extends Controller
                 'course.c_full_name',
                 'course.c_short_name'
             )
-            ->orderBy('set_result.sr_id', 'DESC')
-            ->get();
+            ->orderBy('set_result.sr_id', 'DESC');
+
+        if ($request->has('center_id') && !empty($request->center_id)) {
+            $query->where('set_result.sr_FK_of_center_id', $request->center_id);
+        }
+
+        $result['result'] = $query->get();
+        $result['centers'] = $centers;
+        $result['selectedCenterId'] = $request->center_id;
 
         return view('admin.result.index', $result);
     }

@@ -12,14 +12,23 @@ use DB;
 class InvoiceController extends Controller
 {
     // List all center wallet recharge invoices
-    public function centerRechargeInvoices()
+    // List all center wallet recharge invoices
+    public function centerRechargeInvoices(Request $request)
     {
-        $invoices = Recharge::with('center')
+        $centers = Center::orderBy('cl_center_name', 'asc')->get();
+
+        $query = Recharge::with('center')
             ->where('cr_status', 1)
-            ->orderBy('cr_id', 'DESC')
-            ->get();
+            ->orderBy('cr_id', 'DESC');
+
+        if ($request->has('center_id') && !empty($request->center_id)) {
+            $query->where('cr_FK_of_center_id', $request->center_id);
+        }
+
+        $invoices = $query->get();
+        $selectedCenterId = $request->center_id;
         
-        return view('admin.invoice.center_recharge_list', compact('invoices'));
+        return view('admin.invoice.center_recharge_list', compact('invoices', 'centers', 'selectedCenterId'));
     }
     
     // View center wallet recharge invoice

@@ -50,7 +50,9 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	Route::get('block-student-list', [StudentController::class, 'block_student'])->name('block_student');
 	Route::get('print-student-application/{id}', [StudentController::class, 'student_application'])->name('student_application');
 	Route::get('student-registration-card/{id}', [StudentController::class, 'registration_card'])->name('center.student_registration_card');
-	Route::get('set-attendance', [AttendanceSetController::class, 'attendance_set'])->name('attendance_set');
+	// Set Attendance (Assign Batch)
+	Route::get('set-attendance', [AttendanceSetController::class, 'index'])->name('set_attendance_page');
+	Route::get('set-attendance-save', [AttendanceSetController::class, 'attendance_set'])->name('attendance_set');
 
 	// Generate Student Id Card
 	Route::get('student-id-card', [StudentController::class, 'student_id_card'])->name('student_id_card');

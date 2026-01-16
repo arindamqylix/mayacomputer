@@ -70,79 +70,87 @@
             </h4>
         </div>
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Students</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($totalStudents) }}</h2>
-                            <small class="text-success">
-                                <i class="fas fa-arrow-up"></i> {{ $recentStudents }} new this month
-                            </small>
-                        </div>
-                        <div class="stat-icon primary">
-                            <i class="fas fa-user-graduate"></i>
+            <a href="{{ route('student_list') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Students</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($totalStudents) }}</h2>
+                                <small class="text-success">
+                                    <i class="fas fa-arrow-up"></i> {{ $recentStudents }} new this month
+                                </small>
+                            </div>
+                            <div class="stat-icon primary">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Pending</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($pendingStudents) }}</h2>
-                            <small class="text-warning">
-                                <i class="fas fa-clock"></i> Awaiting verification
-                            </small>
+            <a href="{{ route('student_list', ['status' => 'PENDING']) }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Pending</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($pendingStudents) }}</h2>
+                                <small class="text-warning">
+                                    <i class="fas fa-clock"></i> Awaiting verification
+                                </small>
+                            </div>
+                            <div class="stat-icon warning">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
                         </div>
-                        <div class="stat-icon warning">
-                            <i class="fas fa-hourglass-half"></i>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
-    </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Verified</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($verifiedStudents) }}</h2>
-                            <small class="text-success">
-                                <i class="fas fa-check-circle"></i> Active students
-                            </small>
-                        </div>
-                        <div class="stat-icon success">
-                            <i class="fas fa-check-double"></i>
+            <a href="{{ route('student_list', ['status' => 'VERIFIED']) }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Verified</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($verifiedStudents) }}</h2>
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle"></i> Active students
+                                </small>
+                            </div>
+                            <div class="stat-icon success">
+                                <i class="fas fa-check-double"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Dispatched</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($dispatchedStudents) }}</h2>
-                            <small class="text-info">
-                                <i class="fas fa-truck"></i> Certificates sent
-                            </small>
-                        </div>
-                        <div class="stat-icon info">
-                            <i class="fas fa-paper-plane"></i>
+            <a href="{{ route('admin.courier.index') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Dispatched</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($dispatchedStudents) }}</h2>
+                                <small class="text-info">
+                                    <i class="fas fa-truck"></i> Certificates sent
+                                </small>
+                            </div>
+                            <div class="stat-icon info">
+                                <i class="fas fa-paper-plane"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -154,79 +162,87 @@
             </h4>
         </div>
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Centers</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($totalCenters) }}</h2>
-                            <small class="text-primary">
-                                <i class="fas fa-building"></i> All registered
-                            </small>
-                        </div>
-                        <div class="stat-icon secondary">
-                            <i class="fas fa-building"></i>
+            <a href="{{ route('center_list') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Centers</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($totalCenters) }}</h2>
+                                <small class="text-primary">
+                                    <i class="fas fa-building"></i> All registered
+                                </small>
+                            </div>
+                            <div class="stat-icon secondary">
+                                <i class="fas fa-building"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Active Centers</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($activeCenters) }}</h2>
-                            <small class="text-success">
-                                <i class="fas fa-check-circle"></i> Currently active
-                            </small>
+            <a href="{{ route('center_list') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Active Centers</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($activeCenters) }}</h2>
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle"></i> Currently active
+                                </small>
+                            </div>
+                            <div class="stat-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
                         </div>
-                        <div class="stat-icon success">
-                            <i class="fas fa-check-circle"></i>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
-    </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Courses</h6>
-                            <h2 class="fw-bold mb-0">{{ number_format($totalCourses) }}</h2>
-                            <small class="text-info">
-                                <i class="fas fa-book"></i> Available courses
-                            </small>
-                        </div>
-                        <div class="stat-icon info">
-                            <i class="fas fa-graduation-cap"></i>
+            <a href="{{ route('course_list') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Courses</h6>
+                                <h2 class="fw-bold mb-0 text-dark">{{ number_format($totalCourses) }}</h2>
+                                <small class="text-info">
+                                    <i class="fas fa-book"></i> Available courses
+                                </small>
+                            </div>
+                            <div class="stat-icon info">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm stat-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Wallet Balance</h6>
-                            <h2 class="fw-bold mb-0">₹{{ number_format($totalWalletBalance, 2) }}</h2>
-                            <small class="text-success">
-                                <i class="fas fa-wallet"></i> Center wallets
-                            </small>
-                        </div>
-                        <div class="stat-icon danger">
-                            <i class="fas fa-rupee-sign"></i>
+            <a href="{{ route('center_transaction_payment') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm stat-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-muted mb-2" style="font-size: 12px; letter-spacing: 0.5px;">Total Wallet Balance</h6>
+                                <h2 class="fw-bold mb-0 text-dark">₹{{ number_format($totalWalletBalance, 2) }}</h2>
+                                <small class="text-success">
+                                    <i class="fas fa-wallet"></i> Center wallets
+                                </small>
+                            </div>
+                            <div class="stat-icon danger">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -294,7 +310,7 @@
 
     <!-- Additional Statistics Row -->
     <div class="row mb-4">
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
             <div class="card border-0 shadow-sm chart-card">
                 <div class="card-header bg-white border-bottom py-3">
                     <h5 class="mb-0 fw-bold">
@@ -303,54 +319,6 @@
                 </div>
                 <div class="card-body p-4">
                     <div id="coursesChart" style="height: 300px;"></div>
-                        </div>
-                    </div>
-                        </div>
-
-        <div class="col-lg-6 mb-4">
-            <div class="card border-0 shadow-sm chart-card">
-                <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-list-alt text-secondary me-2"></i>Student Status Breakdown
-                    </h5>
-                        </div>
-                <div class="card-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Status</th>
-                                    <th class="text-end">Count</th>
-                                    <th class="text-end">Percentage</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $statusLabels = [
-                                        'PENDING' => 'Pending',
-                                        'VERIFIED' => 'Verified',
-                                        'RESULT UPDATED' => 'Result Updated',
-                                        'RESULT OUT' => 'Result Out',
-                                        'DISPATCHED' => 'Dispatched',
-                                        'BLOCK' => 'Blocked'
-                                    ];
-                                @endphp
-                                @foreach($studentsByStatus as $status)
-                                    @if($status->count > 0)
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-secondary">{{ $statusLabels[$status->sl_status] ?? $status->sl_status }}</span>
-                                        </td>
-                                        <td class="text-end fw-bold">{{ number_format($status->count) }}</td>
-                                        <td class="text-end">
-                                            <span class="text-muted">{{ $totalStudents > 0 ? number_format(($status->count / $totalStudents) * 100, 1) : 0 }}%</span>
-                                        </td>
-                                    </tr>
-                                    @endif
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>

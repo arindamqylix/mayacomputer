@@ -336,13 +336,34 @@
 			<!-- Search Section -->
 			<div class="search-section">
 				<div class="row align-items-center">
-					<div class="col-md-6">
+					<div class="col-md-3">
 						<div class="search-input-wrapper">
 							<i class="fas fa-search"></i>
-							<input type="text" id="searchInput" class="form-control" placeholder="Search by name, registration number, center code, or course...">
+							<input type="text" id="searchInput" class="form-control" placeholder="Search...">
 						</div>
 					</div>
-					<div class="col-md-6 text-end">
+                    <div class="col-md-3">
+                        <select class="form-select" id="centerFilter" onchange="window.location.href='{{ route('student_list') }}?center_id='+this.value + '&status={{ $selectedStatus ?? '' }}'">
+                            <option value="">-- All Centers --</option>
+                            @foreach($centers as $center)
+                                <option value="{{ $center->cl_id }}" {{ isset($selectedCenterId) && $selectedCenterId == $center->cl_id ? 'selected' : '' }}>
+                                    {{ $center->cl_center_name }} ({{ $center->cl_code }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+					<div class="col-md-3">
+						<select class="form-select" id="statusFilter" onchange="window.location.href='{{ route('student_list') }}?status='+this.value + '&center_id={{ $selectedCenterId ?? '' }}'">
+							<option value="">-- All Status --</option>
+							<option value="PENDING" {{ isset($selectedStatus) && $selectedStatus == 'PENDING' ? 'selected' : '' }}>PENDING</option>
+							<option value="VERIFIED" {{ isset($selectedStatus) && $selectedStatus == 'VERIFIED' ? 'selected' : '' }}>VERIFIED</option>
+							<option value="RESULT UPDATED" {{ isset($selectedStatus) && $selectedStatus == 'RESULT UPDATED' ? 'selected' : '' }}>RESULT UPDATED</option>
+							<option value="RESULT OUT" {{ isset($selectedStatus) && $selectedStatus == 'RESULT OUT' ? 'selected' : '' }}>RESULT OUT</option>
+							<option value="DISPATCHED" {{ isset($selectedStatus) && $selectedStatus == 'DISPATCHED' ? 'selected' : '' }}>DISPATCHED</option>
+							<option value="BLOCK" {{ isset($selectedStatus) && $selectedStatus == 'BLOCK' ? 'selected' : '' }}>BLOCK</option>
+						</select>
+					</div>
+					<div class="col-md-3 text-end">
 						<span class="text-muted">
 							<i class="fas fa-info-circle me-1"></i>
 							Total Students: <strong>{{ count($student) }}</strong>

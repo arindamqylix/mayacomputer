@@ -203,6 +203,7 @@
         <div class="multi-level collapse" role="list" id="submenu-attendance" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('attndance_batch') }}" class="nav-link"><span class="sidebar-text">Manage Batch</span></a></li>
+            <li class="nav-item"><a href="{{ route('set_attendance_page') }}" class="nav-link"><span class="sidebar-text">Set Attendance</span></a></li>
             <li class="nav-item"><a href="{{ route('make_attendance') }}" class="nav-link"><span class="sidebar-text">Manage Attendance</span></a></li>
             <li class="nav-item"><a href="{{route('attendance_report')}}" class="nav-link"><span class="sidebar-text">Attendance Report</span></a></li>
           </ul>

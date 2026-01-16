@@ -171,23 +171,11 @@
 			
 			<!-- Action Bar -->
 			<div class="action-bar">
-				<div class="attendance-controls">
-					<div class="form-check">
-						<input type="checkbox" id="selectAllCheckbox" onclick="select_all_student();" class="form-check-input">
-						<label class="form-check-label" for="selectAllCheckbox">
-							<strong>Select All</strong>
-						</label>
-					</div>
-					<select id='batch_id' class="form-select" style="width: auto; min-width: 200px;">
-						<option value="">--Select Batch--</option>
-						@foreach($attendance_batch as $batch)
-							<option value="{{ $batch->ab_id }}">{{ $batch->ab_name }}</option>
-						@endforeach
-					</select>
-					<button onclick="add_attendance();" class="btn-attendance">
-						<i class="fas fa-plus me-1"></i>Add to Attendance
-					</button>
-				</div>
+                <div>
+                    <a href="{{ route('set_attendance_page') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border:none;">
+                        <i class="fas fa-list-ol me-1"></i> Set Attendance / Assign Batch
+                    </a>
+                </div>
 				<a href="{{ route('add_student') }}" class="btn-add">
 					<i class="fas fa-plus-circle"></i>
 					Add New Student
@@ -236,7 +224,7 @@
 										</td>
 										<td>
 											@if(!empty($data->sl_photo))
-												<img class="student-image" src="{{ asset('center/student_doc/').'/'.$data->sl_photo }}" alt="Student Photo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2750%27 height=%2750%27%3E%3Crect fill=%27%23ddd%27 width=%2750%27 height=%2750%27/%3E%3Ctext fill=%27%23999%27 font-family=%27sans-serif%27 font-size=%2712%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
+												<img class="student-image" src="{{ asset($data->sl_photo) }}" alt="Student Photo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2750%27 height=%2750%27%3E%3Crect fill=%27%23ddd%27 width=%2750%27 height=%2750%27/%3E%3Ctext fill=%27%23999%27 font-family=%27sans-serif%27 font-size=%2712%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ENo Photo%3C/text%3E%3C/svg%3E'">
 											@else
 												<img class="student-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect fill='%23ddd' width='50' height='50'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='12' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Photo%3C/text%3E%3C/svg%3E" alt="No Photo">
 											@endif
@@ -261,74 +249,6 @@
 
 @push('custom-js')
 <script type="text/javascript">
-	function select_all_student(){
-		var checkbox = document.getElementById('selectAllCheckbox');
-		var isChecked = checkbox.checked;
-		
-		var ids = [];
-		$('#datatable-buttons tbody tr').each(function() {
-			var id = $(this).find('td:first').text().replace('#', ''); 
-			ids.push(id);
-		});
-		
-		if (isChecked) {
-			return ids;
-		} else {
-			return false;
-		}
-	}
-
-	function add_attendance(){
-		var student_id = select_all_student();
-		var batch_id = $('#batch_id').val();
-		
-		if (!batch_id) {
-			if (typeof toastr !== 'undefined') {
-				toastr.error('Please select a batch');
-			} else {
-				alert('Please select a batch');
-			}
-			return;
-		}
-		
-		if (!student_id || student_id.length === 0) {
-			if (typeof toastr !== 'undefined') {
-				toastr.error('Please select at least one student');
-			} else {
-				alert('Please select at least one student');
-			}
-			return;
-		}
-
-		$.ajax({
-			url: "{{ route('attendance_set') }}",
-			type: "get",
-			data:{student_id:student_id,batch_id:batch_id},
-			dataType: "json",
-			success: function(response){
-				if (response.status == 1) {
-					if (typeof toastr !== 'undefined') {
-						toastr.success(response.msg || 'Students added to attendance successfully');
-					} else {
-						alert(response.msg || 'Students added to attendance successfully');
-					}
-					$('#selectAllCheckbox').prop('checked', false);
-				} else {
-					if (typeof toastr !== 'undefined') {
-						toastr.error(response.msg || 'Failed to add students to attendance');
-					} else {
-						alert(response.msg || 'Failed to add students to attendance');
-					}
-				}
-			},
-			error: function() {
-				if (typeof toastr !== 'undefined') {
-					toastr.error('An error occurred. Please try again.');
-				} else {
-					alert('An error occurred. Please try again.');
-				}
-			}
-		});
-	}
+	
 </script>
 @endpush
