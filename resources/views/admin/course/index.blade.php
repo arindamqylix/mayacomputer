@@ -43,7 +43,7 @@
                                     <td>{{ $item->c_short_name }}</td>
                                     <td>{{ $item->c_duration ?? 'N/A' }}</td>
                                     <td>{{ $item->c_price ?? 'N/A' }}</td>
-                                    <td>{{ Str::limit($item->description ?? '', 50) }}</td>
+                                    <td>{!! Str::limit(strip_tags($item->description ?? ''), 50) !!}</td>
                                     <td>
                                         <a href="{{ route('edit_course', $item->c_id) }}" class="btn btn-warning btn-sm">Edit</a>
                                         <a href="{{ route('delete_course', $item->c_id) }}" class="btn btn-danger btn-sm"
