@@ -130,11 +130,13 @@ class StudentController extends Controller
             // add other rules...
         ]);
 
-        $student_reg_fee = StudentRegFee::first();
+        // $student_reg_fee = StudentRegFee::first(); // Old logic
+        $course = Course::findOrFail($request->course_id); // Fetch course for price
         $center = Center::where('cl_id', Auth::guard('center')->user()->cl_id)->firstOrFail();
 
-        if ($center->cl_wallet_balance < $student_reg_fee->srf_amount) {
-            return back()->with('error', 'Your Balance Is Low. Please Recharge');
+        // Check if balance is sufficient for the course price
+        if ($center->cl_wallet_balance < $course->c_price) {
+            return back()->with('error', 'Your Balance Is Low (' . $center->cl_wallet_balance . '). Required for this course: ' . $course->c_price . '. Please Recharge');
         }
 
         // handle files (default null)
@@ -224,13 +226,13 @@ class StudentController extends Controller
             DB::table('transaction')->insert([
                 't_student_reg_no' => $insert->sl_reg_no,
                 't_FK_of_center_id' => $center->cl_id,
-                't_amount' => $student_reg_fee->srf_amount,
+                't_amount' => $course->c_price, // Deduct course price
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             // deduct wallet balance
-            $center->cl_wallet_balance = $center->cl_wallet_balance - $student_reg_fee->srf_amount;
+            $center->cl_wallet_balance = $center->cl_wallet_balance - $course->c_price; // Deduct course price
             $center->save();
 
             DB::commit();

@@ -152,7 +152,7 @@
                                     <label class="form-label">Select Center <span class="required-star">*</span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-building"></i>
-                                        <select onchange="get_reg_no(this.value);" class="form-select select2" name='center_id' id='center_id' required>
+                                        <select onchange="get_reg_no(this.value);" class="form-select" name='center_id' id='center_id' required>
 									<option value=''> Select Center </option>
 									@foreach($center as $data)
 										<option value="{{ $data->cl_id }}">{{ $data->cl_name }} [{{ $data->cl_code }}]</option>
@@ -165,7 +165,7 @@
                                     <label class="form-label">Select Course Name <span class='badge bg-success ms-2' id='course_data' style='display:none'></span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-graduation-cap"></i>
-                                        <select onchange="get_course(this.value);" class="form-select select2" name='course_id' id='course_id' required>
+                                        <select onchange="get_course(this.value);" class="form-select " name='course_id' id='course_id' required>
 									<option value=''> Select Course </option>
 									@foreach($course as $data)
 										<option value="{{ $data->c_id }}">{{ $data->c_short_name }} [{{ $data->c_duration }}]</option>
@@ -231,7 +231,7 @@
                                     <label class="form-label">Select Qualification <span class="required-star">*</span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-certificate"></i>
-                                        <select class="form-select select2" name='student_qualification' required>
+                                        <select class="form-select " name='student_qualification' required>
                                             <option value='' selected>Select Qualification</option>
                                             <option value='Non Matric'>Non Matric</option>
                                             <option value='Matric'>Matric</option>
