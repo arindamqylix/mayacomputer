@@ -171,43 +171,33 @@
 						</div>
 					@endif
 					
-					@if($syllabus->count() > 0)
-						@foreach($syllabus as $item)
-							<div class="syllabus-item">
-								<div class="syllabus-item-header">
-									<h5 class="syllabus-title">{{ $item->cs_title }}</h5>
-									@if($item->cs_type == 'video')
-										<span class="badge-video">
-											<i class="fas fa-video"></i> Video
-										</span>
-									@else
-										<span class="badge-pdf">
-											<i class="fas fa-file-pdf"></i> PDF
-										</span>
-									@endif
-								</div>
-								
-								@if($item->cs_description)
-									<p class="text-muted">{{ $item->cs_description }}</p>
-								@endif
-								
-								@if($item->cs_type == 'video' && $item->cs_video_url)
-									<div class="video-container">
-										<iframe src="{{ $item->cs_video_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-									</div>
-								@endif
-								
-								@if($item->cs_type == 'pdf' && $item->cs_pdf_file)
-									<div class="pdf-container">
-										<i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
-										<p><strong>{{ basename($item->cs_pdf_file) }}</strong></p>
-										<a href="{{ asset($item->cs_pdf_file) }}" target="_blank" class="btn-download">
-											<i class="fas fa-download"></i> Download PDF
-										</a>
-									</div>
-								@endif
-							</div>
-						@endforeach
+                    @php
+                        $syllabusData = [];
+                        if(!empty($course->course_syllabus)) {
+                            $decoded = json_decode($course->course_syllabus);
+                            if(is_array($decoded)) {
+                                $syllabusData = $decoded;
+                            }
+                        }
+                    @endphp
+
+					@if(count($syllabusData) > 0)
+                        <div class="accordion" id="syllabusAccordion">
+                            @foreach($syllabusData as $index => $item)
+                                <div class="accordion-item mb-3 border rounded overflow-hidden">
+                                    <h2 class="accordion-header" id="heading{{ $index }}">
+                                        <button class="accordion-button {{ $index != 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}" aria-expanded="{{ $index == 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $index }}">
+                                            <strong>{{ $item->name ?? 'Topic ' . ($index + 1) }}</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ $index }}" class="accordion-collapse collapse {{ $index == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $index }}" data-bs-parent="#syllabusAccordion">
+                                        <div class="accordion-body bg-light">
+                                            {!! $item->desc ?? 'No description available.' !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
 					@else
 						<div class="empty-state">
 							<i class="fas fa-book"></i>
