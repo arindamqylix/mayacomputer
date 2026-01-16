@@ -42,6 +42,11 @@
                             <input type="text" class="form-control" name="course_duration" required>
                         </div>
 
+                        <div class="col-lg-12 mb-2">
+                            <label>Course Details <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="description" id="editor"></textarea>
+                        </div>
+
                         <div class="col-lg-12 mt-4">
                             <button type="submit" class="btn btn-secondary">
                                 <i class="fa fa-save"></i> Save
@@ -57,6 +62,9 @@
 @endsection
 
 @push('custom-script')
-
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('editor');
+</script>
 @endpush
 
