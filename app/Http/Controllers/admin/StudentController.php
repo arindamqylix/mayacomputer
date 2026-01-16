@@ -40,7 +40,8 @@ class StudentController extends Controller
 		Log::info("----- Student Registration Start -----");
 		Log::info("Incoming Request Data: ", $request->all());
 
-		$student_reg_fee = StudentRegFee::first();
+		// $student_reg_fee = StudentRegFee::first(); // Old logic
+        $course = Course::findOrFail($request->course_id); // Fetch course for price
 		$center = Center::where('cl_id', $request->center_id)->first();
 
 		if (!$center) {
@@ -50,8 +51,8 @@ class StudentController extends Controller
 
 		Log::info("Center found: {$center->cl_id}, Wallet Balance: {$center->cl_wallet_balance}");
 
-		if ($center->cl_wallet_balance < $student_reg_fee->srf_amount) {
-			Log::warning("Low wallet balance: Needed {$student_reg_fee->srf_amount}, Have {$center->cl_wallet_balance}");
+		if ($center->cl_wallet_balance < $course->c_price) {
+			Log::warning("Low wallet balance: Needed {$course->c_price}, Have {$center->cl_wallet_balance}");
 			return redirect()->back()->with('error', 'Your Balance Is Low. Please Recharge');
 		}
 
@@ -128,12 +129,12 @@ class StudentController extends Controller
 			DB::table('transaction')->insert([
 				't_student_reg_no' => $insert->sl_reg_no,
 				't_FK_of_center_id' => $request->center_id,
-				't_amount' => $student_reg_fee->srf_amount,
+				't_amount' => $course->c_price,
 			]);
 
 			Log::info("Transaction Logged for Student {$insert->sl_reg_no}");
 
-			$newBalance = $center->cl_wallet_balance - $student_reg_fee->srf_amount;
+			$newBalance = $center->cl_wallet_balance - $course->c_price;
 			Center::where('cl_id', $request->center_id)->update([
 				'cl_wallet_balance' => $newBalance,
 			]);
