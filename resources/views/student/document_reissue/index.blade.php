@@ -3,17 +3,17 @@
 @push('custom-css')
 <style type="text/css">
 	.reissue-header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		border: none;
+		background: #ffffff;
+		border-bottom: 1px solid #e5e7eb;
 		padding: 1.5rem;
 		border-radius: 0.5rem 0.5rem 0 0;
 	}
 	
 	.reissue-header h4 {
-		color: white;
+		color: #1f2937;
 		margin: 0;
-		font-weight: 600;
-		font-size: 1.5rem;
+		font-weight: 700;
+		font-size: 1.25rem;
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
@@ -21,79 +21,70 @@
 	
 	.modern-card {
 		border: none;
-		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-		border-radius: 0.5rem;
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		border-radius: 0.75rem;
 		overflow: hidden;
+		background: #ffffff;
 	}
 	
 	.request-form-card {
-		background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-		border: 2px solid #e9ecef;
+		background: #f9fafb;
+		border: 1px solid #e5e7eb;
 		border-radius: 0.5rem;
-		padding: 2rem;
+		padding: 1.5rem;
 		margin-bottom: 2rem;
 	}
+
+    .request-form-card h5 {
+        color: #374151;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
 	
 	.form-group label {
-		font-weight: 600;
-		color: #495057;
+		font-weight: 500;
+		color: #374151;
 		margin-bottom: 0.5rem;
-		font-size: 0.95rem;
+		font-size: 0.875rem;
 	}
 	
 	.form-select, .form-control {
-		border-radius: 0.5rem;
-		border: 2px solid #dee2e6;
-		padding: 0.75rem 1rem;
-		transition: all 0.3s ease;
+		border-radius: 0.375rem;
+		border: 1px solid #d1d5db;
+		padding: 0.625rem 0.875rem;
+		transition: all 0.2s;
+        font-size: 0.875rem;
 	}
 	
 	.form-select:focus, .form-control:focus {
-		border-color: #667eea;
-		box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-	}
-	
-	.document-type-option {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.5rem;
-	}
-	
-	.document-type-info {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-	
-	.document-type-price {
-		font-weight: 700;
-		color: #10b981;
-		font-size: 1rem;
+		border-color: #4f46e5;
+		box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        outline: none;
 	}
 	
 	.btn-submit {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background: #4f46e5;
 		color: white;
-		padding: 0.875rem 2.5rem;
-		border-radius: 0.5rem;
-		font-weight: 600;
+		padding: 0.625rem 1.5rem;
+		border-radius: 0.375rem;
+		font-weight: 500;
 		border: none;
-		transition: all 0.3s ease;
-		font-size: 1rem;
+		transition: all 0.2s;
+		font-size: 0.875rem;
 	}
 	
 	.btn-submit:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+		background: #4338ca;
 		color: white;
+        transform: translateY(-1px);
 	}
 	
 	.price-display {
-		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-		color: white;
-		padding: 1rem 1.5rem;
-		border-radius: 0.5rem;
+		background: #ecfdf5;
+		color: #065f46;
+        border: 1px solid #a7f3d0;
+		padding: 0.75rem 1.25rem;
+		border-radius: 0.375rem;
 		margin-top: 1rem;
 		display: flex;
 		justify-content: space-between;
@@ -105,59 +96,69 @@
 	}
 	
 	.price-label {
-		font-weight: 600;
-		font-size: 1rem;
+		font-weight: 500;
+		font-size: 0.875rem;
 	}
 	
 	.price-amount {
 		font-weight: 700;
-		font-size: 1.5rem;
+		font-size: 1.25rem;
+        color: #059669;
 	}
 	
 	.request-table {
 		width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
 	}
 	
 	.request-table thead th {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
+		background: #f3f4f6;
+		color: #4b5563;
 		font-weight: 600;
-		padding: 1rem;
+		padding: 0.75rem 1rem;
 		text-align: left;
-		font-size: 0.875rem;
+		font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #e5e7eb;
 	}
 	
 	.request-table tbody td {
 		padding: 1rem;
-		border-bottom: 1px solid #e9ecef;
+		border-bottom: 1px solid #e5e7eb;
 		vertical-align: middle;
+        font-size: 0.875rem;
+        color: #1f2937;
 	}
 	
 	.request-table tbody tr:hover {
-		background-color: #f8f9ff;
+		background-color: #f9fafb;
 	}
 	
 	.status-badge {
-		padding: 0.5rem 1rem;
-		border-radius: 50px;
+		padding: 0.25rem 0.625rem;
+		border-radius: 9999px;
 		font-size: 0.75rem;
-		font-weight: 600;
-		display: inline-block;
+		font-weight: 500;
+		display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
 	}
 	
 	.status-pending {
-		background-color: #fff3cd;
-		color: #856404;
+		background-color: #fef3c7;
+		color: #92400e;
 	}
 	
 	.status-paid {
-		background-color: #d1ecf1;
-		color: #0c5460;
+		background-color: #dbeafe;
+		color: #1e40af;
 	}
 	
 	.status-processing {
-		background-color: #d4edda;
-		color: #155724;
+		background-color: #e0e7ff;
+		color: #3730a3;
 	}
 	
 	.status-completed {
@@ -171,33 +172,43 @@
 	}
 	
 	.btn-view {
-		background: #667eea;
-		color: white;
-		padding: 0.5rem 1rem;
+		background: #ffffff;
+		color: #4b5563;
+        border: 1px solid #d1d5db;
+		padding: 0.375rem 0.75rem;
 		border-radius: 0.375rem;
 		text-decoration: none;
-		font-size: 0.875rem;
-		display: inline-block;
+		font-size: 0.75rem;
+        font-weight: 500;
+		display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        transition: all 0.2s;
 	}
 	
 	.btn-view:hover {
-		background: #5568d3;
-		color: white;
+		background: #f3f4f6;
+		color: #1f2937;
+        border-color: #9ca3af;
 	}
 	
 	.btn-pay {
-		background: #10b981;
+		background: #059669;
 		color: white;
-		padding: 0.5rem 1rem;
+		padding: 0.375rem 0.75rem;
 		border-radius: 0.375rem;
 		text-decoration: none;
-		font-size: 0.875rem;
-		display: inline-block;
+		font-size: 0.75rem;
+        font-weight: 500;
+		display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
 		margin-left: 0.5rem;
+        transition: all 0.2s;
 	}
 	
 	.btn-pay:hover {
-		background: #059669;
+		background: #047857;
 		color: white;
 	}
 </style>
