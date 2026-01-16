@@ -387,7 +387,7 @@
 			success: function(response){
 				if(response.status == 1){
 					$('#course_data').show();
-					$('#course_data').text(response.msg);
+					$('#course_data').text(response.msg + ' | Price: ' + response.price);
                 } else {
                     $('#course_data').hide();
 				}

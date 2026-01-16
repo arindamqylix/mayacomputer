@@ -355,12 +355,14 @@ class StudentController extends Controller
     	$get_course = Course::where('c_id',$request->course_id)->first();
     	if($get_course):
     		$data = [
-    			'msg'		=> $get_course->c_duration . ' Months',
+    			'msg'		=> $get_course->c_duration,
+                'price'     => $get_course->c_price,
     			'status'	=> 1
     		];
     	else:
     		$data = [
     			'msg'		=> "Something Went Wrong!",
+                'price'     => '',
     			'status'	=> 0
     		];
     	endif;
