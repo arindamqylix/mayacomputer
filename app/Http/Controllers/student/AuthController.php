@@ -34,8 +34,8 @@ class AuthController extends Controller
     public function student_dashboard(){
 		 $convId = ChatConversations::getOrCreateStudentCenterConversation();
     	$data = DB::table('student_login')
-    			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-    			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+    			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+    			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
     			->where('student_login.sl_id', Auth::guard('student')->user()->sl_id)
     			->first();
     			// dd($data);
