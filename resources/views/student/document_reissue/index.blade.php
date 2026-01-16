@@ -1,16 +1,15 @@
 @extends('student.layouts.base')
 @section('title', 'Reissue Documents')
-@push('custom-css')
 <style type="text/css">
 	.reissue-header {
-		background: #ffffff;
-		border-bottom: 1px solid #e5e7eb;
+		background: #f8f9fa;
+		border-bottom: 1px solid #e9ecef;
 		padding: 1.5rem;
 		border-radius: 0.5rem 0.5rem 0 0;
 	}
 	
 	.reissue-header h4 {
-		color: #1f2937;
+		color: #343a40;
 		margin: 0;
 		font-weight: 700;
 		font-size: 1.25rem;
@@ -63,7 +62,7 @@
 	}
 	
 	.btn-submit {
-		background: #4f46e5;
+		background: #0d6efd;
 		color: white;
 		padding: 0.625rem 1.5rem;
 		border-radius: 0.375rem;
@@ -74,7 +73,7 @@
 	}
 	
 	.btn-submit:hover {
-		background: #4338ca;
+		background: #0b5ed7;
 		color: white;
         transform: translateY(-1px);
 	}
@@ -193,7 +192,7 @@
 	}
 	
 	.btn-pay {
-		background: #059669;
+		background: #198754;
 		color: white;
 		padding: 0.375rem 0.75rem;
 		border-radius: 0.375rem;
@@ -208,11 +207,10 @@
 	}
 	
 	.btn-pay:hover {
-		background: #047857;
+		background: #157347;
 		color: white;
 	}
 </style>
-@endpush
 
 @section('content')
 <div class="container-fluid">
