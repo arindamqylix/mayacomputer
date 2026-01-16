@@ -48,6 +48,18 @@ class CourierController extends Controller
         $trackingNumber = $request->tracking_number;
         $centerId = Auth::guard('center')->user()->cl_id;
         
+        // Find students associated with this tracking number
+        $studentIds = DB::table('student_certificates')
+            ->where('sc_tracking_number', $trackingNumber)
+            ->where('sc_FK_of_center_id', $centerId)
+            ->pluck('sc_FK_of_student_id');
+
+        if($studentIds->isNotEmpty()) {
+            DB::table('student_login')
+                ->whereIn('sl_id', $studentIds)
+                ->update(['sl_status' => 'RECEIVED']);
+        }
+
         // Bulk update for all certificates in this courier
         $updated = DB::table('student_certificates')
             ->where('sc_tracking_number', $trackingNumber)
@@ -58,7 +70,7 @@ class CourierController extends Controller
             ]);
             
         if ($updated) {
-            return back()->with('success', 'Courier marked as Received successfully!');
+            return back()->with('success', 'Courier marked as Received successfully! Student status updated.');
         } else {
             return back()->with('error', 'Failed to update status. Please try again or verify if it was already updated.');
         }
