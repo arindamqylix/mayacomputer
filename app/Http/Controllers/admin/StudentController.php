@@ -459,11 +459,12 @@ class StudentController extends Controller
 
 		return view('admin.auth.view_result', $result);
 	}
-public function student_reg_card_list()
+	public function student_reg_card_list()
 	{
 		$student = DB::table('student_login')
-			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->orderBy('student_login.sl_id', 'desc')
 			->get();
 		return view('admin.student.reg_card_list', compact('student'));
 	}
@@ -471,8 +472,9 @@ public function student_reg_card_list()
 	public function student_id_card_list()
 	{
 		$student = DB::table('student_login')
-			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->orderBy('student_login.sl_id', 'desc')
 			->get();
 		return view('admin.student.id_card_list', compact('student'));
 	}
