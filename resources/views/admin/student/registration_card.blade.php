@@ -497,7 +497,7 @@
                                 <td class="colon">:</td>
                                 <td class="value">
                                     @if($data->c_duration)
-                                        {{ $data->c_duration }} {{ $data->c_duration == '1' ? 'Year' : 'Years' }}
+                                        {{ $data->c_duration }}
                                     @else
                                         N/A
                                     @endif
