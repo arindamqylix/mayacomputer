@@ -34,6 +34,13 @@ class ResultController extends Controller
     }
 
     public function set_result_now(Request $request){
+        $request->validate([
+            'wr_marks_obtained' => 'required|numeric|min:1|max:85',
+            'pr_marks_obtained' => 'required|numeric|min:1|max:85',
+            'ap_marks_obtained' => 'required|numeric|min:1|max:85',
+            'vv_marks_obtained' => 'required|numeric|min:1|max:85',
+        ]);
+
         // Fixed values: Full Marks = 100, Pass Marks = 40 for each subject
         $total_full_marks = 100 + 100 + 100 + 100; // 400 total
         $total_pass_marks = 40 + 40 + 40 + 40; // 160 total

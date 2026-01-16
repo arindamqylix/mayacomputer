@@ -450,7 +450,18 @@
 		}
 		
 		// Bind to all input changes
-		$('input[type="number"]').on('input', calculateTotals);
+		$('input[type="number"]').on('input', function() {
+			var value = parseFloat($(this).val());
+			if(value > 85) {
+				alert('Marks cannot be greater than 85');
+				$(this).val(85);
+			}
+			if(value < 0) {
+				alert('Marks cannot be negative');
+				$(this).val(1);
+			}
+			calculateTotals();
+		});
 		
 		// Calculate on page load
 		calculateTotals();

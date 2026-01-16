@@ -256,7 +256,7 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Marks Obtained</label>
-									<input type="number" class="form-control" name="wr_marks_obtained" placeholder="Marks Obtained" required>
+									<input type="number" class="form-control" name="wr_marks_obtained" placeholder="Marks Obtained" min="1" max="85" required>
 								</div>
 							</div>
 						</div>
@@ -290,7 +290,7 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Marks Obtained</label>
-									<input type="number" class="form-control" name="pr_marks_obtained" placeholder="Marks Obtained" required>
+									<input type="number" class="form-control" name="pr_marks_obtained" placeholder="Marks Obtained" min="1" max="85" required>
 								</div>
 							</div>
 						</div>
@@ -324,7 +324,7 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Marks Obtained</label>
-									<input type="number" class="form-control" name="ap_marks_obtained" placeholder="Marks Obtained" required>
+									<input type="number" class="form-control" name="ap_marks_obtained" placeholder="Marks Obtained" min="1" max="85" required>
 								</div>
 							</div>
 						</div>
@@ -358,7 +358,7 @@
 							<div class="col-md-3">
 								<div class="form-group mb-3">
 									<label>Marks Obtained</label>
-									<input type="number" class="form-control" name="vv_marks_obtained" placeholder="Marks Obtained" required>
+									<input type="number" class="form-control" name="vv_marks_obtained" placeholder="Marks Obtained" min="1" max="85" required>
 								</div>
 							</div>
 						</div>
@@ -452,7 +452,18 @@
 		}
 		
 		// Bind to all input changes
-		$('input[type="number"]').on('input', calculateTotals);
+		$('input[type="number"]').on('input', function() {
+			var value = parseFloat($(this).val());
+			if(value > 85) {
+				alert('Marks cannot be greater than 85');
+				$(this).val(85);
+			}
+			if(value < 0) { // Keep 0 check just in case, though min="1"
+				alert('Marks cannot be negative');
+				$(this).val(1);
+			}
+			calculateTotals();
+		});
 		
 		// Form submission
 		$('#update_frm').on('submit', function(e) {
