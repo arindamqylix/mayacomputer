@@ -1,6 +1,5 @@
 @extends('student.layouts.base')
 @section('title', 'Course Syllabus')
-@push('custom-css')
 <style type="text/css">
 	.syllabus-header {
 		background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
@@ -143,7 +142,6 @@
 		font-weight: 600;
 	}
 </style>
-@endpush
 
 @section('content')
 <div class="container-fluid">
