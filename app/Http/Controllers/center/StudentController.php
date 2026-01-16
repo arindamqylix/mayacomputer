@@ -21,6 +21,15 @@ class StudentController extends Controller
         });
     }
 
+    public function all_student(){
+        $student['student'] = DB::table('student_login')
+                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+                            ->get();
+    	return view('center.student.all_student',$student);
+    }
+
     public function pending_student(){
         $student['student'] = DB::table('student_login')
                             ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')

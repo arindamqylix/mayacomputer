@@ -390,34 +390,45 @@ body {
     <div class="row mb-4">
         <div class="col-12">
             <div class="stats-section">
-                <div class="stat-card student-card">
-                    <div class="icon-wrapper">
-                        <i class="fas fa-user-graduate"></i>
+                <a href="{{ route('all_student') }}" style="text-decoration:none; color:inherit;">
+                    <div class="stat-card student-card">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>{{ $all_student ?? 0 }}</h3>
+                        <p>Total Students</p>
                     </div>
-                    <h3>{{ $all_student ?? 0 }}</h3>
-                    <p>Total Students</p>
-                </div>
-                <div class="stat-card pending-card">
-                    <div class="icon-wrapper">
-                        <i class="fas fa-clock"></i>
+                </a>
+
+                <a href="{{ route('pending_student') }}" style="text-decoration:none; color:inherit;">
+                    <div class="stat-card pending-card">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>{{ $pending_student ?? 0 }}</h3>
+                        <p>Pending Students</p>
                     </div>
-                    <h3>{{ $pending_student ?? 0 }}</h3>
-                    <p>Pending Students</p>
-                </div>
-                <div class="stat-card verified-card">
-                    <div class="icon-wrapper">
-                        <i class="fas fa-check-circle"></i>
+                </a>
+
+                <a href="{{ route('verified_student') }}" style="text-decoration:none; color:inherit;">
+                    <div class="stat-card verified-card">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>{{ $verify_student ?? 0 }}</h3>
+                        <p>Verified Students</p>
                     </div>
-                    <h3>{{ $verify_student ?? 0 }}</h3>
-                    <p>Verified Students</p>
-                </div>
-                <div class="stat-card dispatched-card">
-                    <div class="icon-wrapper">
-                        <i class="fas fa-truck"></i>
+                </a>
+                
+                <a href="{{ route('dispatched_student') }}" style="text-decoration:none; color:inherit;">
+                    <div class="stat-card dispatched-card">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3>{{ $dispatched_student ?? 0 }}</h3>
+                        <p>Dispatched Students</p>
                     </div>
-                    <h3>{{ $dispatched_student ?? 0 }}</h3>
-                    <p>Dispatched Students</p>
-                </div>
+                </a>
             </div>
         </div>
     </div>
