@@ -65,12 +65,12 @@
       </li>
 
       <!-- Chat -->
-      <li class="nav-item {{ Request::segment(2) == 'chat' ? 'active' : '' }}">
+      <!-- <li class="nav-item {{ Request::segment(2) == 'chat' ? 'active' : '' }}">
         <a href="{{ route('admin.chat') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-comments"></i></span>
           <span class="sidebar-text">Chat</span>
         </a>
-      </li>
+      </li> -->
 
       <!-- Add Student -->
       <li class="nav-item {{ Request::segment(1) == 'student' ? 'active' : '' }}">

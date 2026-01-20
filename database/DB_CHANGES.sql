@@ -585,3 +585,9 @@ ADD `title` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `file`;
 
 ALTER TABLE `student_certificates`
 CHANGE `sc_status` `sc_status` enum('GENERATED','ISSUED','VERIFIED','RECEIVED') COLLATE 'utf8mb4_general_ci' NULL DEFAULT 'GENERATED' AFTER `sc_issue_date`;
+
+-- 20-01-2026
+
+ALTER TABLE `site_settings`
+ADD `document_logo` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `site_logo`,
+ADD `certificate_footer_logos` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `document_logo`;
