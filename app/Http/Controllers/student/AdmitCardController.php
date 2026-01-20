@@ -35,7 +35,8 @@ class AdmitCardController extends Controller
             ->where('cl_id', $admit->center_id)
             ->first();
 
-        return view('admit_card_print', compact('admit', 'student', 'course', 'center'));
+        $setting = DB::table('site_settings')->first();
+        return view('student.view_admit_card', compact('admit', 'student', 'course', 'center', 'setting'));
     }
 }
 

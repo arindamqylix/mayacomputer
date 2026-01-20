@@ -33,7 +33,8 @@ class RegistrationCardController extends Controller
             return redirect()->route('student_dashboard')->with('error', 'Your registration is pending approval. Registration card will be available after admin approval.');
         }
 
-        return view('registration_card', compact('data'));
+        $setting = DB::table('site_settings')->first();
+        return view('student.view_registration_card', compact('data', 'setting'));
     }
 }
 

@@ -229,7 +229,8 @@ class GenerateAdmitController extends Controller
             ->where('cl_id', $admit->center_id)
             ->first();
 
-        return view('admin.admit_card.print', compact('admit', 'student', 'course', 'center'));
+        $setting = DB::table('site_settings')->first();
+        return view('admin.admit_card.print', compact('admit', 'student', 'course', 'center', 'setting'));
     }
 
     public function delete_admit_card($id)

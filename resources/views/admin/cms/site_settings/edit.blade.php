@@ -61,6 +61,35 @@
                             </div>
 
                             <div class="form-group mb-3">
+                                <label>Document Logo</label>
+                                <input type="file" class="form-control" name="document_logo" accept=".jpg,.jpeg,.png">
+                                @if(!empty($setting->document_logo))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Document Logo:</label><br>
+                                        <img src="{{ asset($setting->document_logo) }}" alt="Document Logo" class="preview-img">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Certificate Footer Logos (Multiple)</label>
+                                <input type="file" class="form-control" name="certificate_footer_logos[]" multiple accept=".jpg,.jpeg,.png">
+                                @if(!empty($setting->certificate_footer_logos))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Footer Logos:</label><br>
+                                        @php
+                                            $footerLogos = json_decode($setting->certificate_footer_logos, true);
+                                        @endphp
+                                        @if(is_array($footerLogos))
+                                            @foreach($footerLogos as $logo)
+                                                 <img src="{{ asset($logo) }}" alt="Footer Logo" class="preview-img mr-2">
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
                                 <label>Site Favicon</label>
                                 <input type="file" class="form-control" name="site_fav_icon" accept=".jpg,.jpeg,.png,.ico">
                                 @if(!empty($setting->site_fav_icon))

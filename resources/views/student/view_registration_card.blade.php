@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admit Card - Maya Computer Center</title>
+    <title>Registration Card - Maya Computer Center</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Times+New+Roman&display=swap');
 
@@ -23,7 +23,7 @@
             justify-content: center;
         }
 
-        .admit-card {
+        .card-container {
             width: 210mm;
             /* A4 width */
             height: auto;
@@ -33,6 +33,8 @@
             border: 1px solid #ccc;
             position: relative;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         /* Watermark */
@@ -50,6 +52,7 @@
         .content {
             position: relative;
             z-index: 1;
+            flex-grow: 1;
         }
 
         /* Header */
@@ -64,7 +67,7 @@
         .header-banner {
             width: 88%;
             height: auto;
-             max-height: 120px; 
+            max-height: 120px; 
             display: block;
         }
 
@@ -93,7 +96,7 @@
         .qr-code {
             position: absolute;
             right: 0;
-            top: 21px;
+            top: 20px;
             width: 70px;
             height: 70px;
             border: 1px solid #ddd;
@@ -104,7 +107,6 @@
         .card-title {
             text-align: center;
             color: green;
-            /* Light green as per image */
             font-size: 18px;
             font-weight: bold;
             margin: 5px 0 10px 0;
@@ -141,7 +143,6 @@
             padding: 10px;
             position: relative;
             background-color: #f9f9f980;
-            /* Slight transp for watermark */
         }
 
         .info-table {
@@ -201,7 +202,6 @@
             object-fit: cover;
         }
 
-
         .signature-box {
             border-top: 1px solid #000;
             width: 100%;
@@ -213,48 +213,9 @@
             color: #ccc;
         }
 
-        /* Exam Table */
-        .exam-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            border: 1px solid #000066;
-        }
-
-        .exam-table th {
-            background-color: #000066;
-            color: white;
-            padding: 8px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            border: 1px solid #fff;
-        }
-
-        .exam-table td {
-            text-align: center;
-            padding: 10px;
-            background-color: #e6eefc;
-            /* Light blue tint */
-            border: 1px solid #ccc;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .exam-table td:last-child {
-            /* Address specific formatting if needed */
-        }
-
-        /* Footer */
-        .footer-note {
-            font-size: 10px;
-            margin-top: 15px;
-            line-height: 1.4;
-            color: #333;
-            text-align: justify;
-        }
-
         .controller-sign {
-            margin-top: 40px;
+            margin-top: 100px;
+            /* More spacing since no table */
             text-align: right;
             padding-right: 20px;
             font-weight: bold;
@@ -269,7 +230,7 @@
                 padding: 0;
             }
 
-            .admit-card {
+            .card-container {
                 box-shadow: none;
                 border: none;
                 width: 100%;
@@ -284,10 +245,9 @@
 
 <body>
 
-    <div class="admit-card">
+    <div class="card-container">
         <!-- Background Logo / Watermark -->
          <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif" class="watermark" alt="Watermark" style="opacity: 0.05;">
-
 
         <div class="content">
             <!-- Header Section -->
@@ -302,21 +262,21 @@
                     <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                     <p class="iso-text">An ISO 9001: 2015 Certified</p>
                 </div>
-                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$student->sl_reg_no) }}"
+                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$data->sl_reg_no) }}"
                             alt="QR Code" class="qr-code">
             </div>
 
             <!-- Title -->
             <div class="card-title">
-                प्रवेश पत्र (ADMIT CARD) – {{ \Carbon\Carbon::parse($admit->exam_date)->year }}
+                पंजीयन पत्रक (REGISTRATION CARD) – {{ \Carbon\Carbon::parse($data->created_at)->year }}
             </div>
             <!-- TM Symbol simulation -->
             <!-- <div class="tm-symbol">TM</div> -->
 
             <!-- Blue Strip -->
             <div class="blue-bar">
-                <span>Registration No.: &nbsp; {{ $student->sl_reg_no }}</span>
-                <span>Registration Years: {{ \Carbon\Carbon::parse($student->created_at)->year }}</span>
+                <span>Registration No.: &nbsp; {{ $data->sl_reg_no ?? 'N/A' }}</span>
+                <span>Registration Years: {{ \Carbon\Carbon::parse($data->created_at)->year }}</span>
             </div>
 
             <!-- Student Details -->
@@ -324,74 +284,47 @@
                 <table class="info-table">
                     <tr>
                         <td class="label">Student Name:</td>
-                        <td class="value">{{ strtoupper($student->sl_name) }}</td>
+                        <td class="value">{{ strtoupper($data->sl_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Father’s Name:</td>
-                        <td class="value">{{ strtoupper($student->sl_father_name) }}</td>
+                        <td class="value">{{ strtoupper($data->sl_father_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Mother’s Name:</td>
-                        <td class="value">{{ strtoupper($student->sl_mother_name) }}</td>
+                        <td class="value">{{ strtoupper($data->sl_mother_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Date of Birth:</td>
-                        <td class="value">{{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp;&nbsp; <span
-                                style="font-weight:normal; font-style:italic;">Gender:</span> {{ ucfirst($student->sl_sex ?? 'N/A') }}
+                        <td class="value">{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp;&nbsp; <span
+                                style="font-weight:normal; font-style:italic;">Gender:</span> {{ ucfirst($data->sl_sex ?? 'N/A') }}
                             &nbsp;&nbsp;&nbsp;&nbsp; <span
-                                style="font-weight:normal; font-style:italic;">Category:</span> {{ $student->sl_category ?? 'Gen' }}</td>
+                                style="font-weight:normal; font-style:italic;">Category:</span> {{ $data->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Center Code & Name:</td>
-                        <td class="value">{{ $center->cl_code ?? '' }}- {{ strtoupper($center->cl_center_name ?? '') }}</td>
+                        <td class="value">{{ $data->cl_code ?? '' }}- {{ strtoupper($data->cl_center_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name:</td>
-                        <td class="value">{{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
+                        <td class="value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Duration:</td>
-                        <td class="value">{{ $course->c_duration ?? 'N/A' }}</td>
+                        <td class="value">{{ $data->c_duration ?? 'N/A' }}</td>
                     </tr>
                 </table>
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
-                         @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
-                            <img src="{{ asset($student->sl_photo) }}" alt="Student Photo">
+                         @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
+                            <img src="{{ asset($data->sl_photo) }}" alt="Student Photo">
                         @else
                             Picture<br><br>1.2 in X 1.5 in
                         @endif
                     </div>
                     <div class="signature-box">Student Signature</div>
                 </div>
-            </div>
-
-            <!-- Exam Table -->
-            <table class="exam-table">
-                <thead>
-                    <tr>
-                        <th>Date of Exam</th>
-                        <th>Time of Exam</th>
-                        <th>Name of Exam Center</th>
-                        <th>Address</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
-                        <td>{{ $admit->exam_time }}</td>
-                        <td>{!! nl2br(e($admit->exam_venue)) !!}</td>
-                        <td>{{ $center->cl_center_address ?? 'N/A' }}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Footer -->
-            <div class="footer-note">
-                Note: Any kind of specific identifying marks made by student in the Answer Book is subject to non
-                evaluation / or shall be treated as Unfairmeans. Bringing of Calculators / Phone or any other electronic
-                gadget in side the examination hall shall be deemed as Unfairmeans & breach of examination rules.
             </div>
 
             <div class="controller-sign">
@@ -401,9 +334,9 @@
         </div>
     </div>
     
-                  <!-- Print Button (Hidden in Print Mode) -->
+              <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Admit Card</button>
+        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Registration Card</button>
     </div>
 
 </body>

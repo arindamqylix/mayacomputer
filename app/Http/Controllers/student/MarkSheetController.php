@@ -35,7 +35,8 @@ class MarkSheetController extends Controller
     	}
 
     	// Use the new diploma marksheet template
-    	return view('marksheet_diploma', compact('data'));
+        $setting = DB::table('site_settings')->first();
+    	return view('marksheet_diploma', compact('data', 'setting'));
     }
 
     // View certificate (student panel)
@@ -63,6 +64,7 @@ class MarkSheetController extends Controller
     		return redirect()->route('student_dashboard')->with('error', 'Certificate not found. Please contact your center.');
     	}
 
-    	return view('center.certificate.view', compact('certificate'));
+        $setting = DB::table('site_settings')->first();
+    	return view('center.certificate.view', compact('certificate', 'setting'));
     }
 }

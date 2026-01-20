@@ -134,7 +134,8 @@ class CertificateController extends Controller
             return redirect()->route('center.certificate_list')->with('error', 'Certificate not found!');
         }
 
-        return view('center.certificate.view', compact('certificate'));
+        $setting = DB::table('site_settings')->first();
+        return view('center.certificate.view', compact('certificate', 'setting'));
     }
 }
 

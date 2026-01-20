@@ -31,7 +31,9 @@ class generatePdfController extends Controller
     				)
     				->first();
 
+        $setting = DB::table('site_settings')->first();
+
         // Use new diploma marksheet template
-        return view('marksheet_diploma', compact('data'));
+        return view('marksheet_diploma', compact('data', 'setting'));
     }
 }

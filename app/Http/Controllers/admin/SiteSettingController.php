@@ -25,6 +25,23 @@ class SiteSettingController extends Controller
             $data['site_logo'] = 'site_settings/' . $logoName;
         }
 
+        if ($request->hasFile('document_logo')) {
+            $docLogo = $request->file('document_logo');
+            $docLogoName = time() . '_doc_logo.' . $docLogo->getClientOriginalExtension();
+            $docLogo->move(public_path('site_settings'), $docLogoName);
+            $data['document_logo'] = 'site_settings/' . $docLogoName;
+        }
+
+        if ($request->hasFile('certificate_footer_logos')) {
+            $footerLogos = [];
+            foreach($request->file('certificate_footer_logos') as $key => $file) {
+                $name = time() . '_footer_logo_' . $key . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('site_settings'), $name);
+                $footerLogos[] = 'site_settings/' . $name;
+            }
+            $data['certificate_footer_logos'] = json_encode($footerLogos);
+        }
+
         if ($request->hasFile('site_fav_icon')) {
             $favicon = $request->file('site_fav_icon');
             $faviconName = time() . '_favicon.' . $favicon->getClientOriginalExtension();

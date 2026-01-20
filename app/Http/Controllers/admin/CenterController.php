@@ -367,7 +367,8 @@ class CenterController extends Controller
     
     public function center_certificate($id){
         $center = Center::where('cl_id',$id)->first();
-        return view('center_certificate', compact('center'));
+        $setting = \DB::table('site_settings')->first();
+        return view('center_certificate', compact('center', 'setting'));
     }
     
     // View Center ID Card from Admin Panel
@@ -385,7 +386,8 @@ class CenterController extends Controller
     // View Center Certificate from Center Panel
     public function viewCenterCertificate(){
         $center = \Illuminate\Support\Facades\Auth::guard('center')->user();
-        return view('center_certificate', compact('center'));
+        $setting = \DB::table('site_settings')->first();
+        return view('center_certificate', compact('center', 'setting'));
     }
 
     public function login_as_center($id)
