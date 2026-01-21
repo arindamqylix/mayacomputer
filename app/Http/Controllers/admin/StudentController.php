@@ -314,6 +314,8 @@ class StudentController extends Controller
 				'sl_mobile_no' => $request->student_mobile,
 				// Uncomment below line if you want to reset password to mobile on update:
 				'password' => Hash::make($request->student_mobile),
+				'sl_reg_date' => $request->reg_date,
+				'sl_category' => $request->category,
 				'sl_father_name' => $request->student_father ?: null,
 				'sl_email' => $request->student_email ?: null,
 				'sl_photo' => $currentPhoto,

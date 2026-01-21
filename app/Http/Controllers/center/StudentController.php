@@ -139,6 +139,8 @@ class StudentController extends Controller
             'student_name' => 'required|string',
             'student_mobile' => 'required',
             'course_id' => 'required|integer',
+            'reg_date' => 'required|date',
+            'category' => 'required|string',
             // add other rules...
         ]);
 
@@ -213,6 +215,8 @@ class StudentController extends Controller
             $data = [
                 'sl_FK_of_course_id' => $request->course_id,
                 'sl_FK_of_center_id' => $center->cl_id,
+                'sl_reg_date' => $request->reg_date,
+                'sl_category' => $request->category,
                 'sl_dob' => $request->date_of_birth,
                 'sl_qualification' => $request->student_qualification,
                 'sl_reg_no' => $newRegNo,

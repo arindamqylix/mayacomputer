@@ -173,6 +173,14 @@
 								</select>
                                     </div>
                                 </div>
+								
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label">Registration Date <span class="required-star">*</span></label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <input class="form-control" type='date' name='reg_date' value='{{ date("Y-m-d") }}' required>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-4 mb-4">
                                     <label class="form-label">Enter Student Name <span class="required-star">*</span></label>
@@ -226,6 +234,21 @@
 								</select>
 							</div>
 							</div>
+
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label">Select Category <span class="required-star">*</span></label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fas fa-users"></i>
+                                        <select class="form-select" name='category' required>
+                                            <option value='' selected>Select Category</option>
+                                            <option value='General'>General</option>
+                                            <option value='OBC'>OBC</option>
+                                            <option value='SC'>SC</option>
+                                            <option value='ST'>ST</option>
+                                            <option value='Others'>Others</option>
+                                        </select>
+                                    </div>
+                                </div>
 							
                                 <div class="col-md-4 mb-4">
                                     <label class="form-label">Select Qualification <span class="required-star">*</span></label>

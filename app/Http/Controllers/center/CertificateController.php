@@ -58,7 +58,9 @@ class CertificateController extends Controller
                 'set_result.sr_percentage',
                 'set_result.sr_grade',
                 'student_certificates.sc_id as certificate_id',
-                'student_certificates.sc_status'
+                'student_certificates.sc_status',
+                'student_login.sl_reg_date',
+                'course.c_duration'
             )
             ->orderBy('student_login.sl_name', 'ASC')
             ->get();

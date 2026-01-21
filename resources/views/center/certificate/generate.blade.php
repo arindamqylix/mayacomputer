@@ -154,10 +154,30 @@
 														@csrf
 														<input type="hidden" name="student_id" value="{{ $student->sl_id }}">
 														<input type="hidden" name="result_id" value="{{ $student->result_id }}">
+														@php
+															$calculatedDate = date('Y-m-d');
+															if (!empty($student->sl_reg_date)) {
+																try {
+																	$regDate = \Carbon\Carbon::parse($student->sl_reg_date);
+																	$duration = strtolower($student->c_duration ?? '');
+																	$num = (int) preg_replace('/[^0-9]/', '', $duration);
+																	
+																	if ($num > 0) {
+																		if (str_contains($duration, 'year') || str_contains($duration, 'Yr')) {
+																			$calculatedDate = $regDate->addYears($num)->format('Y-m-d');
+																		} elseif (str_contains($duration, 'month') || str_contains($duration, 'mon')) {
+																			$calculatedDate = $regDate->addMonths($num)->format('Y-m-d');
+																		}
+																	}
+																} catch (\Exception $e) {
+																	// Fallback to today
+																}
+															}
+														@endphp
 														<input type="date" 
 														       name="issue_date" 
 														       class="form-control form-control-sm" 
-														       value="{{ date('Y-m-d') }}" 
+														       value="{{ $calculatedDate }}" 
 														       required
 														       title="Select Certificate Issue Date">
 														<button type="submit" class="btn-generate" onclick="return confirm('Are you sure you want to generate certificate for {{ $student->sl_name }}?')">

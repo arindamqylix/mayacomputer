@@ -187,6 +187,14 @@
 							
 							<div class="form-group mb-3">
 								<label>
+									<i class="fas fa-calendar-check"></i>
+									Registration Date <span class="text-danger">*</span>
+								</label>
+								<input class="form-control" type='date' name='reg_date' value='{{ date("Y-m-d") }}' required>
+							</div>
+							
+							<div class="form-group mb-3">
+								<label>
 									<i class="fas fa-user"></i>
 									Enter Student Name <span class="text-danger">*</span>
 								</label>
@@ -229,6 +237,21 @@
 									<option value='MALE'>MALE</option>
 									<option value='FEMALE'>FEMALE</option>
 									<option value='OTHER'>OTHER</option>
+								</select>
+							</div>
+
+							<div class="form-group mb-3">
+								<label>
+									<i class="fas fa-users"></i>
+									Select Category <span class="text-danger">*</span>
+								</label>
+								<select class="form-select" name='category' required>
+									<option value='' selected>--Choose Category--</option>
+									<option value='General'>General</option>
+									<option value='OBC'>OBC</option>
+									<option value='SC'>SC</option>
+									<option value='ST'>ST</option>
+									<option value='Others'>Others</option>
 								</select>
 							</div>
 							

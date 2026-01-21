@@ -591,3 +591,8 @@ CHANGE `sc_status` `sc_status` enum('GENERATED','ISSUED','VERIFIED','RECEIVED') 
 ALTER TABLE `site_settings`
 ADD `document_logo` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `site_logo`,
 ADD `certificate_footer_logos` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `document_logo`;
+
+-- 21-01-2026
+
+ALTER TABLE `student_login` ADD COLUMN `sl_reg_date` DATE NULL AFTER `sl_email`;
+ALTER TABLE `student_login` ADD COLUMN `sl_category` VARCHAR(50) NULL AFTER `sl_reg_date`;

@@ -26,6 +26,8 @@ class Student extends Model
     	'sl_mobile_no',
     	'sl_father_name',
     	'sl_educational_certificate',
-    	'sl_email'
+    	'sl_email',
+    	'sl_reg_date',
+    	'sl_category'
     ];
 }

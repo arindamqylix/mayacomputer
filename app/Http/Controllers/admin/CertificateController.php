@@ -56,6 +56,8 @@ class CertificateController extends Controller
                 'student_login.sl_photo',
                 'course.c_full_name',
                 'course.c_short_name',
+                'course.c_duration',
+                'student_login.sl_reg_date',
                 'set_result.sr_id as result_id',
                 'set_result.sr_total_marks_obtained',
                 'set_result.sr_percentage',
