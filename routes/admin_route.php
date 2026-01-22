@@ -66,6 +66,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('student-registration-card/{id}', [StudentController::class, 'registration_card'])->name('student_registration_card');
 	Route::get('get-reg-no', [StudentController::class, 'get_reg_no'])->name('get_reg_no');
 	Route::get('login-as-student/{id}', [StudentController::class, 'login_as_student'])->name('admin.login_as_student');
+    Route::get('student-reset-password', [StudentController::class, 'reset_student_password'])->name('student.reset_password');
 
     // Student Reg & ID Cards
 	Route::get('student-reg-card-list', [StudentController::class, 'student_reg_card_list'])->name('admin.student.reg_card_list');

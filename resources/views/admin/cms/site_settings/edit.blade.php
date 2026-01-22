@@ -61,6 +61,17 @@
                             </div>
 
                             <div class="form-group mb-3">
+                                <label>Admin Profile Logo</label>
+                                <input type="file" class="form-control" name="admin_profile_logo" accept=".jpg,.jpeg,.png,.gif">
+                                @if(!empty($setting->admin_profile_logo))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Admin Logo:</label><br>
+                                        <img src="{{ asset($setting->admin_profile_logo) }}" alt="Admin Profile Logo" class="preview-img" style="border-radius: 50%;">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
                                 <label>Document Logo</label>
                                 <input type="file" class="form-control" name="document_logo" accept=".jpg,.jpeg,.png">
                                 @if(!empty($setting->document_logo))

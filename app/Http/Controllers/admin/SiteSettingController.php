@@ -56,6 +56,13 @@ class SiteSettingController extends Controller
             $data['breadcumb_image'] = 'site_settings/' . $breadcumb_image;
         }
 
+        if ($request->hasFile('admin_profile_logo')) {
+            $logo = $request->file('admin_profile_logo');
+            $logoName = time() . '_admin_logo.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('site_settings'), $logoName);
+            $data['admin_profile_logo'] = 'site_settings/' . $logoName;
+        }
+
         DB::table('site_settings')->updateOrInsert(['id' => 1], $data);
 
         return redirect()->route('site_settings.edit')->with('success', 'Settings updated successfully.');

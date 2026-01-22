@@ -210,6 +210,31 @@
 		</h4>
 	</div>
 	<div class="card-body" style="padding: 2rem;">
+		
+		<!-- Filter Section -->
+		<div class="filter-section mb-4 p-4 bg-light rounded border">
+			<form action="{{ route('search_to_pay') }}" method="GET" class="row align-items-end">
+				<div class="col-md-8 mb-3 mb-md-0">
+					<label for="course_id" class="form-label fw-bold text-dark">
+						<i class="fas fa-book me-2 text-primary"></i>Filter by Course
+					</label>
+					<select name="course_id" id="course_id" class="form-control form-select border-2" onchange="this.form.submit()">
+						<option value="">-- All Courses --</option>
+						@foreach($courses as $course)
+							<option value="{{ $course->c_id }}" {{ request('course_id') == $course->c_id ? 'selected' : '' }}>
+								{{ $course->c_full_name }}
+							</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="col-md-4">
+					<a href="{{ route('search_to_pay') }}" class="btn btn-secondary w-100 fw-bold">
+						<i class="fas fa-redo me-2"></i>Reset Filter
+					</a>
+				</div>
+			</form>
+		</div>
+
 		@if(count($student) > 0)
 			<div class="table-responsive">
 				<table id="datatable-buttons" class="table modern-table">

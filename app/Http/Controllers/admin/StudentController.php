@@ -577,4 +577,48 @@ class StudentController extends Controller
 
         return view('admin.student.id_card', compact('data'));
     }
+
+    public function reset_student_password(Request $request){
+        $student = Student::where('sl_id', $request->student_id)->first();
+        
+        if(!$student):
+            return response()->json([
+                'msg' => 'Student not found!',
+                'status' => 0,
+            ]);
+        endif;
+        
+        // Reset password to mobile number
+        $mobileNumber = $student->sl_mobile_no;
+        if(!$mobileNumber):
+            return response()->json([
+                'msg' => 'Student mobile number not found!',
+                'status' => 0,
+            ]);
+        endif;
+        
+        // Use Hash::make() explicitly
+        $update = Student::where('sl_id', $request->student_id)->update([
+            'password' => Hash::make($mobileNumber),
+            // Also update sl_password if your system uses that column for legacy reasons, 
+            // but auth uses 'password' usually. Based on create(), it uses 'password'.
+            // Let's just update 'password' as per create method.
+            // If you have a separate sl_password column that needs syncing, add it here.
+             'sl_password' => Hash::make($mobileNumber) 
+        ]);
+        
+        if($update):
+            $data = [
+                'msg' => 'Password Reset Successfully! New password is: ' . $mobileNumber,
+                'status' => 1,
+            ];
+        else:
+            $data = [
+                'msg' => 'Something Went Wrong!',
+                'status' => 0,
+            ];
+        endif;
+        
+        return response()->json($data);
+    }
 }

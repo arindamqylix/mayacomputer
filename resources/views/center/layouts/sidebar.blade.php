@@ -185,6 +185,13 @@
         </li>
 
         <li>
+          <a href="{{ route('change_password') }}">
+            <i class="bx bx-key"></i>
+            <span key="t-layouts">Change Password</span>
+          </a>
+        </li>
+
+        <li>
           <a href="{{ route('profile_update') }}">
             <i class="bx bx-user"></i>
             <span key="t-layouts">Profile</span>

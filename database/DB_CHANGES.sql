@@ -600,3 +600,13 @@ ALTER TABLE `student_login` ADD COLUMN `sl_category` VARCHAR(50) NULL AFTER `sl_
 -- 22-01-2026
 
 ALTER TABLE `student_login` ADD COLUMN `sl_signature` TEXT DEFAULT NULL AFTER `sl_educational_certificate`;
+
+CREATE TABLE `document_types` (
+  `dt_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `dt_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dt_amount` decimal(10,2) NOT NULL,
+  `dt_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ACTIVE',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`dt_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

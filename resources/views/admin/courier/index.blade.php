@@ -429,6 +429,20 @@
 													   required>
 											</div>
 										</div>
+
+										<div class="col-md-6 mb-3">
+											<div class="form-group">
+												<label for="courier_status">
+													<i class="fas fa-info-circle"></i>
+													Courier Status <span class="text-danger">*</span>
+												</label>
+												<select class="form-select" id="courier_status" name="courier_status" required>
+													<option value="DISPATCHED">DISPATCHED</option>
+													<option value="RECEIVED">RECEIVED</option>
+													<option value="PENDING">PENDING</option>
+												</select>
+											</div>
+										</div>
 									</div>
 									
 									<div class="mt-3">
@@ -482,6 +496,7 @@
 						<select class="form-select" id="edit_courier_status" name="courier_status" required>
 							<option value="DISPATCHED">DISPATCHED</option>
 							<option value="RECEIVED">RECEIVED</option>
+							<option value="PENDING">PENDING</option>
 							<option value="RETURNED">RETURNED</option>
 						</select>
 					</div>

@@ -483,6 +483,13 @@
 										        title="Block/Unblock Student">
 											<i class="fas fa-ban"></i>
 										</button>
+										<button type="button" 
+										        onclick="resetStudentPassword('{{ $data->sl_id }}', '{{ $data->sl_mobile_no }}');" 
+										        class="btn btn-sm action-btn text-white"
+										        style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);"
+										        title="Reset Password to Mobile Number">
+											<i class="fas fa-key"></i>
+										</button>
 									</td>
 								</tr>
 							@endforeach
@@ -723,5 +730,48 @@
 			}
 		});
 	};
+
+    function resetStudentPassword(student_id, mobile_number) {
+		if (!confirm('Are you sure you want to reset password for this student?\n\nPassword will be reset to mobile number: ' + mobile_number)) {
+			return;
+		}
+		
+		$.ajax({
+			url: "{{ route('student.reset_password') }}",
+			type: "get",
+			data: {
+				student_id: student_id
+			},
+			dataType: "json",
+			beforeSend: function() {
+				$('body').append('<div class="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index:9999; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.5);"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+			},
+			success: function(response) {
+				if (response.status == 1) {
+					if (typeof toastr !== 'undefined') {
+						toastr.success(response.msg);
+					} else {
+						alert(response.msg);
+					}
+				} else {
+					if (typeof toastr !== 'undefined') {
+						toastr.error(response.msg);
+					} else {
+						alert(response.msg);
+					}
+				}
+			},
+			error: function(xhr, status, error) {
+				if (typeof toastr !== 'undefined') {
+					toastr.error('An error occurred. Please try again.');
+				} else {
+					alert('An error occurred. Please try again.');
+				}
+			},
+			complete: function() {
+				$('.loading-overlay').remove();
+			}
+		});
+	}
 </script>
 @endpush

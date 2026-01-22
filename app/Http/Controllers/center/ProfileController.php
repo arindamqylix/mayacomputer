@@ -84,14 +84,28 @@ class ProfileController extends Controller
 	}
 
 
-	// change password - DISABLED: Only admin can reset password
+	// change password
 	public function change_password()
 	{
-		return redirect()->route('center_dashboard')->with('error', 'Password change is not available. Please contact admin to reset your password.');
+		return view('center.change_password');
 	}
 
 	public function change_password_save(Request $request)
 	{
-		return redirect()->route('center_dashboard')->with('error', 'Password change is not available. Please contact admin to reset your password.');
+		$request->validate([
+			'old_password' => 'required',
+			'new_password' => 'required|min:6',
+			'confirm_new_password' => 'required|same:new_password',
+		]);
+
+		$center = Auth::guard('center')->user();
+
+		if (\Hash::check($request->old_password, $center->password)) {
+			$center->password = \Hash::make($request->new_password);
+			$center->save();
+			return back()->with('success', 'Password Changed Successfully!');
+		} else {
+			return back()->with('error', 'Old Password Does Not Match!');
+		}
 	}
 }

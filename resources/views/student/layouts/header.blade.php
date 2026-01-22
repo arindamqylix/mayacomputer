@@ -48,23 +48,23 @@ use  App\Models\center\Center;
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @if($center->cl_photo)
-                                <img class="rounded-circle header-profile-user" src="{{ asset('admin/center_image/').'/'.$center->cl_photo }}"
+                            @if(Auth::guard('student')->user()->sl_photo)
+                                <img class="rounded-circle header-profile-user" src="{{ asset(Auth::guard('student')->user()->sl_photo) }}"
                                 alt="Header Avatar">
                             @else
                                 <img class="rounded-circle header-profile-user" src="https://st2.depositphotos.com/3904951/8925/v/450/depositphotos_89250312-stock-illustration-photo-picture-web-icon-in.jpg"
                                 alt="Header Avatar">
                             @endif
-                            <span class="d-none d-xl-inline-block ms-1" key="t-henry" style="color: #74788d;">{{ $center->cl_name }}</span>
+                            <span class="d-none d-xl-inline-block ms-1" key="t-henry" style="color: #74788d;">{{ Auth::guard('student')->user()->sl_name }}</span>
                             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
                                 
-                                <a class="dropdown-item" href=""><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
-                               <a class="dropdown-item" href=""><i class="bx bx-pin font-size-16 align-middle me-1"></i> <span key="t-profile">Change Password</span></a>
+                                <!-- <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a> -->
+                                <a class="dropdown-item" href="{{ route('student.change_password') }}"><i class="bx bx-key font-size-16 align-middle me-1"></i> <span key="t-profile">Change Password</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="{{ route('center_logout') }}"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
+                                <a class="dropdown-item text-danger" href="{{ route('student_logout') }}"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
                             </div>
                         </div>
                     </div>

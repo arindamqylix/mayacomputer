@@ -45,23 +45,25 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @if($center->cl_photo)
-                                <img class="rounded-circle header-profile-user" src="{{ asset('admin/center_image/').'/'.$center->cl_photo }}"
+                            @php
+                                $setting = DB::table('site_settings')->first();
+                                $adminLogo = $setting->admin_profile_logo ?? null;
+                            @endphp
+                            @if($adminLogo)
+                                <img class="rounded-circle header-profile-user" src="{{ asset($adminLogo) }}"
                                 alt="Header Avatar">
                             @else
-                                <img class="rounded-circle header-profile-user" src="https://st2.depositphotos.com/3904951/8925/v/450/depositphotos_89250312-stock-illustration-photo-picture-web-icon-in.jpg"
+                                <img class="rounded-circle header-profile-user" src="{{ asset('admin/assets/images/users/avatar-1.jpg') }}"
                                 alt="Header Avatar">
                             @endif
-                            <span class="d-none d-xl-inline-block ms-1" key="t-henry" style="color: #74788d;">{{ $center->cl_name }}</span>
+                            <span class="d-none d-xl-inline-block ms-1" key="t-henry">Admin</span>
                             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
-                                
-                                <a class="dropdown-item" href=""><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
-                               <a class="dropdown-item" href=""><i class="bx bx-pin font-size-16 align-middle me-1"></i> <span key="t-profile">Change Password</span></a>
+                                <a class="dropdown-item" href="{{ route('admin_profile_update') }}"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="{{ route('center_logout') }}"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
+                                <a class="dropdown-item text-danger" href="{{ route('admin_logout') }}"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
                             </div>
                         </div>
                     </div>

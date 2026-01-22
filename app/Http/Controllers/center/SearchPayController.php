@@ -10,14 +10,23 @@ use DB;
 use Auth;
 class SearchPayController extends Controller
 {
-    public function search_to_pay(){
-    	$student['student'] = DB::table('student_login')
-    							->join('set_fee', 'student_login.sl_id', 'set_fee.sf_FK_of_student_id')
-    							->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-    							->where('set_fee.sf_FK_of_center_id', Auth::guard('center')->user()->cl_id)
-    							->get();
+    public function search_to_pay(Request $request){
+    	// Fetch all courses for the filter dropdown
+    	$courses = DB::table('course')->select('c_id', 'c_full_name')->get();
 
-    	return view('center.search_to_pay.index',$student);
+    	$query = DB::table('student_login')
+    				->join('set_fee', 'student_login.sl_id', 'set_fee.sf_FK_of_student_id')
+    				->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+    				->where('set_fee.sf_FK_of_center_id', Auth::guard('center')->user()->cl_id);
+
+    	// Apply Course Filter
+    	if ($request->has('course_id') && !empty($request->course_id)) {
+    		$query->where('student_login.sl_FK_of_course_id', $request->course_id);
+    	}
+
+    	$student = $query->get();
+
+    	return view('center.search_to_pay.index', compact('student', 'courses'));
     }
 
     public function fees_payment(){

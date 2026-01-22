@@ -175,12 +175,14 @@ class CourierController extends Controller
             'dispatch_thru' => 'required|string|max:255',
             'dispatch_date' => 'required|date',
             'tracking_number' => 'required|string|max:255',
+            'courier_status' => 'required|string|in:DISPATCHED,RECEIVED,PENDING',
         ]);
 
         $studentIds = $request->student_ids;
         $dispatchThru = $request->dispatch_thru;
         $dispatchDate = $request->dispatch_date;
         $trackingNumber = $request->tracking_number;
+        $courierStatus = $request->courier_status;
 
         // Update all certificates for selected students
         $updated = 0;
@@ -196,14 +198,17 @@ class CourierController extends Controller
                         'sc_dispatch_thru' => $dispatchThru,
                         'sc_dispatch_date' => $dispatchDate,
                         'sc_tracking_number' => $trackingNumber,
+                        'sc_status' => $courierStatus,
                         'sc_doc_quantity' => 1, // Default to 1 document per student
                         'updated_at' => now(),
                     ]);
                 
-                // Update student status to DISPATCHED
-                DB::table('student_login')
-                    ->where('sl_id', $studentId)
-                    ->update(['sl_status' => 'DISPATCHED']);
+                // Update student status to DISPATCHED only if courier status is DISPATCHED or RECEIVED
+                if (in_array($courierStatus, ['DISPATCHED', 'RECEIVED'])) {
+                    DB::table('student_login')
+                        ->where('sl_id', $studentId)
+                        ->update(['sl_status' => 'DISPATCHED']);
+                }
                 
                 $updated++;
             }
@@ -246,7 +251,7 @@ class CourierController extends Controller
             'dispatch_thru' => 'required|string|max:255',
             'dispatch_date' => 'required|date',
             'tracking_number' => 'required|string|max:255',
-            'courier_status' => 'required|string|in:DISPATCHED,RECEIVED,RETURNED',
+            'courier_status' => 'required|string|in:DISPATCHED,RECEIVED,RETURNED,PENDING',
         ]);
 
         $certificate = DB::table('student_certificates')->where('sc_id', $id)->first();

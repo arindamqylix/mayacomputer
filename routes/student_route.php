@@ -59,6 +59,10 @@ Route::group(['prefix'=>'student', 'middleware'=>'student:student'], function(){
 	Route::get('invoices/fee-payment/{id}', [InvoiceController::class, 'viewFeePaymentInvoice'])->name('student.invoice.fee_payment_view');
 	Route::get('invoices/fee-payment/{id}/download', [InvoiceController::class, 'downloadFeePaymentInvoice'])->name('student.invoice.fee_payment_download');
 	
+	// Change Password
+	Route::get('change-password', [\App\Http\Controllers\student\ProfileController::class, 'change_password'])->name('student.change_password');
+	Route::post('change-password', [\App\Http\Controllers\student\ProfileController::class, 'change_password_save'])->name('student.change_password_save');
+
 	// Syllabus
 	Route::get('syllabus', [SyllabusController::class, 'index'])->name('student.syllabus.index');
 });

@@ -48,14 +48,14 @@ use  App\Models\center\Center;
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @if($center->cl_photo)
-                                <img class="rounded-circle header-profile-user" src="{{ asset('admin/center_image/').'/'.$center->cl_photo }}"
+                            @if(Auth::guard('center')->user()->cl_photo)
+                                <img class="rounded-circle header-profile-user" src="{{ asset(Auth::guard('center')->user()->cl_photo) }}"
                                 alt="Header Avatar">
                             @else
                                 <img class="rounded-circle header-profile-user" src="https://st2.depositphotos.com/3904951/8925/v/450/depositphotos_89250312-stock-illustration-photo-picture-web-icon-in.jpg"
                                 alt="Header Avatar">
                             @endif
-                            <span class="d-none d-xl-inline-block ms-1" key="t-henry" style="color: #74788d;">{{ $center->cl_name }}</span>
+                            <span class="d-none d-xl-inline-block ms-1" key="t-henry" style="color: #74788d;">{{ Auth::guard('center')->user()->cl_center_name }}</span>
                             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">

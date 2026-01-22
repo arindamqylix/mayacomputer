@@ -184,6 +184,12 @@
         </div>
       </li>
 
+      <li class="nav-item">
+        <a href="{{ route('student.change_password') }}" class="nav-link">
+            <span class="sidebar-icon"><i class="fa-solid fa-key"></i></span>
+            <span class="sidebar-text">Change Password</span>
+        </a>
+      </li>
 
 
 
