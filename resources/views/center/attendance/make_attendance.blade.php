@@ -378,13 +378,35 @@
 					<input type="hidden" name="batch_id" value="{{ request('batch_id') }}">
 					<input type="hidden" name="att_date" value="{{ request('att_date') }}">
 
+					<div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded border">
+						<h6 class="mb-0 fw-bold text-dark"><i class="fas fa-check-double me-2"></i>Quick Action (Select All):</h6>
+						<div class="d-flex gap-4">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="select_all" id="all_present" value="PRESENT" onchange="toggleAll('PRESENT')">
+								<label class="form-check-label fw-bold text-success" for="all_present">Present (P)</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="select_all" id="all_absent" value="ABSENT" onchange="toggleAll('ABSENT')">
+								<label class="form-check-label fw-bold text-danger" for="all_absent">Absent (A)</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="select_all" id="all_holiday" value="HOLIDAY" onchange="toggleAll('HOLIDAY')">
+								<label class="form-check-label fw-bold text-warning" for="all_holiday">Holiday (H)</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="select_all" id="all_sunday" value="SUNDAY" onchange="toggleAll('SUNDAY')">
+								<label class="form-check-label fw-bold text-info" for="all_sunday">Sunday (S)</label>
+							</div>
+						</div>
+					</div>
+
 					<div class="table-responsive">
 						<table id="datatable-buttons" class="table modern-table">
 							<thead>
 								<tr>
-									<th style="width: 15%;">Roll No</th>
-									<th style="width: 60%;">Student Name</th>
-									<th style="width: 25%;">Status</th>
+									<th style="width: 10%;">Roll No</th>
+									<th style="width: 30%;">Student Name</th>
+									<th style="width: 60%;">Mark Status</th>
 								</tr>
 							</thead>
 
@@ -399,33 +421,68 @@
 										</td>
 										<td>
 											<input type="hidden" name="student_id[]" value="{{ $stu->sl_id }}">
-											<div class="d-flex gap-4 align-items-center">
+											<div class="d-flex gap-3 align-items-center flex-wrap">
+												<!-- Present -->
 												<div class="form-check">
 													<input 
-														class="form-check-input" 
+														class="form-check-input input-present" 
 														type="radio" 
 														name="attd[{{ $stu->sl_id }}]" 
 														id="present_{{ $stu->sl_id }}" 
 														value="PRESENT"
-														style="width: 20px; height: 20px; cursor: pointer; accent-color: #11998e;"
+														style="cursor: pointer; accent-color: #11998e;"
 														{{ (isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'PRESENT') ? 'checked' : '' }}
 													>
-													<label class="form-check-label fw-bold text-success ms-2" for="present_{{ $stu->sl_id }}" style="cursor: pointer;">
-														Present
+													<label class="form-check-label text-success fw-bold" for="present_{{ $stu->sl_id }}">
+														P
 													</label>
 												</div>
+
+												<!-- Absent -->
 												<div class="form-check">
 													<input 
-														class="form-check-input" 
+														class="form-check-input input-absent" 
 														type="radio" 
 														name="attd[{{ $stu->sl_id }}]" 
 														id="absent_{{ $stu->sl_id }}" 
 														value="ABSENT" 
-														style="width: 20px; height: 20px; cursor: pointer; accent-color: #d00226;"
+														style="cursor: pointer; accent-color: #d00226;"
 														{{ (isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'ABSENT') ? 'checked' : '' }}
 													>
-													<label class="form-check-label fw-bold text-danger ms-2" for="absent_{{ $stu->sl_id }}" style="cursor: pointer;">
-														Absent
+													<label class="form-check-label text-danger fw-bold" for="absent_{{ $stu->sl_id }}">
+														A
+													</label>
+												</div>
+
+												<!-- Holiday -->
+												<div class="form-check">
+													<input 
+														class="form-check-input input-holiday" 
+														type="radio" 
+														name="attd[{{ $stu->sl_id }}]" 
+														id="holiday_{{ $stu->sl_id }}" 
+														value="HOLIDAY" 
+														style="cursor: pointer; accent-color: #f1b44c;"
+														{{ (isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'HOLIDAY') ? 'checked' : '' }}
+													>
+													<label class="form-check-label text-warning fw-bold" for="holiday_{{ $stu->sl_id }}">
+														H
+													</label>
+												</div>
+
+												<!-- Sunday -->
+												<div class="form-check">
+													<input 
+														class="form-check-input input-sunday" 
+														type="radio" 
+														name="attd[{{ $stu->sl_id }}]" 
+														id="sunday_{{ $stu->sl_id }}" 
+														value="SUNDAY" 
+														style="cursor: pointer; accent-color: #50a5f1;"
+														{{ (isset($marked[$stu->sl_id]) && $marked[$stu->sl_id] === 'SUNDAY') ? 'checked' : '' }}
+													>
+													<label class="form-check-label text-info fw-bold" for="sunday_{{ $stu->sl_id }}">
+														S
 													</label>
 												</div>
 											</div>
@@ -476,7 +533,7 @@
 			if ($('#datatable-buttons').length && $('#datatable-buttons tbody tr').length > 0) {
 				var table = $('#datatable-buttons').DataTable({
 					"order": [[0, "asc"]], // Sort by roll number
-					"pageLength": 25,
+					"pageLength": 100, // Increased page length for bulk attendance
 					"language": {
 						"search": "",
 						"searchPlaceholder": "Search students..."
@@ -486,5 +543,17 @@
 			}
 		}
 	});
+
+	function toggleAll(status) {
+		if (status === 'PRESENT') {
+			$('.input-present').prop('checked', true);
+		} else if (status === 'ABSENT') {
+			$('.input-absent').prop('checked', true);
+		} else if (status === 'HOLIDAY') {
+			$('.input-holiday').prop('checked', true);
+		} else if (status === 'SUNDAY') {
+			$('.input-sunday').prop('checked', true);
+		}
+	}
 </script>
 @endpush

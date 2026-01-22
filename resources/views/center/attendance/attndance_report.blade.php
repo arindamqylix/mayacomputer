@@ -361,10 +361,15 @@
 	$totalDays = count($dates);
 	$totalPresent = 0;
 	$totalAbsent = 0;
+    $totalHoliday = 0;
+    $totalSunday  = 0;
+
 	foreach($attendanceReport as $student => $attRow) {
 		foreach($attRow as $date => $status) {
 			if($status === 'PRESENT') $totalPresent++;
 			elseif($status === 'ABSENT') $totalAbsent++;
+            elseif($status === 'HOLIDAY') $totalHoliday++;
+            elseif($status === 'SUNDAY') $totalSunday++;
 		}
 	}
 @endphp
@@ -391,6 +396,20 @@
 		</div>
 		<h3>{{ $totalAbsent }}</h3>
 		<p>Total Absent</p>
+	</div>
+    <div class="stat-card">
+		<div class="icon-wrapper" style="background: linear-gradient(135deg, #f1b44c 0%, #ff9800 100%);">
+			<i class="fas fa-umbrella-beach"></i>
+		</div>
+		<h3>{{ $totalHoliday }}</h3>
+		<p>Total Holiday</p>
+	</div>
+    <div class="stat-card">
+		<div class="icon-wrapper" style="background: linear-gradient(135deg, #50a5f1 0%, #007bff 100%);">
+			<i class="fas fa-sun"></i>
+		</div>
+		<h3>{{ $totalSunday }}</h3>
+		<p>Total Sunday</p>
 	</div>
 	<div class="stat-card">
 		<div class="icon-wrapper primary">
@@ -499,20 +518,21 @@
 								@foreach ($dates as $d)
 									@php 
 										$val = $attRow[$d] ?? null;
-										$status = '';
-										if($val === 'PRESENT' || $val === 'Yes') {
-											$status = 'PRESENT';
-										} elseif($val === 'ABSENT' || $val === 'No') {
-											$status = 'ABSENT';
-										} else {
-											$status = 'NONE';
-										}
+										$status = 'NONE';
+                                        if($val === 'PRESENT' || $val === 'Yes') $status = 'PRESENT';
+                                        elseif($val === 'ABSENT' || $val === 'No') $status = 'ABSENT';
+                                        elseif($val === 'HOLIDAY') $status = 'HOLIDAY';
+                                        elseif($val === 'SUNDAY') $status = 'SUNDAY';
 									@endphp
 									<td>
 										@if($status === 'PRESENT')
-											<span class="badge-yes">✔</span>
+											<span class="badge-yes">P</span>
 										@elseif($status === 'ABSENT')
-											<span class="badge-no">✘</span>
+											<span class="badge-no">A</span>
+                                        @elseif($status === 'HOLIDAY')
+                                            <span class="badge-holiday" style="background: #f1b44c; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem; display: inline-block; min-width: 24px;">H</span>
+                                        @elseif($status === 'SUNDAY')
+                                            <span class="badge-sunday" style="background: #50a5f1; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem; display: inline-block; min-width: 24px;">S</span>
 										@else
 											<span class="badge-none">-</span>
 										@endif
@@ -551,10 +571,6 @@
 			let row = [], cols = table.rows[r].querySelectorAll('th, td');
 			for (let c = 0; c < cols.length; c++) {
 				let text = cols[c].innerText.replace(/\n/g, ' ').trim();
-				// Replace badges with text
-				if (text === '✔') text = 'PRESENT';
-				else if (text === '✘') text = 'ABSENT';
-				else if (text === '-') text = 'N/A';
 				// Sanitize quotes
 				text = text.replace(/"/g, '""');
 				row.push('"' + text + '"');
