@@ -62,32 +62,38 @@
     }
 </style>
 
-<!-- Logo Section - Big Size at Top -->
-@if($siteSettings && !empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo)))
-<div style="width: 100%; text-align: center; padding: 20px 0; margin-bottom: 20px; border-bottom: 2px solid #333;">
-    <img src="{{ $siteLogo }}" alt="{{ $siteName }} Logo" style="max-width: 100%; max-height: 200px; height: auto; width: auto; object-fit: contain;">
-</div>
-@endif
+<!-- New Header Structure -->
+@php
+    $siteSettings = site_settings();
+    $logoPath = null;
+    if($siteSettings) {
+         if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
+             $logoPath = $siteSettings->document_logo;
+         } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
+             $logoPath = $siteSettings->site_logo;
+         } else {
+             $logoPath = 'header_banner.png';
+         }
+    } else {
+         $logoPath = 'header_banner.png';
+    }
+@endphp
 
-<div class="invoice-header">
-    <table>
-        <tr>
-            <td style="width: 30%;">
-                @if(file_exists(public_path($siteSettings->site_logo ?? '')))
-                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" style="max-width: 150px; max-height: 80px;">
-                @else
-                    <h2 style="margin: 0; color: #2c3e50;">{{ $siteName }}</h2>
-                @endif
-            </td>
-            <td style="width: 70%; text-align: right;">
-                <h1 class="invoice-title">INVOICE</h1>
-                <div class="company-info">
-                    <p style="margin: 2px 0;"><strong>Invoice No:</strong> {{ $invoice_no }}</p>
-                    <p style="margin: 2px 0;"><strong>Date:</strong> {{ $invoice_date }}</p>
-                </div>
-            </td>
-        </tr>
-    </table>
+<div class="header-container" style="text-align: center; margin-bottom: 10px; border-bottom: 2px solid #000077; padding-bottom: 5px;">
+    <img src="{{ asset($logoPath) }}" alt="Banner" style="width: 100%; max-height: 80px; object-fit: contain;">
+    
+    <div style="text-align: center; margin-top: -10px;">
+        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Registered Under Skill India, Udyam & Startup India</p>
+        <p style="color: red; font-weight: bold; font-size: 8px; margin: 2px 0; font-family: Arial, sans-serif;">An ISO 9001: 2015 Certified</p>
+    </div>
+</div>
+
+<div class="invoice-title-bar" style="text-align: center; background: #000077; color: white; padding: 5px; margin-bottom: 20px;">
+    <h1 style="margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">INVOICE</h1>
+    <p style="margin: 2px 0 0 0; font-size: 12px; color: #fff;">
+        Invoice No: {{ $invoice_no }} | Date: {{ $invoice_date }}
+    </p>
 </div>
 
 <div class="invoice-details">

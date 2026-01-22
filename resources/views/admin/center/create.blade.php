@@ -194,6 +194,17 @@
 								</div>
 							</div>
 						</div>
+						
+						<div class="col-md-4 mb-3">
+							<div class="form-group">
+								<label>Status <span class="text-danger">*</span></label>
+								<select class="form-control" name="center_status" required>
+									<option value="PENDING" selected>Pending</option>
+									<option value="ACTIVE">Active</option>
+									<option value="BLOCKED">Blocked</option>
+								</select>
+							</div>
+						</div>
 					</div>
 					
 					<!-- Center Documents Section -->

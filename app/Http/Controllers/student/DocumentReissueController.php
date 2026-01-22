@@ -13,13 +13,6 @@ use DB;
 
 class DocumentReissueController extends Controller
 {
-    // Document reissue prices (can be moved to database or config file)
-    private $documentPrices = [
-        'CERTIFICATE' => 500.00,
-        'MARKSHEET' => 300.00,
-        'ID_CARD' => 200.00,
-    ];
-    
     // Show reissue request form
     public function index()
     {
@@ -29,25 +22,38 @@ class DocumentReissueController extends Controller
         $requests = DocumentReissueRequest::where('drr_FK_of_student_id', $student->sl_id)
             ->orderBy('drr_id', 'DESC')
             ->get();
+
+        // Get active document types from DB
+        $documentTypes = \App\Models\admin\DocumentType::where('dt_status', 'ACTIVE')->get();
         
-        return view('student.document_reissue.index', compact('requests', 'student'));
+        return view('student.document_reissue.index', compact('requests', 'student', 'documentTypes'));
     }
     
     // Store reissue request
     public function store(Request $request)
     {
         $request->validate([
-            'document_type' => 'required|in:CERTIFICATE,MARKSHEET,ID_CARD',
+            'document_type' => 'required', // Validate against ID or Name later
             'remarks' => 'nullable|string|max:500',
         ]);
         
         $student = Auth::guard('student')->user();
-        $documentType = $request->document_type;
-        $amount = $this->documentPrices[$documentType] ?? 0;
+        
+        // Fetch document type details
+        $docType = \App\Models\admin\DocumentType::where('dt_id', $request->document_type)
+                    ->where('dt_status', 'ACTIVE')
+                    ->first();
+
+        if (!$docType) {
+             return redirect()->back()->with('error', 'Invalid Document Type Selected');
+        }
+
+        $documentTypeName = $docType->dt_name;
+        $amount = $docType->dt_amount;
         
         // Check for existing pending request
         $existingRequest = DocumentReissueRequest::where('drr_FK_of_student_id', $student->sl_id)
-            ->where('drr_document_type', $documentType)
+            ->where('drr_document_type', $documentTypeName)
             ->whereIn('drr_status', ['PENDING', 'PAID', 'PROCESSING'])
             ->first();
         
@@ -58,7 +64,7 @@ class DocumentReissueController extends Controller
         // Create reissue request
         $reissueRequest = DocumentReissueRequest::create([
             'drr_FK_of_student_id' => $student->sl_id,
-            'drr_document_type' => $documentType,
+            'drr_document_type' => $documentTypeName,
             'drr_status' => 'PENDING',
             'drr_amount' => $amount,
             'drr_payment_status' => 'PENDING',

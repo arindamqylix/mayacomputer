@@ -69,93 +69,62 @@
     }
     
     /* Logo Section - Big Size at Top */
-    .logo-top-section {
-        width: 100%;
-        text-align: center;
-        padding: 20px 0;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #000077;
-        background: #ffffff;
-    }
-    
-    .logo-top-section img {
-        max-width: 100%;
-        max-height: 200px;
-        height: auto;
-        width: auto;
-        object-fit: contain;
-    }
+    /* Logo Section Removed as it is integrated in Header */
     
     .id-header {
-        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-        padding: 10px 15px;
+        background: #ffffff;
+        padding: 5px;
         text-align: center;
         position: relative;
-        overflow: hidden;
+        border-bottom: 2px solid #000077;
     }
     
     .id-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100px;
-        height: 100%;
-        background: linear-gradient(135deg, #000077 0%, #000099 100%);
-        clip-path: ellipse(100% 100% at 0% 50%);
-        z-index: 1;
+        display: none;
     }
-    
-    .id-header-logo {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        z-index: 2;
-        background: #ffffff;
-        border-radius: 50%;
-        padding: 5px;
-    }
-    
-    .id-header-logo img {
+
+    .header-banner {
         width: 100%;
-        height: 100%;
-        object-fit: contain;
-        max-width: 100%;
-        max-height: 100%;
+        height: auto;
+        max-height: 80px; 
+        display: block;
+        margin: 0 auto;
     }
-    
-    .logo-placeholder {
-        width: 100%;
-        height: 100%;
-        background: #f0f0f0;
-        border: 2px solid #000077;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #000077;
-        font-size: 10px;
+
+    .header-subtext {
         text-align: center;
+        margin-top: -10px;
+    }
+
+    .reg-details {
+        font-size: 7px;
+        font-weight: bold;
+        margin: 1px 0;
+        color: #000;
+        font-family: Arial, sans-serif;
+    }
+
+    .iso-text {
+        color: red;
+        font-weight: bold;
+        font-size: 8px; 
+        margin: 1px 0;
+        font-family: Arial, sans-serif;
     }
     
     .id-header-text {
         text-align: center;
-        position: relative;
-        z-index: 2;
+        background: #000077;
+        color: white;
+        padding: 2px 0;
+        margin-top: 5px;
     }
     
     .id-header-text .card-type {
-        font-size: 14px;
-        color: #ffffff;
+        font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        letter-spacing: 1px;
     }
     
     .id-body {
@@ -386,30 +355,31 @@
 <div class="print-container">
     <div class="id-card">
         <div class="id-header">
-            <div class="id-header-logo">
                 @php
                     $siteSettings = site_settings();
                     $logoPath = null;
-                    $siteName = 'MAYA COMPUTER CENTER';
-                    
                     if($siteSettings) {
-                        $logoPath = !empty($siteSettings->site_logo) ? $siteSettings->site_logo : null;
-                        $siteName = !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
-                    }
-                    
-                    $logoExists = false;
-                    if($logoPath) {
-                        $fullPath = public_path($logoPath);
-                        $logoExists = file_exists($fullPath);
+                         // Use document_logo if available, else site_logo, else fallback
+                         if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
+                             $logoPath = $siteSettings->document_logo;
+                         } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
+                             $logoPath = $siteSettings->site_logo;
+                         } else {
+                             $logoPath = 'header_banner.png';
+                         }
+                    } else {
+                         $logoPath = 'header_banner.png';
                     }
                 @endphp
-                @if($logoExists)
-                    <img src="{{ asset($logoPath) }}" alt="{{ $siteName }} Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="logo-placeholder" style="display: none;">{{ substr($siteName, 0, 5) }}</div>
-                @else
-                    <div class="logo-placeholder">{{ substr($siteName, 0, 5) }}</div>
-                @endif
-            </div>
+                
+                <img src="{{ asset($logoPath) }}" alt="Banner" class="header-banner">
+
+                <div class="header-subtext">
+                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
+                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                </div>
+                
             <div class="id-header-text">
                 <div class="card-type">Student ID Card</div>
             </div>
@@ -436,6 +406,24 @@
                         <div class="info-value">{{ $data->c_short_name ?? $data->c_full_name ?? 'N/A' }}</div>
                     </div>
                     
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-friends"></i>
+                            <span>Father:</span>
+                        </div>
+                        <div class="info-value">{{ strtoupper($data->sl_father_name ?? 'N/A') }}</div>
+                    </div>
+                    
+                    @if($data->sl_address)
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Address:</span>
+                        </div>
+                        <div class="info-value" style="font-size: 9px;">{{ $data->sl_address }}</div>
+                    </div>
+                    @endif
+                    
                     @if($data->sl_dob)
                     <div class="info-row">
                         <div class="info-label">
@@ -443,7 +431,7 @@
                             <span>DOB:</span>
                         </div>
                         <div class="info-value">
-                            {{ \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') }}
+                            {{ \Carbon\Carbon::parse($data->sl_dob)->format('d-m-Y') }}
                         </div>
                     </div>
                     @endif

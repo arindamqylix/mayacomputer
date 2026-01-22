@@ -14,9 +14,22 @@ class CenterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function center_list()
+    public function center_list(Request $request)
     {
-        $center['center'] = Center::orderBy('cl_id', 'DESC')->get();
+        $query = Center::orderBy('cl_id', 'DESC');
+        
+        if ($request->has('status') && !empty($request->status)) {
+            $status = $request->status;
+            if($status == 'active'){
+                 $query->where('cl_account_status', 'ACTIVE');
+            } elseif($status == 'pending'){
+                 $query->where('cl_account_status', 'PENDING');
+            } elseif($status == 'blocked'){
+                 $query->where('cl_account_status', 'BLOCKED');
+            }
+        }
+        
+        $center['center'] = $query->get();
         return view('admin.center.index', $center);
     }
 
@@ -113,7 +126,7 @@ class CenterController extends Controller
             'cl_director_education' => $request->director_education,
             'cl_mobile'             => $request->center_mobile,
             'password'              => Hash::make($request->center_mobile),
-            'cl_account_status'     => 'PENDING',
+            'cl_account_status'     => $request->center_status ?? 'PENDING',
             'cl_profile_edit_enabled' => 0, // Default: Disabled (locked) - Admin needs to enable it
             'cl_email'              => $request->center_email,
             'cl_registration_date'  => $registrationDate->format('Y-m-d'),
@@ -374,7 +387,7 @@ class CenterController extends Controller
     // View Center ID Card from Admin Panel
     public function viewCenterIdCardAdmin($id){
         $data = Center::where('cl_id',$id)->first();
-        return view('center.view_id_card', compact('data'));
+        return view('center.view_id_card_admin', compact('data'));
     }
     
     // View Center ID Card from Center Panel

@@ -145,6 +145,54 @@ class CertificateController extends Controller
         return view('center.certificate.view', compact('certificate', 'setting'));
     }
 
+    // Edit certificate (admin panel)
+    public function edit_certificate($id)
+    {
+        $certificate = DB::table('student_certificates')
+            ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+            ->where('student_certificates.sc_id', $id)
+            ->select(
+                'student_certificates.*',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                'course.c_full_name',
+                'center_login.cl_center_name'
+            )
+            ->first();
+
+        if (!$certificate) {
+            return redirect()->route('admin.certificate_list')->with('error', 'Certificate not found!');
+        }
+
+        return view('admin.certificate.edit', compact('certificate'));
+    }
+
+    // Update certificate (admin panel)
+    public function update_certificate(Request $request, $id)
+    {
+        $request->validate([
+            'certificate_number' => 'required|string|max:255',
+            'issue_date' => 'required|date',
+            'status' => 'required|string|in:GENERATED,ISSUED',
+        ]);
+
+        $certificate = Certificate::find($id);
+        
+        if (!$certificate) {
+            return back()->with('error', 'Certificate not found!');
+        }
+
+        $certificate->update([
+            'sc_certificate_number' => $request->certificate_number,
+            'sc_issue_date' => $request->issue_date,
+            'sc_status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.certificate_list')->with('success', 'Certificate updated successfully!');
+    }
+
     // Delete certificate (admin panel)
     public function delete_certificate($id)
     {

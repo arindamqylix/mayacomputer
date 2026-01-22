@@ -70,6 +70,12 @@
           </a>
         </li>
         <li>
+          <a href="{{ route('student_registration_card_list') }}">
+            <i class="bx bx-id-card"></i>
+            <span key="t-layouts">Registration Card</span>
+          </a>
+        </li>
+        <li>
           <a href="{{ route('generate_admit_card') }}">
             <i class="bx bx-paste"></i>
             <span key="t-layouts">Generate Admit Card</span>

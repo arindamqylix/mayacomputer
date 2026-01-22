@@ -346,6 +346,20 @@
                                     </div>
                                     <div class="help-text">Marks Sheet, Certificate etc.</div>
                                 </div>
+
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label">Upload Signature <span class="required-star">*</span></label>
+                                    <div class="file-upload-wrapper">
+                                        <label class="file-upload-label" for="upload_signature">
+                                            <i class="fas fa-pen-nib"></i>
+                                            <span>Click to upload signature</span>
+                                            <small class="d-block mt-2 text-muted">JPG, PNG (Max 2MB)</small>
+                                        </label>
+                                        <input class="file-upload-input" type='file' name='student_signature' id='upload_signature' accept='image/*' required>
+                                        <div class="file-preview" id="signature-preview"></div>
+                                    </div>
+                                    <div class="help-text">Student's Signature</div>
+                                </div>
                             </div>
                         </div>
 
@@ -399,6 +413,7 @@
     setupFilePreview('uploadimg', 'photo-preview');
     setupFilePreview('upload_id_proof', 'idcard-preview');
     setupFilePreview('upload_edu_proof', 'edu-preview');
+    setupFilePreview('upload_signature', 'signature-preview');
 
 	// Get Course
 	function get_course(course_id){

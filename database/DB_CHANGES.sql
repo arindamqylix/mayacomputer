@@ -596,3 +596,7 @@ ADD `certificate_footer_logos` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `doc
 
 ALTER TABLE `student_login` ADD COLUMN `sl_reg_date` DATE NULL AFTER `sl_email`;
 ALTER TABLE `student_login` ADD COLUMN `sl_category` VARCHAR(50) NULL AFTER `sl_reg_date`;
+
+-- 22-01-2026
+
+ALTER TABLE `student_login` ADD COLUMN `sl_signature` TEXT DEFAULT NULL AFTER `sl_educational_certificate`;

@@ -327,6 +327,32 @@
 				</div>
 			</div>
 			
+			<!-- Filter Tabs -->
+			<div class="card-body border-bottom">
+				<ul class="nav nav-pills">
+					<li class="nav-item">
+						<a class="nav-link {{ !request()->has('status') ? 'active' : '' }}" href="{{ route('center_list') }}">
+							All Centers
+						</a>
+					</li>
+					<li class="nav-item ms-2">
+						<a class="nav-link {{ request('status') == 'active' ? 'active' : '' }}" href="{{ route('center_list', ['status' => 'active']) }}">
+							Active
+						</a>
+					</li>
+					<li class="nav-item ms-2">
+						<a class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}" href="{{ route('center_list', ['status' => 'pending']) }}">
+							Pending
+						</a>
+					</li>
+					<li class="nav-item ms-2">
+						<a class="nav-link {{ request('status') == 'blocked' ? 'active' : '' }}" href="{{ route('center_list', ['status' => 'blocked']) }}">
+							Blocked
+						</a>
+					</li>
+				</ul>
+			</div>
+
 			<!-- Search Section -->
 			<div class="search-section">
 				<div class="row align-items-center">
@@ -440,7 +466,6 @@
 												<option value="">--Select Status--</option>
 												<option value="ACTIVE" {{ ($data->cl_account_status ?? '') == 'ACTIVE' ? 'selected' : '' }}>ACTIVE</option>
 												<option value="PENDING" {{ ($data->cl_account_status ?? '') == 'PENDING' ? 'selected' : '' }}>PENDING</option>
-												<option value="APPROVED" {{ ($data->cl_account_status ?? '') == 'APPROVED' ? 'selected' : '' }}>APPROVED</option>
 												<option value="BLOCKED" {{ ($data->cl_account_status ?? '') == 'BLOCKED' ? 'selected' : '' }}>BLOCKED</option>
 											</select>
 											<button type="button" 

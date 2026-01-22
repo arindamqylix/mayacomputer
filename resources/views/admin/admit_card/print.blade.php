@@ -382,7 +382,13 @@
                         <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
                         <td>{{ $admit->exam_time }}</td>
                         <td>{!! nl2br(e($admit->exam_venue)) !!}</td>
-                        <td>{{ $center->cl_center_address ?? 'N/A' }}</td>
+                        <td>
+                            @php
+                                $examCenter = \DB::table('center_login')->where('cl_center_name', $admit->exam_venue)->first();
+                                $examAddress = $examCenter ? $examCenter->cl_center_address : $center->cl_center_address;
+                            @endphp
+                            {{ $examAddress ?? 'N/A' }}
+                        </td>
                     </tr>
                 </tbody>
             </table>

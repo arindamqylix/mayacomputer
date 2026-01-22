@@ -109,6 +109,13 @@
       </li>
 
       <li class="nav-item">
+        <a href="{{ route('student_registration_card_list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-regular fa-id-card"></i></span>
+          <span class="sidebar-text">Registration ID Card</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a href="{{ route('generate_admit_card') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-ticket"></i></span>
           <span class="sidebar-text">Generate Admit Card</span>

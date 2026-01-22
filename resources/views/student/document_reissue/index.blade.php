@@ -262,9 +262,9 @@
 										</label>
 										<select class="form-select" id="document_type" name="document_type" required>
 											<option value="">-- Select Document Type --</option>
-											<option value="CERTIFICATE">Certificate - ₹ 500.00</option>
-											<option value="MARKSHEET">Marksheet - ₹ 300.00</option>
-											<option value="ID_CARD">ID Card - ₹ 200.00</option>
+                                            @foreach($documentTypes as $type)
+                                                <option value="{{ $type->dt_id }}" data-price="{{ $type->dt_amount }}">{{ $type->dt_name }} - ₹ {{ number_format($type->dt_amount, 2) }}</option>
+                                            @endforeach
 										</select>
 									</div>
 								</div>
@@ -319,13 +319,7 @@
 										<tr>
 											<td><strong>#{{ $request->drr_id }}</strong></td>
 											<td>
-												@if($request->drr_document_type == 'CERTIFICATE')
-													<i class="fa-solid fa-certificate"></i> Certificate
-												@elseif($request->drr_document_type == 'MARKSHEET')
-													<i class="fa-solid fa-file-lines"></i> Marksheet
-												@else
-													<i class="fa-solid fa-id-card"></i> ID Card
-												@endif
+												<i class="fa-solid fa-file-lines"></i> {{ $request->drr_document_type }}
 											</td>
 											<td><strong>₹ {{ number_format($request->drr_amount, 2) }}</strong></td>
 											<td>
@@ -378,25 +372,18 @@
 	</div>
 </div>
 @endsection
-
 @push('custom-script')
 <script>
 	$(document).ready(function() {
-		// Document prices
-		const prices = {
-			'CERTIFICATE': 500.00,
-			'MARKSHEET': 300.00,
-			'ID_CARD': 200.00
-		};
-		
 		// Update price display when document type changes
 		$('#document_type').on('change', function() {
-			const selectedType = $(this).val();
+			const selectedOption = $(this).find('option:selected');
+			const price = selectedOption.data('price');
 			const priceDisplay = $('#priceDisplay');
 			const priceAmount = $('#priceAmount');
 			
-			if (selectedType && prices[selectedType]) {
-				priceAmount.text('₹ ' + prices[selectedType].toFixed(2));
+			if (price) {
+				priceAmount.text('₹ ' + parseFloat(price).toFixed(2));
 				priceDisplay.removeClass('hidden');
 			} else {
 				priceDisplay.addClass('hidden');

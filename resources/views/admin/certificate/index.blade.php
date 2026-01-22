@@ -216,6 +216,13 @@
 													<i class="fas fa-eye"></i>
 													View
 												</a>
+												<a href="{{ route('admin.edit_certificate', $cert->sc_id) }}" 
+												   class="btn-dispatch"
+												   style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
+												   title="Edit Certificate">
+													<i class="fas fa-edit"></i>
+													Edit
+												</a>
 												<a href="{{ route('admin.delete_certificate', $cert->sc_id) }}" 
 												   class="btn-delete"
 												   title="Delete Certificate"

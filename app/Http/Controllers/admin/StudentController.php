@@ -104,6 +104,16 @@ class StudentController extends Controller
 			$student_educational_certificate = 'student/' . $fileName;
 			Log::info("Educational Certificate stored at: " . $student_educational_certificate);
 		}
+		
+		$student_signature = null;
+		if ($request->hasFile('student_signature')) {
+			Log::info("Uploading Student Signature...");
+			$uploadedFile = $request->file('student_signature');
+			$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+			$uploadedFile->move(public_path('student'), $fileName);
+			$student_signature = 'student/' . $fileName;
+			Log::info("Student Signature stored at: " . $student_signature);
+		}
 
 		// REGISTRATION NUMBER LOGIC
 		$centerCode = $center->cl_code ?? $center->cl_center_code ?? $center->cl_id;
@@ -137,6 +147,7 @@ class StudentController extends Controller
 				'password' => Hash::make($request->student_mobile),
 				'sl_father_name' => $request->student_father,
 				'sl_educational_certificate' => $student_educational_certificate,
+				'sl_signature' => $student_signature,
 				'sl_email' => $request->student_email,
 				'sl_status' => 'PENDING',
 			]);
@@ -301,6 +312,21 @@ class StudentController extends Controller
 				$uploadedFile->move(public_path('student'), $fileName);
 				$currentEduCert = 'student/' . $fileName;
 			}
+			
+			$currentSignature = $student->sl_signature;
+			
+			// Upload new Signature
+			if ($request->hasFile('student_signature')) {
+				// delete old file if exists
+				if ($currentSignature && file_exists(public_path($currentSignature))) {
+					@unlink(public_path($currentSignature));
+				}
+
+				$uploadedFile = $request->file('student_signature');
+				$fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+				$uploadedFile->move(public_path('student'), $fileName);
+				$currentSignature = 'student/' . $fileName;
+			}
 
 			// Prepare update data
 			$updateData = [
@@ -321,6 +347,7 @@ class StudentController extends Controller
 				'sl_photo' => $currentPhoto,
 				'sl_id_card' => $currentIdCard,
 				'sl_educational_certificate' => $currentEduCert,
+				'sl_signature' => $currentSignature,
 				'updated_at' => now(),
 			];
 
@@ -375,6 +402,9 @@ class StudentController extends Controller
 			}
 			if ($student->sl_educational_certificate && file_exists(public_path($student->sl_educational_certificate))) {
 				@unlink(public_path($student->sl_educational_certificate));
+			}
+			if ($student->sl_signature && file_exists(public_path($student->sl_signature))) {
+				@unlink(public_path($student->sl_signature));
 			}
 			
 			// Finally delete the student

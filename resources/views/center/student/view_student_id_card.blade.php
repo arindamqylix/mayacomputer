@@ -44,72 +44,57 @@
 		}
 		
 		/* Logo Section - Big Size at Top */
-		.logo-top-section {
-			width: 100%;
-			text-align: center;
-			padding: 20px 0;
-			margin-bottom: 15px;
-			border-bottom: 2px solid #2563eb;
-			background: #ffffff;
-		}
-		
-		.logo-top-section img {
-			max-width: 100%;
-			max-height: 200px;
-			height: auto;
-			width: auto;
-			object-fit: contain;
-		}
+		/* Logo Section Removed */
 		
 		.id-header {
-			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-			color: #fff;
+			background: #ffffff;
+			padding: 5px;
 			text-align: center;
-			padding: 20px 15px;
 			position: relative;
-			overflow: hidden;
+			border-bottom: 2px solid #2563eb;
 		}
 		
-		.id-header::before {
-			content: '';
-			position: absolute;
-			top: -50%;
-			right: -20%;
-			width: 200px;
-			height: 200px;
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 50%;
+		.id-header::before, .id-header::after {
+			display: none;
 		}
-		
-		.id-header::after {
-			content: '';
-			position: absolute;
-			bottom: -30%;
-			left: -10%;
-			width: 150px;
-			height: 150px;
-			background: rgba(255, 255, 255, 0.05);
-			border-radius: 50%;
-		}
-		
-		.id-header img {
-			width: 80px;
+
+		.header-banner {
+			width: 100%;
 			height: auto;
+			max-height: 80px; 
 			display: block;
-			margin: 0 auto 10px;
-			position: relative;
-			z-index: 1;
-			filter: brightness(0) invert(1);
+			margin: 0 auto;
+		}
+
+		.header-subtext {
+			text-align: center;
+			margin-top: -10px;
+		}
+
+		.reg-details {
+			font-size: 7px;
+			font-weight: bold;
+			margin: 1px 0;
+			color: #000;
+			font-family: Arial, sans-serif;
+		}
+
+		.iso-text {
+			color: red;
+			font-weight: bold;
+			font-size: 8px; 
+			margin: 1px 0;
+			font-family: Arial, sans-serif;
 		}
 		
-		.id-header h2 {
-			font-size: 18px;
-			margin: 0;
-			letter-spacing: 1px;
+		.id-header-text {
+			background: #2563eb;
+			color: #fff;
+			padding: 4px;
 			font-weight: 700;
-			position: relative;
-			z-index: 1;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+			text-transform: uppercase;
+			margin-top: 5px;
+			font-size: 14px;
 		}
 		
 		.id-body {
@@ -355,32 +340,32 @@
 	<div class="print-container">
 		<div class="id-card">
 			<!-- Logo Section - Big Size at Top -->
-			@php
-				$siteSettings = site_settings();
-				$logoPath = null;
-				$logoExists = false;
-				if($siteSettings && !empty($siteSettings->site_logo)) {
-					$logoPath = $siteSettings->site_logo;
-					$fullLogoPath = public_path($logoPath);
-					$logoExists = file_exists($fullLogoPath);
-				} else {
-					$logoExists = file_exists(public_path('logo.png'));
-					$logoPath = $logoExists ? 'logo.png' : null;
-				}
-			@endphp
-			@if($logoExists)
-			<div class="logo-top-section">
-				<img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo">
-			</div>
-			@endif
-			
 			<div class="id-header">
-				@if($logoExists)
-					<img src="{{ asset($logoPath) }}" alt="Maya Computer Center Logo" style="width: 80px; height: auto; display: block; margin: 0 auto 10px; position: relative; z-index: 1; filter: brightness(0) invert(1);">
-				@else
-					<div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 10px;"></div>
-				@endif
-				<h2>MAYA COMPUTER CENTER PVT LTD</h2>
+				@php
+					$siteSettings = site_settings();
+					$logoPath = null;
+					if($siteSettings) {
+						 if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
+							 $logoPath = $siteSettings->document_logo;
+						 } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
+							 $logoPath = $siteSettings->site_logo;
+						 } else {
+							 $logoPath = 'header_banner.png';
+						 }
+					} else {
+						 $logoPath = 'header_banner.png';
+					}
+				@endphp
+				
+				<img src="{{ asset($logoPath) }}" alt="Banner" class="header-banner">
+
+				<div class="header-subtext">
+					<p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
+					<p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
+					<p class="iso-text">An ISO 9001: 2015 Certified</p>
+				</div>
+				
+				<div class="id-header-text">STUDENT ID CARD</div>
 			</div>
 			
 			<div class="id-body">
@@ -410,6 +395,24 @@
 						</div>
 						<div class="info-value">{{ $data->c_short_name ?? 'N/A' }}</div>
 					</div>
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-user-friends"></i>
+							<span>Father:</span>
+						</div>
+						<div class="info-value">{{ strtoupper($data->sl_father_name ?? 'N/A') }}</div>
+					</div>
+
+					@if($data->sl_address)
+					<div class="info-row">
+						<div class="info-label">
+							<i class="fas fa-map-marker-alt"></i>
+							<span>Address:</span>
+						</div>
+						<div class="info-value" style="font-size: 9px;">{{ $data->sl_address }}</div>
+					</div>
+					@endif
+
 					@if($data->sl_dob)
 					<div class="info-row">
 						<div class="info-label">

@@ -447,7 +447,37 @@
                                     <div class="help-text">Marks Sheet, Certificate etc.</div>
 							</div>
 						</div>
-					</div>
+						
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label">Upload Signature</label>
+								@if(!empty($student->sl_signature))
+										@php $sigUrl = asset($student->sl_signature); @endphp
+                                        <div class="current-file-preview">
+                                            <div class="text-center">
+                                                <img src="{{ $sigUrl }}" alt="Current Signature" onerror="this.style.display='none';">
+                                                <div class="mt-2">
+                                                    <a href="{{ $sigUrl }}" target="_blank" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-eye me-1"></i> View Current
+                                                    </a>
+                                                </div>
+									<div class="form-check mt-2">
+										<input class="form-check-input" type="checkbox" name="remove_signature" id="remove_signature" value="1">
+										<label class="form-check-label" for="remove_signature">Remove current signature</label>
+                                                </div>
+                                            </div>
+									</div>
+								@endif
+                                    <div class="file-upload-wrapper mt-3">
+                                        <label class="file-upload-label" for="upload_signature">
+                                            <i class="fas fa-pen-nib"></i>
+                                            <span>Click to {{ !empty($student->sl_signature) ? 'change' : 'upload' }} signature</span>
+                                            <small class="d-block mt-2 text-muted">JPG, PNG (Max 2MB)</small>
+                                        </label>
+                                        <input class="file-upload-input" type='file' name='student_signature' id='upload_signature' accept='image/*'>
+                                        <div class="file-preview" id="signature-preview"></div>
+                                    </div>
+                            </div>
+						</div>
 				</div>
 
                     <div class="card-footer bg-light border-top d-flex justify-content-end gap-2 py-3">
@@ -498,6 +528,7 @@
     setupFilePreview('uploadimg', 'photo-preview');
     setupFilePreview('upload_id_proof', 'idcard-preview');
     setupFilePreview('upload_edu_proof', 'edu-preview');
+    setupFilePreview('upload_signature', 'signature-preview');
 
 	// Get Course
 	function get_course(course_id){

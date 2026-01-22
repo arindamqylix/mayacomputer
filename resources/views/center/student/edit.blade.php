@@ -346,6 +346,27 @@
 									<div class="file-preview" id="eduCertPreview"></div>
 								</div>
 							</div>
+
+							<div class="form-group mb-3">
+								<label>
+									<i class="fas fa-pen-nib"></i>
+									Upload Signature
+								</label>
+								<div class="file-upload-area">
+									@if(!empty($data->sl_signature))
+										<div class="existing-image">
+											<p class="small text-muted mb-2">Current Signature:</p>
+											<img src="{{ asset('storage/student/'.$data->sl_signature) }}" alt="Current Signature">
+										</div>
+									@endif
+									<input class="form-control" type="file" name="student_signature" accept="image/*" onchange="previewImage(this, 'signaturePreview')">
+									<small class="text-muted d-block mt-2">
+										<i class="fas fa-info-circle me-1"></i>
+										Student Signature
+									</small>
+									<div class="file-preview" id="signaturePreview"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

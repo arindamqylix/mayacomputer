@@ -335,7 +335,21 @@
 										<i class="fas fa-info-circle me-1"></i>
 										Marks Sheet, Certificate etc.
 									</small>
-									<div class="file-preview" id="eduCertPreview"></div>
+								</div>
+							</div>
+
+							<div class="form-group mb-3">
+								<label>
+									<i class="fas fa-pen-nib"></i>
+									Upload Signature
+								</label>
+								<div class="file-upload-area">
+									<input class="form-control" type='file' name='student_signature' id='upload_signature' accept='image/*' onchange="previewImage(this, 'signaturePreview')">
+									<small class="text-muted d-block mt-2">
+										<i class="fas fa-info-circle me-1"></i>
+										Student Signature
+									</small>
+									<div class="file-preview" id="signaturePreview"></div>
 								</div>
 							</div>
 						</div>

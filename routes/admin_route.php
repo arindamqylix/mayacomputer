@@ -232,6 +232,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('certificate/generate', [CertificateController::class, 'generate_certificate'])->name('admin.certificate_generate');
 	Route::post('certificate/generate', [CertificateController::class, 'generate_certificate_now'])->name('admin.certificate_store');
 	Route::get('certificate/view/{id}', [CertificateController::class, 'view_certificate'])->name('admin.view_certificate');
+	Route::get('certificate/edit/{id}', [CertificateController::class, 'edit_certificate'])->name('admin.edit_certificate');
+	Route::post('certificate/update/{id}', [CertificateController::class, 'update_certificate'])->name('admin.update_certificate');
 	Route::get('certificate/delete/{id}', [CertificateController::class, 'delete_certificate'])->name('admin.delete_certificate');
 	
 	// Result
@@ -262,4 +264,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('invoices/center-recharge', [InvoiceController::class, 'centerRechargeInvoices'])->name('admin.invoice.center_recharge_list');
 	Route::get('invoices/center-recharge/{id}', [InvoiceController::class, 'viewCenterRechargeInvoice'])->name('admin.invoice.center_recharge_view');
 	Route::get('invoices/center-recharge/{id}/download', [InvoiceController::class, 'downloadCenterRechargeInvoice'])->name('admin.invoice.center_recharge_download');
+
+    // Document Settings (Re-Issue Types)
+    Route::get('document-settings', [App\Http\Controllers\admin\DocumentTypeController::class, 'index'])->name('admin.document_settings.index');
+    Route::post('document-settings/store', [App\Http\Controllers\admin\DocumentTypeController::class, 'store'])->name('admin.document_settings.store');
+    Route::post('document-settings/update/{id}', [App\Http\Controllers\admin\DocumentTypeController::class, 'update'])->name('admin.document_settings.update');
+    Route::get('document-settings/delete/{id}', [App\Http\Controllers\admin\DocumentTypeController::class, 'destroy'])->name('admin.document_settings.delete');
 });

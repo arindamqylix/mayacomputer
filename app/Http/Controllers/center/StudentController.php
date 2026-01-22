@@ -180,6 +180,14 @@ class StudentController extends Controller
             $student_educational_certificate = 'student/' . $fileName;
         }
 
+        $student_signature = null;
+        if ($request->hasFile('student_signature')) {
+            $uploadedFile = $request->file('student_signature');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('student'), $fileName);
+            $student_signature = 'student/' . $fileName;
+        }
+
         // Generate registration number per-center, concurrency safe
         // Use center code if available, otherwise fall back to cl_id
         $centerCode = $center->cl_code ?? $center->cl_id; // adjust attribute name if different
@@ -231,6 +239,7 @@ class StudentController extends Controller
                 'password' => Hash::make($request->student_mobile),
                 'sl_father_name' => $request->student_father,
                 'sl_educational_certificate' => $student_educational_certificate,
+                'sl_signature' => $student_signature,
                 'sl_email' => $request->student_email,
                 'sl_status' => 'PENDING',
             ];
@@ -319,6 +328,21 @@ class StudentController extends Controller
             $student_educational_certificate = 'student/' . $fileName;
         }
 
+        $student_signature = $student->sl_signature;
+
+        // Upload new Signature
+        if ($request->hasFile('student_signature')) {
+            // delete old file if exists
+            if ($student_signature && file_exists(public_path($student_signature))) {
+                @unlink(public_path($student_signature));
+            }
+
+            $uploadedFile = $request->file('student_signature');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('student'), $fileName);
+            $student_signature = 'student/' . $fileName;
+        }
+
         // Update student data
         $student->update([
             'sl_FK_of_course_id' => $request->course_id,
@@ -337,6 +361,7 @@ class StudentController extends Controller
             'sl_photo' => $student_photo,
             'sl_id_card' => $student_id_card,
             'sl_educational_certificate' => $student_educational_certificate,
+            'sl_signature' => $student_signature,
         ]);
 
         return back()->with('success', 'Student Updated Successfully!');
@@ -359,6 +384,11 @@ class StudentController extends Controller
         // Delete Educational Certificate
         if (!empty($student->sl_educational_certificate) && file_exists(public_path($student->sl_educational_certificate))) {
             @unlink(public_path($student->sl_educational_certificate));
+        }
+
+        // Delete Signature
+        if (!empty($student->sl_signature) && file_exists(public_path($student->sl_signature))) {
+            @unlink(public_path($student->sl_signature));
         }
 
         // Delete student record
@@ -401,6 +431,24 @@ class StudentController extends Controller
                     ->get();
         
         return view('center.student.id_card_list',$student);
+    }
+
+    public function student_registration_card_list(){
+        $student['student'] = DB::table('student_login')
+                    ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+                    ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+                    ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+                    ->select(
+                        'student_login.*',
+                        'center_login.cl_code',
+                        'center_login.cl_center_name',
+                        'course.c_full_name',
+                        'course.c_short_name'
+                    )
+                    ->orderBy('student_login.sl_id', 'DESC')
+                    ->get();
+        
+        return view('center.student.registration_card_list',$student);
     }
 
     public function view_student_id_card($id){
