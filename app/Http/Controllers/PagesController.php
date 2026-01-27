@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use PDF;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 
 class PagesController extends Controller
 {
@@ -729,8 +731,59 @@ class PagesController extends Controller
         return view('frontend.verify_center', compact('center'));
     }
 
+    public function sendCenterVerificationOtp(Request $request)
+    {
+        $code = $request->input('center_code');
+        $center = DB::table('center_login')->where('cl_code', $code)->first();
+        
+        if(!$center){
+            return response()->json(['success' => false, 'message' => 'Center not found']);
+        }
+        
+        $otp = rand(100000, 999999);
+        Session::put('verify_otp_' . $code, $otp);
+        Session::put('verify_otp_time_' . $code, time()); // Store time to check expiry if needed
+        
+        // Simple text email for OTP
+        try {
+            // Check if center has email
+            if(!filter_var($center->cl_email, FILTER_VALIDATE_EMAIL)){
+                 return response()->json(['success' => false, 'message' => 'Center does not have a valid email address.']);
+            }
+
+            Mail::raw("Your OTP for Center Certificate Verification is: $otp. Do not share this OTP with anyone.", function ($message) use ($center) {
+                $message->to($center->cl_email)
+                        ->subject('Verification OTP - Maya Computer Center');
+            });
+            
+            return response()->json(['success' => true, 'message' => 'OTP sent to registered email address.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to send OTP: ' . $e->getMessage()]);
+        }
+    }
+
+    public function verifyCenterOtp(Request $request)
+    {
+        $code = $request->input('center_code');
+        $inputOtp = $request->input('otp');
+        
+        $sessionOtp = Session::get('verify_otp_' . $code);
+        
+        if($sessionOtp && $sessionOtp == $inputOtp){
+            Session::put('verified_center_' . $code, true);
+            return response()->json(['success' => true]);
+        }
+        
+        return response()->json(['success' => false, 'message' => 'Invalid OTP']);
+    }
+
     public function viewCenterCertificatePublic($code)
     {
+        // Check if verified in session
+        if (!Session::get('verified_center_' . $code)) {
+             return redirect()->route('verify_center', $code)->with('error', 'Please verify with OTP first.');
+        }
+
         $center = DB::table('center_login')->where('cl_code', $code)->first();
         if (!$center) {
             abort(404, 'Center not found');

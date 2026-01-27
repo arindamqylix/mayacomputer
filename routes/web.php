@@ -46,6 +46,8 @@ Route::get('/verification/certificate/view', [PagesController::class, 'showCerti
 Route::post('/verification/certificate-data', [PagesController::class, 'getCertificateData'])->name('verification.certificate.data');
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
 Route::get('verify-center/{code}', [PagesController::class, 'verifyCenter'])->name('verify_center');
+Route::post('verify-center/send-otp', [PagesController::class, 'sendCenterVerificationOtp'])->name('verify_center.send_otp');
+Route::post('verify-center/verify-otp', [PagesController::class, 'verifyCenterOtp'])->name('verify_center.verify_otp');
 Route::get('verify-center/certificate/{code}', [PagesController::class, 'viewCenterCertificatePublic'])->name('verify_center.certificate');
 
 // Downloads
