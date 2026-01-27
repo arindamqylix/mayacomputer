@@ -118,14 +118,27 @@
             font-family: Arial, sans-serif;
         }
 
-        .qr-code {
+        .qr-wrapper {
             position: absolute;
             right: 0;
             top: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-wrapper img {
             width: 80px;
             height: 80px;
             border: 1px solid #ddd;
             background: #fff;
+        }
+
+        .sn-text {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+            color: #000;
         }
 
         /* Title Bar */
@@ -323,12 +336,16 @@
                         <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
                     @endif
                     <div class="header-subtext">
+                        <p class="reg-details">CIN : U85220DL2023PTC422329</p>
                         <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
                         <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                         <p class="iso-text">An ISO 9001: 2015 Certified</p>
                     </div>
-                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/'.$center->cl_code) }}"
-                            alt="QR Code" class="qr-code">
+                    <div class="qr-wrapper">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/'.$center->cl_code) }}"
+                            alt="QR Code">
+                        <div class="sn-text">S.N : MCC{{ str_pad($center->cl_id, 4, '0', STR_PAD_LEFT) }}</div>
+                    </div>
                 </div>
 
                 <div class="title-bar">

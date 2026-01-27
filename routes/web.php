@@ -45,6 +45,8 @@ Route::get('/verification/certificate', [PagesController::class, 'certificate'])
 Route::get('/verification/certificate/view', [PagesController::class, 'showCertificate'])->name('verification.certificate.view');
 Route::post('/verification/certificate-data', [PagesController::class, 'getCertificateData'])->name('verification.certificate.data');
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
+Route::get('verify-center/{code}', [PagesController::class, 'verifyCenter'])->name('verify_center');
+Route::get('verify-center/certificate/{code}', [PagesController::class, 'viewCenterCertificatePublic'])->name('verify_center.certificate');
 
 // Downloads
 Route::get('/downloads/{slug}', [PagesController::class, 'downloadDocument'])->name('downloads.document');

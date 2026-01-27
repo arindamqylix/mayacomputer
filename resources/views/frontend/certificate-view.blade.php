@@ -473,7 +473,7 @@
     $centerName = trim($certificate->cl_center_name ?? 'N/A');
     $centerCode = trim($certificate->cl_code ?? 'N/A');
     $centerAddress = trim($certificate->cl_center_address ?? 'N/A');
-    $cinNo = trim($certificate->cl_cin_no ?? 'U47411DL2023PTC422329');
+    $cinNo = trim($certificate->cl_cin_no ?? 'U85220DL2023PTC422329');
     
     // Issue date
     $issueDate = 'N/A';

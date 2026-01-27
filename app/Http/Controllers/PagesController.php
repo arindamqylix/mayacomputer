@@ -712,4 +712,36 @@ class PagesController extends Controller
             'downloads' => $downloads,
         ])->header('Content-Type', 'application/xml');
     }
+
+    public function verifyCenter($code)
+    {
+        $center = DB::table('center_login')->where('cl_code', $code)->first();
+
+        if (!$center) {
+            return view('frontend.verify_center_error', ['message' => 'Center not found. Please scan a valid QR code.']);
+        }
+        
+        // Ensure center is active
+        if ($center->cl_account_status !== 'ACTIVE') {
+             return view('frontend.verify_center_error', ['message' => 'This Center is not currently active.']);
+        }
+
+        return view('frontend.verify_center', compact('center'));
+    }
+
+    public function viewCenterCertificatePublic($code)
+    {
+        $center = DB::table('center_login')->where('cl_code', $code)->first();
+        if (!$center) {
+            abort(404, 'Center not found');
+        }
+        
+        // Optional: Ensure center is active for certificate view too
+         if ($center->cl_account_status !== 'ACTIVE') {
+            abort(403, 'Center is not active.');
+        }
+        
+        $setting = DB::table('site_settings')->first();
+        return view('center_certificate', compact('center', 'setting'));
+    }
 }

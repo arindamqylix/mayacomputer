@@ -270,6 +270,7 @@
                             <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
                         @endif
                         <div class="header-subtext">
+                            <p class="reg-details">CIN : U85220DL2023PTC422329</p>
                             <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
                             <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                             <p class="iso-text">An ISO 9001: 2015 Certified</p>
