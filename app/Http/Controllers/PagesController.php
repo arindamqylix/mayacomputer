@@ -750,9 +750,14 @@ class PagesController extends Controller
             if(!filter_var($center->cl_email, FILTER_VALIDATE_EMAIL)){
                  return response()->json(['success' => false, 'message' => 'Center does not have a valid email address.']);
             }
+            
+            $siteSettings = DB::table('site_settings')->first();
+            $senderEmail = $siteSettings->email ?? 'no-reply@mayacomputercenter.com';
+            $senderName = $siteSettings->name ?? 'Maya Computer Center';
 
-            Mail::raw("Your OTP for Center Certificate Verification is: $otp. Do not share this OTP with anyone.", function ($message) use ($center) {
-                $message->to($center->cl_email)
+            Mail::raw("Your OTP for Center Certificate Verification is: $otp. Do not share this OTP with anyone.", function ($message) use ($center, $senderEmail, $senderName) {
+                $message->from($senderEmail, $senderName)
+                        ->to($center->cl_email)
                         ->subject('Verification OTP - Maya Computer Center');
             });
             
