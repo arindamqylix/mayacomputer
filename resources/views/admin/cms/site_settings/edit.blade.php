@@ -117,7 +117,29 @@
                                 @if(!empty($setting->breadcumb_image))
                                     <div class="mt-2">
                                         <label class="text-muted">Current Image:</label><br>
-                                        <img src="{{ asset($setting->breadcumb_image) }}" alt="Favicon" class="preview-img">
+                                        <img src="{{ asset($setting->breadcumb_image) }}" alt="Breadcumb Image" class="preview-img">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Authorize Stamp</label>
+                                <input type="file" class="form-control" name="authorize_stamp" accept=".jpg,.jpeg,.png">
+                                @if(!empty($setting->authorize_stamp))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Stamp:</label><br>
+                                        <img src="{{ asset($setting->authorize_stamp) }}" alt="Authorize Stamp" class="preview-img">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Authorize Signature</label>
+                                <input type="file" class="form-control" name="authorize_signature" accept=".jpg,.jpeg,.png">
+                                @if(!empty($setting->authorize_signature))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Signature:</label><br>
+                                        <img src="{{ asset($setting->authorize_signature) }}" alt="Authorize Signature" class="preview-img">
                                     </div>
                                 @endif
                             </div>

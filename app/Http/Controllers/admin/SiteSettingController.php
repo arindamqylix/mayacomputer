@@ -51,9 +51,23 @@ class SiteSettingController extends Controller
 
         if ($request->hasFile('breadcumb_image')) {
             $breadcumb = $request->file('breadcumb_image');
-            $breadcumb_image = time() . '_favicon.' . $breadcumb->getClientOriginalExtension();
+            $breadcumb_image = time() . '_breadcumb.' . $breadcumb->getClientOriginalExtension();
             $breadcumb->move(public_path('site_settings'), $breadcumb_image);
             $data['breadcumb_image'] = 'site_settings/' . $breadcumb_image;
+        }
+
+        if ($request->hasFile('authorize_stamp')) {
+            $stamp = $request->file('authorize_stamp');
+            $stampName = time() . '_stamp.' . $stamp->getClientOriginalExtension();
+            $stamp->move(public_path('site_settings'), $stampName);
+            $data['authorize_stamp'] = 'site_settings/' . $stampName;
+        }
+
+        if ($request->hasFile('authorize_signature')) {
+            $signature = $request->file('authorize_signature');
+            $signatureName = time() . '_signature.' . $signature->getClientOriginalExtension();
+            $signature->move(public_path('site_settings'), $signatureName);
+            $data['authorize_signature'] = 'site_settings/' . $signatureName;
         }
 
         if ($request->hasFile('admin_profile_logo')) {

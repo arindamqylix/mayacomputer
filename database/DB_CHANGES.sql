@@ -610,3 +610,5 @@ CREATE TABLE `document_types` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`dt_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `site_settings` ADD `authorize_stamp` VARCHAR(255) NULL AFTER `breadcumb_image`, ADD `authorize_signature` VARCHAR(255) NULL AFTER `authorize_stamp`;
