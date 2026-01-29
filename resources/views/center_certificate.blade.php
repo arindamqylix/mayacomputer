@@ -125,25 +125,24 @@
         }
 
         /* Content */
+        /* Title Bar */
         .title-bar {
-            background: linear-gradient(to right, #0f1d46, #233568, #0f1d46); /* Professional Gradient */
+            background-color: #0f1d46; /* Solid Navy */
             color: #fff;
             text-align: center;
-            padding: 5px 0;
-            margin: 10px 20px; /* Slight inset */
-            border-top: 2px solid #c5a059; /* Gold accent top */
-            border-bottom: 2px solid #c5a059; /* Gold accent bottom */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-            border-radius: 2px;
+            padding: 2px 0; /* Reduced Height */
+            margin: 10px -30px; /* Touch borders (compensate for parent padding) */
+            border-top: 1px solid #c5a059;
+            border-bottom: 1px solid #c5a059;
         }
 
         .title-bar h2 {
-            font-family: 'Great Vibes', cursive;
-            font-size: 36px;
+            font-family: 'Cinzel', serif; /* Simple Professional Font */
+            font-size: 24px; /* Reduced Size */
             margin: 0;
-            font-weight: normal;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .main-content {
@@ -361,7 +360,7 @@
                         <!-- Middle Content -->
                         <div class="main-content">
                             <div class="certify-text">This is to Certify that</div>
-                            <div class="center-name">M/s {{ strtoupper($center->cl_center_name ?? '') }}</div>
+                            <div class="center-name">M/s. {{ strtoupper($center->cl_center_name ?? '') }}</div>
                             <div class="represented-by">Represented by</div>
                             <div class="person-name">{{ strtoupper($center->cl_director_name ?? '') }}</div>
                             
