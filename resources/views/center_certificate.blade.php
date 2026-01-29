@@ -92,7 +92,7 @@
         }
 
         .reg-details {
-            font-size: 10px;
+            font-size: 15px;
             font-weight: bold;
             margin: 1px 0;
             color: #000;
@@ -138,7 +138,7 @@
 
         .title-bar h2 {
             font-family: 'Cinzel', serif; /* Simple Professional Font */
-            font-size: 24px; /* Reduced Size */
+            font-size: 30px; /* Reduced Size */
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -154,13 +154,13 @@
 
         .certify-text {
             font-style: italic;
-            font-size: 14px;
+            font-size: 20px;
             color: #444;
             margin-bottom: 5px;
         }
 
         .center-name {
-            font-size: 20px; /* Reduced from 24px */
+            font-size: 22px; /* Reduced from 24px */
             font-weight: bold;
             color: #000;
             margin-bottom: 5px;
@@ -169,12 +169,12 @@
 
         .represented-by {
             font-style: italic;
-            font-size: 12px;
+            font-size: 20px;
             margin-bottom: 2px;
         }
 
         .person-name {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
             margin-bottom: 5px;
         }
@@ -185,20 +185,20 @@
 
         .address {
             font-weight: bold;
-            font-size: 12px;
+            font-size: 15px;
             max-width: 70%;
             margin: 0 auto;
         }
 
         .center-code {
-            font-size: 14px;
+            font-size: 20px;
             font-weight: bold;
             margin: 5px 0;
         }
 
         .authorization-text {
             font-style: italic;
-            font-size: 12px;
+            font-size: 15px;
             margin: 10px auto;
             max-width: 80%;
         }
@@ -209,7 +209,7 @@
             font-style: normal; /* Remove Italic */
             text-decoration: underline; /* Add Underline */
             text-transform: uppercase;
-            font-size: 18px; /* Increased Size */
+            font-size: 20px; /* Increased Size */
             display: block;
             margin-top: 5px;
         }
@@ -266,14 +266,14 @@
         }
 
         .sig-title {
-            font-size: 11px;
+            font-size: 15px;
             font-weight: bold;
             margin-bottom: 5px;
             color: #333;
         }
 
         .date-val {
-            font-size: 12px;
+            font-size: 15px;
             font-weight: bold;
             border-bottom: 1px solid #ccc; /* Subtle underline for alignment */
             padding-bottom: 2px;
@@ -310,10 +310,11 @@
         }
 
         .sig-line {
-            border-top: 1px solid #0f1d46;
+            /* border-top: 1px solid #0f1d46; */
             padding-top: 4px;
-            font-weight: bold;
-            font-size: 11px;
+            margin-top: -31px;
+            font-weight: 800;
+            font-size: 15px;
             color: #0f1d46;
         }
 
@@ -344,7 +345,7 @@
                             <div class="header-subtext">
                                 <p class="reg-details">CIN : U85220DL2023PTC422329</p>
                                 <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                                <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
+                                <p class="reg-details" style="font-size:12px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
                                 <p class="iso-text">An ISO 9001: 2015 Certified</p>
                             </div>
                             <div class="qr-wrapper">
@@ -365,7 +366,7 @@
                             <div class="person-name">{{ strtoupper($center->cl_director_name ?? '') }}</div>
                             
                             <div class="address-box">
-                                <div class="address-label" style="font-style:italic; font-size:12px;">Having its Office at</div>
+                                <div class="address-label" style="font-style:italic; font-size:20px;">Having its Office at</div>
                                 <div class="address">{{ $center->cl_center_address ?? '' }}</div>
                             </div>
 
