@@ -62,6 +62,7 @@
 
         .content-area-white {
             background-color: white;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold' font-size='10' fill='%230f1d46' opacity='0.05' transform='rotate(-45 100 100)'%3EMAYA COMPUTER CENTER PRIVATE LIMITED%3C/text%3E%3C/svg%3E");
             padding: 10px 30px;
             height: 100%;
             border: 1px solid #c5a059;
@@ -101,7 +102,7 @@
         .iso-text {
             color: red;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 13px;
             margin: 2px 0;
         }
 
@@ -116,6 +117,18 @@
             width: 70px;
             height: 70px;
             border: 1px solid #ddd;
+        }
+
+        .hologram-wrapper {
+            position: absolute;
+            left: 10px; /* Left side */
+            top: 10px;  /* Top place */
+            z-index: 10;
+        }
+
+        .hologram-wrapper img {
+            width: 80px; /* Adjust size as needed */
+            height: auto;
         }
 
         .sn-text {
@@ -297,7 +310,7 @@
 
         .stamp-img {
             position: absolute;
-            height: 90px;
+            height: 99px;
             opacity: 0.8;
             z-index: 1;
         }
@@ -313,9 +326,9 @@
             /* border-top: 1px solid #0f1d46; */
             padding-top: 4px;
             margin-top: -31px;
-            font-weight: 800;
-            font-size: 15px;
-            color: #0f1d46;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
         }
 
         @page { size: A4 landscape; margin: 0; }
@@ -337,6 +350,12 @@
 
                         <!-- Top Section -->
                         <div class="header">
+                            @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
+                                <div class="hologram-wrapper">
+                                     <img src="{{ asset($setting->hologram) }}" alt="Hologram">
+                                </div>
+                            @endif
+
                              @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
                                 <img src="{{ asset($setting->document_logo) }}" alt="Header Banner" class="header-banner">
                             @else
@@ -350,7 +369,7 @@
                             </div>
                             <div class="qr-wrapper">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/'.$center->cl_code) }}" alt="QR">
-                                <span class="sn-text">SN: MCC{{ str_pad($center->cl_id, 4, '0', STR_PAD_LEFT) }}</span>
+                                <span class="sn-text">SN: MCC0{{ $center->cl_id }}</span>
                             </div>
                         </div>
 

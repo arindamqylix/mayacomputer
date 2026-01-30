@@ -612,3 +612,7 @@ CREATE TABLE `document_types` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE `site_settings` ADD `authorize_stamp` VARCHAR(255) NULL AFTER `breadcumb_image`, ADD `authorize_signature` VARCHAR(255) NULL AFTER `authorize_stamp`;
+
+-- 30-01-2026
+
+ALTER TABLE `site_settings` ADD `hologram` VARCHAR(255) NULL AFTER `authorize_signature`;

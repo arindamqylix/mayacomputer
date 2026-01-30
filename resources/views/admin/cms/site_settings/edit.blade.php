@@ -145,6 +145,17 @@
                             </div>
 
                             <div class="form-group mb-3">
+                                <label>Hologram</label>
+                                <input type="file" class="form-control" name="hologram" accept=".jpg,.jpeg,.png">
+                                @if(!empty($setting->hologram))
+                                    <div class="mt-2">
+                                        <label class="text-muted">Current Hologram:</label><br>
+                                        <img src="{{ asset($setting->hologram) }}" alt="Hologram" class="preview-img">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
                                 <label>Copyright</label>
                                 <input type="text" name="copyright" value="{{ $setting->copyright ?? '' }}" class="form-control">
                             </div>

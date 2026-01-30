@@ -77,6 +77,13 @@ class SiteSettingController extends Controller
             $data['admin_profile_logo'] = 'site_settings/' . $logoName;
         }
 
+        if ($request->hasFile('hologram')) {
+            $hologram = $request->file('hologram');
+            $hologramName = time() . '_hologram.' . $hologram->getClientOriginalExtension();
+            $hologram->move(public_path('site_settings'), $hologramName);
+            $data['hologram'] = 'site_settings/' . $hologramName;
+        }
+
         DB::table('site_settings')->updateOrInsert(['id' => 1], $data);
 
         return redirect()->route('site_settings.edit')->with('success', 'Settings updated successfully.');
