@@ -38,7 +38,7 @@
             position: relative;
             padding: 10px;
             background: #fff;
-            border: 5px solid #0f1d46;
+            border: none;
             height: 100%;
         }
         
@@ -303,7 +303,7 @@
 
         .sig-area {
             position: relative;
-            height: 80px;
+            height: 110px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -311,14 +311,14 @@
 
         .stamp-img {
             position: absolute;
-            height: 99px;
+            height: 130px;
             opacity: 0.8;
             z-index: 1;
         }
 
         .sign-img {
             position: relative;
-            height: 32px;
+            height: 50px;
             z-index: 2;
             margin-bottom: 5px;
         }
@@ -353,6 +353,7 @@
                         <div class="header">
                             @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                 <div class="hologram-wrapper">
+                                     <div style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">Certificate No. : {{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</div>
                                      <img src="{{ asset($setting->hologram) }}" alt="Hologram">
                                 </div>
                             @endif
