@@ -104,7 +104,7 @@
     }
     
     .id-body {
-        padding: 15px;
+        padding: 15px 15px 10px;
         display: flex;
         gap: 15px;
         align-items: flex-start;
@@ -152,108 +152,129 @@
     }
     
     .center-name {
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 800;
         color: #000077;
-        margin: 0 0 10px 0;
+        margin: 0 0 15px 0;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
-        line-height: 1.2;
+        line-height: 1.3;
+        display: block;
+        border-left: 4px solid #ffd700;
+        padding-left: 10px;
     }
     
     .center-info {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 4px;
-        padding: 10px;
+        background: transparent;
+        padding: 0;
     }
     
     .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 6px 0;
-        border-bottom: 1px solid #f3f4f6;
+        display: grid;
+        grid-template-columns: 24px 85px 1fr; /* Wider label column */
+        align-items: start;
+        padding: 5px 0;
+        border-bottom: 1px solid #f1f1f1;
     }
     
     .info-row:last-child {
         border-bottom: none;
-        padding-bottom: 0;
     }
     
-    .info-label {
-        font-weight: 600;
-        color: #374151;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex: 0 0 85px;
-        font-size: 10px;
-    }
-    
-    .info-label i {
+    .info-label-icon {
         color: #000077;
-        font-size: 12px;
-        width: 14px;
+        font-size: 11px;
         text-align: center;
-        flex-shrink: 0;
+        padding-top: 2px; /* Align with text top */
+    }
+    
+    .info-label-text {
+        font-weight: 700;
+        color: #555;
+        font-size: 10px;
+        text-transform: uppercase;
+        white-space: nowrap; /* Prevent messy wrapping */
     }
     
     .info-value {
         font-weight: 600;
-        color: #1f2937;
-        text-align: right;
-        flex: 1;
-        word-break: break-word;
-        font-size: 10px;
+        color: #000;
+        text-align: left;
+        font-size: 11px;
         line-height: 1.3;
+        word-break: break-word;
     }
     
     .id-footer {
-        background: linear-gradient(135deg, #000077 0%, #000099 50%, #ffd700 100%);
-        padding: 10px 15px;
+        background: #ffffff;
+        padding: 0;
+        margin-top: 10px;
         position: relative;
-        overflow: hidden;
     }
-    
-    .id-footer::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 15px;
-        background: repeating-linear-gradient(
-            45deg,
-            #000077,
-            #000077 8px,
-            #ffd700 8px,
-            #ffd700 16px
-        );
-        opacity: 0.3;
-    }
-    
-    .signature-section {
+
+    .footer-content {
+        padding: 5px 15px 10px;
         text-align: center;
         position: relative;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .footer-strip {
+        height: 12px;
+        width: 100%;
+        background: linear-gradient(90deg, #000077 0%, #000099 50%, #ffd700 100%);
+    }
+
+    .signature-section {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 60px;
+        margin-bottom: 2px;
+        z-index: 2;
+    }
+
+    .footer-stamp {
+        position: absolute;
+        bottom: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 102px;
+        opacity: 0.9;
         z-index: 1;
     }
-    
-    .signature-line {
-        width: 100px;
-        height: 2px;
-        background: #ffffff;
-        margin: 0 auto 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    .footer-sign {
+        position: absolute;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 35px;
+        z-index: 2;
+        display: block;
     }
     
     .signature-label {
-        font-size: 9px;
-        font-weight: 600;
-        color: #ffffff;
+        font-size: 11px;
+        font-weight: 800;
+        color: #000077;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 0;
+        margin-top: -10px; /* Slight overlap upwards */
+    }
+    
+    .sig-text-wrapper {
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        text-align: center;
     }
     
     @media print {
@@ -354,49 +375,39 @@
                 
                 <div class="center-info">
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-hashtag"></i>
-                            <span>Center Code:</span>
-                        </div>
-                        <div class="info-value">{{ $data->cl_code ?? 'N/A' }}</div>
+                        <div class="info-label-icon"><i class="fas fa-hashtag"></i></div>
+                        <div class="info-label-text">Center Code:</div>
+                        <div class="info-value" style="font-weight: 800; color: #000077;">{{ $data->cl_code ?? 'N/A' }}</div>
                     </div>
                     
                     @if($data->cl_director_name)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-user-tie"></i>
-                            <span>Director:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-user-tie"></i></div>
+                        <div class="info-label-text">Director:</div>
                         <div class="info-value">{{ $data->cl_director_name }}</div>
                     </div>
                     @endif
                     
                     @if($data->cl_center_address)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Address:</span>
-                        </div>
-                        <div class="info-value" style="font-size: 9px;">{{ $data->cl_center_address }}</div>
+                        <div class="info-label-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-label-text">Address:</div>
+                        <div class="info-value" style="font-size: 10px;">{{ $data->cl_center_address }}</div>
                     </div>
                     @endif
                     
                     @if($data->cl_email)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-envelope"></i>
-                            <span>Email:</span>
-                        </div>
-                        <div class="info-value" style="font-size: 9px;">{{ $data->cl_email }}</div>
+                        <div class="info-label-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-label-text">Email:</div>
+                        <div class="info-value" style="font-size: 10px;">{{ $data->cl_email }}</div>
                     </div>
                     @endif
                     
                     @if($data->cl_mobile)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-phone"></i>
-                            <span>Mobile:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-phone"></i></div>
+                        <div class="info-label-text">Mobile:</div>
                         <div class="info-value">{{ $data->cl_mobile }}</div>
                     </div>
                     @endif
@@ -417,10 +428,21 @@
         </div>
         
         <div class="id-footer">
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <div class="signature-label">Authorized Signatory</div>
+            <div class="footer-content">
+                <div class="signature-section">
+                     @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                        <img src="{{ asset($setting->authorize_stamp) }}" class="footer-stamp" alt="Stamp">
+                    @endif
+                    
+                    @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                        <img src="{{ asset($setting->authorize_signature) }}" class="footer-sign" alt="Sign">
+                    @endif
+                </div>
+                <div class="sig-text-wrapper">
+                    <div class="signature-label">Authorized Signatory</div>
+                </div>
             </div>
+            <div class="footer-strip"></div>
         </div>
     </div>
 </div>

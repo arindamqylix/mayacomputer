@@ -387,7 +387,8 @@ class CenterController extends Controller
     // View Center ID Card from Admin Panel
     public function viewCenterIdCardAdmin($id){
         $data = Center::where('cl_id',$id)->first();
-        return view('center.view_id_card_admin', compact('data'));
+        $setting = \DB::table('site_settings')->first();
+        return view('center.view_id_card_admin', compact('data', 'setting'));
     }
     
     // View Center ID Card from Center Panel
