@@ -392,7 +392,7 @@
                             </div>
 
                             <div class="center-code">
-                                Center Code: {{ $center->cl_code ?? '' }}
+                                <span style="font-style:italic; font-size:20px; font-weight:normal;">Center Code:</span> {{ $center->cl_code ?? '' }}
                             </div>
 
                             <!-- Photo Positioned Absolute in Content Area -->
