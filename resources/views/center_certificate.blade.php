@@ -111,17 +111,12 @@
             right: 10px;
             top: 10px;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100px;
         }
 
         .qr-wrapper img {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border: 1px solid #ddd;
-            margin-bottom: 2px;
         }
 
         .hologram-wrapper {
@@ -137,9 +132,9 @@
         }
 
         .sn-text {
-            font-size: 12px;
+            display: block;
+            font-size: 10px;
             font-weight: bold;
-            font-family: 'DotGothic16', sans-serif;
         }
 
         /* Content */
@@ -358,7 +353,7 @@
                         <div class="header">
                             @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                 <div class="hologram-wrapper">
-                                     <div style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">Certificate No. : {{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</div>
+                                     <div style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">Certificate No. : <span style="font-family: 'DotGothic16', sans-serif; font-size: 16px;">{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span></div>
                                      <img src="{{ asset($setting->hologram) }}" alt="Hologram">
                                 </div>
                             @endif
