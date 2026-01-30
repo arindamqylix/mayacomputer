@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate of Authorization</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Sans+Devanagari:wght@700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Sans+Devanagari:wght@700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&family=DotGothic16&display=swap');
 
         * {
             box-sizing: border-box;
@@ -102,7 +102,7 @@
         .iso-text {
             color: red;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 15px;
             margin: 2px 0;
         }
 
@@ -111,12 +111,17 @@
             right: 10px;
             top: 10px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
         }
 
         .qr-wrapper img {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border: 1px solid #ddd;
+            margin-bottom: 2px;
         }
 
         .hologram-wrapper {
@@ -132,9 +137,9 @@
         }
 
         .sn-text {
-            display: block;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: bold;
+            font-family: 'DotGothic16', sans-serif;
         }
 
         /* Content */
@@ -143,7 +148,7 @@
             background-color: #0f1d46; /* Solid Navy */
             color: #fff;
             text-align: center;
-            padding: 2px 0; /* Reduced Height */
+            padding: 1px 0; /* Reduced Height */
             margin: 5px -30px; /* Reduced from 10px */
             border-top: 1px solid #c5a059;
             border-bottom: 1px solid #c5a059;
