@@ -371,7 +371,7 @@
                             </div>
                             <div class="qr-wrapper">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/'.$center->cl_code) }}" alt="QR">
-                                <span class="sn-text">SN: MCC0{{ $center->cl_id }}</span>
+                                <span class="sn-text">SN: MCC{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span>
                             </div>
                         </div>
 
