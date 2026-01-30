@@ -43,7 +43,7 @@
         }
         
         .border-inner {
-            border: 2px solid #c5a059;
+            border: 2px solid #0f1d46;
             padding: 3px;
             height: 100%;
         }
