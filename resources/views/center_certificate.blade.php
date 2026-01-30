@@ -353,7 +353,7 @@
                         <div class="header">
                             @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                 <div class="hologram-wrapper">
-                                     <div style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">Certificate No. : <span style="font-family: 'DotGothic16', sans-serif; font-size: 16px;">{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span></div>
+                                     <div style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">Certificate No. : <span style="font-family: 'DotGothic16', sans-serif; font-size: 16px;">CA<span style="margin-left: 3px;">{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span></span></div>
                                      <img src="{{ asset($setting->hologram) }}" alt="Hologram">
                                 </div>
                             @endif
