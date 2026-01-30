@@ -575,7 +575,9 @@ class StudentController extends Controller
 			return redirect()->back()->with('error', 'Student not found.');
 		}
 
-        return view('admin.student.id_card', compact('data'));
+        $setting = DB::table('site_settings')->first();
+
+        return view('admin.student.id_card', compact('data', 'setting'));
     }
 
     public function reset_student_password(Request $request){

@@ -68,15 +68,13 @@
         margin: 0 auto;
     }
     
-    /* Logo Section - Big Size at Top */
-    /* Logo Section Removed as it is integrated in Header */
-    
     .id-header {
         background: #ffffff;
         padding: 5px;
         text-align: center;
         position: relative;
         border-bottom: 2px solid #000077;
+        display: block;
     }
     
     .id-header::before {
@@ -114,21 +112,24 @@
     
     .id-header-text {
         text-align: center;
+        position: relative;
+        z-index: 3;
         background: #000077;
-        color: white;
-        padding: 2px 0;
+        padding: 5px 15px;
+        width: 100%;
         margin-top: 5px;
     }
     
     .id-header-text .card-type {
-        font-size: 12px;
+        font-size: 14px;
+        color: #ffffff;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
     }
     
     .id-body {
-        padding: 15px;
+        padding: 15px 15px 10px;
         display: flex;
         gap: 15px;
         align-items: flex-start;
@@ -176,108 +177,129 @@
     }
     
     .student-name {
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 800;
         color: #000077;
-        margin: 0 0 10px 0;
+        margin: 0 0 15px 0;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
-        line-height: 1.2;
+        line-height: 1.3;
+        display: block;
+        border-left: 4px solid #ffd700;
+        padding-left: 10px;
     }
     
     .student-info {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 4px;
-        padding: 10px;
+        background: transparent;
+        padding: 0;
     }
     
     .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 6px 0;
-        border-bottom: 1px solid #f3f4f6;
+        display: grid;
+        grid-template-columns: 24px 85px 1fr; /* Wider label column */
+        align-items: start;
+        padding: 5px 0;
+        border-bottom: 1px solid #f1f1f1;
     }
     
     .info-row:last-child {
         border-bottom: none;
-        padding-bottom: 0;
     }
     
-    .info-label {
-        font-weight: 600;
-        color: #374151;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex: 0 0 85px;
-        font-size: 10px;
-    }
-    
-    .info-label i {
+    .info-label-icon {
         color: #000077;
-        font-size: 12px;
-        width: 14px;
+        font-size: 11px;
         text-align: center;
-        flex-shrink: 0;
+        padding-top: 2px;
+    }
+    
+    .info-label-text {
+        font-weight: 700;
+        color: #555;
+        font-size: 10px;
+        text-transform: uppercase;
+        white-space: nowrap;
     }
     
     .info-value {
         font-weight: 600;
-        color: #1f2937;
-        text-align: right;
-        flex: 1;
-        word-break: break-word;
-        font-size: 10px;
+        color: #000;
+        text-align: left;
+        font-size: 11px;
         line-height: 1.3;
+        word-break: break-word;
     }
     
     .id-footer {
-        background: linear-gradient(135deg, #000077 0%, #000099 50%, #ffd700 100%);
-        padding: 10px 15px;
+        background: #ffffff;
+        padding: 0;
+        margin-top: 10px;
         position: relative;
-        overflow: hidden;
     }
-    
-    .id-footer::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 15px;
-        background: repeating-linear-gradient(
-            45deg,
-            #000077,
-            #000077 8px,
-            #ffd700 8px,
-            #ffd700 16px
-        );
-        opacity: 0.3;
-    }
-    
-    .signature-section {
+
+    .footer-content {
+        padding: 5px 15px 10px;
         text-align: center;
         position: relative;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .footer-strip {
+        height: 12px;
+        width: 100%;
+        background: linear-gradient(90deg, #000077 0%, #000099 50%, #ffd700 100%);
+    }
+
+    .signature-section {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 60px;
+        margin-bottom: 2px;
+        z-index: 2;
+    }
+
+    .footer-stamp {
+        position: absolute;
+        bottom: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 102px;
+        opacity: 0.9;
         z-index: 1;
     }
-    
-    .signature-line {
-        width: 100px;
-        height: 2px;
-        background: #ffffff;
-        margin: 0 auto 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    .footer-sign {
+        position: absolute;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 35px;
+        z-index: 2;
+        display: block;
     }
     
     .signature-label {
-        font-size: 9px;
-        font-weight: 600;
-        color: #ffffff;
+        font-size: 11px;
+        font-weight: 800;
+        color: #000077;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 0;
+        margin-top: -10px; /* Slight overlap upwards */
+    }
+    
+    .sig-text-wrapper {
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        text-align: center;
     }
     
     @media print {
@@ -359,7 +381,6 @@
                     $siteSettings = site_settings();
                     $logoPath = null;
                     if($siteSettings) {
-                         // Use document_logo if available, else site_logo, else fallback
                          if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
                              $logoPath = $siteSettings->document_logo;
                          } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
@@ -379,7 +400,7 @@
                     <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                     <p class="iso-text">An ISO 9001: 2015 Certified</p>
                 </div>
-                
+
             <div class="id-header-text">
                 <div class="card-type">Student ID Card</div>
             </div>
@@ -391,67 +412,53 @@
                 
                 <div class="student-info">
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-hashtag"></i>
-                            <span>Reg. No:</span>
-                        </div>
-                        <div class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}</div>
+                        <div class="info-label-icon"><i class="fas fa-hashtag"></i></div>
+                        <div class="info-label-text">Reg. No:</div>
+                        <div class="info-value" style="font-weight: 800; color: #000077;">{{ $data->sl_reg_no ?? 'N/A' }}</div>
                     </div>
                     
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Course:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="info-label-text">Course:</div>
                         <div class="info-value">{{ $data->c_short_name ?? $data->c_full_name ?? 'N/A' }}</div>
                     </div>
                     
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-user-friends"></i>
-                            <span>Father:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-user-friends"></i></div>
+                        <div class="info-label-text">Father:</div>
                         <div class="info-value">{{ strtoupper($data->sl_father_name ?? 'N/A') }}</div>
                     </div>
                     
-                    @if($data->sl_address)
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Address:</span>
-                        </div>
-                        <div class="info-value" style="font-size: 9px;">{{ $data->sl_address }}</div>
-                    </div>
-                    @endif
-                    
                     @if($data->sl_dob)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-birthday-cake"></i>
-                            <span>DOB:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-birthday-cake"></i></div>
+                        <div class="info-label-text">DOB:</div>
                         <div class="info-value">
                             {{ \Carbon\Carbon::parse($data->sl_dob)->format('d-m-Y') }}
                         </div>
                     </div>
                     @endif
+
+                    @if($data->sl_address)
+                    <div class="info-row">
+                        <div class="info-label-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-label-text">Address:</div>
+                        <div class="info-value" style="font-size: 10px;">{{ $data->sl_address }}</div>
+                    </div>
+                    @endif
                     
                     @if($data->sl_mobile_no ?? $data->cl_mobile ?? null)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-phone"></i>
-                            <span>Mobile:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-phone"></i></div>
+                        <div class="info-label-text">Mobile:</div>
                         <div class="info-value">{{ $data->sl_mobile_no ?? $data->cl_mobile ?? 'N/A' }}</div>
                     </div>
                     @endif
                     
                     @if($data->cl_center_name ?? $data->cl_name ?? null)
                     <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-building"></i>
-                            <span>Center:</span>
-                        </div>
+                        <div class="info-label-icon"><i class="fas fa-building"></i></div>
+                        <div class="info-label-text">Center:</div>
                         <div class="info-value" style="font-size: 9px;">
                             {{ ($data->cl_center_name ?? $data->cl_name ?? 'N/A') . ($data->cl_code ? ' - ' . $data->cl_code : '') }}
                         </div>
@@ -474,10 +481,21 @@
         </div>
         
         <div class="id-footer">
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <div class="signature-label">Authorized Signatory</div>
+            <div class="footer-content">
+                <div class="signature-section">
+                     @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                        <img src="{{ asset($setting->authorize_stamp) }}" class="footer-stamp" alt="Stamp">
+                    @endif
+                    
+                    @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                        <img src="{{ asset($setting->authorize_signature) }}" class="footer-sign" alt="Sign">
+                    @endif
+                </div>
+                <div class="sig-text-wrapper">
+                    <div class="signature-label">Authorized Signatory</div>
+                </div>
             </div>
+            <div class="footer-strip"></div>
         </div>
     </div>
 </div>
