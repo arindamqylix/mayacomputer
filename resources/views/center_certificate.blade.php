@@ -63,7 +63,7 @@
         .content-area-white {
             background-color: white;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold' font-size='10' fill='%230f1d46' opacity='0.05' transform='rotate(-45 100 100)'%3EMAYA COMPUTER CENTER PRIVATE LIMITED%3C/text%3E%3C/svg%3E");
-            padding: 10px 30px;
+            padding: 5px 30px 25px 30px;
             height: 100%;
             border: 1px solid #c5a059;
             position: relative;
@@ -144,7 +144,7 @@
             color: #fff;
             text-align: center;
             padding: 2px 0; /* Reduced Height */
-            margin: 10px -30px; /* Touch borders (compensate for parent padding) */
+            margin: 5px -30px; /* Reduced from 10px */
             border-top: 1px solid #c5a059;
             border-bottom: 1px solid #c5a059;
         }
@@ -198,9 +198,10 @@
 
         .address {
             font-weight: bold;
-            font-size: 15px;
-            max-width: 70%;
+            font-size: 13px;
+            max-width: 90%;
             margin: 0 auto;
+            line-height: 1.3;
         }
 
         .center-code {
@@ -212,8 +213,8 @@
         .authorization-text {
             font-style: italic;
             font-size: 15px;
-            margin: 10px auto;
-            max-width: 80%;
+            margin: 5px auto;
+            max-width: 90%;
         }
 
         .company-name {
@@ -254,10 +255,10 @@
         .footer-logos {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 5px;
             border-top: 1px solid #eee;
-            padding-top: 10px;
+            padding-top: 5px;
         }
 
         .footer-logo {
