@@ -43,9 +43,9 @@ class CertificateController extends Controller
             ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
             ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
             ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
-            ->leftJoin('student_certificates', function($join) {
+            ->leftJoin('student_certificates', function ($join) {
                 $join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-                     ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id');
+                    ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id');
             })
             ->where('student_login.sl_status', 'RESULT OUT')
             ->whereNull('student_certificates.sc_id') // Only show students who don't have a certificate yet
@@ -133,7 +133,9 @@ class CertificateController extends Controller
                 'center_login.cl_center_name',
                 'center_login.cl_name',
                 'center_login.cl_code',
-                'center_login.cl_center_address'
+                'center_login.cl_center_address',
+                'center_login.cl_authorized_signature',
+                'center_login.cl_center_stamp'
             )
             ->first();
 
@@ -179,7 +181,7 @@ class CertificateController extends Controller
         ]);
 
         $certificate = Certificate::find($id);
-        
+
         if (!$certificate) {
             return back()->with('error', 'Certificate not found!');
         }
@@ -198,15 +200,15 @@ class CertificateController extends Controller
     {
         try {
             $certificate = Certificate::find($id);
-            
+
             if (!$certificate) {
                 return back()->with('error', 'Certificate not found!');
             }
-            
+
             // Delete the certificate
             $delete = Certificate::where('sc_id', $id)->delete();
-            
-            if($delete):
+
+            if ($delete):
                 return back()->with('success', 'Certificate deleted successfully!');
             else:
                 return back()->with('error', 'Something Went Wrong!');

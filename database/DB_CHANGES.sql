@@ -616,3 +616,12 @@ ALTER TABLE `site_settings` ADD `authorize_stamp` VARCHAR(255) NULL AFTER `bread
 -- 30-01-2026
 
 ALTER TABLE `site_settings` ADD `hologram` VARCHAR(255) NULL AFTER `authorize_signature`;
+
+-- 02-02-2026
+
+ALTER TABLE `center_login`
+ADD `cl_profile_edit_enabled` tinyint NULL DEFAULT '0' AFTER `cl_account_status`;
+
+ALTER TABLE `center_login` ADD `cl_authorized_signature` VARCHAR(255) NULL AFTER `cl_logo`;
+
+ALTER TABLE `center_login` ADD `cl_center_stamp` VARCHAR(255) NULL AFTER `cl_authorized_signature`;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,11 +25,12 @@
         /* A4 Landscape Dimensions */
         .certificate-container {
             width: 297mm;
-            height: 209mm; /* Fixed height for A4 */
+            height: 209mm;
+            /* Fixed height for A4 */
             background-color: white;
             padding: 10px;
             position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
             overflow: hidden;
         }
@@ -41,7 +43,7 @@
             border: none;
             height: 100%;
         }
-        
+
         .border-inner {
             border: 2px solid #0f1d46;
             padding: 3px;
@@ -52,7 +54,7 @@
             border: 1px solid #0f1d46;
             padding: 15px;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46),
                 linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46);
             background-position: 0 0, 10px 10px;
@@ -69,7 +71,8 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Distribute vertical space */
+            justify-content: space-between;
+            /* Distribute vertical space */
         }
 
         /* Header */
@@ -82,14 +85,16 @@
 
         .header-banner {
             width: 80%;
-            max-height: 120px; /* Reduced to fit */
+            max-height: 120px;
+            /* Reduced to fit */
             object-fit: contain;
         }
 
         .header-subtext {
             margin-top: -26px;
             position: relative;
-            left: 50px; /* Shift to right as requested */
+            left: 50px;
+            /* Shift to right as requested */
         }
 
         .reg-details {
@@ -121,13 +126,16 @@
 
         .hologram-wrapper {
             position: absolute;
-            left: 10px; /* Left side */
-            top: 10px;  /* Top place */
+            left: 10px;
+            /* Left side */
+            top: 10px;
+            /* Top place */
             z-index: 10;
         }
 
         .hologram-wrapper img {
-            width: 80px; /* Adjust size as needed */
+            width: 80px;
+            /* Adjust size as needed */
             height: auto;
         }
 
@@ -140,18 +148,23 @@
         /* Content */
         /* Title Bar */
         .title-bar {
-            background-color: #0f1d46; /* Solid Navy */
+            background-color: #0f1d46;
+            /* Solid Navy */
             color: #fff;
             text-align: center;
-            padding: 1px 0; /* Reduced Height */
-            margin: 5px -30px; /* Reduced from 10px */
+            padding: 1px 0;
+            /* Reduced Height */
+            margin: 5px -30px;
+            /* Reduced from 10px */
             border-top: 1px solid #c5a059;
             border-bottom: 1px solid #c5a059;
         }
 
         .title-bar h2 {
-            font-family: 'Cinzel', serif; /* Simple Professional Font */
-            font-size: 30px; /* Reduced Size */
+            font-family: 'Cinzel', serif;
+            /* Simple Professional Font */
+            font-size: 30px;
+            /* Reduced Size */
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -173,7 +186,8 @@
         }
 
         .center-name {
-            font-size: 22px; /* Reduced from 24px */
+            font-size: 22px;
+            /* Reduced from 24px */
             font-weight: bold;
             color: #000;
             margin-bottom: 5px;
@@ -219,11 +233,15 @@
 
         .company-name {
             color: #002060;
-            font-weight: 800; /* Extra Bold */
-            font-style: normal; /* Remove Italic */
-            text-decoration: underline; /* Add Underline */
+            font-weight: 800;
+            /* Extra Bold */
+            font-style: normal;
+            /* Remove Italic */
+            text-decoration: underline;
+            /* Add Underline */
             text-transform: uppercase;
-            font-size: 20px; /* Increased Size */
+            font-size: 20px;
+            /* Increased Size */
             display: block;
             margin-top: 5px;
         }
@@ -270,7 +288,8 @@
         .signatures {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end; /* CRITICAL FIX: Align bottom */
+            align-items: flex-end;
+            /* CRITICAL FIX: Align bottom */
             padding: 0 20px;
         }
 
@@ -289,7 +308,8 @@
         .date-val {
             font-size: 15px;
             font-weight: bold;
-            border-bottom: 1px solid #ccc; /* Subtle underline for alignment */
+            border-bottom: 1px solid #ccc;
+            /* Subtle underline for alignment */
             padding-bottom: 2px;
             display: inline-block;
             min-width: 100px;
@@ -332,15 +352,36 @@
             color: #333;
         }
 
-        @page { size: A4 landscape; margin: 0; }
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
         @media print {
-            body { padding: 0; margin: 0; }
-            .certificate-container { width: 297mm; height: 209mm; box-shadow: none; border: none; }
-            .no-print { display: none; }
-            * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .certificate-container {
+                width: 297mm;
+                height: 209mm;
+                box-shadow: none;
+                border: none;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="certificate-container">
@@ -353,12 +394,16 @@
                         <div class="header">
                             @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                 <div class="hologram-wrapper">
-                                     <div style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">Certificate No. : <span style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 5px;">CA{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span></div>
-                                     <img src="{{ asset($setting->hologram) }}" alt="Hologram">
+                                    <div
+                                        style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">
+                                        Certificate No. : <span
+                                            style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 5px;">CA{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span>
+                                    </div>
+                                    <img src="{{ asset($setting->hologram) }}" alt="Hologram">
                                 </div>
                             @endif
 
-                             @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                            @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
                                 <img src="{{ asset($setting->document_logo) }}" alt="Header Banner" class="header-banner">
                             @else
                                 <img src="{{ asset('header_banner.png') }}" alt="Header Banner" class="header-banner">
@@ -366,11 +411,13 @@
                             <div class="header-subtext">
                                 <p class="reg-details">CIN : U85220DL2023PTC422329</p>
                                 <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                                <p class="reg-details" style="font-size:12px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+                                <p class="reg-details" style="font-size:12px;">Registered Under NCT Delhi, Skill India,
+                                    Udyam & Startup India</p>
                                 <p class="iso-text">An ISO 9001: 2015 Certified</p>
                             </div>
                             <div class="qr-wrapper">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/'.$center->cl_code) }}" alt="QR">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/' . $center->cl_code) }}"
+                                    alt="QR">
                                 <span class="sn-text">SN: MCC{{ str_pad($center->cl_id, 3, '0', STR_PAD_LEFT) }}</span>
                             </div>
                         </div>
@@ -385,19 +432,21 @@
                             <div class="center-name">M/s. {{ strtoupper($center->cl_center_name ?? '') }}</div>
                             <div class="represented-by">Represented by</div>
                             <div class="person-name">{{ strtoupper($center->cl_director_name ?? '') }}</div>
-                            
+
                             <div class="address-box">
-                                <div class="address-label" style="font-style:italic; font-size:20px;">Having its Office at</div>
+                                <div class="address-label" style="font-style:italic; font-size:20px;">Having its Office
+                                    at</div>
                                 <div class="address">{{ $center->cl_center_address ?? '' }}</div>
                             </div>
 
                             <div class="center-code">
-                                <span style="font-style:italic; font-size:20px; font-weight:normal;">Center Code:</span> {{ $center->cl_code ?? '' }}
+                                <span style="font-style:italic; font-size:20px; font-weight:normal;">Center Code:</span>
+                                {{ $center->cl_code ?? '' }}
                             </div>
 
                             <!-- Photo Positioned Absolute in Content Area -->
                             <div class="photo-box">
-                                 @if(!empty($center->cl_photo) && file_exists(public_path($center->cl_photo)))
+                                @if(!empty($center->cl_photo) && file_exists(public_path($center->cl_photo)))
                                     <img src="{{ asset($center->cl_photo) }}" alt="Director">
                                 @else
                                     <img src="https://via.placeholder.com/100x130?text=PHOTO" alt="Photo">
@@ -414,7 +463,7 @@
                         <!-- Bottom Section -->
                         <div class="footer-section">
                             <div class="footer-logos">
-                                 @if(!empty($setting->certificate_footer_logos))
+                                @if(!empty($setting->certificate_footer_logos))
                                     @php $logos = json_decode($setting->certificate_footer_logos); @endphp
                                     @if(is_array($logos))
                                         @foreach($logos as $logo)
@@ -422,28 +471,34 @@
                                         @endforeach
                                     @endif
                                 @else
-                                    <img src="https://via.placeholder.com/100x40?text=Partner+Logos" class="footer-logo" alt="Logos">
+                                    <img src="https://via.placeholder.com/100x40?text=Partner+Logos" class="footer-logo"
+                                        alt="Logos">
                                 @endif
                             </div>
 
                             <div class="signatures">
                                 <div class="sig-block">
                                     <div class="sig-title">Date of Registration</div>
-                                    <div class="date-val">{{ $center->cl_registration_date ? \Carbon\Carbon::parse($center->cl_registration_date)->format('d-M-Y') : 'N/A' }}</div>
+                                    <div class="date-val">
+                                        {{ $center->cl_registration_date ? \Carbon\Carbon::parse($center->cl_registration_date)->format('d-M-Y') : 'N/A' }}
+                                    </div>
                                 </div>
 
                                 <div class="sig-block">
                                     <div class="sig-title">Valid Upto</div>
-                                    <div class="date-val">{{ $center->cl_valid_till ? \Carbon\Carbon::parse($center->cl_valid_till)->format('d-M-Y') : 'N/A' }}</div>
+                                    <div class="date-val">
+                                        {{ $center->cl_valid_till ? \Carbon\Carbon::parse($center->cl_valid_till)->format('d-M-Y') : 'N/A' }}
+                                    </div>
                                 </div>
 
                                 <div class="sig-overlap-container">
                                     <div class="sig-area">
                                         @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
-                                             <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img" alt="Stamp">
+                                            <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img" alt="Stamp">
                                         @endif
-                                         @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
-                                             <img src="{{ asset($setting->authorize_signature) }}" class="sign-img" alt="Sign">
+                                        @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                                            <img src="{{ asset($setting->authorize_signature) }}" class="sign-img"
+                                                alt="Sign">
                                         @endif
                                     </div>
                                     <div class="sig-line">Authorized Signatory</div>
@@ -456,10 +511,13 @@
             </div>
         </div>
     </div>
-    
+
     <div style="text-align: right; position: fixed; top: 10px; right: 20px; z-index: 1000;" class="no-print">
-        <button onclick="window.print()" style="padding: 10px 20px; background: #0f1d46; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight:bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">PRINT CERTIFICATE</button>
+        <button onclick="window.print()"
+            style="padding: 10px 20px; background: #0f1d46; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight:bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">PRINT
+            CERTIFICATE</button>
     </div>
 
 </body>
+
 </html>
