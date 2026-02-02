@@ -25,6 +25,7 @@ class IdCardController extends Controller
 			return redirect()->route('student_dashboard')->with('error', 'Your registration is pending approval. ID Card will be available after admin approval.');
 		}
 
-		return view('student.view_id_card', compact('data'));
+		$setting = DB::table('site_settings')->first();
+		return view('student.view_id_card', compact('data', 'setting'));
 	}
 }

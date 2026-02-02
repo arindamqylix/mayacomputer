@@ -1,460 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student ID Card - {{ $data->sl_name ?? 'Student' }}</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
-    
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 30px 20px;
-    }
-    
-    .print-container {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        padding: 25px;
-        max-width: 420px;
-        width: 100%;
-    }
-    
-    .id-card {
-        width: 100%;
-        max-width: 370px;
-        background: #ffffff;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-        border: 2px solid #000077;
-        margin: 0 auto;
-    }
-    
-    /* Logo Section - Big Size at Top */
-    .logo-top-section {
-        width: 100%;
-        text-align: center;
-        padding: 20px 0;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #000077;
-        background: #ffffff;
-    }
-    
-    .logo-top-section img {
-        max-width: 100%;
-        max-height: 200px;
-        height: auto;
-        width: auto;
-        object-fit: contain;
-    }
-    
-    .id-header {
-        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-        padding: 10px 15px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .id-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100px;
-        height: 100%;
-        background: linear-gradient(135deg, #000077 0%, #000099 100%);
-        clip-path: ellipse(100% 100% at 0% 50%);
-        z-index: 1;
-    }
-    
-    .id-header-logo {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        z-index: 2;
-        background: #ffffff;
-        border-radius: 50%;
-        padding: 5px;
-    }
-    
-    .id-header-logo img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        max-width: 100%;
-        max-height: 100%;
-    }
-    
-    .logo-placeholder {
-        width: 100%;
-        height: 100%;
-        background: #f0f0f0;
-        border: 2px solid #000077;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #000077;
-        font-size: 10px;
-        text-align: center;
-    }
-    
-    .id-header-text {
-        text-align: center;
-        position: relative;
-        z-index: 2;
-    }
-    
-    .id-header-text .card-type {
-        font-size: 14px;
-        color: #ffffff;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    .id-body {
-        padding: 15px;
-        display: flex;
-        gap: 15px;
-        align-items: flex-start;
-        background: #ffffff;
-    }
-    
-    .photo-section {
-        flex: 0 0 100px;
-    }
-    
-    .photo-container {
-        width: 100px;
-        height: 120px;
-        border: 3px solid #000077;
-        border-radius: 6px;
-        background: #f8f9fa;
-        overflow: hidden;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    }
-    
-    .photo-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-    
-    .photo-placeholder {
-        width: 100%;
-        height: 100%;
-        background: #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6c757d;
-    }
-    
-    .photo-placeholder i {
-        font-size: 35px;
-    }
-    
-    .info-section {
-        flex: 1;
-        min-width: 0;
-    }
-    
-    .student-name {
-        font-size: 16px;
-        font-weight: 700;
-        color: #000077;
-        margin: 0 0 10px 0;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        line-height: 1.2;
-    }
-    
-    .student-info {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 4px;
-        padding: 10px;
-    }
-    
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 6px 0;
-        border-bottom: 1px solid #f3f4f6;
-    }
-    
-    .info-row:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-    
-    .info-label {
-        font-weight: 600;
-        color: #374151;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex: 0 0 85px;
-        font-size: 10px;
-    }
-    
-    .info-label i {
-        color: #000077;
-        font-size: 12px;
-        width: 14px;
-        text-align: center;
-        flex-shrink: 0;
-    }
-    
-    .info-value {
-        font-weight: 600;
-        color: #1f2937;
-        text-align: right;
-        flex: 1;
-        word-break: break-word;
-        font-size: 10px;
-        line-height: 1.3;
-    }
-    
-    .id-footer {
-        background: linear-gradient(135deg, #000077 0%, #000099 50%, #ffd700 100%);
-        padding: 10px 15px;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .id-footer::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 15px;
-        background: repeating-linear-gradient(
-            45deg,
-            #000077,
-            #000077 8px,
-            #ffd700 8px,
-            #ffd700 16px
-        );
-        opacity: 0.3;
-    }
-    
-    .signature-section {
-        text-align: center;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .signature-line {
-        width: 100px;
-        height: 2px;
-        background: #ffffff;
-        margin: 0 auto 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-    
-    .signature-label {
-        font-size: 9px;
-        font-weight: 600;
-        color: #ffffff;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    }
-    
-    @media print {
-        body {
-            background: white;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Card - {{ $data->sl_name ?? 'Student' }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        
-        .print-container {
-            box-shadow: none;
-            padding: 0;
-            max-width: 100%;
-        }
-        
-        .id-card {
-            box-shadow: none;
-            border: 2px solid #000077;
-        }
-        
-        .id-header, .id-body, .id-footer {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-    }
-    
-    @media (max-width: 480px) {
+
         body {
-            padding: 20px 10px;
-        }
-        
-        .print-container {
-            padding: 20px;
-        }
-        
-        .id-body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 15px;
+            padding: 30px 20px;
         }
-        
-        .photo-section {
-            flex: 0 0 auto;
+
+        .print-button-container {
+            margin-bottom: 20px;
         }
-        
-        .photo-container {
-            width: 110px;
-            height: 140px;
+
+        .print-btn {
+            background: white;
+            color: #000077;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
-        .info-section {
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .print-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            max-width: 420px;
             width: 100%;
         }
-        
-        .student-name {
-            text-align: center;
-            font-size: 18px;
+
+        .id-card {
+            width: 100%;
+            max-width: 370px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #000077;
+            margin: 0 auto;
         }
-    }
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+        .id-header {
+            background: #ffffff;
+            padding: 5px;
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid #000077;
+            display: block;
+        }
+
+        .id-header::before {
+            display: none;
+        }
+
+        .header-banner {
+            width: 100%;
+            height: auto;
+            max-height: 80px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .header-subtext {
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        .reg-details {
+            font-size: 7px;
+            font-weight: bold;
+            margin: 1px 0;
+            color: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        .iso-text {
+            color: red;
+            font-weight: bold;
+            font-size: 8px;
+            margin: 1px 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .id-header-text {
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            background: #000077;
+            padding: 5px 15px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .id-header-text .card-type {
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .id-body {
+            padding: 15px 15px 10px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            background: #ffffff;
+        }
+
+        .photo-section {
+            flex: 0 0 100px;
+        }
+
+        .photo-container {
+            width: 100px;
+            height: 120px;
+            border: 3px solid #000077;
+            border-radius: 6px;
+            background: #f8f9fa;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+
+        .photo-placeholder i {
+            font-size: 35px;
+        }
+
+        .info-section {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .student-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #000077;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            line-height: 1.3;
+            display: block;
+            border-left: 4px solid #ffd700;
+            padding-left: 10px;
+        }
+
+        .student-info {
+            background: transparent;
+            padding: 0;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 24px 85px 1fr;
+            /* Wider label column */
+            align-items: start;
+            padding: 5px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label-icon {
+            color: #000077;
+            font-size: 11px;
+            text-align: center;
+            padding-top: 2px;
+        }
+
+        .info-label-text {
+            font-weight: 700;
+            color: #555;
+            font-size: 10px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #000;
+            text-align: left;
+            font-size: 11px;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .id-footer {
+            background: #ffffff;
+            padding: 0;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .footer-content {
+            padding: 5px 15px 10px;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .signature-wrapper {
+            position: relative;
+            width: 140px;
+            text-align: center;
+        }
+
+        .footer-strip {
+            height: 12px;
+            width: 100%;
+            background: linear-gradient(90deg, #000077 0%, #000099 50%, #ffd700 100%);
+        }
+
+        .signature-section {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 60px;
+            margin-bottom: 2px;
+            z-index: 2;
+        }
+
+        .footer-stamp {
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 102px;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        .footer-sign {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 35px;
+            z-index: 2;
+            display: block;
+        }
+
+        .signature-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #000077;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 0;
+            margin-top: -10px;
+            /* Slight overlap upwards */
+        }
+
+        .sig-text-wrapper {
+            position: relative;
+            z-index: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                display: block;
+            }
+
+            .print-button-container {
+                display: none;
+            }
+
+            .print-container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .id-card {
+                box-shadow: none;
+                border: 2px solid #000077;
+            }
+
+            .id-header,
+            .id-body,
+            .id-footer {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .print-container {
+                padding: 20px;
+            }
+
+            .id-body {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .photo-section {
+                flex: 0 0 auto;
+            }
+
+            .photo-container {
+                width: 110px;
+                height: 140px;
+            }
+
+            .info-section {
+                width: 100%;
+            }
+
+            .student-name {
+                text-align: center;
+                font-size: 18px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
-<div class="print-container">
-    <div class="id-card">
-        <div class="id-header">
-            <div class="id-header-logo">
+
+    <div class="print-button-container">
+        <button onclick="window.print()" class="print-btn">
+            <i class="fas fa-print"></i> Print ID Card
+        </button>
+    </div>
+
+    <div class="print-container">
+        <div class="id-card">
+            <div class="id-header">
                 @php
                     $siteSettings = site_settings();
                     $logoPath = null;
-                    $siteName = 'MAYA COMPUTER CENTER';
-                    
-                    if($siteSettings) {
-                        $logoPath = !empty($siteSettings->site_logo) ? $siteSettings->site_logo : null;
-                        $siteName = !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
-                    }
-                    
-                    $logoExists = false;
-                    if($logoPath) {
-                        $fullPath = public_path($logoPath);
-                        $logoExists = file_exists($fullPath);
+                    if ($siteSettings) {
+                        if (!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))) {
+                            $logoPath = $siteSettings->document_logo;
+                        } elseif (!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))) {
+                            $logoPath = $siteSettings->site_logo;
+                        } else {
+                            $logoPath = 'header_banner.png';
+                        }
+                    } else {
+                        $logoPath = 'header_banner.png';
                     }
                 @endphp
-                @if($logoExists)
-                    <img src="{{ asset($logoPath) }}" alt="{{ $siteName }} Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="logo-placeholder" style="display: none;">{{ substr($siteName, 0, 5) }}</div>
-                @else
-                    <div class="logo-placeholder">{{ substr($siteName, 0, 5) }}</div>
-                @endif
-            </div>
-            <div class="id-header-text">
-                <div class="card-type">Student ID Card</div>
-            </div>
-        </div>
-        
-        <div class="id-body">
-            <div class="info-section">
-                <div class="student-name">{{ $data->sl_name ?? 'N/A' }}</div>
-                
-                <div class="student-info">
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-hashtag"></i>
-                            <span>Reg. No:</span>
-                        </div>
-                        <div class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}</div>
-                    </div>
-                    
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Course:</span>
-                        </div>
-                        <div class="info-value">{{ $data->c_short_name ?? $data->c_full_name ?? 'N/A' }}</div>
-                    </div>
-                    
-                    @if($data->sl_dob)
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-birthday-cake"></i>
-                            <span>DOB:</span>
-                        </div>
-                        <div class="info-value">
-                            {{ \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') }}
-                        </div>
-                    </div>
-                    @endif
-                    
-                    @if($data->sl_mobile_no ?? $data->cl_mobile ?? null)
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-phone"></i>
-                            <span>Mobile:</span>
-                        </div>
-                        <div class="info-value">{{ $data->sl_mobile_no ?? $data->cl_mobile ?? 'N/A' }}</div>
-                    </div>
-                    @endif
-                    
-                    @if($data->cl_center_name ?? $data->cl_name ?? null)
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-building"></i>
-                            <span>Center:</span>
-                        </div>
-                        <div class="info-value" style="font-size: 9px;">
-                            {{ ($data->cl_center_name ?? $data->cl_name ?? 'N/A') . ($data->cl_code ? ' - ' . $data->cl_code : '') }}
-                        </div>
-                    </div>
-                    @endif
+
+                <img src="{{ asset($logoPath) }}" alt="Banner" class="header-banner">
+
+                <div class="header-subtext">
+                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
+                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                </div>
+
+                <div class="id-header-text">
+                    <div class="card-type">Student ID Card</div>
                 </div>
             </div>
-            
-            <div class="photo-section">
-                <div class="photo-container">
-                    @if(!empty($data->sl_photo))
-                        <img src="{{ asset($data->sl_photo) }}" alt="Student Photo" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-user\'></i></div>';">
-                    @else
-                        <div class="photo-placeholder">
-                            <i class="fas fa-user"></i>
+
+            <div class="id-body">
+                <div class="info-section">
+                    <div class="student-name">{{ $data->sl_name ?? 'N/A' }}</div>
+
+                    <div class="student-info">
+                        <div class="info-row">
+                            <div class="info-label-icon"><i class="fas fa-hashtag"></i></div>
+                            <div class="info-label-text">Reg. No:</div>
+                            <div class="info-value" style="font-weight: 800; color: #000077;">
+                                {{ $data->sl_reg_no ?? 'N/A' }}
+                            </div>
                         </div>
-                    @endif
+
+                        <div class="info-row">
+                            <div class="info-label-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="info-label-text">Course:</div>
+                            <div class="info-value">{{ $data->c_short_name ?? $data->c_full_name ?? 'N/A' }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label-icon"><i class="fas fa-user-friends"></i></div>
+                            <div class="info-label-text">Father:</div>
+                            <div class="info-value">{{ strtoupper($data->sl_father_name ?? 'N/A') }}</div>
+                        </div>
+
+                        @if($data->sl_dob)
+                            <div class="info-row">
+                                <div class="info-label-icon"><i class="fas fa-birthday-cake"></i></div>
+                                <div class="info-label-text">DOB:</div>
+                                <div class="info-value">
+                                    {{ \Carbon\Carbon::parse($data->sl_dob)->format('d-m-Y') }}
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($data->sl_address)
+                            <div class="info-row">
+                                <div class="info-label-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="info-label-text">Address:</div>
+                                <div class="info-value" style="font-size: 10px;">{{ $data->sl_address }}</div>
+                            </div>
+                        @endif
+
+                        @if($data->sl_mobile_no ?? $data->cl_mobile ?? null)
+                            <div class="info-row">
+                                <div class="info-label-icon"><i class="fas fa-phone"></i></div>
+                                <div class="info-label-text">Mobile:</div>
+                                <div class="info-value">{{ $data->sl_mobile_no ?? $data->cl_mobile ?? 'N/A' }}</div>
+                            </div>
+                        @endif
+
+                        @if($data->cl_center_name ?? $data->cl_name ?? null)
+                            <div class="info-row">
+                                <div class="info-label-icon"><i class="fas fa-building"></i></div>
+                                <div class="info-label-text">Center:</div>
+                                <div class="info-value" style="font-size: 9px;">
+                                    {{ ($data->cl_center_name ?? $data->cl_name ?? 'N/A') . ($data->cl_code ? ' - ' . $data->cl_code : '') }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="photo-section">
+                    <div class="photo-container">
+                        @if(!empty($data->sl_photo))
+                            <img src="{{ asset($data->sl_photo) }}" alt="Student Photo"
+                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-user\'></i></div>';">
+                        @else
+                            <div class="photo-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="id-footer">
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <div class="signature-label">Authorized Signatory</div>
+
+            <div class="id-footer">
+                <div class="footer-content">
+                    <!-- Left: QR Code -->
+                    <div class="qr-section">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/' . ($data->cl_code ?? '')) }}"
+                            alt="QR"
+                            style="width: 70px; height: 70px; border: 1px solid #ddd; padding: 2px; background:white;">
+                    </div>
+
+                    <!-- Right: Signature -->
+                    <div class="signature-wrapper">
+                        <div class="signature-section">
+                            @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                                <img src="{{ asset($setting->authorize_stamp) }}" class="footer-stamp" alt="Stamp">
+                            @endif
+
+                            @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                                <img src="{{ asset($setting->authorize_signature) }}" class="footer-sign" alt="Sign">
+                            @endif
+                        </div>
+                        <div class="sig-text-wrapper">
+                            <div class="signature-label">Authorized Signatory</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-strip"></div>
             </div>
         </div>
     </div>
-</div>
 </body>
+
 </html>

@@ -13,91 +13,100 @@ use Auth;
 use DB;
 use Hash;
 class StudentController extends Controller
-{ 
-    public function __construct(){
+{
+    public function __construct()
+    {
         $this->middleware(function ($request, $next) {
             define('CENTER_ID', Auth::guard('center')->user()->cl_id);
             return $next($request);
         });
     }
 
-    public function all_student(){
+    public function all_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->get();
-    	return view('center.student.all_student',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->get();
+        return view('center.student.all_student', $student);
     }
 
-    public function pending_student(){
+    public function pending_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->where('student_login.sl_status', 'PENDING')
-                            ->get();
-    	return view('center.student.pending_student',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->where('student_login.sl_status', 'PENDING')
+            ->get();
+        return view('center.student.pending_student', $student);
     }
 
-    public function verified_student(){
+    public function verified_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->where('student_login.sl_status', 'VERIFIED')
-                            ->get();
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->where('student_login.sl_status', 'VERIFIED')
+            ->get();
 
         $attendance_batch['attendance_batch'] = Attendance::where('ab_status', 'ACTIVE')->get();
-        return view('center.student.verified_student',$student,$attendance_batch);
+        return view('center.student.verified_student', $student, $attendance_batch);
     }
 
-    public function result_updated_student(){
+    public function result_updated_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->where('student_login.sl_status', 'RESULT UPDATED')
-                            ->get();
-        return view('center.student.result_updated_student',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->where('student_login.sl_status', 'RESULT UPDATED')
+            ->get();
+        return view('center.student.result_updated_student', $student);
     }
 
-    public function result_out_student(){
+    public function result_out_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->where('student_login.sl_status', 'RESULT OUT')
-                            ->get();
-        return view('center.student.result_out_student',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->where('student_login.sl_status', 'RESULT OUT')
+            ->get();
+        return view('center.student.result_out_student', $student);
     }
 
-    public function dispatched_student(){
+    public function dispatched_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->where('student_login.sl_status', 'DISPATCHED')
-                            ->get();
-        return view('center.student.dispatched_student',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->where('student_login.sl_status', 'DISPATCHED')
+            ->get();
+        return view('center.student.dispatched_student', $student);
     }
 
-    public function block_student(){
+    public function block_student()
+    {
         $student['student'] = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-                            ->where('student_login.sl_status', 'BLOCK')
-                            ->get();
-        return view('center.student.block_student',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
+            ->where('student_login.sl_status', 'BLOCK')
+            ->get();
+        return view('center.student.block_student', $student);
     }
 
-    public function student_application($id){
+    public function student_application($id)
+    {
         $data = DB::table('student_login')
-                            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                            ->where('student_login.sl_id', $id)
-                            ->first();
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_id', $id)
+            ->first();
         return view('center.student.student_application', compact('data'));
     }
 
@@ -110,7 +119,7 @@ class StudentController extends Controller
             ->where('student_login.sl_id', $id)
             ->where('student_login.sl_FK_of_center_id', CENTER_ID) // Ensure center can only view their own students
             ->first();
-        
+
         if (!$data) {
             return redirect()->route('pending_student')->with('error', 'Student not found.');
         }
@@ -121,15 +130,16 @@ class StudentController extends Controller
         }
 
         $setting = DB::table('site_settings')->first();
-        
+
         return view('admin.student.registration_card', compact('data', 'setting'));
     }
 
-    public function add_student(){
-    	$course['course'] = Course::all();
+    public function add_student()
+    {
+        $course['course'] = Course::all();
         $student_reg_no = Student::where('sl_FK_of_center_id', auth::guard('center')->user()->cl_id)->latest()->first();
         $code = auth::guard('center')->user()->cl_code;
-    	return view('center.student.create',$course, compact('student_reg_no', 'code'));
+        return view('center.student.create', $course, compact('student_reg_no', 'code'));
     }
 
     public function add_student_now(Request $request)
@@ -217,7 +227,7 @@ class StudentController extends Controller
 
             // zero-pad to 4 digits (0001, 0002, ...)
             $suffixPadded = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
-            $newRegNo = $centerCode.$suffixPadded;
+            $newRegNo = $centerCode . $suffixPadded;
 
             // prepare data
             $data = [
@@ -271,13 +281,14 @@ class StudentController extends Controller
         }
     }
 
-    public function edit_student($id){
+    public function edit_student($id)
+    {
         $course['course'] = Course::all();
         $student_reg_no = Student::where('sl_FK_of_center_id', auth::guard('center')->user()->cl_id)->latest()->first();
         $code = auth::guard('center')->user()->cl_code;
-        $data = Student::where('sl_id',$id)->first();
+        $data = Student::where('sl_id', $id)->first();
 
-    	return view('center.student.edit',$course, compact('student_reg_no', 'code', 'data'));
+        return view('center.student.edit', $course, compact('student_reg_no', 'code', 'data'));
     }
 
     public function update_student(Request $request, $id)
@@ -397,67 +408,71 @@ class StudentController extends Controller
         return back()->with('success', 'Student Deleted Successfully!');
     }
 
-    public function get_course(Request $request){
-    	$get_course = Course::where('c_id',$request->course_id)->first();
-    	if($get_course):
-    		$data = [
-    			'msg'		=> $get_course->c_duration,
-                'price'     => $get_course->c_price,
-    			'status'	=> 1
-    		];
-    	else:
-    		$data = [
-    			'msg'		=> "Something Went Wrong!",
-                'price'     => '',
-    			'status'	=> 0
-    		];
-    	endif;
-    	return response()->json($data);
+    public function get_course(Request $request)
+    {
+        $get_course = Course::where('c_id', $request->course_id)->first();
+        if ($get_course):
+            $data = [
+                'msg' => $get_course->c_duration,
+                'price' => $get_course->c_price,
+                'status' => 1
+            ];
+        else:
+            $data = [
+                'msg' => "Something Went Wrong!",
+                'price' => '',
+                'status' => 0
+            ];
+        endif;
+        return response()->json($data);
     }
 
-    public function student_id_card(){
+    public function student_id_card()
+    {
         $student['student'] = DB::table('student_login')
-                    ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                    ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                    ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
-                    ->select(
-                        'student_login.*',
-                        'center_login.cl_code',
-                        'center_login.cl_center_name',
-                        'course.c_full_name',
-                        'course.c_short_name'
-                    )
-                    ->orderBy('student_login.sl_id', 'DESC')
-                    ->get();
-        
-        return view('center.student.id_card_list',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+            ->select(
+                'student_login.*',
+                'center_login.cl_code',
+                'center_login.cl_center_name',
+                'course.c_full_name',
+                'course.c_short_name'
+            )
+            ->orderBy('student_login.sl_id', 'DESC')
+            ->get();
+
+        return view('center.student.id_card_list', $student);
     }
 
-    public function student_registration_card_list(){
+    public function student_registration_card_list()
+    {
         $student['student'] = DB::table('student_login')
-                    ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                    ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                    ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
-                    ->select(
-                        'student_login.*',
-                        'center_login.cl_code',
-                        'center_login.cl_center_name',
-                        'course.c_full_name',
-                        'course.c_short_name'
-                    )
-                    ->orderBy('student_login.sl_id', 'DESC')
-                    ->get();
-        
-        return view('center.student.registration_card_list',$student);
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+            ->select(
+                'student_login.*',
+                'center_login.cl_code',
+                'center_login.cl_center_name',
+                'course.c_full_name',
+                'course.c_short_name'
+            )
+            ->orderBy('student_login.sl_id', 'DESC')
+            ->get();
+
+        return view('center.student.registration_card_list', $student);
     }
 
-    public function view_student_id_card($id){
+    public function view_student_id_card($id)
+    {
         $data = DB::table('student_login')
-                ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-                ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-                ->where('student_login.sl_id', $id)
-                ->where('student_login.sl_FK_of_center_id', CENTER_ID) // Ensure center can only view their own students
-                ->first();
+            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+            ->where('student_login.sl_id', $id)
+            ->where('student_login.sl_FK_of_center_id', CENTER_ID) // Ensure center can only view their own students
+            ->first();
 
         if (!$data) {
             return redirect()->route('student_id_card')->with('error', 'Student not found.');
@@ -468,6 +483,7 @@ class StudentController extends Controller
             return redirect()->route('student_id_card')->with('error', 'Student registration is pending approval. ID Card cannot be generated until admin approves the student.');
         }
 
-        return view('center.student.view_student_id_card', compact('data'));
+        $setting = DB::table('site_settings')->first();
+        return view('center.student.view_student_id_card', compact('data', 'setting'));
     }
 }

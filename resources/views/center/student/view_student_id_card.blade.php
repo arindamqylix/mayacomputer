@@ -1,67 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Student ID Card - {{ $data->sl_name ?? 'Student' }}</title>
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-		
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+
 		* {
 			margin: 0;
 			padding: 0;
 			box-sizing: border-box;
 		}
-		
+
 		body {
 			font-family: 'Poppins', sans-serif;
 			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 			min-height: 100vh;
 			display: flex;
+			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			padding: 20px;
+			padding: 30px 20px;
 		}
-		
+
+		.print-button-container {
+			margin-bottom: 20px;
+		}
+
+		.print-btn {
+			background: white;
+			color: #000077;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 5px;
+			font-weight: 600;
+			cursor: pointer;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.print-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+		}
+
 		.print-container {
 			background: white;
-			border-radius: 20px;
+			border-radius: 15px;
 			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-			padding: 2rem;
-			max-width: 400px;
+			padding: 25px;
+			max-width: 420px;
 			width: 100%;
 		}
-		
+
 		.id-card {
 			width: 100%;
-			height: auto;
-			background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-			border-radius: 15px;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+			max-width: 370px;
+			background: #ffffff;
+			border-radius: 8px;
 			overflow: hidden;
 			position: relative;
-			border: 3px solid #2563eb;
+			border: 2px solid #000077;
+			margin: 0 auto;
 		}
-		
-		/* Logo Section - Big Size at Top */
-		/* Logo Section Removed */
-		
+
 		.id-header {
 			background: #ffffff;
 			padding: 5px;
 			text-align: center;
 			position: relative;
-			border-bottom: 2px solid #2563eb;
+			border-bottom: 2px solid #000077;
+			display: block;
 		}
-		
-		.id-header::before, .id-header::after {
+
+		.id-header::before {
 			display: none;
 		}
 
 		.header-banner {
 			width: 100%;
 			height: auto;
-			max-height: 80px; 
+			max-height: 80px;
 			display: block;
 			margin: 0 auto;
 		}
@@ -82,281 +106,304 @@
 		.iso-text {
 			color: red;
 			font-weight: bold;
-			font-size: 8px; 
+			font-size: 8px;
 			margin: 1px 0;
 			font-family: Arial, sans-serif;
 		}
-		
+
 		.id-header-text {
-			background: #2563eb;
-			color: #fff;
-			padding: 4px;
-			font-weight: 700;
-			text-transform: uppercase;
-			margin-top: 5px;
-			font-size: 14px;
-		}
-		
-		.id-body {
-			padding: 25px 20px;
 			text-align: center;
 			position: relative;
+			z-index: 3;
+			background: #000077;
+			padding: 5px 15px;
+			width: 100%;
+			margin-top: 5px;
 		}
-		
+
+		.id-header-text .card-type {
+			font-size: 14px;
+			color: #ffffff;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 1.5px;
+		}
+
+		.id-body {
+			padding: 15px 15px 10px;
+			display: flex;
+			gap: 15px;
+			align-items: flex-start;
+			background: #ffffff;
+		}
+
+		.photo-section {
+			flex: 0 0 100px;
+		}
+
 		.photo-container {
-			margin: 0 auto 20px;
-			width: 120px;
-			height: 140px;
-			border: 4px solid #2563eb;
-			border-radius: 10px;
+			width: 100px;
+			height: 120px;
+			border: 3px solid #000077;
+			border-radius: 6px;
 			background: #f8f9fa;
 			overflow: hidden;
-			box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-			position: relative;
+			box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 		}
-		
-		.photo-container::before {
-			content: '';
-			position: absolute;
-			top: -2px;
-			left: -2px;
-			right: -2px;
-			bottom: -2px;
-			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-			border-radius: 10px;
-			z-index: -1;
-		}
-		
+
 		.photo-container img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
 			display: block;
 		}
-		
-		.student-name {
-			font-size: 22px;
-			font-weight: 700;
-			color: #1e3a8a;
-			margin: 15px 0 10px;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-		}
-		
-		.student-info {
-			background: #f8f9ff;
-			border-radius: 10px;
-			padding: 15px;
-			margin-top: 15px;
-			text-align: left;
-		}
-		
-		.info-row {
+
+		.photo-placeholder {
+			width: 100%;
+			height: 100%;
+			background: #e9ecef;
 			display: flex;
-			justify-content: space-between;
 			align-items: center;
-			padding: 8px 0;
-			border-bottom: 1px solid #e9ecef;
+			justify-content: center;
+			color: #6c757d;
 		}
-		
+
+		.photo-placeholder i {
+			font-size: 35px;
+		}
+
+		.info-section {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.student-name {
+			font-size: 14px;
+			font-weight: 800;
+			color: #000077;
+			margin: 0 0 15px 0;
+			text-transform: uppercase;
+			line-height: 1.3;
+			display: block;
+			border-left: 4px solid #ffd700;
+			padding-left: 10px;
+		}
+
+		.student-info {
+			background: transparent;
+			padding: 0;
+		}
+
+		.info-row {
+			display: grid;
+			grid-template-columns: 24px 85px 1fr;
+			/* Wider label column */
+			align-items: start;
+			padding: 5px 0;
+			border-bottom: 1px solid #f1f1f1;
+		}
+
 		.info-row:last-child {
 			border-bottom: none;
 		}
-		
-		.info-label {
-			font-weight: 600;
-			color: #495057;
-			font-size: 13px;
-			display: flex;
-			align-items: center;
-			gap: 8px;
+
+		.info-label-icon {
+			color: #000077;
+			font-size: 11px;
+			text-align: center;
+			padding-top: 2px;
 		}
-		
-		.info-label i {
-			color: #2563eb;
-			font-size: 14px;
+
+		.info-label-text {
+			font-weight: 700;
+			color: #555;
+			font-size: 10px;
+			text-transform: uppercase;
+			white-space: nowrap;
 		}
-		
+
 		.info-value {
-			font-weight: 500;
-			color: #1e3a8a;
-			font-size: 13px;
-			text-align: right;
+			font-weight: 600;
+			color: #000;
+			text-align: left;
+			font-size: 11px;
+			line-height: 1.3;
+			word-break: break-word;
 		}
-		
+
 		.id-footer {
+			background: #ffffff;
+			padding: 0;
+			margin-top: 10px;
+			position: relative;
+		}
+
+		.footer-content {
+			padding: 5px 15px 10px;
+			position: relative;
+			min-height: 80px;
 			display: flex;
+			flex-direction: row;
 			justify-content: space-between;
 			align-items: flex-end;
-			padding: 20px;
-			border-top: 2px solid #e9ecef;
-			margin-top: 15px;
 		}
-		
-		.qr-section {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 8px;
+
+		.signature-wrapper {
+			position: relative;
+			width: 140px;
+			text-align: center;
 		}
-		
-		.qr-code {
-			width: 80px;
-			height: 80px;
-			border: 2px solid #2563eb;
-			border-radius: 8px;
-			overflow: hidden;
-			background: white;
-			padding: 5px;
-			box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
-		}
-		
-		.qr-code img {
+
+		.footer-strip {
+			height: 12px;
 			width: 100%;
-			height: 100%;
-			object-fit: contain;
+			background: linear-gradient(90deg, #000077 0%, #000099 50%, #ffd700 100%);
 		}
-		
-		.qr-label {
-			font-size: 10px;
-			color: #6c757d;
-			font-weight: 600;
-			text-transform: uppercase;
-		}
-		
+
 		.signature-section {
-			text-align: right;
-			flex: 1;
+			position: relative;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: flex-end;
+			height: 60px;
+			margin-bottom: 2px;
+			z-index: 2;
 		}
-		
-		.signature-line {
-			width: 120px;
-			height: 2px;
-			background: #2563eb;
-			margin: 0 0 5px auto;
-			border-radius: 2px;
+
+		.footer-stamp {
+			position: absolute;
+			bottom: -16px;
+			left: 50%;
+			transform: translateX(-50%);
+			height: 102px;
+			opacity: 0.9;
+			z-index: 1;
 		}
-		
+
+		.footer-sign {
+			position: absolute;
+			bottom: 18px;
+			left: 50%;
+			transform: translateX(-50%);
+			height: 35px;
+			z-index: 2;
+			display: block;
+		}
+
 		.signature-label {
-			font-size: 12px;
-			color: #1e3a8a;
-			font-weight: 700;
+			font-size: 11px;
+			font-weight: 800;
+			color: #000077;
 			text-transform: uppercase;
 			letter-spacing: 0.5px;
+			position: relative;
+			z-index: 0;
+			margin-top: -10px;
+			/* Slight overlap upwards */
 		}
-		
-		.validity-note {
+
+		.sig-text-wrapper {
+			position: relative;
+			z-index: 0;
+			width: 100%;
 			text-align: center;
-			margin-top: 15px;
-			padding-top: 15px;
-			border-top: 1px dashed #dee2e6;
-			font-size: 11px;
-			color: #6c757d;
-			font-style: italic;
 		}
-		
-		.action-buttons {
-			text-align: center;
-			margin-top: 30px;
-			display: flex;
-			gap: 15px;
-			justify-content: center;
-		}
-		
-		.btn-print {
-			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-			color: white;
-			border: none;
-			padding: 12px 30px;
-			border-radius: 10px;
-			font-weight: 600;
-			font-size: 14px;
-			cursor: pointer;
-			box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-			transition: all 0.3s ease;
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-		}
-		
-		.btn-print:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5);
-		}
-		
-		.btn-back {
-			background: #6c757d;
-			color: white;
-			border: none;
-			padding: 12px 30px;
-			border-radius: 10px;
-			font-weight: 600;
-			font-size: 14px;
-			cursor: pointer;
-			box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
-			transition: all 0.3s ease;
-			text-decoration: none;
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-		}
-		
-		.btn-back:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 16px rgba(108, 117, 125, 0.5);
-			color: white;
-			text-decoration: none;
-		}
-		
+
 		@media print {
 			body {
 				background: white;
 				padding: 0;
+				display: block;
 			}
-			
+
+			.print-button-container {
+				display: none;
+			}
+
 			.print-container {
 				box-shadow: none;
 				padding: 0;
 				max-width: 100%;
 			}
-			
-			.action-buttons {
-				display: none;
-			}
-			
+
 			.id-card {
 				box-shadow: none;
-				border: 2px solid #2563eb;
+				border: 2px solid #000077;
 			}
-			
-			@page {
-				margin: 0;
-				size: A4 landscape;
+
+			.id-header,
+			.id-body,
+			.id-footer {
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+		}
+
+		@media (max-width: 480px) {
+			body {
+				padding: 20px 10px;
+			}
+
+			.print-container {
+				padding: 20px;
+			}
+
+			.id-body {
+				flex-direction: column;
+				align-items: center;
+				gap: 15px;
+			}
+
+			.photo-section {
+				flex: 0 0 auto;
+			}
+
+			.photo-container {
+				width: 110px;
+				height: 140px;
+			}
+
+			.info-section {
+				width: 100%;
+			}
+
+			.student-name {
+				text-align: center;
+				font-size: 18px;
 			}
 		}
 	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
+
+	<div class="print-button-container">
+		<button onclick="window.print()" class="print-btn">
+			<i class="fas fa-print"></i> Print ID Card
+		</button>
+	</div>
+
 	<div class="print-container">
 		<div class="id-card">
-			<!-- Logo Section - Big Size at Top -->
 			<div class="id-header">
 				@php
 					$siteSettings = site_settings();
 					$logoPath = null;
-					if($siteSettings) {
-						 if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
-							 $logoPath = $siteSettings->document_logo;
-						 } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
-							 $logoPath = $siteSettings->site_logo;
-						 } else {
-							 $logoPath = 'header_banner.png';
-						 }
+					if ($siteSettings) {
+						if (!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))) {
+							$logoPath = $siteSettings->document_logo;
+						} elseif (!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))) {
+							$logoPath = $siteSettings->site_logo;
+						} else {
+							$logoPath = 'header_banner.png';
+						}
 					} else {
-						 $logoPath = 'header_banner.png';
+						$logoPath = 'header_banner.png';
 					}
 				@endphp
-				
+
 				<img src="{{ asset($logoPath) }}" alt="Banner" class="header-banner">
 
 				<div class="header-subtext">
@@ -364,123 +411,118 @@
 					<p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
 					<p class="iso-text">An ISO 9001: 2015 Certified</p>
 				</div>
-				
-				<div class="id-header-text">STUDENT ID CARD</div>
+
+				<div class="id-header-text">
+					<div class="card-type">Student ID Card</div>
+				</div>
 			</div>
-			
+
 			<div class="id-body">
-				<div class="photo-container">
-					@if(!empty($data->sl_photo))
-						<img src="{{ asset('storage/student/'.$data->sl_photo) }}" alt="Student Photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-						<div style="display: none; width: 100%; height: 100%; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">No Photo</div>
-					@else
-						<div style="width: 100%; height: 100%; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">No Photo</div>
-					@endif
+				<div class="info-section">
+					<div class="student-name">{{ $data->sl_name ?? 'N/A' }}</div>
+
+					<div class="student-info">
+						<div class="info-row">
+							<div class="info-label-icon"><i class="fas fa-hashtag"></i></div>
+							<div class="info-label-text">Reg. No:</div>
+							<div class="info-value" style="font-weight: 800; color: #000077;">
+								{{ $data->sl_reg_no ?? 'N/A' }}
+							</div>
+						</div>
+
+						<div class="info-row">
+							<div class="info-label-icon"><i class="fas fa-graduation-cap"></i></div>
+							<div class="info-label-text">Course:</div>
+							<div class="info-value">{{ $data->c_short_name ?? $data->c_full_name ?? 'N/A' }}</div>
+						</div>
+
+						<div class="info-row">
+							<div class="info-label-icon"><i class="fas fa-user-friends"></i></div>
+							<div class="info-label-text">Father:</div>
+							<div class="info-value">{{ strtoupper($data->sl_father_name ?? 'N/A') }}</div>
+						</div>
+
+						@if($data->sl_dob)
+							<div class="info-row">
+								<div class="info-label-icon"><i class="fas fa-birthday-cake"></i></div>
+								<div class="info-label-text">DOB:</div>
+								<div class="info-value">
+									{{ \Carbon\Carbon::parse($data->sl_dob)->format('d-m-Y') }}
+								</div>
+							</div>
+						@endif
+
+						@if($data->sl_address)
+							<div class="info-row">
+								<div class="info-label-icon"><i class="fas fa-map-marker-alt"></i></div>
+								<div class="info-label-text">Address:</div>
+								<div class="info-value" style="font-size: 10px;">{{ $data->sl_address }}</div>
+							</div>
+						@endif
+
+						@if($data->sl_mobile_no ?? $data->cl_mobile ?? null)
+							<div class="info-row">
+								<div class="info-label-icon"><i class="fas fa-phone"></i></div>
+								<div class="info-label-text">Mobile:</div>
+								<div class="info-value">{{ $data->sl_mobile_no ?? $data->cl_mobile ?? 'N/A' }}</div>
+							</div>
+						@endif
+
+						@if($data->cl_center_name ?? $data->cl_name ?? null)
+							<div class="info-row">
+								<div class="info-label-icon"><i class="fas fa-building"></i></div>
+								<div class="info-label-text">Center:</div>
+								<div class="info-value" style="font-size: 9px;">
+									{{ ($data->cl_center_name ?? $data->cl_name ?? 'N/A') . ($data->cl_code ? ' - ' . $data->cl_code : '') }}
+								</div>
+							</div>
+						@endif
+					</div>
 				</div>
-				
-				<div class="student-name">{{ $data->sl_name ?? 'N/A' }}</div>
-				
-				<div class="student-info">
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-hashtag"></i>
-							<span>Registration No:</span>
-						</div>
-						<div class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}</div>
-					</div>
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-graduation-cap"></i>
-							<span>Course:</span>
-						</div>
-						<div class="info-value">{{ $data->c_short_name ?? 'N/A' }}</div>
-					</div>
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-user-friends"></i>
-							<span>Father:</span>
-						</div>
-						<div class="info-value">{{ strtoupper($data->sl_father_name ?? 'N/A') }}</div>
-					</div>
 
-					@if($data->sl_address)
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-map-marker-alt"></i>
-							<span>Address:</span>
-						</div>
-						<div class="info-value" style="font-size: 9px;">{{ $data->sl_address }}</div>
+				<div class="photo-section">
+					<div class="photo-container">
+						@if(!empty($data->sl_photo))
+							<img src="{{ asset($data->sl_photo) }}" alt="Student Photo"
+								onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-user\'></i></div>';">
+						@else
+							<div class="photo-placeholder">
+								<i class="fas fa-user"></i>
+							</div>
+						@endif
 					</div>
-					@endif
-
-					@if($data->sl_dob)
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-birthday-cake"></i>
-							<span>Date of Birth:</span>
-						</div>
-						<div class="info-value">{{ \Carbon\Carbon::parse($data->sl_dob)->format('d M, Y') }}</div>
-					</div>
-					@endif
-					@if($data->sl_mobile_no)
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-phone"></i>
-							<span>Contact:</span>
-						</div>
-						<div class="info-value">{{ $data->sl_mobile_no }}</div>
-					</div>
-					@endif
-					@if($data->cl_center_name)
-					<div class="info-row">
-						<div class="info-label">
-							<i class="fas fa-building"></i>
-							<span>Center:</span>
-						</div>
-						<div class="info-value" style="font-size: 11px;">{{ $data->cl_center_name }}</div>
-					</div>
-					@endif
 				</div>
 			</div>
-			
+
 			<div class="id-footer">
-				<div class="qr-section">
-					@if(file_exists(public_path('center/student_doc/qr/'.$data->sl_reg_no.'.png')))
-						<div class="qr-code">
-							<img src="{{ asset('center/student_doc/qr/'.$data->sl_reg_no.'.png') }}" alt="QR Code">
+				<div class="footer-content">
+					<!-- Left: QR Code -->
+					<div class="qr-section">
+						<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/' . ($data->cl_code ?? '')) }}"
+							alt="QR"
+							style="width: 70px; height: 70px; border: 1px solid #ddd; padding: 2px; background:white;">
+					</div>
+
+					<!-- Right: Signature -->
+					<div class="signature-wrapper">
+						<div class="signature-section">
+							@if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+								<img src="{{ asset($setting->authorize_stamp) }}" class="footer-stamp" alt="Stamp">
+							@endif
+
+							@if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+								<img src="{{ asset($setting->authorize_signature) }}" class="footer-sign" alt="Sign">
+							@endif
 						</div>
-						<div class="qr-label">Scan QR Code</div>
-					@else
-						<div class="qr-code" style="display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px;">
-							No QR
+						<div class="sig-text-wrapper">
+							<div class="signature-label">Authorized Signatory</div>
 						</div>
-						<div class="qr-label">QR Code</div>
-					@endif
+					</div>
 				</div>
-				
-				<div class="signature-section">
-					<div class="signature-line"></div>
-					<div class="signature-label">Principal</div>
-				</div>
+				<div class="footer-strip"></div>
 			</div>
-			
-			<div class="validity-note">
-				<em>Valid for academic year only</em>
-			</div>
-		</div>
-		
-		<div class="action-buttons">
-			<a href="{{ route('student_id_card') }}" class="btn-back">
-				<i class="fas fa-arrow-left"></i>
-				Back to List
-			</a>
-			<button class="btn-print" onclick="window.print();">
-				<i class="fas fa-print"></i>
-				Print ID Card
-			</button>
 		</div>
 	</div>
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 </body>
+
 </html>
