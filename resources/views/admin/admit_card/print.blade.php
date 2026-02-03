@@ -64,13 +64,13 @@
         .header-banner {
             width: 88%;
             height: auto;
-             max-height: 120px; 
+            max-height: 139px;
             display: block;
         }
 
         .header-subtext {
             text-align: center;
-            margin-top: -20px;
+            margin-top: -30px;
             padding-left: 40px;
         }
 
@@ -194,8 +194,8 @@
             font-size: 10px;
             width: 100%;
         }
-        
-         .photo-placeholder img {
+
+        .photo-placeholder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -264,19 +264,38 @@
 
         /* Print styles */
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
             body {
-                background: none;
+                background: white;
                 padding: 0;
+                margin: 0;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             .admit-card {
                 box-shadow: none;
                 border: none;
-                width: 100%;
-                height: auto;
+                width: 210mm;
+                height: 296mm;
+                /* Force full A4 height */
+                margin: 0;
+                padding: 10mm;
+                overflow: hidden;
             }
-             .no-print {
-                display: none;
+
+            /* Force background printing */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .no-print {
+                display: none !important;
             }
         }
     </style>
@@ -286,24 +305,28 @@
 
     <div class="admit-card">
         <!-- Background Logo / Watermark -->
-         <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif" class="watermark" alt="Watermark" style="opacity: 0.05;">
+        <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif"
+            class="watermark" alt="Watermark" style="opacity: 0.05;">
 
 
         <div class="content">
             <!-- Header Section -->
             <div class="header">
-                 @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
                     <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner" class="header-banner">
                 @else
                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
                 @endif
                 <div class="header-subtext">
-                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
-                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                    <p class="reg-details" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of
+                        India</p>
+                    <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam &
+                        Startup India</p>
+                    <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
                 </div>
-                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$student->sl_reg_no) }}"
-                            alt="QR Code" class="qr-code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
+                    alt="QR Code" class="qr-code">
             </div>
 
             <!-- Title -->
@@ -337,13 +360,16 @@
                     <tr>
                         <td class="label">Date of Birth:</td>
                         <td class="value">{{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp;&nbsp; <span
-                                style="font-weight:normal; font-style:italic;">Gender:</span> {{ ucfirst($student->sl_sex ?? 'N/A') }}
+                                style="font-weight:normal; font-style:italic;">Gender:</span>
+                            {{ ucfirst($student->sl_sex ?? 'N/A') }}
                             &nbsp;&nbsp;&nbsp;&nbsp; <span
-                                style="font-weight:normal; font-style:italic;">Category:</span> {{ $student->sl_category ?? 'Gen' }}</td>
+                                style="font-weight:normal; font-style:italic;">Category:</span>
+                            {{ $student->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Center Code & Name:</td>
-                        <td class="value">{{ $center->cl_code ?? '' }}- {{ strtoupper($center->cl_center_name ?? '') }}</td>
+                        <td class="value">{{ $center->cl_code ?? '' }}- {{ strtoupper($center->cl_center_name ?? '') }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Name:</td>
@@ -357,13 +383,20 @@
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
-                         @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
+                        @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
                             <img src="{{ asset($student->sl_photo) }}" alt="Student Photo">
                         @else
                             Picture<br><br>1.2 in X 1.5 in
                         @endif
                     </div>
-                    <div class="signature-box">Student Signature</div>
+                    <div class="signature-box" style="padding: 2px;">
+                        @if(!empty($student->sl_signature) && file_exists(public_path($student->sl_signature)))
+                            <img src="{{ asset($student->sl_signature) }}" alt="Student Signature"
+                                style="max-height: 25px; max-width: 100%;">
+                        @else
+                            Student Signature
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -406,10 +439,12 @@
 
         </div>
     </div>
-    
-                  <!-- Print Button (Hidden in Print Mode) -->
+
+    <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Admit Card</button>
+        <button onclick="window.print()"
+            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
+            Admit Card</button>
     </div>
 
 </body>
