@@ -38,24 +38,45 @@
             flex-direction: column;
         }
 
-        /* Decorative Border */
-        .border-wrapper {
-            border: 2px solid #000080;
-            height: 100%;
-            width: 100%;
-            padding: 3px;
+        /* Border System from Certificate */
+        .border-pattern {
             position: relative;
-            flex-grow: 1;
+            padding: 5px;
+            background: #fff;
+            border: none;
+            height: 100%;
             display: flex;
             flex-direction: column;
         }
 
-        .inner-border {
-            border: 2px solid #000;
-            border-image: repeating-linear-gradient(45deg, #000080, #000080 5px, transparent 5px, transparent 10px) 1;
+        .border-inner {
+            border: 2px solid #0f1d46;
+            padding: 3px;
             height: 100%;
-            width: 100%;
-            padding: 5mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .border-design {
+            border: 1px solid #0f1d46;
+            padding: 15px;
+            height: 100%;
+            background-image:
+                linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46),
+                linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+            background-repeat: repeat;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-area-white {
+            background-color: white;
+            padding: 20px;
+            height: 100%;
+            border: 1px solid #c5a059;
+            position: relative;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -290,16 +311,68 @@
 
         /* Print styles */
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
             body {
-                background: none;
+                background: white;
                 padding: 0;
+                margin: 0;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             .marksheet-container {
                 box-shadow: none;
                 border: none;
-                width: 100%;
-                height: auto;
+                width: 210mm;
+                height: 296mm;
+                margin: 0;
+                padding: 5mm;
+                overflow: hidden;
+                page-break-after: avoid;
+            }
+
+            /* Force background printing for marksheet elements */
+            .marksheet-container * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Explicitly enforce borders on all structured elements */
+            .marks-table {
+                border-collapse: collapse !important;
+                border: 2px solid #000 !important;
+                width: 100% !important;
+            }
+
+            .marks-table th {
+                border: 1px solid #fff !important;
+                /* White separation for headers */
+                background-color: #000066 !important;
+                color: #fff !important;
+            }
+
+            .marks-table td {
+                border: 1px solid #000 !important;
+                /* Forces black grid lines */
+            }
+
+            .info-box,
+            .modules-box {
+                border: 2px solid #000066 !important;
+            }
+
+            .section-title {
+                border: 2px solid #000066 !important;
+                background-color: #000066 !important;
+                color: #fff !important;
+            }
+
+            .no-print {
+                display: none !important;
             }
         }
     </style>
@@ -308,191 +381,244 @@
 <body>
 
     <div class="marksheet-container">
-        <div class="border-wrapper">
-            <div class="inner-border">
+        <div class="border-pattern">
+            <div class="border-inner">
+                <div class="border-design">
+                    <div class="content-area-white">
 
-                <!-- Watermark -->
-                <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif"
-                    class="watermark" alt="Watermark" style="opacity: 0.05;">
+                        <!-- Watermark -->
+                        <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif"
+                            class="watermark" alt="Watermark" style="opacity: 0.05;">
 
-                <div class="content">
+                        <div class="content">
 
-                    <!-- Header -->
-                    <div class="header">
-                        @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
-                            <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner"
-                                class="header-banner">
-                        @else
-                            <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner"
-                                class="header-banner">
-                        @endif
-                        <div class="header-subtext">
-                            <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                            <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
-                            <p class="iso-text">An ISO 9001: 2015 Certified</p>
-                        </div>
-                        <div class="sr-no-top">Sr. No. : MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}</div>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}"
-                            alt="QR Code" class="qr-code">
-                    </div>
-
-                    <!-- Title -->
-                    <div class="section-title">Statement of Marks</div>
-
-                    <!-- Student Details -->
-                    <div class="info-box">
-                        <div class="student-details">
-                            <div class="info-row"><span class="info-label">Registration No.</span>: <span
-                                    class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year:
-                                    {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
-                            </div>
-                            <div class="info-row"><span class="info-label">Student Name</span>: <span
-                                    class="info-value">{{ strtoupper($data->sl_name ?? '') }}</span></div>
-                            <div class="info-row"><span class="info-label">Father’s Name</span>: <span
-                                    class="info-value">{{ strtoupper($data->sl_father_name ?? '') }}</span></div>
-                            <div class="info-row"><span class="info-label">Mother’s Name</span>: <span
-                                    class="info-value">{{ strtoupper($data->sl_mother_name ?? '') }}</span></div>
-                            <div class="info-row"><span class="info-label">Date of Birth</span>: <span
-                                    class="info-value">{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp; Gender:
-                                    {{ ucfirst($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp;&nbsp;
-                                    Category: {{ $data->sl_category ?? 'Gen' }}</span></div>
-                            <div class="info-row"><span class="info-label">Center Code & Name</span>: <span
-                                    class="info-value">{{ $data->cl_code ?? 'N/A' }}-
-                                    {{ strtoupper($data->cl_center_name ?? '') }}</span></div>
-                            <div class="info-row"><span class="info-label">Course Name</span>: <span
-                                    class="info-value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
-                            </div>
-                            <div class="info-row"><span class="info-label">Course Duration</span>: <span
-                                    class="info-value">{{ $data->c_duration ?? 'N/A' }}</span></div>
-                        </div>
-                        <div class="photo-area">
-                            @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
-                                <img src="{{ asset($data->sl_photo) }}" class="student-photo" alt="Student Photo">
-                            @else
-                                <img src="https://via.placeholder.com/90x110?text=Photo" class="student-photo"
-                                    alt="Student Photo">
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Modules -->
-                    @if(!empty($data->c_module_cover))
-                        <div class="section-title" style="margin-top: 0;">Modules Covered</div>
-                        <div class="modules-box">
-                            {!! html_entity_decode($data->c_module_cover) !!}
-                        </div>
-                    @endif
-
-                    <!-- Marks Table -->
-                    <table class="marks-table">
-                        <thead>
-                            <tr>
-                                <th>Exam</th>
-                                <th>Full Marks</th>
-                                <th>Pass Marks</th>
-                                <th>Marks Obtained</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Written -->
-                            <tr>
-                                <td style="text-align: left;">{{ $data->sr_written ?? 'Written' }}</td>
-                                <td>{{ $data->sr_wr_full_marks ?? 100 }}</td>
-                                <td>{{ $data->sr_wr_pass_marks ?? 40 }}</td>
-                                <td>{{ $data->sr_wr_marks_obtained ?? 0 }}</td>
-                            </tr>
-
-                            <!-- Practical -->
-                            <tr>
-                                <td style="text-align: left;">{{ $data->sr_practical ?? 'Practical' }}</td>
-                                <td>{{ $data->sr_pr_full_marks ?? 100 }}</td>
-                                <td>{{ $data->sr_pr_pass_marks ?? 40 }}</td>
-                                <td>{{ $data->sr_pr_marks_obtained ?? 0 }}</td>
-                            </tr>
-
-                            <!-- Assignment / Project -->
-                            <tr>
-                                <td style="text-align: left;">{{ $data->sr_project ?? 'Assignment / Project' }}</td>
-                                <td>{{ $data->sr_ap_full_marks ?? 100 }}</td>
-                                <td>{{ $data->sr_ap_pass_marks ?? 40 }}</td>
-                                <td>{{ $data->sr_ap_marks_obtained ?? 0 }}</td>
-                            </tr>
-
-                            <!-- Viva Voce -->
-                            <tr>
-                                <td style="text-align: left;">{{ $data->sr_viva ?? 'Viva Voce' }}</td>
-                                <td>{{ $data->sr_vv_full_marks ?? 100 }}</td>
-                                <td>{{ $data->sr_vv_pass_marks ?? 40 }}</td>
-                                <td>{{ $data->sr_vv_marks_obtained ?? 0 }}</td>
-                            </tr>
-
-                            <tr style="background:#000066; color:#fff;">
-                                <td>Total</td>
-                                <td>{{ ($data->sr_wr_full_marks + $data->sr_pr_full_marks + $data->sr_ap_full_marks + $data->sr_vv_full_marks) }}
-                                </td>
-                                <td>{{ ($data->sr_wr_pass_marks + $data->sr_pr_pass_marks + $data->sr_ap_pass_marks + $data->sr_vv_pass_marks)  }}
-                                </td>
-                                <td>{{ ($data->sr_wr_marks_obtained + $data->sr_pr_marks_obtained + $data->sr_ap_marks_obtained + $data->sr_vv_marks_obtained) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Overall Percentage</td>
-                                <td>{{ number_format($data->sr_percentage ?? 0, 2) }}%</td>
-                                <td>Grade</td>
-                                <td>{{ strtoupper($data->sr_grade ?? 'N/A') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="grading-info">
-                        Grade A: 85-100%. Grade B: 70-84%. Grade C: 55- 69%. Grade D: 40-54%. Fail: Below 40%.
-                    </div>
-
-                    <div class="issue-date">
-                        Date of Issue:
-                        {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->format('d-M-Y') : \Carbon\Carbon::now()->format('d-M-Y') }}
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="footer">
-                        <div class="logo-strip">
-                            @if(!empty($setting->certificate_footer_logos))
-                                @php $logos = json_decode($setting->certificate_footer_logos); @endphp
-                                @if(is_array($logos))
-                                    @foreach($logos as $logo)
-                                        <img src="{{ asset($logo) }}" alt="Logo" class="footer-logo">
-                                    @endforeach
+                            <!-- Header -->
+                            <div class="header">
+                                @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                                    <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner"
+                                        class="header-banner">
+                                @else
+                                    <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner"
+                                        class="header-banner">
                                 @endif
-                            @else
-                                <!-- Fallback logos if dynamic not set -->
-                                <!-- You can keep your static ones here if you want -->
-                                <div style="text-align:center; width:100%;">Footer Logos</div>
+                                <div class="header-subtext">
+                                    <p class="reg-details" style="font-size: 16px;">CIN : U85220DL2023PTC422329</p>
+                                    <p class="reg-details" style="font-size: 13px;">Reg. Under the Company Act.2013 MCA,
+                                        Government of India</p>
+                                    <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill
+                                        India,
+                                        Udyam & Startup India</p>
+                                    <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
+                                </div>
+                                <div class="sr-no-top">Sr. No. : MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}
+                                </div>
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}"
+                                    alt="QR Code" class="qr-code">
+                            </div>
+
+                            <!-- Title -->
+                            <div class="section-title">Statement of Marks</div>
+
+                            <!-- Student Details -->
+                            <div class="info-box">
+                                <div class="student-details">
+                                    <div class="info-row"><span class="info-label">Registration No.</span>: <span
+                                            class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year:
+                                            {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
+                                    </div>
+                                    <div class="info-row"><span class="info-label">Student Name</span>: <span
+                                            class="info-value">{{ strtoupper($data->sl_name ?? '') }}</span></div>
+                                    <div class="info-row"><span class="info-label">Father’s Name</span>: <span
+                                            class="info-value">{{ strtoupper($data->sl_father_name ?? '') }}</span>
+                                    </div>
+                                    <div class="info-row"><span class="info-label">Mother’s Name</span>: <span
+                                            class="info-value">{{ strtoupper($data->sl_mother_name ?? '') }}</span>
+                                    </div>
+                                    <div class="info-row"><span class="info-label">Date of Birth</span>: <span
+                                            class="info-value">{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp; Gender:
+                                            {{ ucfirst($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp;&nbsp;
+                                            Category: {{ $data->sl_category ?? 'Gen' }}</span></div>
+                                    <div class="info-row"><span class="info-label">Center Code & Name</span>: <span
+                                            class="info-value">{{ $data->cl_code ?? 'N/A' }}-
+                                            {{ strtoupper($data->cl_center_name ?? '') }}</span></div>
+                                    <div class="info-row"><span class="info-label">Course Name</span>: <span
+                                            class="info-value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
+                                    </div>
+                                    <div class="info-row"><span class="info-label">Course Duration</span>: <span
+                                            class="info-value">{{ $data->c_duration ?? 'N/A' }}</span></div>
+                                </div>
+                                <div class="photo-area">
+                                    @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
+                                        <img src="{{ asset($data->sl_photo) }}" class="student-photo" alt="Student Photo">
+                                    @else
+                                        <img src="https://via.placeholder.com/90x110?text=Photo" class="student-photo"
+                                            alt="Student Photo">
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Modules -->
+                            @if(!empty($data->c_module_cover))
+                                <div class="section-title" style="margin-top: 0;">Modules Covered</div>
+                                <div class="modules-box">
+                                    {!! html_entity_decode($data->c_module_cover) !!}
+                                </div>
                             @endif
-                        </div>
-                        <div class="auth-sign">
-                            Authorized Signature
+
+                            <!-- Marks Table -->
+                            <table class="marks-table">
+                                <thead>
+                                    <tr>
+                                        <th>Exam</th>
+                                        <th>Full Marks</th>
+                                        <th>Pass Marks</th>
+                                        <th>Marks Obtained</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Written -->
+                                    <tr>
+                                        <td style="text-align: left;">{{ $data->sr_written ?? 'Written' }}</td>
+                                        <td>{{ $data->sr_wr_full_marks ?? 100 }}</td>
+                                        <td>{{ $data->sr_wr_pass_marks ?? 40 }}</td>
+                                        <td>{{ $data->sr_wr_marks_obtained ?? 0 }}</td>
+                                    </tr>
+
+                                    <!-- Practical -->
+                                    <tr>
+                                        <td style="text-align: left;">{{ $data->sr_practical ?? 'Practical' }}</td>
+                                        <td>{{ $data->sr_pr_full_marks ?? 100 }}</td>
+                                        <td>{{ $data->sr_pr_pass_marks ?? 40 }}</td>
+                                        <td>{{ $data->sr_pr_marks_obtained ?? 0 }}</td>
+                                    </tr>
+
+                                    <!-- Assignment / Project -->
+                                    <tr>
+                                        <td style="text-align: left;">{{ $data->sr_project ?? 'Assignment / Project' }}
+                                        </td>
+                                        <td>{{ $data->sr_ap_full_marks ?? 100 }}</td>
+                                        <td>{{ $data->sr_ap_pass_marks ?? 40 }}</td>
+                                        <td>{{ $data->sr_ap_marks_obtained ?? 0 }}</td>
+                                    </tr>
+
+                                    <!-- Viva Voce -->
+                                    <tr>
+                                        <td style="text-align: left;">{{ $data->sr_viva ?? 'Viva Voce' }}</td>
+                                        <td>{{ $data->sr_vv_full_marks ?? 100 }}</td>
+                                        <td>{{ $data->sr_vv_pass_marks ?? 40 }}</td>
+                                        <td>{{ $data->sr_vv_marks_obtained ?? 0 }}</td>
+                                    </tr>
+
+                                    <tr style="background:#000066; color:#fff;">
+                                        <td>Total</td>
+                                        <td>{{ ($data->sr_wr_full_marks + $data->sr_pr_full_marks + $data->sr_ap_full_marks + $data->sr_vv_full_marks) }}
+                                        </td>
+                                        <td>{{ ($data->sr_wr_pass_marks + $data->sr_pr_pass_marks + $data->sr_ap_pass_marks + $data->sr_vv_pass_marks)  }}
+                                        </td>
+                                        <td>{{ ($data->sr_wr_marks_obtained + $data->sr_pr_marks_obtained + $data->sr_ap_marks_obtained + $data->sr_vv_marks_obtained) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Overall Percentage</td>
+                                        <td>{{ number_format($data->sr_percentage ?? 0, 2) }}%</td>
+                                        <td>Grade</td>
+                                        <td>{{ strtoupper($data->sr_grade ?? 'N/A') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="grading-info">
+                                Grade A: 85-100%. Grade B: 70-84%. Grade C: 55- 69%. Grade D: 40-54%. Fail: Below 40%.
+                            </div>
+
+                            <div class="issue-date">
+                                Date of Issue:
+                                {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->format('d-M-Y') : \Carbon\Carbon::now()->format('d-M-Y') }}
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="footer">
+                                <div class="logo-strip">
+                                    @if(!empty($setting->certificate_footer_logos))
+                                        @php $logos = json_decode($setting->certificate_footer_logos); @endphp
+                                        @if(is_array($logos))
+                                            @foreach($logos as $logo)
+                                                <img src="{{ asset($logo) }}" alt="Logo" class="footer-logo">
+                                            @endforeach
+                                        @endif
+                                    @endif
+                                </div>
+
+                                <div class="signatures-wrapper"
+                                    style="display: flex; justify-content: space-between; align-items: flex-end; padding: 0 20px; margin-top: 10px;">
+
+                                    <!-- Left Side: Center Head -->
+                                    <div class="sig-section left-sig"
+                                        style="text-align: center; position: relative; width: 220px;">
+                                        <div class="sig-images"
+                                            style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
+                                            @if(!empty($data->cl_center_stamp) && file_exists(public_path('center-document/' . $data->cl_center_stamp)))
+                                                <img src="{{ asset('center-document/' . $data->cl_center_stamp) }}"
+                                                    class="stamp-img"
+                                                    style="position: absolute; height: 110px; z-index: 1; top: 0; left: 50%; transform: translateX(-50%); opacity: 1;"
+                                                    alt="Center Stamp">
+                                            @endif
+                                            @if(!empty($data->cl_authorized_signature) && file_exists(public_path('center-document/' . $data->cl_authorized_signature)))
+                                                <img src="{{ asset('center-document/' . $data->cl_authorized_signature) }}"
+                                                    class="sign-img"
+                                                    style="position: absolute; height: 46px; z-index: 2; bottom: 26px; left: 51%; transform: translateX(-50%);"
+                                                    alt="Center Sign">
+                                            @endif
+                                        </div>
+                                        <div class="sig-label"
+                                            style="padding-top: 5px; font-weight: bold; font-size: 14px; margin-top: -34px;">
+                                            Center Head Signature</div>
+                                    </div>
+
+                                    <!-- Right Side: Authorized Signatory -->
+                                    <div class="sig-section right-sig"
+                                        style="text-align: center; position: relative; width: 220px;">
+                                        <div class="sig-images"
+                                            style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
+                                            @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                                                <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img"
+                                                    style="position: absolute; height: 110px; z-index: 1; top: 0; left: 50%; transform: translateX(-50%); opacity: 1;"
+                                                    alt="Stamp">
+                                            @endif
+                                            @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                                                <img src="{{ asset($setting->authorize_signature) }}" class="sign-img"
+                                                    style="position: absolute; height: 46px; z-index: 2; bottom: 26px; left: 51%; transform: translateX(-50%);"
+                                                    alt="Sign">
+                                            @endif
+                                        </div>
+                                        <div class="sig-label"
+                                            style="padding-top: 5px; font-weight: bold; font-size: 14px; margin-top: -34px;">
+                                            Authorized Signatory</div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Print Button (Hidden in Print Mode) -->
-    <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()"
-            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
-            Marksheet</button>
-    </div>
-    <style>
-        @media print {
-            .no-print {
-                display: none;
+        <!-- Print Button (Hidden in Print Mode) -->
+        <div style="text-align: center; margin-top: 20px;" class="no-print">
+            <button onclick="window.print()"
+                style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
+                Marksheet</button>
+        </div>
+        <style>
+            @media print {
+                .no-print {
+                    display: none;
+                }
             }
-        }
-    </style>
+        </style>
 
 </body>
 

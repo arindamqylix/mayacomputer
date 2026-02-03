@@ -27,6 +27,8 @@ class MarkSheetController extends Controller
 				'center_login.cl_center_name',
 				'center_login.cl_code',
 				'center_login.cl_center_address',
+				'center_login.cl_authorized_signature',
+				'center_login.cl_center_stamp',
 				'student_certificates.sc_issue_date'
 			)
 			->first();
