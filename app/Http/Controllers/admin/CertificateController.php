@@ -97,7 +97,7 @@ class CertificateController extends Controller
         }
 
         // Generate certificate number (similar to center's logic)
-        $certificateNumber = 'CERT-' . date('Y') . '-' . str_pad($studentId, 6, '0', STR_PAD_LEFT) . '-' . time();
+        $certificateNumber = 'COD' . str_pad($studentId, 5, '0', STR_PAD_LEFT);
 
         // Create certificate
         $certificate = Certificate::create([

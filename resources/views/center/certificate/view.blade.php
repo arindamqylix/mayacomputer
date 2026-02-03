@@ -122,6 +122,15 @@
             width: 70px;
             height: 70px;
             border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        .qr-wrapper .sn-top-right {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-family: 'Times New Roman', serif;
         }
 
         .hologram-wrapper {
@@ -173,7 +182,7 @@
 
         .main-content {
             text-align: center;
-            padding: 0 50px;
+            padding: 0 160px 0 50px;
             position: relative;
             flex-grow: 1;
         }
@@ -361,13 +370,9 @@
                             @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                 <div class="hologram-wrapper">
                                     <div
-                                        style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 2px;">
-                                        Certificate No. :
+                                        style="font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 5px; font-family: 'Times New Roman', serif;">
+                                        Certificate No. {{ $certificate->sc_certificate_number }}
                                     </div>
-                                    <span
-                                        style="font-family: 'DotGothic16', sans-serif; font-size: 12px; letter-spacing: 1px; display:block;">
-                                        {{ $certificate->sc_certificate_number }}
-                                    </span>
                                     <img src="{{ asset($setting->hologram) }}" alt="Hologram">
                                 </div>
                             @endif
@@ -385,9 +390,10 @@
                                 <p class="iso-text">An ISO 9001: 2015 Certified</p>
                             </div>
                             <div class="qr-wrapper">
+                                <span class="sn-top-right">Sr. No. :
+                                    MCC{{ str_pad($certificate->sl_id, 5, '0', STR_PAD_LEFT) }}</span>
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-certificate/' . $certificate->sc_certificate_number) }}"
                                     alt="QR">
-                                <span class="sn-text">Reg No: {{ $certificate->sl_reg_no }}</span>
                             </div>
                         </div>
 
@@ -397,18 +403,33 @@
 
                         <!-- Middle Content -->
                         <div class="main-content">
-                            <div class="certify-text">This Certificate / Diploma is Awarded to</div>
-                            <div class="center-name">{{ strtoupper($certificate->sl_name ?? '') }}</div>
+                            <div class="certify-text"
+                                style="font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; margin-top: 20px; margin-right: -110px;">
+                                THIS CERTIFICATE / DIPLOMA IS AWARDED TO</div>
+                            <div class="center-name"
+                                style="color: blue; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: bold; margin: 15px 0; margin-right: -110px;">
+                                {{ strtoupper($certificate->sl_name ?? '') }}</div>
 
-                            <div class="student-details">
-                                S/o – <b>{{ strtoupper($certificate->sl_father_name ?? '') }}</b><br>
-                                on successfully completion of <b>{{ $certificate->c_full_name ?? '' }}</b><br>
-                                (Duration - {{ $certificate->c_duration ?? '' }})<br>
-                                and secured <b>{{ number_format($certificate->sr_percentage ?? 0, 2) }}%</b>
-                                with Grade <b>{{ strtoupper($certificate->sr_grade ?? '') }}</b><br>
-                                from our authorised Study Centre <b>{{ $certificate->cl_center_name ?? '' }}</b><br>
-                                {{ $certificate->cl_center_address ?? '' }}<br>
-                                Centre Code: <b>{{ $certificate->cl_code ?? '' }}</b>
+                            <div class="student-details"
+                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; line-height: 1.8; color: #000;">
+                                S/o – <b>{{ ucwords(strtolower($certificate->sl_father_name ?? '')) }}</b> , Reg No.
+                                <b>{{ $certificate->sl_reg_no }}</b> on successfully completion of
+                                <b>{{ $certificate->c_full_name ?? '' }}</b> ( Duration -
+                                {{ $certificate->c_duration ?? '' }} ) Course and secured
+                                <b>{{ number_format($certificate->sr_percentage ?? 0, 2) }}%</b> with Grade
+                                <b>{{ strtoupper($certificate->sr_grade ?? '') }} *</b> from our authorised Study Centre
+                            </div>
+
+                            <div class="center-study-details"
+                                style="margin-right: -110px; font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; color: #000; font-weight: bold; line-height: 1.6;">
+                                {{ $certificate->cl_center_name ?? '' }} , {{ $certificate->cl_center_address ?? '' }}
+                                <br>
+                                Centre Code {{ $certificate->cl_code ?? '' }}
+                            </div>
+
+                            <div class="recommendation-text"
+                                style="margin-top: 10px; margin-right: -110px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
+                                On the recommendation of the board of examination
                             </div>
 
                             <!-- Photo Positioned Absolute in Content Area -->
@@ -420,7 +441,8 @@
                                 @endif
                             </div>
 
-                            <div class="authorization-text" style="margin-top: 15px; font-size:14px;">
+                            <div class="authorization-text"
+                                style="margin-top: 15px; font-size:14px; margin-right: -110px;">
                                 <span class="company-name">MAYA COMPUTER CENTER PRIVATE LIMITED</span>
                             </div>
                         </div>

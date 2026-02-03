@@ -17,7 +17,7 @@ use App\Http\Controllers\NotificationController;
 Route::get('student/login', [AuthController::class, 'student_login'])->name('student_login');
 Route::post('student/login', [AuthController::class, 'student_login_now'])->name('student_login');
 
-Route::group(['prefix'=>'student', 'middleware'=>'student:student'], function(){
+Route::group(['prefix' => 'student', 'middleware' => 'student:student'], function () {
 	Route::get('dashboard', [AuthController::class, 'student_dashboard'])->name('student_dashboard');
 	Route::get('logout', [AuthController::class, 'student_logout'])->name('student_logout');
 
@@ -53,12 +53,12 @@ Route::group(['prefix'=>'student', 'middleware'=>'student:student'], function(){
 	Route::get('notifications', [NotificationController::class, 'index'])->name('student.notifications.index');
 	Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('student.notifications.read');
 	Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('student.notifications.read-all');
-	
+
 	// Invoice
 	Route::get('invoices/fee-payment', [InvoiceController::class, 'feePaymentInvoices'])->name('student.invoice.fee_payment_list');
 	Route::get('invoices/fee-payment/{id}', [InvoiceController::class, 'viewFeePaymentInvoice'])->name('student.invoice.fee_payment_view');
 	Route::get('invoices/fee-payment/{id}/download', [InvoiceController::class, 'downloadFeePaymentInvoice'])->name('student.invoice.fee_payment_download');
-	
+
 	// Change Password
 	Route::get('change-password', [\App\Http\Controllers\student\ProfileController::class, 'change_password'])->name('student.change_password');
 	Route::post('change-password', [\App\Http\Controllers\student\ProfileController::class, 'change_password_save'])->name('student.change_password_save');

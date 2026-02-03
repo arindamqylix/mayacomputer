@@ -120,11 +120,20 @@
         .qr-code {
             position: absolute;
             right: 0;
-            top: 20px;
+            top: 25px;
             width: 70px;
             height: 70px;
             border: 1px solid #ddd;
             background: #fff;
+        }
+
+        .sr-no-top {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-weight: bold;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
         }
 
         /* Section Titles */
@@ -303,23 +312,27 @@
             <div class="inner-border">
 
                 <!-- Watermark -->
-                <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif" class="watermark" alt="Watermark" style="opacity: 0.05;">
+                <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif"
+                    class="watermark" alt="Watermark" style="opacity: 0.05;">
 
                 <div class="content">
 
                     <!-- Header -->
                     <div class="header">
-                         @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
-                            <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner" class="header-banner">
+                        @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                            <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner"
+                                class="header-banner">
                         @else
-                            <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
+                            <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner"
+                                class="header-banner">
                         @endif
                         <div class="header-subtext">
                             <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
                             <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                             <p class="iso-text">An ISO 9001: 2015 Certified</p>
                         </div>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/'.$data->sl_reg_no) }}"
+                        <div class="sr-no-top">Sr. No. : MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}</div>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}"
                             alt="QR Code" class="qr-code">
                     </div>
 
@@ -331,7 +344,9 @@
                         <div class="student-details">
                             <div class="info-row"><span class="info-label">Registration No.</span>: <span
                                     class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year: {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span></div>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year:
+                                    {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
+                            </div>
                             <div class="info-row"><span class="info-label">Student Name</span>: <span
                                     class="info-value">{{ strtoupper($data->sl_name ?? '') }}</span></div>
                             <div class="info-row"><span class="info-label">Father’s Name</span>: <span
@@ -339,32 +354,34 @@
                             <div class="info-row"><span class="info-label">Mother’s Name</span>: <span
                                     class="info-value">{{ strtoupper($data->sl_mother_name ?? '') }}</span></div>
                             <div class="info-row"><span class="info-label">Date of Birth</span>: <span
-                                    class="info-value">{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp; Gender: {{ ucfirst($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp;&nbsp;
+                                    class="info-value">{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp; Gender:
+                                    {{ ucfirst($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp;&nbsp;
                                     Category: {{ $data->sl_category ?? 'Gen' }}</span></div>
                             <div class="info-row"><span class="info-label">Center Code & Name</span>: <span
-                                    class="info-value">{{ $data->cl_code ?? 'N/A' }}- {{ strtoupper($data->cl_center_name ?? '') }}</span></div>
+                                    class="info-value">{{ $data->cl_code ?? 'N/A' }}-
+                                    {{ strtoupper($data->cl_center_name ?? '') }}</span></div>
                             <div class="info-row"><span class="info-label">Course Name</span>: <span
-                                    class="info-value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span></div>
+                                    class="info-value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
+                            </div>
                             <div class="info-row"><span class="info-label">Course Duration</span>: <span
                                     class="info-value">{{ $data->c_duration ?? 'N/A' }}</span></div>
                         </div>
                         <div class="photo-area">
-                             @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
-                                <img src="{{ asset($data->sl_photo) }}" class="student-photo"
-                                alt="Student Photo">
+                            @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
+                                <img src="{{ asset($data->sl_photo) }}" class="student-photo" alt="Student Photo">
                             @else
                                 <img src="https://via.placeholder.com/90x110?text=Photo" class="student-photo"
-                                alt="Student Photo">
+                                    alt="Student Photo">
                             @endif
                         </div>
                     </div>
 
                     <!-- Modules -->
                     @if(!empty($data->c_module_cover))
-                    <div class="section-title" style="margin-top: 0;">Modules Covered</div>
-                    <div class="modules-box">
-                         {!! html_entity_decode($data->c_module_cover) !!}
-                    </div>
+                        <div class="section-title" style="margin-top: 0;">Modules Covered</div>
+                        <div class="modules-box">
+                            {!! html_entity_decode($data->c_module_cover) !!}
+                        </div>
                     @endif
 
                     <!-- Marks Table -->
@@ -385,7 +402,7 @@
                                 <td>{{ $data->sr_wr_pass_marks ?? 40 }}</td>
                                 <td>{{ $data->sr_wr_marks_obtained ?? 0 }}</td>
                             </tr>
-                            
+
                             <!-- Practical -->
                             <tr>
                                 <td style="text-align: left;">{{ $data->sr_practical ?? 'Practical' }}</td>
@@ -412,9 +429,12 @@
 
                             <tr style="background:#000066; color:#fff;">
                                 <td>Total</td>
-                                <td>{{ ($data->sr_wr_full_marks + $data->sr_pr_full_marks + $data->sr_ap_full_marks + $data->sr_vv_full_marks) }}</td>
-                                <td>{{ ($data->sr_wr_pass_marks + $data->sr_pr_pass_marks + $data->sr_ap_pass_marks + $data->sr_vv_pass_marks)  }}</td>
-                                <td>{{ ($data->sr_wr_marks_obtained + $data->sr_pr_marks_obtained + $data->sr_ap_marks_obtained + $data->sr_vv_marks_obtained) }}</td>
+                                <td>{{ ($data->sr_wr_full_marks + $data->sr_pr_full_marks + $data->sr_ap_full_marks + $data->sr_vv_full_marks) }}
+                                </td>
+                                <td>{{ ($data->sr_wr_pass_marks + $data->sr_pr_pass_marks + $data->sr_ap_pass_marks + $data->sr_vv_pass_marks)  }}
+                                </td>
+                                <td>{{ ($data->sr_wr_marks_obtained + $data->sr_pr_marks_obtained + $data->sr_ap_marks_obtained + $data->sr_vv_marks_obtained) }}
+                                </td>
                             </tr>
                             <tr>
                                 <td>Overall Percentage</td>
@@ -430,23 +450,24 @@
                     </div>
 
                     <div class="issue-date">
-                        Date of Issue: {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->format('d-M-Y') : \Carbon\Carbon::now()->format('d-M-Y') }}
+                        Date of Issue:
+                        {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->format('d-M-Y') : \Carbon\Carbon::now()->format('d-M-Y') }}
                     </div>
 
                     <!-- Footer -->
                     <div class="footer">
                         <div class="logo-strip">
-                             @if(!empty($setting->certificate_footer_logos))
+                            @if(!empty($setting->certificate_footer_logos))
                                 @php $logos = json_decode($setting->certificate_footer_logos); @endphp
                                 @if(is_array($logos))
                                     @foreach($logos as $logo)
-                                         <img src="{{ asset($logo) }}" alt="Logo" class="footer-logo">
+                                        <img src="{{ asset($logo) }}" alt="Logo" class="footer-logo">
                                     @endforeach
                                 @endif
                             @else
-                            <!-- Fallback logos if dynamic not set -->
-                            <!-- You can keep your static ones here if you want -->
-                            <div style="text-align:center; width:100%;">Footer Logos</div>
+                                <!-- Fallback logos if dynamic not set -->
+                                <!-- You can keep your static ones here if you want -->
+                                <div style="text-align:center; width:100%;">Footer Logos</div>
                             @endif
                         </div>
                         <div class="auth-sign">
@@ -458,10 +479,12 @@
             </div>
         </div>
     </div>
-    
-        <!-- Print Button (Hidden in Print Mode) -->
+
+    <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Marksheet</button>
+        <button onclick="window.print()"
+            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
+            Marksheet</button>
     </div>
     <style>
         @media print {
