@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\center\Center; 
+use App\Models\center\Center;
 use Hash;
 use Carbon\Carbon;
 class CenterController extends Controller
@@ -17,18 +17,18 @@ class CenterController extends Controller
     public function center_list(Request $request)
     {
         $query = Center::orderBy('cl_id', 'DESC');
-        
+
         if ($request->has('status') && !empty($request->status)) {
             $status = $request->status;
-            if($status == 'active'){
-                 $query->where('cl_account_status', 'ACTIVE');
-            } elseif($status == 'pending'){
-                 $query->where('cl_account_status', 'PENDING');
-            } elseif($status == 'blocked'){
-                 $query->where('cl_account_status', 'BLOCKED');
+            if ($status == 'active') {
+                $query->where('cl_account_status', 'ACTIVE');
+            } elseif ($status == 'pending') {
+                $query->where('cl_account_status', 'PENDING');
+            } elseif ($status == 'blocked') {
+                $query->where('cl_account_status', 'BLOCKED');
             }
         }
-        
+
         $center['center'] = $query->get();
         return view('admin.center.index', $center);
     }
@@ -112,25 +112,26 @@ class CenterController extends Controller
 
         // Insert data
         $data = [
-            'cl_code'               => $nextInvoiceNumber,
-            'cl_center_name'        => $request->center_name,
-            'cl_director_name'      => $request->director_name,
-            'cl_center_address'     => $request->center_address,
-            'cl_name'               => $request->center_name,
-            'cl_photo'              => $photo,
-            'cl_center_stamp'       => $center_stamp,
-            'cl_center_signature'   => $center_signature,
-            'cl_director_adhar'     => $director_adhar,
-            'cl_wallet_balance'     => $request->cl_wallet_balance,
-            'cl_director_pan'       => $director_pan,
+            'cl_code' => $nextInvoiceNumber,
+            'cl_center_name' => $request->center_name,
+            'cl_director_name' => $request->director_name,
+            'cl_center_address' => $request->center_address,
+            'cl_name' => $request->center_name,
+            'cl_photo' => $photo,
+            'cl_center_stamp' => $center_stamp,
+            'cl_center_signature' => $center_signature,
+            'cl_authorized_signature' => $center_signature,
+            'cl_director_adhar' => $director_adhar,
+            'cl_wallet_balance' => $request->cl_wallet_balance,
+            'cl_director_pan' => $director_pan,
             'cl_director_education' => $request->director_education,
-            'cl_mobile'             => $request->center_mobile,
-            'password'              => Hash::make($request->center_mobile),
-            'cl_account_status'     => $request->center_status ?? 'PENDING',
+            'cl_mobile' => $request->center_mobile,
+            'password' => Hash::make($request->center_mobile),
+            'cl_account_status' => $request->center_status ?? 'PENDING',
             'cl_profile_edit_enabled' => 0, // Default: Disabled (locked) - Admin needs to enable it
-            'cl_email'              => $request->center_email,
-            'cl_registration_date'  => $registrationDate->format('Y-m-d'),
-            'cl_valid_till'         => $validTillDate->format('Y-m-d'),
+            'cl_email' => $request->center_email,
+            'cl_registration_date' => $registrationDate->format('Y-m-d'),
+            'cl_valid_till' => $validTillDate->format('Y-m-d'),
         ];
 
         $insert = Center::create($data);
@@ -151,10 +152,10 @@ class CenterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   
+
     public function edit_center($id)
     {
-        $data = Center::where('cl_id',$id)->first();
+        $data = Center::where('cl_id', $id)->first();
         return view('admin.center.edit', compact('data'));
     }
 
@@ -170,11 +171,12 @@ class CenterController extends Controller
         $exist = Center::findOrFail($id);
 
         // Keep old values by default
-        $photo            = $exist->cl_photo;
-        $center_stamp     = $exist->cl_center_stamp;
+        $photo = $exist->cl_photo;
+        $center_stamp = $exist->cl_center_stamp;
         $center_signature = $exist->cl_center_signature;
-        $director_adhar   = $exist->cl_director_adhar;
-        $director_pan     = $exist->cl_director_pan;
+        // $authorized_signature = $exist->cl_authorized_signature; // We want to sync these, so typically we rely on center_signature as primary for Admin
+        $director_adhar = $exist->cl_director_adhar;
+        $director_pan = $exist->cl_director_pan;
 
         // Upload new Center Photo
         if ($request->hasFile('photo')) {
@@ -243,20 +245,21 @@ class CenterController extends Controller
 
         // Prepare update data
         $data = [
-            'cl_center_name'        => $request->center_name,
-            'cl_director_name'      => $request->director_name,
-            'cl_center_address'     => $request->center_address,
-            'cl_name'               => $request->center_name,
-            'cl_photo'              => $photo,
-            'cl_center_stamp'       => $center_stamp,
-            'cl_center_signature'   => $center_signature,
-            'cl_director_adhar'     => $director_adhar,
-            'cl_director_pan'       => $director_pan,
-            'cl_wallet_balance'     => $request->cl_wallet_balance,
+            'cl_center_name' => $request->center_name,
+            'cl_director_name' => $request->director_name,
+            'cl_center_address' => $request->center_address,
+            'cl_name' => $request->center_name,
+            'cl_photo' => $photo,
+            'cl_center_stamp' => $center_stamp,
+            'cl_center_signature' => $center_signature,
+            'cl_authorized_signature' => $center_signature,
+            'cl_director_adhar' => $director_adhar,
+            'cl_director_pan' => $director_pan,
+            'cl_wallet_balance' => $request->cl_wallet_balance,
             'cl_director_education' => $request->director_education,
-            'cl_mobile'             => $request->center_mobile,
-            'password'              => Hash::make($request->center_mobile),
-            'cl_email'              => $request->center_email,
+            'cl_mobile' => $request->center_mobile,
+            'password' => Hash::make($request->center_mobile),
+            'cl_email' => $request->center_email,
         ];
 
         $update = $exist->update($data);
@@ -279,51 +282,53 @@ class CenterController extends Controller
     public function delete_center($id)
     {
         try {
-            $data = Center::where('cl_id',$id)->delete();
+            $data = Center::where('cl_id', $id)->delete();
             return back()->with('success', 'Center Deleted Successfully!');
         } catch (Exception $e) {
             return back()->with('error', 'Something Went Wrong!');
         }
     }
-    
-    public function center_status(Request $request){
+
+    public function center_status(Request $request)
+    {
         $center = Center::where('cl_code', $request->center_code)->update([
-            'cl_account_status'     => $request->center_status
+            'cl_account_status' => $request->center_status
         ]);
-        
-        if($center):
+
+        if ($center):
             $data = [
-                'msg'   => 'Center Status Updated Successfully!',
-                'status'    => 1,
+                'msg' => 'Center Status Updated Successfully!',
+                'status' => 1,
             ];
         else:
             $data = [
-                'msg'   => 'Something Went Wrong!',
-                'status'    => 0,
+                'msg' => 'Something Went Wrong!',
+                'status' => 0,
             ];
         endif;
-        
+
         return response()->json($data);
     }
-    
-    public function toggle_profile_edit(Request $request){
+
+    public function toggle_profile_edit(Request $request)
+    {
         $center = Center::where('cl_code', $request->center_code)->first();
-        
-        if(!$center):
+
+        if (!$center):
             return response()->json([
                 'msg' => 'Center not found!',
                 'status' => 0,
             ]);
         endif;
-        
+
         // Toggle the profile edit enabled status
         $newStatus = $center->cl_profile_edit_enabled == 1 ? 0 : 1;
-        
+
         $update = Center::where('cl_code', $request->center_code)->update([
             'cl_profile_edit_enabled' => $newStatus
         ]);
-        
-        if($update):
+
+        if ($update):
             $statusText = $newStatus == 1 ? 'Enabled' : 'Disabled';
             $data = [
                 'msg' => 'Profile Edit ' . $statusText . ' Successfully!',
@@ -336,34 +341,35 @@ class CenterController extends Controller
                 'status' => 0,
             ];
         endif;
-        
+
         return response()->json($data);
     }
-    
-    public function reset_center_password(Request $request){
+
+    public function reset_center_password(Request $request)
+    {
         $center = Center::where('cl_code', $request->center_code)->first();
-        
-        if(!$center):
+
+        if (!$center):
             return response()->json([
                 'msg' => 'Center not found!',
                 'status' => 0,
             ]);
         endif;
-        
+
         // Reset password to mobile number
         $mobileNumber = $center->cl_mobile;
-        if(!$mobileNumber):
+        if (!$mobileNumber):
             return response()->json([
                 'msg' => 'Center mobile number not found!',
                 'status' => 0,
             ]);
         endif;
-        
+
         $update = Center::where('cl_code', $request->center_code)->update([
             'password' => Hash::make($mobileNumber)
         ]);
-        
-        if($update):
+
+        if ($update):
             $data = [
                 'msg' => 'Password Reset Successfully! New password is: ' . $mobileNumber,
                 'status' => 1,
@@ -374,31 +380,35 @@ class CenterController extends Controller
                 'status' => 0,
             ];
         endif;
-        
+
         return response()->json($data);
     }
-    
-    public function center_certificate($id){
-        $center = Center::where('cl_id',$id)->first();
+
+    public function center_certificate($id)
+    {
+        $center = Center::where('cl_id', $id)->first();
         $setting = \DB::table('site_settings')->first();
         return view('center_certificate', compact('center', 'setting'));
     }
-    
+
     // View Center ID Card from Admin Panel
-    public function viewCenterIdCardAdmin($id){
-        $data = Center::where('cl_id',$id)->first();
+    public function viewCenterIdCardAdmin($id)
+    {
+        $data = Center::where('cl_id', $id)->first();
         $setting = \DB::table('site_settings')->first();
         return view('center.view_id_card_admin', compact('data', 'setting'));
     }
-    
+
     // View Center ID Card from Center Panel
-    public function viewCenterIdCard(){
+    public function viewCenterIdCard()
+    {
         $data = \Illuminate\Support\Facades\Auth::guard('center')->user();
         return view('center.view_id_card', compact('data'));
     }
-    
+
     // View Center Certificate from Center Panel
-    public function viewCenterCertificate(){
+    public function viewCenterCertificate()
+    {
         $center = \Illuminate\Support\Facades\Auth::guard('center')->user();
         $setting = \DB::table('site_settings')->first();
         return view('center_certificate', compact('center', 'setting'));

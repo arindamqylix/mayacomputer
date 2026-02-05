@@ -115,7 +115,7 @@ class StudentController extends Controller
         $data = DB::table('student_login')
             ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
             ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->select('student_login.*', 'center_login.cl_center_name', 'center_login.cl_code', 'center_login.cl_name', 'course.c_full_name', 'course.c_short_name', 'course.c_duration')
+            ->select('student_login.*', 'center_login.cl_center_name', 'center_login.cl_code', 'center_login.cl_name', 'center_login.cl_center_address', 'course.c_full_name', 'course.c_short_name', 'course.c_duration')
             ->where('student_login.sl_id', $id)
             ->where('student_login.sl_FK_of_center_id', CENTER_ID) // Ensure center can only view their own students
             ->first();

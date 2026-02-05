@@ -20,7 +20,8 @@ class RegistrationCardController extends Controller
                 'course.*',
                 'center_login.cl_name',
                 'center_login.cl_center_name',
-                'center_login.cl_code'
+                'center_login.cl_code',
+                'center_login.cl_center_address'
             )
             ->first();
 

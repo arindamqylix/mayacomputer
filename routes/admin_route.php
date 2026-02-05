@@ -1,4 +1,4 @@
- <?php
+<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AuthController;
@@ -31,17 +31,17 @@ use App\Http\Controllers\NotificationController;
 Route::get('admin/login', [AuthController::class, 'admin_login'])->name('admin_login');
 Route::post('admin/login', [AuthController::class, 'admin_login_now'])->name('admin_login');
 
-Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
+Route::group(['prefix' => 'admin', 'middleware' => 'admin:admin'], function () {
 	Route::get('dashboard', [AuthController::class, 'admin_dashboard'])->name('admin_dashboard');
 	Route::get('logout', [AuthController::class, 'admin_logout'])->name('admin_logout');
-	
+
 	// Center
 	Route::get('center-list', [CenterController::class, 'center_list'])->name('center_list');
 	Route::get('add-center', [CenterController::class, 'add_center'])->name('add_center');
-	Route::post('add-center', [CenterController::class, 'add_center_now'])->name('add_center'); 
+	Route::post('add-center', [CenterController::class, 'add_center_now'])->name('add_center');
 	Route::get('edit-center/{id}', [CenterController::class, 'edit_center'])->name('edit_center');
-	Route::post('edit-center/{id}', [CenterController::class, 'update_center'])->name('edit_center'); 
-	Route::get('delete-center/{id}', [CenterController::class, 'delete_center'])->name('delete_center'); 
+	Route::post('edit-center/{id}', [CenterController::class, 'update_center'])->name('edit_center');
+	Route::get('delete-center/{id}', [CenterController::class, 'delete_center'])->name('delete_center');
 	Route::get('center-account-status', [CenterController::class, 'center_status'])->name('center.status');
 	Route::get('center-toggle-profile-edit', [CenterController::class, 'toggle_profile_edit'])->name('center.toggle_profile_edit');
 	Route::get('center-reset-password', [CenterController::class, 'reset_center_password'])->name('center.reset_password');
@@ -66,14 +66,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('student-registration-card/{id}', [StudentController::class, 'registration_card'])->name('student_registration_card');
 	Route::get('get-reg-no', [StudentController::class, 'get_reg_no'])->name('get_reg_no');
 	Route::get('login-as-student/{id}', [StudentController::class, 'login_as_student'])->name('admin.login_as_student');
-    Route::get('student-reset-password', [StudentController::class, 'reset_student_password'])->name('student.reset_password');
+	Route::get('student-reset-password', [StudentController::class, 'reset_student_password'])->name('student.reset_password');
 
-    // Student Reg & ID Cards
+	// Student Reg & ID Cards
 	Route::get('student-reg-card-list', [StudentController::class, 'student_reg_card_list'])->name('admin.student.reg_card_list');
-    Route::get('student-id-card-list', [StudentController::class, 'student_id_card_list'])->name('admin.student.id_card_list');
-    Route::get('student-id-card-view/{id}', [StudentController::class, 'student_id_card'])->name('student_id_card_view');
+	Route::get('student-id-card-list', [StudentController::class, 'student_id_card_list'])->name('admin.student.id_card_list');
+	Route::get('student-id-card-view/{id}', [StudentController::class, 'student_id_card'])->name('student_id_card_view');
 
-	
+
 
 	// Course
 	Route::get('course-list', [CourseController::class, 'course_list'])->name('course_list');
@@ -177,37 +177,37 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 
 	// Course Category
 	Route::get('/courses-category', [CmsCourseCategoryController::class, 'courseCategory'])->name('course.category.list');
-    Route::get('/courses-category/add', [CmsCourseCategoryController::class, 'createCourseCategory'])->name('add.course.category');
-    Route::post('/courses-category/store', [CmsCourseCategoryController::class, 'storeCourseCategory'])->name('store.course.category');
-    Route::get('/courses-category/edit/{id}', [CmsCourseCategoryController::class, 'editCourseCategory'])->name('edit.course.category');
-    Route::post('/courses-category/update/{id}', [CmsCourseCategoryController::class, 'updateCourseCategory'])->name('update.course.category');
-    Route::get('/courses-category/delete/{id}', [CmsCourseCategoryController::class, 'destroyCourseCategory'])->name('delete.course.category');
+	Route::get('/courses-category/add', [CmsCourseCategoryController::class, 'createCourseCategory'])->name('add.course.category');
+	Route::post('/courses-category/store', [CmsCourseCategoryController::class, 'storeCourseCategory'])->name('store.course.category');
+	Route::get('/courses-category/edit/{id}', [CmsCourseCategoryController::class, 'editCourseCategory'])->name('edit.course.category');
+	Route::post('/courses-category/update/{id}', [CmsCourseCategoryController::class, 'updateCourseCategory'])->name('update.course.category');
+	Route::get('/courses-category/delete/{id}', [CmsCourseCategoryController::class, 'destroyCourseCategory'])->name('delete.course.category');
 
 	// Course
 	Route::get('/courses', [CmsCourseController::class, 'index'])->name('course.list');
-    Route::get('/courses/add', [CmsCourseController::class, 'create'])->name('add.course');
-    Route::post('/courses/store', [CmsCourseController::class, 'store'])->name('store.course');
-    Route::get('/courses/edit/{id}', [CmsCourseController::class, 'edit'])->name('edit.course');
-    Route::post('/courses/update/{id}', [CmsCourseController::class, 'update'])->name('update.course');
-    Route::get('/courses/delete/{id}', [CmsCourseController::class, 'destroy'])->name('delete.course');
+	Route::get('/courses/add', [CmsCourseController::class, 'create'])->name('add.course');
+	Route::post('/courses/store', [CmsCourseController::class, 'store'])->name('store.course');
+	Route::get('/courses/edit/{id}', [CmsCourseController::class, 'edit'])->name('edit.course');
+	Route::post('/courses/update/{id}', [CmsCourseController::class, 'update'])->name('update.course');
+	Route::get('/courses/delete/{id}', [CmsCourseController::class, 'destroy'])->name('delete.course');
 
 
 
 	// Director
 	Route::get('/directors', [CmsDirectorController::class, 'index'])->name('director_list');
-    Route::get('/directors/add', [CmsDirectorController::class, 'create'])->name('add_director');
-    Route::post('/directors/store', [CmsDirectorController::class, 'store'])->name('store_director');
-    Route::get('/directors/edit/{id}', [CmsDirectorController::class, 'edit'])->name('edit_director');
-    Route::post('/directors/update/{id}', [CmsDirectorController::class, 'update'])->name('update_director');
-    Route::get('/directors/delete/{id}', [CmsDirectorController::class, 'destroy'])->name('delete_director');
+	Route::get('/directors/add', [CmsDirectorController::class, 'create'])->name('add_director');
+	Route::post('/directors/store', [CmsDirectorController::class, 'store'])->name('store_director');
+	Route::get('/directors/edit/{id}', [CmsDirectorController::class, 'edit'])->name('edit_director');
+	Route::post('/directors/update/{id}', [CmsDirectorController::class, 'update'])->name('update_director');
+	Route::get('/directors/delete/{id}', [CmsDirectorController::class, 'destroy'])->name('delete_director');
 
 	// About Us
 	Route::get('/about-us', [AboutUsController::class, 'index'])->name('about_us.list');
-    Route::get('/about-us/create', [AboutUsController::class, 'create'])->name('about_us.create');
-    Route::post('/about-us/store', [AboutUsController::class, 'store'])->name('about_us.store');
-    Route::get('/about-us/edit/{id}', [AboutUsController::class, 'edit'])->name('about_us.edit');
-    Route::put('/about-us/update/{id}', [AboutUsController::class, 'update'])->name('about_us.update');
-    Route::delete('/about-us/{id}', [AboutUsController::class, 'destroy'])->name('about_us.destroy');
+	Route::get('/about-us/create', [AboutUsController::class, 'create'])->name('about_us.create');
+	Route::post('/about-us/store', [AboutUsController::class, 'store'])->name('about_us.store');
+	Route::get('/about-us/edit/{id}', [AboutUsController::class, 'edit'])->name('about_us.edit');
+	Route::put('/about-us/update/{id}', [AboutUsController::class, 'update'])->name('about_us.update');
+	Route::delete('/about-us/{id}', [AboutUsController::class, 'destroy'])->name('about_us.destroy');
 
 	/* ============ CMS Route End =========== */
 
@@ -236,7 +236,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('certificate/edit/{id}', [CertificateController::class, 'edit_certificate'])->name('admin.edit_certificate');
 	Route::post('certificate/update/{id}', [CertificateController::class, 'update_certificate'])->name('admin.update_certificate');
 	Route::get('certificate/delete/{id}', [CertificateController::class, 'delete_certificate'])->name('admin.delete_certificate');
-	
+
 	// Result
 	Route::get('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result'])->name('admin.set_result');
 	Route::post('set-result', [App\Http\Controllers\admin\ResultController::class, 'set_result_now'])->name('admin.set_result');
@@ -244,7 +244,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('result/edit/{id}', [App\Http\Controllers\admin\ResultController::class, 'edit_result'])->name('admin.edit_result');
 	Route::post('result/update/{id}', [App\Http\Controllers\admin\ResultController::class, 'update_result'])->name('admin.update_result');
 	Route::get('result/delete/{id}', [App\Http\Controllers\admin\ResultController::class, 'delete_result'])->name('admin.delete_result');
-	
+
 	// Courier
 	Route::get('courier', [CourierController::class, 'index'])->name('admin.courier.index');
 	Route::get('courier/center-students/{centerId}', [CourierController::class, 'getCenterStudents'])->name('admin.courier.center_students');
@@ -252,7 +252,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('courier/dispatch/{id}', [CourierController::class, 'dispatch'])->name('admin.courier.dispatch');
 	Route::post('courier/dispatch/{id}', [CourierController::class, 'update_single_dispatch'])->name('admin.courier.update_single');
 	Route::post('courier/update-details/{id}', [CourierController::class, 'update_courier_details'])->name('admin.courier.update_details');
-	
+
 	// Document Reissue
 	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('admin.document_reissue.index');
 	Route::get('document-reissue/{id}', [DocumentReissueController::class, 'show'])->name('admin.document_reissue.show');
@@ -260,15 +260,16 @@ Route::group(['prefix'=>'admin', 'middleware'=>'admin:admin'], function(){
 	Route::get('document-reissue/{id}/approve', [DocumentReissueController::class, 'approve'])->name('admin.document_reissue.approve');
 	Route::get('document-reissue/{id}/complete', [DocumentReissueController::class, 'complete'])->name('admin.document_reissue.complete');
 	Route::post('document-reissue/{id}/reject', [DocumentReissueController::class, 'reject'])->name('admin.document_reissue.reject');
-	
+
 	// Invoice
 	Route::get('invoices/center-recharge', [InvoiceController::class, 'centerRechargeInvoices'])->name('admin.invoice.center_recharge_list');
 	Route::get('invoices/center-recharge/{id}', [InvoiceController::class, 'viewCenterRechargeInvoice'])->name('admin.invoice.center_recharge_view');
 	Route::get('invoices/center-recharge/{id}/download', [InvoiceController::class, 'downloadCenterRechargeInvoice'])->name('admin.invoice.center_recharge_download');
+	Route::get('invoices/transaction/{id}/download', [InvoiceController::class, 'downloadTransactionInvoice'])->name('admin.invoice.transaction_download');
 
-    // Document Settings (Re-Issue Types)
-    Route::get('document-settings', [App\Http\Controllers\admin\DocumentTypeController::class, 'index'])->name('admin.document_settings.index');
-    Route::post('document-settings/store', [App\Http\Controllers\admin\DocumentTypeController::class, 'store'])->name('admin.document_settings.store');
-    Route::post('document-settings/update/{id}', [App\Http\Controllers\admin\DocumentTypeController::class, 'update'])->name('admin.document_settings.update');
-    Route::get('document-settings/delete/{id}', [App\Http\Controllers\admin\DocumentTypeController::class, 'destroy'])->name('admin.document_settings.delete');
+	// Document Settings (Re-Issue Types)
+	Route::get('document-settings', [App\Http\Controllers\admin\DocumentTypeController::class, 'index'])->name('admin.document_settings.index');
+	Route::post('document-settings/store', [App\Http\Controllers\admin\DocumentTypeController::class, 'store'])->name('admin.document_settings.store');
+	Route::post('document-settings/update/{id}', [App\Http\Controllers\admin\DocumentTypeController::class, 'update'])->name('admin.document_settings.update');
+	Route::get('document-settings/delete/{id}', [App\Http\Controllers\admin\DocumentTypeController::class, 'destroy'])->name('admin.document_settings.delete');
 });

@@ -35,22 +35,24 @@
               $siteSettings = site_settings();
               $logoPath = null;
               $siteName = 'MAYA COMPUTER';
-              
-              if($siteSettings) {
+
+              if ($siteSettings) {
                 $logoPath = !empty($siteSettings->site_logo) ? $siteSettings->site_logo : null;
                 $siteName = !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER';
               }
-              
+
               $logoExists = false;
-              if($logoPath) {
+              if ($logoPath) {
                 $fullPath = public_path($logoPath);
                 $logoExists = file_exists($fullPath);
               }
             @endphp
             @if($logoExists)
-              <img src="{{ asset($logoPath) }}" alt="{{ $siteName }} Logo" style="max-width: 200px; max-height: 80px; min-height: 60px; width: auto; height: auto; object-fit: contain; display: block;">
+              <img src="{{ asset($logoPath) }}" alt="{{ $siteName }} Logo"
+                style="max-width: 200px; max-height: 80px; min-height: 60px; width: auto; height: auto; object-fit: contain; display: block;">
             @else
-              <span class="sidebar-text" style="display: block; font-size: 1.25rem; font-weight: 700; color: white; text-align: center; padding: 0.5rem;">{{ $siteName }}</span>
+              <span class="sidebar-text"
+                style="display: block; font-size: 1.25rem; font-weight: 700; color: white; text-align: center; padding: 0.5rem;">{{ $siteName }}</span>
             @endif
           </span>
         </a>
@@ -148,8 +150,10 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-admit" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('admin.generate_admit_card') }}" class="nav-link"><span class="sidebar-text">Generate Admit Card</span></a></li>
-            <li class="nav-item"><a href="{{ route('admin.admit_card_list') }}" class="nav-link"><span class="sidebar-text">View Admit Card</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.generate_admit_card') }}" class="nav-link"><span
+                  class="sidebar-text">Generate Admit Card</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.admit_card_list') }}" class="nav-link"><span
+                  class="sidebar-text">View Admit Card</span></a></li>
           </ul>
         </div>
       </li>
@@ -166,8 +170,10 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-result" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('admin.set_result') }}" class="nav-link"><span class="sidebar-text">Set Result</span></a></li>
-            <li class="nav-item"><a href="{{ route('admin.result_list') }}" class="nav-link"><span class="sidebar-text">Result List</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.set_result') }}" class="nav-link"><span
+                  class="sidebar-text">Set Result</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.result_list') }}" class="nav-link"><span
+                  class="sidebar-text">Result List</span></a></li>
           </ul>
         </div>
       </li>
@@ -184,8 +190,10 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-certificate" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('admin.certificate_generate') }}" class="nav-link"><span class="sidebar-text">Generate Certificate</span></a></li>
-            <li class="nav-item"><a href="{{ route('admin.certificate_list') }}" class="nav-link"><span class="sidebar-text">Certificate List</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.certificate_generate') }}" class="nav-link"><span
+                  class="sidebar-text">Generate Certificate</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.certificate_list') }}" class="nav-link"><span
+                  class="sidebar-text">Certificate List</span></a></li>
           </ul>
         </div>
       </li>
@@ -198,21 +206,22 @@
         </a>
       </li>
 
-      <!-- Document Reissue -->
-      <!-- Document Reissue -->
+      <!-- Document Re-Prints -->
       <li class="nav-item">
         <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
           data-bs-target="#submenu-reissue" aria-expanded="false">
           <span>
             <span class="sidebar-icon"><i class="fa-solid fa-file-circle-plus"></i></span>
-            <span class="sidebar-text">Document Reissue</span>
+            <span class="sidebar-text">Document Re-Prints</span>
           </span>
           <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </span>
         <div class="multi-level collapse" role="list" id="submenu-reissue" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('admin.document_reissue.index') }}" class="nav-link"><span class="sidebar-text">Reissue Requests</span></a></li>
-            <li class="nav-item"><a href="{{ route('admin.document_settings.index') }}" class="nav-link"><span class="sidebar-text">Reissue Settings</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.document_reissue.index') }}" class="nav-link"><span
+                  class="sidebar-text">Re-Print Requests</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.document_settings.index') }}" class="nav-link"><span
+                  class="sidebar-text">Re-Print Settings</span></a></li>
           </ul>
         </div>
       </li>
@@ -248,7 +257,7 @@
           <span class="sidebar-text">Income/Expense</span>
         </a>
       </li>
- 
+
 
       <!-- CMS Section Label -->
       <li class="nav-item mt-3 px-3">
@@ -280,9 +289,11 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-aboutus" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('about_us.list') }}" class="nav-link"><span class="sidebar-text">About Us Sections</span></a></li>
-            <li class="nav-item"><a href="{{ route('director_list') }}" class="nav-link"><span class="sidebar-text">Director & Teacher</span></a></li>
-            
+            <li class="nav-item"><a href="{{ route('about_us.list') }}" class="nav-link"><span
+                  class="sidebar-text">About Us Sections</span></a></li>
+            <li class="nav-item"><a href="{{ route('director_list') }}" class="nav-link"><span
+                  class="sidebar-text">Director & Teacher</span></a></li>
+
           </ul>
         </div>
       </li>
@@ -298,9 +309,11 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-course" aria-expanded="false">
           <ul class="flex-column nav">
-            <li class="nav-item"><a href="{{ route('course.category.list') }}" class="nav-link"><span class="sidebar-text">Category</span></a></li>
-            <li class="nav-item"><a href="{{ route('course.list') }}" class="nav-link"><span class="sidebar-text">Course</span></a></li>
-            
+            <li class="nav-item"><a href="{{ route('course.category.list') }}" class="nav-link"><span
+                  class="sidebar-text">Category</span></a></li>
+            <li class="nav-item"><a href="{{ route('course.list') }}" class="nav-link"><span
+                  class="sidebar-text">Course</span></a></li>
+
           </ul>
         </div>
       </li>

@@ -255,11 +255,46 @@
 
         .controller-sign {
             margin-top: 40px;
-            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
             padding-right: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .controller-sig-overlap {
+            position: relative;
+            width: 160px;
+            text-align: center;
+        }
+        .controller-sig-area {
+            position: relative;
+            height: 85px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .controller-sig-area .auth-stamp {
+            position: absolute;
+            height: 95px;
+            width: auto;
+            max-width: 140px;
+            object-fit: contain;
+            opacity: 0.85;
+            z-index: 1;
+        }
+        .controller-sig-area .auth-sign {
+            position: relative;
+            height: 38px;
+            max-width: 90px;
+            object-fit: contain;
+            z-index: 2;
+        }
+        .controller-sig-label {
+            padding-top: 4px;
             font-weight: bold;
             font-size: 14px;
-            font-family: Arial, sans-serif;
+            color: #333;
+            white-space: nowrap;
         }
 
         /* Print styles */
@@ -301,6 +336,7 @@
                     <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
                     <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                     <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                 </div>
                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$student->sl_reg_no) }}"
                             alt="QR Code" class="qr-code">
@@ -315,43 +351,44 @@
 
             <!-- Blue Strip -->
             <div class="blue-bar">
-                <span>Registration No.: &nbsp; {{ $student->sl_reg_no }}</span>
-                <span>Registration Years: {{ \Carbon\Carbon::parse($student->created_at)->year }}</span>
+                <span>Registration No. &nbsp;&nbsp;: {{ $student->sl_reg_no }}</span>
+                <span>Year : {{ \Carbon\Carbon::parse($student->created_at)->year }}</span>
             </div>
 
             <!-- Student Details -->
             <div class="details-section">
                 <table class="info-table">
                     <tr>
-                        <td class="label">Student Name:</td>
-                        <td class="value">{{ strtoupper($student->sl_name) }}</td>
+                        <td class="label">Student Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_name) }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Father’s Name:</td>
-                        <td class="value">{{ strtoupper($student->sl_father_name) }}</td>
+                        <td class="label">Father’s Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_mother_name) }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Mother’s Name:</td>
-                        <td class="value">{{ strtoupper($student->sl_mother_name) }}</td>
+                        <td class="label">Mother’s Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_father_name) }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Date of Birth:</td>
-                        <td class="value">{{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp;&nbsp; <span
-                                style="font-weight:normal; font-style:italic;">Gender:</span> {{ ucfirst($student->sl_sex ?? 'N/A') }}
-                            &nbsp;&nbsp;&nbsp;&nbsp; <span
-                                style="font-weight:normal; font-style:italic;">Category:</span> {{ $student->sl_category ?? 'Gen' }}</td>
+                        <td class="label">Date of Birth</td>
+                        <td class="value" colspan="2">: {{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $student->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Center Code & Name:</td>
-                        <td class="value">{{ $center->cl_code ?? '' }}- {{ strtoupper($center->cl_center_name ?? '') }}</td>
+                        <td class="label">Course Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Course Name:</td>
-                        <td class="value">{{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
+                        <td class="label">Course Duration</td>
+                        <td class="value" colspan="2">: @php $dur = $course->c_duration ?? 0; if(is_numeric($dur) && $dur >= 12){ echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); } elseif(is_numeric($dur) && $dur > 0){ echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); } else { echo $course->c_duration ?? 'N/A'; } @endphp</td>
                     </tr>
                     <tr>
-                        <td class="label">Course Duration:</td>
-                        <td class="value">{{ $course->c_duration ?? 'N/A' }}</td>
+                        <td class="label">Center Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($center->cl_center_name ?? '') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Center Code & Address</td>
+                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} & {{ $center->cl_center_address ?? 'N/A' }}</td>
                     </tr>
                 </table>
 
@@ -395,7 +432,17 @@
             </div>
 
             <div class="controller-sign">
-                Controller of Examination
+                <div class="controller-sig-overlap">
+                    <div class="controller-sig-area">
+                        @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                            <img src="{{ asset($setting->authorize_stamp) }}" class="auth-stamp" alt="Stamp">
+                        @endif
+                        @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                            <img src="{{ asset($setting->authorize_signature) }}" class="auth-sign" alt="Signature">
+                        @endif
+                    </div>
+                    <div class="controller-sig-label">Controller of Examination</div>
+                </div>
             </div>
 
         </div>

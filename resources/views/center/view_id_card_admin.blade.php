@@ -227,7 +227,8 @@
 
         .signature-wrapper {
             position: relative;
-            width: 140px;
+            width: auto;
+            min-width: 140px;
             text-align: center;
         }
 
@@ -278,6 +279,7 @@
             z-index: 0;
             margin-top: -10px;
             /* Slight overlap upwards */
+            white-space: nowrap;
         }
 
         .sig-text-wrapper {
@@ -379,6 +381,7 @@
                     <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
                     <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
                     <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                 </div>
 
                 <div class="id-header-text">

@@ -49,7 +49,7 @@ class ProfileController extends Controller
 			$file = $request->file('center_photo');
 			$filename = time() . '_' . $file->getClientOriginalName();
 			$file->move(public_path($folder), $filename);
-			$data['cl_photo'] = $filename;
+			$data['cl_photo'] = $folder . '/' . $filename;
 		} else {
 			$data['cl_photo'] = $center->cl_photo;
 		}
@@ -59,7 +59,7 @@ class ProfileController extends Controller
 			$file = $request->file('center_logo');
 			$filename = time() . '_' . $file->getClientOriginalName();
 			$file->move(public_path($folder), $filename);
-			$data['cl_logo'] = $filename;
+			$data['cl_logo'] = $folder . '/' . $filename;
 		} else {
 			$data['cl_logo'] = $center->cl_logo;
 		}
@@ -69,9 +69,11 @@ class ProfileController extends Controller
 			$file = $request->file('center_authorized_signature');
 			$filename = time() . '_' . $file->getClientOriginalName();
 			$file->move(public_path($folder), $filename);
-			$data['cl_authorized_signature'] = $filename;
+			$data['cl_authorized_signature'] = $folder . '/' . $filename;
+			$data['cl_center_signature'] = $folder . '/' . $filename; // Sync with cl_center_signature
 		} else {
 			$data['cl_authorized_signature'] = $center->cl_authorized_signature;
+			$data['cl_center_signature'] = $center->cl_center_signature;
 		}
 
 		// Upload Center Stamp
@@ -79,7 +81,7 @@ class ProfileController extends Controller
 			$file = $request->file('center_stamp');
 			$filename = time() . '_' . $file->getClientOriginalName();
 			$file->move(public_path($folder), $filename);
-			$data['cl_center_stamp'] = $filename;
+			$data['cl_center_stamp'] = $folder . '/' . $filename;
 		} else {
 			$data['cl_center_stamp'] = $center->cl_center_stamp;
 		}

@@ -126,10 +126,12 @@
         }
 
         .qr-wrapper .sn-top-right {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             display: block;
-            margin-bottom: 5px;
+            margin-top: 4px;
+            white-space: nowrap;
+            text-align: center;
             font-family: 'Times New Roman', serif;
         }
 
@@ -370,8 +372,9 @@
                             @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                 <div class="hologram-wrapper">
                                     <div
-                                        style="font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 5px; font-family: 'Times New Roman', serif;">
-                                        Certificate No. {{ $certificate->sc_certificate_number }}
+                                        style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 5px;">
+                                        Certificate No. : <span
+                                            style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 5px;">{{ $certificate->sc_certificate_number }}</span>
                                     </div>
                                     <img src="{{ asset($setting->hologram) }}" alt="Hologram">
                                 </div>
@@ -388,12 +391,12 @@
                                 <p class="reg-details" style="font-size:12px;">Registered Under NCT Delhi, Skill India,
                                     Udyam & Startup India</p>
                                 <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                                <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                             </div>
                             <div class="qr-wrapper">
-                                <span class="sn-top-right">Sr. No. :
-                                    MCC{{ str_pad($certificate->sl_id, 5, '0', STR_PAD_LEFT) }}</span>
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-certificate/' . $certificate->sc_certificate_number) }}"
                                     alt="QR">
+                                <span class="sn-top-right">SN. MCC{{ str_pad($certificate->sl_id, 5, '0', STR_PAD_LEFT) }}</span>
                             </div>
                         </div>
 
@@ -475,15 +478,13 @@
                                 <div class="sig-overlap-container">
                                     <div class="sig-area"
                                         style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
-                                        @if(!empty($certificate->cl_center_stamp) && file_exists(public_path('center-document/' . $certificate->cl_center_stamp)))
-                                            <img src="{{ asset('center-document/' . $certificate->cl_center_stamp) }}"
-                                                class="stamp-img"
+                                        @if(!empty($certificate->cl_center_stamp) && file_exists(public_path($certificate->cl_center_stamp)))
+                                            <img src="{{ asset($certificate->cl_center_stamp) }}" class="stamp-img"
                                                 style="position: absolute; height: 110px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
                                                 alt="Center Stamp">
                                         @endif
-                                        @if(!empty($certificate->cl_authorized_signature) && file_exists(public_path('center-document/' . $certificate->cl_authorized_signature)))
-                                            <img src="{{ asset('center-document/' . $certificate->cl_authorized_signature) }}"
-                                                class="sign-img"
+                                        @if(!empty($certificate->cl_authorized_signature) && file_exists(public_path($certificate->cl_authorized_signature)))
+                                            <img src="{{ asset($certificate->cl_authorized_signature) }}" class="sign-img"
                                                 style="position: absolute; height: 50px; z-index: 2; bottom: 10px; left: 50%; transform: translateX(-50%);"
                                                 alt="Center Sign">
                                         @endif

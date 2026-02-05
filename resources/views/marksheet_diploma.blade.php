@@ -138,23 +138,29 @@
             font-family: Arial, sans-serif;
         }
 
-        .qr-code {
+        .qr-block {
             position: absolute;
             right: 0;
             top: 25px;
+            text-align: center;
+            width: 70px;
+        }
+
+        .qr-code {
             width: 70px;
             height: 70px;
             border: 1px solid #ddd;
             background: #fff;
+            display: block;
         }
 
-        .sr-no-top {
-            position: absolute;
-            right: 0;
-            top: 0;
+        .qr-sr-no {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 11px;
             font-family: Arial, sans-serif;
+            margin-top: 4px;
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
         /* Section Titles */
@@ -256,13 +262,17 @@
             font-weight: bold;
         }
 
-        .marks-table tr:last-child {
-            background-color: #000066;
-            color: white;
+        /* Overall Percentage / Grade row - distinct from Total */
+        .marks-table tr.grade-summary-row {
+            background-color: #f0f4f8;
+            color: #1a1a1a;
+            font-weight: bold;
+            border-top: 2px solid #000066;
         }
 
-        .marks-table tr:last-child td {
-            border: 1px solid #fff;
+        .marks-table tr.grade-summary-row td {
+            border: 1px solid #ccc;
+            padding: 8px;
         }
 
         /* Grading Details */
@@ -271,6 +281,7 @@
             font-weight: bold;
             margin-top: 5px;
             margin-bottom: 20px;
+            white-space: nowrap;
         }
 
         .issue-date {
@@ -409,11 +420,13 @@
                                         India,
                                         Udyam & Startup India</p>
                                     <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
+                                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                                 </div>
-                                <div class="sr-no-top">Sr. No. : MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}
+                                <div class="qr-block">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}"
+                                        alt="QR Code" class="qr-code">
+                                    <div class="qr-sr-no">SN. MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}</div>
                                 </div>
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}"
-                                    alt="QR Code" class="qr-code">
                             </div>
 
                             <!-- Title -->
@@ -422,31 +435,29 @@
                             <!-- Student Details -->
                             <div class="info-box">
                                 <div class="student-details">
-                                    <div class="info-row"><span class="info-label">Registration No.</span>: <span
-                                            class="info-value">{{ $data->sl_reg_no ?? 'N/A' }}
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year:
-                                            {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
+                                    <div class="info-row"><span class="info-label">Registration No.</span> : <span
+                                            class="info-value">&nbsp;{{ $data->sl_reg_no ?? 'N/A' }}
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year : {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
                                     </div>
-                                    <div class="info-row"><span class="info-label">Student Name</span>: <span
-                                            class="info-value">{{ strtoupper($data->sl_name ?? '') }}</span></div>
-                                    <div class="info-row"><span class="info-label">Father’s Name</span>: <span
-                                            class="info-value">{{ strtoupper($data->sl_father_name ?? '') }}</span>
+                                    <div class="info-row"><span class="info-label">Student Name</span> : <span
+                                            class="info-value">&nbsp;{{ strtoupper($data->sl_name ?? '') }}</span></div>
+                                    <div class="info-row"><span class="info-label">Mother's Name</span> : <span
+                                            class="info-value">&nbsp;{{ strtoupper($data->sl_mother_name ?? '') }}</span>
                                     </div>
-                                    <div class="info-row"><span class="info-label">Mother’s Name</span>: <span
-                                            class="info-value">{{ strtoupper($data->sl_mother_name ?? '') }}</span>
+                                    <div class="info-row"><span class="info-label">Father's Name</span> : <span
+                                            class="info-value">&nbsp;{{ strtoupper($data->sl_father_name ?? '') }}</span>
                                     </div>
-                                    <div class="info-row"><span class="info-label">Date of Birth</span>: <span
-                                            class="info-value">{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp;&nbsp; Gender:
-                                            {{ ucfirst($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp;&nbsp;
-                                            Category: {{ $data->sl_category ?? 'Gen' }}</span></div>
-                                    <div class="info-row"><span class="info-label">Center Code & Name</span>: <span
-                                            class="info-value">{{ $data->cl_code ?? 'N/A' }}-
-                                            {{ strtoupper($data->cl_center_name ?? '') }}</span></div>
-                                    <div class="info-row"><span class="info-label">Course Name</span>: <span
-                                            class="info-value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
+                                    <div class="info-row"><span class="info-label">Date of Birth</span> : <span
+                                            class="info-value">&nbsp;{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'Gen' }}</span></div>
+                                    <div class="info-row"><span class="info-label">Course Name</span> : <span
+                                            class="info-value">&nbsp;{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
                                     </div>
-                                    <div class="info-row"><span class="info-label">Course Duration</span>: <span
-                                            class="info-value">{{ $data->c_duration ?? 'N/A' }}</span></div>
+                                    <div class="info-row"><span class="info-label">Course Duration</span> : <span
+                                            class="info-value"> &nbsp;@php $dur = $data->c_duration ?? 0; if(is_numeric($dur) && $dur >= 12){ echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); } elseif(is_numeric($dur) && $dur > 0){ echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); } else { echo $data->c_duration ?? 'N/A'; } @endphp</span></div>
+                                    <div class="info-row"><span class="info-label">Center Name</span> : <span
+                                            class="info-value">&nbsp;{{ strtoupper($data->cl_center_name ?? $data->cl_name ?? 'N/A') }}</span></div>
+                                    <div class="info-row"><span class="info-label">Center Code & Address</span> : <span
+                                            class="info-value"> &nbsp;{{ $data->cl_code ?? 'N/A' }} & {{ $data->cl_center_address ?? 'N/A' }}</span></div>
                                 </div>
                                 <div class="photo-area">
                                     @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
@@ -519,7 +530,7 @@
                                         <td>{{ ($data->sr_wr_marks_obtained + $data->sr_pr_marks_obtained + $data->sr_ap_marks_obtained + $data->sr_vv_marks_obtained) }}
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="grade-summary-row">
                                         <td>Overall Percentage</td>
                                         <td>{{ number_format($data->sr_percentage ?? 0, 2) }}%</td>
                                         <td>Grade</td>
@@ -551,32 +562,9 @@
                                 </div>
 
                                 <div class="signatures-wrapper"
-                                    style="display: flex; justify-content: space-between; align-items: flex-end; padding: 0 20px; margin-top: 10px;">
+                                    style="display: flex; justify-content: flex-end; align-items: flex-end; padding: 0 20px; margin-top: 10px;">
 
-                                    <!-- Left Side: Center Head -->
-                                    <div class="sig-section left-sig"
-                                        style="text-align: center; position: relative; width: 220px;">
-                                        <div class="sig-images"
-                                            style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
-                                            @if(!empty($data->cl_center_stamp) && file_exists(public_path('center-document/' . $data->cl_center_stamp)))
-                                                <img src="{{ asset('center-document/' . $data->cl_center_stamp) }}"
-                                                    class="stamp-img"
-                                                    style="position: absolute; height: 110px; z-index: 1; top: 0; left: 50%; transform: translateX(-50%); opacity: 1;"
-                                                    alt="Center Stamp">
-                                            @endif
-                                            @if(!empty($data->cl_authorized_signature) && file_exists(public_path('center-document/' . $data->cl_authorized_signature)))
-                                                <img src="{{ asset('center-document/' . $data->cl_authorized_signature) }}"
-                                                    class="sign-img"
-                                                    style="position: absolute; height: 46px; z-index: 2; bottom: 26px; left: 51%; transform: translateX(-50%);"
-                                                    alt="Center Sign">
-                                            @endif
-                                        </div>
-                                        <div class="sig-label"
-                                            style="padding-top: 5px; font-weight: bold; font-size: 14px; margin-top: -34px;">
-                                            Center Head Signature</div>
-                                    </div>
-
-                                    <!-- Right Side: Authorized Signatory -->
+                                    <!-- Authorized Signatory -->
                                     <div class="sig-section right-sig"
                                         style="text-align: center; position: relative; width: 220px;">
                                         <div class="sig-images"
