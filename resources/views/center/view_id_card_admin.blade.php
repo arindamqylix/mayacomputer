@@ -171,11 +171,11 @@
 
         .info-row {
             display: grid;
-            grid-template-columns: 24px 85px 1fr;
-            /* Wider label column */
+            grid-template-columns: 24px 90px minmax(0, 1fr);
             align-items: start;
             padding: 5px 0;
             border-bottom: 1px solid #f1f1f1;
+            gap: 6px;
         }
 
         .info-row:last-child {
@@ -187,7 +187,6 @@
             font-size: 11px;
             text-align: center;
             padding-top: 2px;
-            /* Align with text top */
         }
 
         .info-label-text {
@@ -196,7 +195,6 @@
             font-size: 10px;
             text-transform: uppercase;
             white-space: nowrap;
-            /* Prevent messy wrapping */
         }
 
         .info-value {
@@ -205,6 +203,8 @@
             text-align: left;
             font-size: 11px;
             line-height: 1.3;
+            min-width: 0;
+            overflow-wrap: break-word;
             word-break: break-word;
         }
 
@@ -362,26 +362,21 @@
                 @php
                     $siteSettings = site_settings();
                     $logoPath = null;
-                    if ($siteSettings) {
-                        if (!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))) {
-                            $logoPath = $siteSettings->document_logo;
-                        } elseif (!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))) {
-                            $logoPath = $siteSettings->site_logo;
-                        } else {
-                            $logoPath = 'header_banner.png';
-                        }
+                    if ($siteSettings && !empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))) {
+                        $logoPath = $siteSettings->document_logo;
                     } else {
                         $logoPath = 'header_banner.png';
                     }
                 @endphp
 
-                <img src="{{ asset($logoPath) }}" alt="Banner" class="header-banner">
+                <img src="{{ asset($logoPath) }}" alt="Header Banner" class="header-banner">
 
                 <div class="header-subtext">
-                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
-                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
-                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
+                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                    <p class="reg-details" style="font-size: 11px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                    <p class="reg-details" style="font-size:9px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+                    <p class="iso-text" style="font-size: 14px;">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 10px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                 </div>
 
                 <div class="id-header-text">

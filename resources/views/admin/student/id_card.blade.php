@@ -407,10 +407,11 @@
                 <img src="{{ asset($logoPath) }}" alt="Banner" class="header-banner">
 
                 <div class="header-subtext">
-                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
-                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
-                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
+                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                    <p class="reg-details" style="font-size: 11px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                    <p class="reg-details" style="font-size:9px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+                    <p class="iso-text" style="font-size: 14px;">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 10px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                 </div>
 
                 <div class="id-header-text">

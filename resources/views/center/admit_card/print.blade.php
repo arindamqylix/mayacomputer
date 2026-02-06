@@ -64,7 +64,7 @@
         .header-banner {
             width: 88%;
             height: auto;
-             max-height: 120px; 
+             max-height: 133px; 
             display: block;
         }
 
@@ -333,11 +333,11 @@
                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
                 @endif
                 <div class="header-subtext">
-                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
-                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 14px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                    <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+                    <p class="iso-text" style="font-size: 17px;">An ISO 9001: 2015 Certified</p>
                     <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
-                </div>
+                </div> 
                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$student->sl_reg_no) }}"
                             alt="QR Code" class="qr-code">
             </div>
