@@ -470,10 +470,10 @@
                             </div>
 
                             <!-- Modules -->
-                            @if(!empty($data->c_module_cover))
+                            @if(!empty($data->description))
                                 <div class="section-title" style="margin-top: 0;">Modules Covered</div>
                                 <div class="modules-box">
-                                    {!! html_entity_decode($data->c_module_cover) !!}
+                                    {!! html_entity_decode($data->description) !!}
                                 </div>
                             @endif
 

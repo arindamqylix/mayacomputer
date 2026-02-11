@@ -205,12 +205,18 @@
         .signature-box {
             border-top: 1px solid #000;
             width: 100%;
-            height: 30px;
+            min-height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 10px;
             color: #ccc;
+            padding: 4px;
+        }
+        .signature-box img {
+            max-height: 36px;
+            width: auto;
+            object-fit: contain;
         }
 
         /* Exam Table */
@@ -268,7 +274,7 @@
         }
         .controller-sig-area {
             position: relative;
-            height: 85px;
+            height: 47px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -333,11 +339,14 @@
                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
                 @endif
                 <div class="header-subtext">
-                    <p class="reg-details" style="font-size: 14px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
-                    <p class="iso-text" style="font-size: 17px;">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                    <p class="reg-details" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of
+                        India</p>
+                    <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam &
+                        Startup India</p>
+                    <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
                     <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
-                </div> 
+                </div>
                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$student->sl_reg_no) }}"
                             alt="QR Code" class="qr-code">
             </div>
@@ -364,11 +373,11 @@
                     </tr>
                     <tr>
                         <td class="label">Father’s Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($student->sl_mother_name) }}</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_father_name) }}</td>
                     </tr>
                     <tr>
                         <td class="label">Mother’s Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($student->sl_father_name) }}</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_mother_name) }}</td>
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
@@ -400,7 +409,13 @@
                             Picture<br><br>1.2 in X 1.5 in
                         @endif
                     </div>
-                    <div class="signature-box">Student Signature</div>
+                    <div class="signature-box">
+                        @if(!empty($student->sl_signature) && file_exists(public_path($student->sl_signature)))
+                            <img src="{{ asset($student->sl_signature) }}" alt="Student Signature">
+                        @else
+                            Student Signature
+                        @endif
+                    </div>
                 </div>
             </div>
 

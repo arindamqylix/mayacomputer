@@ -28,7 +28,7 @@
             height: 209mm;
             /* Fixed height for A4 */
             background-color: white;
-            padding: 10px;
+            padding: 6px;
             position: relative;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
@@ -38,7 +38,7 @@
         /* Border System */
         .border-pattern {
             position: relative;
-            padding: 10px;
+            padding: 6px;
             background: #fff;
             border: none;
             height: 100%;
@@ -52,7 +52,7 @@
 
         .border-design {
             border: 1px solid #0f1d46;
-            padding: 15px;
+            padding: 10px;
             height: 100%;
             background-image:
                 linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46),
@@ -65,7 +65,7 @@
         .content-area-white {
             background-color: white;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold' font-size='10' fill='%230f1d46' opacity='0.05' transform='rotate(-45 100 100)'%3EMAYA COMPUTER CENTER PRIVATE LIMITED%3C/text%3E%3C/svg%3E");
-            padding: 5px 30px 25px 30px;
+            padding: 5px 30px 12px 30px;
             height: 100%;
             border: 1px solid #c5a059;
             position: relative;
@@ -165,17 +165,14 @@
             text-align: center;
             padding: 1px 0;
             /* Reduced Height */
-            margin: 5px -30px;
-            /* Reduced from 10px */
+            margin: 3px -30px;
             border-top: 1px solid #c5a059;
             border-bottom: 1px solid #c5a059;
         }
 
         .title-bar h2 {
             font-family: 'Cinzel', serif;
-            /* Simple Professional Font */
-            font-size: 30px;
-            /* Reduced Size */
+            font-size: 26px;
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -207,8 +204,8 @@
 
         .student-details {
             font-size: 16px;
-            line-height: 1.6;
-            margin-top: 10px;
+            line-height: 1.45;
+            margin-top: 5px;
             color: #000;
         }
 
@@ -244,20 +241,20 @@
         /* Footer Section */
         .footer-section {
             margin-top: auto;
-            padding-bottom: 10px;
+            padding-bottom: 3px;
         }
 
         .footer-logos {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 5px;
+            gap: 10px;
+            margin-bottom: 1px;
             border-top: 1px solid #eee;
-            padding-top: 5px;
+            padding-top: 2px;
         }
 
         .footer-logo {
-            height: 40px;
+            height: 30px;
             width: auto;
             object-fit: contain;
         }
@@ -265,14 +262,28 @@
         .signatures {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            /* CRITICAL FIX: Align bottom */
+            align-items: stretch;
             padding: 0 20px;
+            gap: 10px;
+            margin-top: 1px;
         }
 
         .sig-block {
+            display: flex;
+            flex-direction: column;
             text-align: center;
-            width: 180px;
+            width: 200px;
+            min-width: 180px;
+        }
+
+        .sig-date-area {
+            height: 78px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: center;
+            flex-shrink: 0;
         }
 
         .sig-title {
@@ -286,21 +297,24 @@
             font-size: 15px;
             font-weight: bold;
             border-bottom: 1px solid #ccc;
-            /* Subtle underline for alignment */
             padding-bottom: 2px;
             display: inline-block;
             min-width: 100px;
         }
 
         .sig-overlap-container {
+            display: flex;
+            flex-direction: column;
             position: relative;
             width: 200px;
+            min-width: 180px;
             text-align: center;
         }
 
         .sig-area {
             position: relative;
-            height: 110px;
+            height: 78px;
+            flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -321,12 +335,13 @@
         }
 
         .sig-line {
-            /* border-top: 1px solid #0f1d46; */
-            padding-top: 4px;
-            margin-top: -31px;
+            padding-top: 2px;
+            margin-top: 0;
+            min-height: 18px;
             font-weight: bold;
             font-size: 14px;
             color: #333;
+            line-height: 1.3;
         }
 
         @page {
@@ -407,15 +422,15 @@
                         <!-- Middle Content -->
                         <div class="main-content">
                             <div class="certify-text"
-                                style="font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; margin-top: 20px; margin-right: -110px;">
+                                style="font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; margin-top: 10px; margin-right: -110px;">
                                 THIS CERTIFICATE / DIPLOMA IS AWARDED TO</div>
                             <div class="center-name"
-                                style="color: blue; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: bold; margin: 15px 0; margin-right: -110px;">
+                                style="color: blue; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: bold; margin: 8px 0; margin-right: -110px;">
                                 {{ strtoupper($certificate->sl_name ?? '') }}
                             </div>
 
                             <div class="student-details"
-                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; line-height: 1.8; color: #000;">
+                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; line-height: 1.5; color: #000;">
                                 S/o – <b>{{ ucwords(strtolower($certificate->sl_father_name ?? '')) }}</b> , Reg No.
                                 <b>{{ $certificate->sl_reg_no }}</b> on successfully completion of
                                 <b>{{ $certificate->c_full_name ?? '' }}</b> ( Duration -
@@ -432,7 +447,7 @@
                             </div>
 
                             <div class="recommendation-text"
-                                style="margin-top: 10px; margin-right: -110px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
+                                style="margin-top: 5px; margin-right: -110px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
                                 On the recommendation of the board of examination
                             </div>
 
@@ -446,7 +461,7 @@
                             </div>
 
                             <div class="authorization-text"
-                                style="margin-top: 15px; font-size:14px; margin-right: -110px;">
+                                style="margin-top: 4px; font-size:14px; margin-right: -110px;">
                                 <span class="company-name">MAYA COMPUTER CENTER PRIVATE LIMITED</span>
                             </div>
                         </div>
@@ -469,18 +484,21 @@
 
                             <div class="signatures">
                                 <div class="sig-block">
-                                    <div class="sig-title">Date of Issue</div>
-                                    <div class="date-val">
-                                        {{ $certificate->sc_issue_date ? \Carbon\Carbon::parse($certificate->sc_issue_date)->format('d-M-Y') : 'N/A' }}
+                                    <div class="sig-date-area">
+                                        <div class="sig-title">Date of Issue</div>
+                                        <div class="date-val">
+                                            {{ $certificate->sc_issue_date ? \Carbon\Carbon::parse($certificate->sc_issue_date)->format('d-M-Y') : 'N/A' }}
+                                        </div>
                                     </div>
+                                    <div class="sig-line">&nbsp;</div>
                                 </div>
 
                                 <div class="sig-overlap-container">
                                     <div class="sig-area"
-                                        style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
+                                        style="position: relative; height: 78px; width: 220px; margin: 0 auto;">
                                         @if(!empty($certificate->cl_center_stamp) && file_exists(public_path($certificate->cl_center_stamp)))
                                             <img src="{{ asset($certificate->cl_center_stamp) }}" class="stamp-img"
-                                                style="position: absolute; height: 110px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
+                                                style="position: absolute; height: 78px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
                                                 alt="Center Stamp">
                                         @endif
                                         @if(!empty($certificate->cl_authorized_signature) && file_exists(public_path($certificate->cl_authorized_signature)))
@@ -489,15 +507,15 @@
                                                 alt="Center Sign">
                                         @endif
                                     </div>
-                                    <div class="sig-line" style="margin-top: 5px;">Center Head Signature</div>
+                                    <div class="sig-line">Center Head Signature</div>
                                 </div>
 
                                 <div class="sig-overlap-container">
                                     <div class="sig-area"
-                                        style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
+                                        style="position: relative; height: 78px; width: 220px; margin: 0 auto;">
                                         @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
                                             <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img"
-                                                style="position: absolute; height: 110px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
+                                                style="position: absolute; height: 78px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
                                                 alt="Stamp">
                                         @endif
                                         @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
@@ -506,7 +524,7 @@
                                                 alt="Sign">
                                         @endif
                                     </div>
-                                    <div class="sig-line" style="margin-top: 5px;">Authorized Signatory</div>
+                                    <div class="sig-line">Authorized Signatory</div>
                                 </div>
                             </div>
                         </div>

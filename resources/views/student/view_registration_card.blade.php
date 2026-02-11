@@ -67,7 +67,7 @@
         .header-banner {
             width: 88%;
             height: auto;
-            max-height: 120px; 
+            max-height: 133px; 
             display: block;
         }
 
@@ -228,7 +228,7 @@
         }
         .controller-sig-area {
             position: relative;
-            height: 85px;
+            height: 45px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -292,9 +292,12 @@
                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
                 @endif
                 <div class="header-subtext">
-                    <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details">Registered Under Skill India, Udyam & Startup India</p>
-                    <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                    <p class="reg-details" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of
+                        India</p>
+                    <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam &
+                        Startup India</p>
+                    <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
                     <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                 </div>
                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$data->sl_reg_no) }}"
@@ -322,16 +325,16 @@
                         <td class="value" colspan="2">: {{ strtoupper($data->sl_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Father’s Name:</td>
-                        <td class="value">{{ strtoupper($data->sl_father_name ?? '') }}</td>
+                        <td class="label">Father’s Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($data->sl_father_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Mother’s Name:</td>
-                        <td class="value">{{ strtoupper($data->sl_mother_name ?? '') }}</td>
+                        <td class="label">Mother’s Name</td>
+                        <td class="value">: {{ strtoupper($data->sl_mother_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'Gen' }}</td>
+                        <td class="value" colspan="2">: {{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>

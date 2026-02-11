@@ -1,5 +1,6 @@
 @php
     $siteSettings = site_settings();
+    $setting = $siteSettings;
     $siteLogo = $siteSettings && !empty($siteSettings->site_logo) ? asset($siteSettings->site_logo) : asset('logo.png');
     $siteName = $siteSettings && !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
     $siteEmail = $siteSettings && !empty($siteSettings->email) ? $siteSettings->email : 'mccsiswar@gmail.com';
@@ -13,19 +14,64 @@
         font-size: 12px;
         color: #333;
     }
-    .invoice-header {
-        border-bottom: 2px solid #333;
-        padding-bottom: 15px;
-        margin-bottom: 20px;
+    /* Header – centered */
+    .header {
+        position: relative;
+        margin-bottom: 10px;
+        width: 100%;
+        text-align: center;
     }
-    .invoice-title {
-        font-size: 28px;
+    .header-banner {
+        width: 75%;
+        max-width: 400px;
+        height: auto;
+        max-height: 85px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        object-fit: contain;
+        object-position: center top;
+    }
+    .header-subtext {
+        text-align: center;
+        margin-top: -12px;
+        padding-left: 0;
+    }
+    .reg-details {
+        font-size: 10px;
         font-weight: bold;
-        color: #2c3e50;
-        margin: 0;
+        margin: 1px 0;
+        color: #000;
+        font-family: Arial, sans-serif;
     }
-    .company-info {
-        margin-top: 10px;
+    .iso-text {
+        color: red;
+        font-weight: bold;
+        font-size: 12px;
+        margin: 2px 0;
+        font-family: Arial, sans-serif;
+    }
+    .qr-block {
+        position: absolute;
+        right: 0;
+        top: 8px;
+        text-align: center;
+        width: 70px;
+    }
+    .qr-code {
+        width: 70px;
+        height: 70px;
+        border: 1px solid #ddd;
+        background: #fff;
+        display: block;
+    }
+    .qr-sr-no {
+        font-weight: bold;
+        font-size: 11px;
+        font-family: Arial, sans-serif;
+        margin-top: 4px;
+        line-height: 1.2;
+        white-space: nowrap;
     }
     .invoice-details {
         margin-top: 20px;
@@ -65,41 +111,42 @@
         font-size: 10px;
         color: #666;
     }
+    .section-title {
+        background-color: #000066;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 5px;
+        text-transform: uppercase;
+        font-family: Arial, sans-serif;
+        margin-top: 10px;
+        border: 1px solid #000066;
+    }
 </style>
 
-<!-- New Header Structure -->
-@php
-    $siteSettings = site_settings();
-    $logoPath = null;
-    if($siteSettings) {
-         if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
-             $logoPath = $siteSettings->document_logo;
-         } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
-             $logoPath = $siteSettings->site_logo;
-         } else {
-             $logoPath = 'header_banner.png';
-         }
-    } else {
-         $logoPath = 'header_banner.png';
-    }
-@endphp
-
-<div class="header-container" style="text-align: center; margin-bottom: 10px; border-bottom: 2px solid #000077; padding-bottom: 5px;">
-    <img src="{{ asset($logoPath) }}" alt="Banner" style="width: 100%; max-height: 80px; object-fit: contain;">
-    
-    <div style="text-align: center; margin-top: -10px;">
-        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Reg. Under the Company Act.2013 MCA, Government of India</p>
-        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Registered Under Skill India, Udyam & Startup India</p>
-        <p style="color: red; font-weight: bold; font-size: 8px; margin: 2px 0; font-family: Arial, sans-serif;">An ISO 9001: 2015 Certified</p>
+<!-- Header – same structure as marksheet_diploma.blade.php -->
+<div class="header">
+    @if($setting && !empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+        <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner" class="header-banner">
+    @else
+        <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
+    @endif
+    <div class="header-subtext">
+        <p class="reg-details" style="font-size: 16px;">CIN : U85220DL2023PTC422329</p>
+        <p class="reg-details" style="font-size: 13px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+        <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+        <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
+        <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
     </div>
+    <!-- <div class="qr-block">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('invoice/' . ($recharge->cr_id ?? '')) }}"
+            alt="QR Code" class="qr-code">
+        <div class="qr-sr-no">INV. {{ $invoice_no }}</div>
+    </div> -->
 </div>
 
-<div class="invoice-title-bar" style="text-align: center; background: #000077; color: white; padding: 5px; margin-bottom: 20px;">
-    <h1 style="margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">INVOICE</h1>
-    <p style="margin: 2px 0 0 0; font-size: 12px; color: #fff;">
-        Invoice No: {{ $invoice_no }} | Date: {{ $invoice_date }}
-    </p>
-</div>
+<div class="section-title">INVOICE &nbsp;|&nbsp; {{ $invoice_no }} &nbsp;|&nbsp; Date: {{ $invoice_date }}</div>
 
 <div class="invoice-details">
     <table>
@@ -130,19 +177,19 @@
         <thead>
             <tr>
                 <th>Description</th>
-                <th class="text-right">Amount (₹)</th>
+                <th class="text-right">Amount (Rs.)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Wallet Recharge - Payment ID: {{ $recharge->cr_razorpay_id ?? $recharge->cr_payment_id }}</td>
-                <td class="text-right">₹ {{ number_format($recharge->cr_amount, 2) }}</td>
+                <td class="text-right">Rs. {{ number_format($recharge->cr_amount, 2) }}</td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <th class="text-right">Total Amount:</th>
-                <th class="text-right">₹ {{ number_format($recharge->cr_amount, 2) }}</th>
+                <th class="text-right">Rs. {{ number_format($recharge->cr_amount, 2) }}</th>
             </tr>
         </tfoot>
     </table>

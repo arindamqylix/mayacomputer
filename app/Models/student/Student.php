@@ -18,6 +18,7 @@ class Student extends Authenticatable
     	'sl_dob',
     	'sl_qualification',
     	'sl_reg_no',
+    	'sl_reg_date',
     	'sl_sex',
     	'sl_address',
     	'sl_name',
@@ -27,6 +28,8 @@ class Student extends Authenticatable
     	'sl_mobile_no',
     	'sl_father_name',
     	'sl_educational_certificate',
+    	'sl_signature',
+    	'sl_category',
         'sl_email',
     	'password',
     ];
