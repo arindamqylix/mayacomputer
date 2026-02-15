@@ -37,25 +37,13 @@
             flex-direction: column;
         }
 
-        /* Watermark */
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.1;
-            z-index: 0;
-            width: 60%;
-            pointer-events: none;
-        }
-
         .content {
             position: relative;
             z-index: 1;
             flex-grow: 1;
         }
 
-        /* Header - same as marksheet_diploma: centered, 80% width, max-height 120px */
+        /* Header - same as center_certificate.blade.php: centered, 80% width, max-height 120px */
         .header {
             position: relative;
             width: 100%;
@@ -95,7 +83,7 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Footer row: QR bottom-left, Authorized Signatory bottom-right - same as marksheet_diploma */
+        /* Footer row: QR left, Controller right - aligned on same baseline */
         .card-footer-row {
             display: flex;
             justify-content: space-between;
@@ -106,8 +94,6 @@
         }
         .qr-code-wrap {
             flex-shrink: 0;
-            text-align: center;
-            width: 70px;
         }
         .qr-code {
             width: 70px;
@@ -115,14 +101,6 @@
             border: 1px solid #ddd;
             background: #fff;
             display: block;
-        }
-        .qr-sr-no {
-            font-weight: bold;
-            font-size: 11px;
-            font-family: Arial, sans-serif;
-            margin-top: 4px;
-            line-height: 1.2;
-            white-space: nowrap;
         }
 
         /* Title strip */
@@ -143,18 +121,19 @@
             top: 130px;
         }
 
-        /* Registration Blue Bar */
+        /* Registration Blue Bar - aligned with details section */
         .blue-bar {
             background-color: #000066;
-            /* Dark Navy */
             color: white;
             padding: 5px 15px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-weight: bold;
             font-size: 14px;
             font-family: Arial, sans-serif;
             border: 1px solid #000;
+            border-bottom: none;
         }
 
         /* Student Details */
@@ -163,6 +142,7 @@
             border-top: none;
             display: flex;
             padding: 10px;
+            padding-right: 150px; /* space for photo-box so text doesn't overlap */
             position: relative;
             background-color: #f9f9f980;
         }
@@ -216,9 +196,10 @@
             color: #ccc;
             font-size: 10px;
             width: 100%;
+            overflow: hidden;
         }
-        
-         .photo-placeholder img {
+
+        .photo-placeholder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -227,26 +208,25 @@
         .signature-box {
             border-top: 1px solid #000;
             width: 100%;
-            height: 30px;
+            min-height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 10px;
             color: #ccc;
+            padding: 4px;
+        }
+        .signature-box img {
+            max-height: 36px;
+            width: auto;
+            object-fit: contain;
         }
 
+        /* Stamp & signature - same size as center_certificate.blade.php */
         .controller-sign {
-            margin-top: 28px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: flex-end;
-            padding-right: 20px;
+            flex-shrink: 0;
             font-family: Arial, sans-serif;
         }
-        .card-footer-row .controller-sign {
-            margin-top: 0;
-        }
-        /* Stamp/Signature sizes - same as center_certificate.blade.php */
         .controller-sig-overlap {
             position: relative;
             width: 200px;
@@ -270,12 +250,14 @@
         .controller-sig-area .auth-sign {
             position: relative;
             height: 50px;
+            width: auto;
             object-fit: contain;
             z-index: 2;
             margin-bottom: 5px;
         }
         .controller-sig-label {
             padding-top: 4px;
+            margin-top: -31px;
             font-weight: bold;
             font-size: 14px;
             color: #333;
@@ -295,9 +277,6 @@
                 width: 100%;
                 height: auto;
             }
-             .no-print {
-                display: none;
-            }
         }
     </style>
 </head>
@@ -305,13 +284,10 @@
 <body>
 
     <div class="card-container">
-        <!-- Background Logo / Watermark -->
-         <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif" class="watermark" alt="Watermark" style="opacity: 0.05;">
-
         <div class="content">
             <!-- Header Section -->
             <div class="header">
-                 @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
                     <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner" class="header-banner">
                 @else
                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
@@ -329,15 +305,13 @@
 
             <!-- Title -->
             <div class="card-title">
-                पंजीयन पत्रक (REGISTRATION CARD) – {{ \Carbon\Carbon::parse($data->created_at)->year }}
+                पंजीयन पत्रक (REGISTRATION CARD) – {{ \Carbon\Carbon::now()->year }}
             </div>
-            <!-- TM Symbol simulation -->
-            <!-- <div class="tm-symbol">TM</div> -->
 
             <!-- Blue Strip -->
             <div class="blue-bar">
                 <span>Registration No. &nbsp;&nbsp;: {{ $data->sl_reg_no ?? 'N/A' }}</span>
-                <span>Year : {{ \Carbon\Carbon::parse($data->created_at)->year }}</span>
+                <span>Year : {{ \Carbon\Carbon::parse($data->created_at ?? now())->year }}</span>
             </div>
 
             <!-- Student Details -->
@@ -348,16 +322,16 @@
                         <td class="value" colspan="2">: {{ strtoupper($data->sl_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Father’s Name</td>
+                        <td class="label">Mother's Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($data->sl_mother_name ?? '') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Father's Name</td>
                         <td class="value" colspan="2">: {{ strtoupper($data->sl_father_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Mother’s Name</td>
-                        <td class="value">: {{ strtoupper($data->sl_mother_name ?? '') }}</td>
-                    </tr>
-                    <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'N/A' }}</td>
+                        <td class="value" colspan="2">: {{ $data->sl_dob ? \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') : 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
@@ -379,20 +353,26 @@
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
-                         @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
+                        @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
                             <img src="{{ asset($data->sl_photo) }}" alt="Student Photo">
                         @else
                             Picture<br><br>1.2 in X 1.5 in
                         @endif
                     </div>
-                    <div class="signature-box">Student Signature</div>
+                    <div class="signature-box">
+                        @if(!empty($data->sl_signature) && file_exists(public_path($data->sl_signature)))
+                            <img src="{{ asset($data->sl_signature) }}" alt="Student Signature">
+                        @else
+                            Student Signature
+                        @endif
+                    </div>
                 </div>
             </div>
 
+            <!-- Footer row: QR bottom-left, Controller bottom-right, aligned -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$data->sl_reg_no) }}" alt="QR Code" class="qr-code">
-                    <!-- <div class="qr-sr-no">Reg. {{ $data->sl_reg_no ?? '' }}</div> -->
                 </div>
                 <div class="controller-sign">
                     <div class="controller-sig-overlap">
@@ -411,11 +391,18 @@
 
         </div>
     </div>
-    
-              <!-- Print Button (Hidden in Print Mode) -->
+
+    <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
         <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Registration Card</button>
     </div>
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
 
 </body>
 
