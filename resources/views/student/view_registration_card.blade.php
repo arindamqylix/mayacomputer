@@ -55,26 +55,28 @@
             flex-grow: 1;
         }
 
-        /* Header */
+        /* Header - same as marksheet_diploma: centered, 80% width, max-height 120px */
         .header {
             position: relative;
-            margin-bottom: 5px;
             width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
             border-bottom: none;
             padding-bottom: 0;
         }
 
         .header-banner {
-            width: 88%;
-            height: auto;
-            max-height: 133px; 
+            width: 80%;
+            max-height: 120px;
+            object-fit: contain;
             display: block;
+            margin: 0 auto;
         }
 
         .header-subtext {
             text-align: center;
             margin-top: -20px;
-            padding-left: 40px;
+            padding-left: 0;
         }
 
         .reg-details {
@@ -93,14 +95,34 @@
             font-family: Arial, sans-serif;
         }
 
+        /* Footer row: QR bottom-left, Authorized Signatory bottom-right - same as marksheet_diploma */
+        .card-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 24px;
+            width: 100%;
+            min-height: 90px;
+        }
+        .qr-code-wrap {
+            flex-shrink: 0;
+            text-align: center;
+            width: 70px;
+        }
         .qr-code {
-            position: absolute;
-            right: 0;
-            top: 20px;
             width: 70px;
             height: 70px;
             border: 1px solid #ddd;
             background: #fff;
+            display: block;
+        }
+        .qr-sr-no {
+            font-weight: bold;
+            font-size: 11px;
+            font-family: Arial, sans-serif;
+            margin-top: 4px;
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
         /* Title strip */
@@ -221,33 +243,36 @@
             padding-right: 20px;
             font-family: Arial, sans-serif;
         }
+        .card-footer-row .controller-sign {
+            margin-top: 0;
+        }
+        /* Stamp/Signature sizes - same as center_certificate.blade.php */
         .controller-sig-overlap {
             position: relative;
-            width: 160px;
+            width: 200px;
             text-align: center;
         }
         .controller-sig-area {
             position: relative;
-            height: 45px;
+            height: 110px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .controller-sig-area .auth-stamp {
             position: absolute;
-            height: 95px;
+            height: 130px;
             width: auto;
-            max-width: 140px;
             object-fit: contain;
-            opacity: 0.85;
+            opacity: 0.8;
             z-index: 1;
         }
         .controller-sig-area .auth-sign {
             position: relative;
-            height: 38px;
-            max-width: 90px;
+            height: 50px;
             object-fit: contain;
             z-index: 2;
+            margin-bottom: 5px;
         }
         .controller-sig-label {
             padding-top: 4px;
@@ -300,8 +325,6 @@
                     <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
                     <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                 </div>
-                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$data->sl_reg_no) }}"
-                            alt="QR Code" class="qr-code">
             </div>
 
             <!-- Title -->
@@ -366,17 +389,23 @@
                 </div>
             </div>
 
-            <div class="controller-sign">
-                <div class="controller-sig-overlap">
-                    <div class="controller-sig-area">
-                        @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
-                            <img src="{{ asset($setting->authorize_stamp) }}" class="auth-stamp" alt="Stamp">
-                        @endif
-                        @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
-                            <img src="{{ asset($setting->authorize_signature) }}" class="auth-sign" alt="Signature">
-                        @endif
+            <div class="card-footer-row">
+                <div class="qr-code-wrap">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/'.$data->sl_reg_no) }}" alt="QR Code" class="qr-code">
+                    <!-- <div class="qr-sr-no">Reg. {{ $data->sl_reg_no ?? '' }}</div> -->
+                </div>
+                <div class="controller-sign">
+                    <div class="controller-sig-overlap">
+                        <div class="controller-sig-area">
+                            @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                                <img src="{{ asset($setting->authorize_stamp) }}" class="auth-stamp" alt="Stamp">
+                            @endif
+                            @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                                <img src="{{ asset($setting->authorize_signature) }}" class="auth-sign" alt="Signature">
+                            @endif
+                        </div>
+                        <div class="controller-sig-label">Controller of Examination</div>
                     </div>
-                    <div class="controller-sig-label">Controller of Examination</div>
                 </div>
             </div>
 
