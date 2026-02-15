@@ -625,3 +625,14 @@ ADD `cl_profile_edit_enabled` tinyint NULL DEFAULT '0' AFTER `cl_account_status`
 ALTER TABLE `center_login` ADD `cl_authorized_signature` VARCHAR(255) NULL AFTER `cl_logo`;
 
 ALTER TABLE `center_login` ADD `cl_center_stamp` VARCHAR(255) NULL AFTER `cl_authorized_signature`;
+
+
+-- 15-02-2026
+
+ALTER TABLE document_reissue_requests
+MODIFY drr_document_type VARCHAR(255) NOT NULL;
+
+-- Group multiple document reissue requests for one-time payment
+ALTER TABLE document_reissue_requests
+ADD COLUMN drr_group_id VARCHAR(64) NULL AFTER drr_FK_of_student_id,
+ADD KEY idx_drr_group_id (drr_group_id);

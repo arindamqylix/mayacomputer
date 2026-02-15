@@ -99,27 +99,26 @@
             z-index: 1;
         }
 
-        /* Header */
+        /* Header - same as center_certificate.blade.php: centered, 80% width, max-height 120px */
         .header {
             position: relative;
-            margin-bottom: 5px;
             width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
         }
 
         .header-banner {
-            width: 88%;
-            /* Reduced width to avoid QR overlap */
-            height: auto;
-            max-height: 162px;
+            width: 80%;
+            max-height: 120px;
+            object-fit: contain;
             display: block;
+            margin: 0 auto;
         }
 
         .header-subtext {
             text-align: center;
             margin-top: -20px;
-            /* Reduced gap */
-            padding-left: 40px;
-            /* Shift text slightly right */
+            padding-left: 0;
         }
 
         .reg-details {
@@ -138,14 +137,20 @@
             font-family: Arial, sans-serif;
         }
 
-        .qr-block {
-            position: absolute;
-            right: 0;
-            top: 25px;
+        /* Footer row: QR bottom-left, Authorized Signatory bottom-right - aligned on same baseline */
+        .card-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 24px;
+            width: 100%;
+            min-height: 90px;
+        }
+        .qr-code-wrap {
+            flex-shrink: 0;
             text-align: center;
             width: 70px;
         }
-
         .qr-code {
             width: 70px;
             height: 70px;
@@ -153,7 +158,6 @@
             background: #fff;
             display: block;
         }
-
         .qr-sr-no {
             font-weight: bold;
             font-size: 11px;
@@ -422,11 +426,6 @@
                                     <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
                                     <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                                 </div>
-                                <div class="qr-block">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}"
-                                        alt="QR Code" class="qr-code">
-                                    <div class="qr-sr-no">SN. MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}</div>
-                                </div>
                             </div>
 
                             <!-- Title -->
@@ -561,30 +560,33 @@
                                     @endif
                                 </div>
 
-                                <div class="signatures-wrapper"
-                                    style="display: flex; justify-content: flex-end; align-items: flex-end; padding: 0 20px; margin-top: 10px;">
-
-                                    <!-- Authorized Signatory -->
-                                    <div class="sig-section right-sig"
-                                        style="text-align: center; position: relative; width: 220px;">
-                                        <div class="sig-images"
-                                            style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
-                                            @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
-                                                <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img"
-                                                    style="position: absolute; height: 110px; z-index: 1; top: 0; left: 50%; transform: translateX(-50%); opacity: 1;"
-                                                    alt="Stamp">
-                                            @endif
-                                            @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
-                                                <img src="{{ asset($setting->authorize_signature) }}" class="sign-img"
-                                                    style="position: absolute; height: 46px; z-index: 2; bottom: 26px; left: 51%; transform: translateX(-50%);"
-                                                    alt="Sign">
-                                            @endif
-                                        </div>
-                                        <div class="sig-label"
-                                            style="padding-top: 5px; font-weight: bold; font-size: 14px; margin-top: -34px;">
-                                            Authorized Signatory</div>
+                                <!-- Footer row: QR bottom-left, Authorized Signatory bottom-right - aligned -->
+                                <div class="card-footer-row">
+                                    <div class="qr-code-wrap">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}" alt="QR Code" class="qr-code">
+                                        <div class="qr-sr-no">SN. MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}</div>
                                     </div>
-
+                                    <div class="signatures-wrapper" style="flex-shrink: 0;">
+                                        <div class="sig-section right-sig"
+                                            style="text-align: center; position: relative; width: 220px;">
+                                            <div class="sig-images"
+                                                style="position: relative; height: 110px; width: 220px; margin: 0 auto;">
+                                                @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                                                    <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img"
+                                                        style="position: absolute; height: 110px; z-index: 1; top: 0; left: 50%; transform: translateX(-50%); opacity: 1;"
+                                                        alt="Stamp">
+                                                @endif
+                                                @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                                                    <img src="{{ asset($setting->authorize_signature) }}" class="sign-img"
+                                                        style="position: absolute; height: 46px; z-index: 2; bottom: 26px; left: 51%; transform: translateX(-50%);"
+                                                        alt="Sign">
+                                                @endif
+                                            </div>
+                                            <div class="sig-label"
+                                                style="padding-top: 5px; font-weight: bold; font-size: 14px; margin-top: -34px;">
+                                                Authorized Signatory</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

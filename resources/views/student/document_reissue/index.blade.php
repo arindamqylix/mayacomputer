@@ -252,49 +252,51 @@
 							<h5 class="mb-4">
 								<i class="fa-solid fa-file-circle-plus"></i> Request New Document Re-Print
 							</h5>
+							<p class="text-muted small mb-3">Only documents that have been generated for you are shown. You can select multiple documents and submit together.</p>
 
 							<form action="{{ route('student.document_reissue.store') }}" method="POST" id="reissueForm">
 								@csrf
 
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group mb-3">
-											<label for="document_type">
-												<i class="fa-solid fa-file-lines"></i> Select Document Type <span
-													class="text-danger">*</span>
-											</label>
-											<select class="form-select" id="document_type" name="document_type" required>
-												<option value="">-- Select Document Type --</option>
-												@foreach($documentTypes as $type)
-													<option value="{{ $type->dt_id }}" data-price="{{ $type->dt_amount }}">
-														{{ $type->dt_name }} - ₹ {{ number_format($type->dt_amount, 2) }}
-													</option>
-												@endforeach
-											</select>
+								<div class="form-group mb-3">
+									<label class="d-block">
+										<i class="fa-solid fa-file-lines"></i> Select Document Type(s) <span class="text-danger">*</span>
+									</label>
+									@if($documentTypes->isEmpty())
+										<div class="alert alert-warning mb-0">No document types available for re-print yet. Once your Result, Certificate, ID Card, or Registration Card is generated, they will appear here.</div>
+									@else
+										<div class="border rounded p-3 bg-white">
+											@foreach($documentTypes as $type)
+												<div class="form-check mb-2">
+													<input class="form-check-input doc-type-check" type="checkbox" name="document_type[]" value="{{ $type->dt_id }}" id="doc_type_{{ $type->dt_id }}" data-price="{{ $type->dt_amount }}">
+													<label class="form-check-label" for="doc_type_{{ $type->dt_id }}">
+														{{ $type->dt_name }} — ₹ {{ number_format($type->dt_amount, 2) }}
+													</label>
+												</div>
+											@endforeach
 										</div>
+									@endif
+								</div>
+
+								<div class="form-group mb-3 mt-3">
+									<label for="remarks">
+										<i class="fa-solid fa-comment"></i> Remarks (Optional)
+									</label>
+									<input type="text" class="form-control" id="remarks" name="remarks"
+										placeholder="Enter any additional information or reason...">
+								</div>
+
+								@if($documentTypes->isNotEmpty())
+									<div class="price-display hidden" id="priceDisplay">
+										<div class="price-label">Total Amount (<span id="selectedCount">0</span> selected):</div>
+										<div class="price-amount" id="priceAmount">₹ 0.00</div>
 									</div>
 
-									<div class="col-md-6">
-										<div class="form-group mb-3">
-											<label for="remarks">
-												<i class="fa-solid fa-comment"></i> Remarks (Optional)
-											</label>
-											<input type="text" class="form-control" id="remarks" name="remarks"
-												placeholder="Enter any additional information or reason...">
-										</div>
+									<div class="mt-3">
+										<button type="submit" class="btn-submit" id="btnSubmit" disabled>
+											<i class="fa-solid fa-paper-plane"></i> Submit Request(s) & Proceed to Payment
+										</button>
 									</div>
-								</div>
-
-								<div class="price-display hidden" id="priceDisplay">
-									<div class="price-label">Total Amount:</div>
-									<div class="price-amount" id="priceAmount">₹ 0.00</div>
-								</div>
-
-								<div class="mt-3">
-									<button type="submit" class="btn-submit">
-										<i class="fa-solid fa-paper-plane"></i> Submit Request & Proceed to Payment
-									</button>
-								</div>
+								@endif
 							</form>
 						</div>
 
@@ -305,14 +307,14 @@
 							<i class="fa-solid fa-clock-rotate-left"></i> My Requests
 						</h5>
 
-						@if($requests->count() > 0)
+						@if($requestGroups->count() > 0)
 							<div class="table-responsive">
 								<table class="table request-table">
 									<thead>
 										<tr>
-											<th>Request ID</th>
-											<th>Document Type</th>
-											<th>Amount</th>
+											<th>Request</th>
+											<th>Document(s)</th>
+											<th>Total Amount</th>
 											<th>Payment Status</th>
 											<th>Request Status</th>
 											<th>Requested Date</th>
@@ -320,43 +322,45 @@
 										</tr>
 									</thead>
 									<tbody>
-										@foreach($requests as $request)
+										@foreach($requestGroups as $group)
 											<tr>
-												<td><strong>#{{ $request->drr_id }}</strong></td>
+												<td><strong>#{{ $group->items->first()->drr_id }}{{ $group->items->count() > 1 ? ' (+' . ($group->items->count() - 1) . ')' : '' }}</strong></td>
 												<td>
-													<i class="fa-solid fa-file-lines"></i> {{ $request->drr_document_type }}
+													@foreach($group->items as $req)
+														<i class="fa-solid fa-file-lines"></i> {{ $req->drr_document_type }}@if(!$loop->last), @endif
+													@endforeach
 												</td>
-												<td><strong>₹ {{ number_format($request->drr_amount, 2) }}</strong></td>
+												<td><strong>₹ {{ number_format($group->total_amount, 2) }}</strong></td>
 												<td>
-													@if($request->drr_payment_status == 'PAID')
+													@if($group->payment_status == 'PAID')
 														<span class="status-badge status-paid">Paid</span>
-													@elseif($request->drr_payment_status == 'FAILED')
+													@elseif($group->payment_status == 'FAILED')
 														<span class="status-badge status-rejected">Failed</span>
 													@else
 														<span class="status-badge status-pending">Pending</span>
 													@endif
 												</td>
 												<td>
-													@if($request->drr_status == 'COMPLETED')
+													@if($group->request_status == 'COMPLETED')
 														<span class="status-badge status-completed">Completed</span>
-													@elseif($request->drr_status == 'PROCESSING')
+													@elseif($group->request_status == 'PROCESSING')
 														<span class="status-badge status-processing">Processing</span>
-													@elseif($request->drr_status == 'REJECTED')
+													@elseif($group->request_status == 'REJECTED')
 														<span class="status-badge status-rejected">Rejected</span>
-													@elseif($request->drr_status == 'PAID')
+													@elseif($group->request_status == 'PAID')
 														<span class="status-badge status-paid">Paid</span>
 													@else
 														<span class="status-badge status-pending">Pending</span>
 													@endif
 												</td>
-												<td>{{ \Carbon\Carbon::parse($request->drr_requested_at)->format('d M, Y') }}</td>
+												<td>{{ \Carbon\Carbon::parse($group->requested_at)->format('d M, Y') }}</td>
 												<td>
-													<a href="{{ route('student.document_reissue.show', $request->drr_id) }}"
+													<a href="{{ route('student.document_reissue.show', $group->items->first()->drr_id) }}"
 														class="btn-view">
 														<i class="fa-solid fa-eye"></i> View
 													</a>
-													@if($request->drr_payment_status == 'PENDING')
-														<a href="{{ route('student.document_reissue.payment', $request->drr_id) }}"
+													@if($group->payment_status == 'PENDING')
+														<a href="{{ route('student.document_reissue.payment.group', $group->group_id) }}"
 															class="btn-pay">
 															<i class="fa-solid fa-credit-card"></i> Pay
 														</a>
@@ -382,18 +386,29 @@
 @push('custom-script')
 	<script>
 		$(document).ready(function () {
-			// Update price display when document type changes
-			$('#document_type').on('change', function () {
-				const selectedOption = $(this).find('option:selected');
-				const price = selectedOption.data('price');
-				const priceDisplay = $('#priceDisplay');
-				const priceAmount = $('#priceAmount');
-
-				if (price) {
-					priceAmount.text('₹ ' + parseFloat(price).toFixed(2));
-					priceDisplay.removeClass('hidden');
+			function updateTotal() {
+				var total = 0;
+				var count = 0;
+				$('.doc-type-check:checked').each(function () {
+					total += parseFloat($(this).data('price')) || 0;
+					count++;
+				});
+				$('#priceAmount').text('₹ ' + total.toFixed(2));
+				$('#selectedCount').text(count);
+				if (count > 0) {
+					$('#priceDisplay').removeClass('hidden');
+					$('#btnSubmit').prop('disabled', false);
 				} else {
-					priceDisplay.addClass('hidden');
+					$('#priceDisplay').addClass('hidden');
+					$('#btnSubmit').prop('disabled', true);
+				}
+			}
+			$('.doc-type-check').on('change', updateTotal);
+			updateTotal();
+			$('#reissueForm').on('submit', function () {
+				if ($('.doc-type-check:checked').length === 0) {
+					alert('Please select at least one document type.');
+					return false;
 				}
 			});
 		});

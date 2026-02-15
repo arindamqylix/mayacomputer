@@ -218,13 +218,13 @@
 							<div class="info-row">
 								<span class="info-label">Document Type:</span>
 								<span class="info-value">
-									@if($request->drr_document_type == 'CERTIFICATE')
-										<i class="fa-solid fa-certificate"></i> Certificate
-									@elseif($request->drr_document_type == 'MARKSHEET')
-										<i class="fa-solid fa-file-lines"></i> Marksheet
-									@else
-										<i class="fa-solid fa-id-card"></i> ID Card
-									@endif
+									@php
+										$dt = strtolower($request->drr_document_type ?? '');
+										$icon = 'id-card';
+										if (str_contains($dt, 'certificate')) $icon = 'certificate';
+										elseif (str_contains($dt, 'marksheet') || str_contains($dt, 'result')) $icon = 'file-lines';
+									@endphp
+									<i class="fa-solid fa-{{ $icon }}"></i> {{ $request->drr_document_type }}
 								</span>
 							</div>
 

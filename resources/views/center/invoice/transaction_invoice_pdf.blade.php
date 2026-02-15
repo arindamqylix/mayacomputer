@@ -27,6 +27,40 @@
         color: #333;
     }
 
+    /* Header - same as center_certificate.blade.php: centered, 80% width, max-height 120px */
+    .header {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .header-banner {
+        width: 80%;
+        max-height: 120px;
+        object-fit: contain;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .header-subtext {
+        text-align: center;
+        margin-top: -20px;
+        padding-left: 0;
+    }
+    .reg-details {
+        font-size: 10px;
+        font-weight: bold;
+        margin: 1px 0;
+        color: #000;
+        font-family: Arial, sans-serif;
+    }
+    .iso-text {
+        color: red;
+        font-weight: bold;
+        font-size: 12px;
+        margin: 2px 0;
+        font-family: Arial, sans-serif;
+    }
+
     .invoice-title-bar {
         text-align: center;
         background: #000077;
@@ -67,18 +101,15 @@
     }
 </style>
 
-<!-- Header -->
-<div class="header-container"
-    style="text-align: center; margin-bottom: 10px; border-bottom: 2px solid #000077; padding-bottom: 5px;">
-    <img src="{{ asset($logoPath) }}" alt="Banner" style="width: 100%; max-height: 80px; object-fit: contain;">
-
-    <div style="text-align: center; margin-top: -10px;">
-        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Reg.
-            Under the Company Act.2013 MCA, Government of India</p>
-        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">
-            Registered Under Skill India, Udyam & Startup India</p>
-        <p style="color: red; font-weight: bold; font-size: 8px; margin: 2px 0; font-family: Arial, sans-serif;">An ISO
-            9001: 2015 Certified</p>
+<!-- Header - same structure as center_certificate.blade.php -->
+<div class="header">
+    <img src="{{ asset($logoPath) }}" alt="Maya Computer Center Banner" class="header-banner">
+    <div class="header-subtext">
+        <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+        <p class="reg-details" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+        <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+        <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
+        <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
     </div>
 </div>
 
@@ -118,7 +149,7 @@
         <thead>
             <tr>
                 <th>Description</th>
-                <th class="text-right">Transaction Amount (₹)</th>
+                <th class="text-right">Transaction Amount (Rs)</th>
             </tr>
         </thead>
         <tbody>
@@ -128,13 +159,13 @@
                     <br>
                     <small>Txn ID: {{ $transaction->t_id }}</small>
                 </td>
-                <td class="text-right">₹ {{ number_format($transaction->t_amount, 2) }}</td>
+                <td class="text-right">Rs {{ number_format($transaction->t_amount, 2) }}</td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <th class="text-right">Total Debit:</th>
-                <th class="text-right">₹ {{ number_format($transaction->t_amount, 2) }}</th>
+                <th class="text-right">Rs {{ number_format($transaction->t_amount, 2) }}</th>
             </tr>
         </tfoot>
     </table>

@@ -113,13 +113,13 @@
 							<h5>Request ID: #{{ $reissueRequest->drr_id }}</h5>
 							<div class="payment-amount">₹ {{ number_format($reissueRequest->drr_amount, 2) }}</div>
 							<p class="mb-0">
-								@if($reissueRequest->drr_document_type == 'CERTIFICATE')
-									<i class="fa-solid fa-certificate"></i> Certificate Re-Print
-								@elseif($reissueRequest->drr_document_type == 'MARKSHEET')
-									<i class="fa-solid fa-file-lines"></i> Marksheet Re-Print
-								@else
-									<i class="fa-solid fa-id-card"></i> ID Card Re-Print
-								@endif
+								@php
+									$dt = strtolower($reissueRequest->drr_document_type ?? '');
+									$icon = 'id-card';
+									if (str_contains($dt, 'certificate')) $icon = 'certificate';
+									elseif (str_contains($dt, 'marksheet') || str_contains($dt, 'result')) $icon = 'file-lines';
+								@endphp
+								<i class="fa-solid fa-{{ $icon }}"></i> {{ $reissueRequest->drr_document_type }} Re-Print
 							</p>
 						</div>
 

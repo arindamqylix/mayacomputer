@@ -14,6 +14,7 @@ class DocumentReissueRequest extends Model
     
     protected $fillable = [
         'drr_FK_of_student_id',
+        'drr_group_id',
         'drr_document_type',
         'drr_status',
         'drr_amount',

@@ -197,13 +197,13 @@
 												<td>{{ $req->sl_name ?? 'N/A' }}</td>
 												<td>{{ $req->sl_reg_no ?? 'N/A' }}</td>
 												<td>
-													@if($req->drr_document_type == 'CERTIFICATE')
-														<i class="fa-solid fa-certificate"></i> Certificate
-													@elseif($req->drr_document_type == 'MARKSHEET')
-														<i class="fa-solid fa-file-lines"></i> Marksheet
-													@else
-														<i class="fa-solid fa-id-card"></i> ID Card
-													@endif
+													@php
+														$dt = strtolower($req->drr_document_type ?? '');
+														$icon = 'id-card';
+														if (str_contains($dt, 'certificate')) $icon = 'certificate';
+														elseif (str_contains($dt, 'marksheet') || str_contains($dt, 'result')) $icon = 'file-lines';
+													@endphp
+													<i class="fa-solid fa-{{ $icon }}"></i> {{ $req->drr_document_type }}
 												</td>
 												<td>
 													{{ $req->cl_center_name ?? 'N/A' }}<br>

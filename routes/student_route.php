@@ -42,6 +42,8 @@ Route::group(['prefix' => 'student', 'middleware' => 'student:student'], functio
 	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('student.document_reissue');
 	Route::post('document-reissue', [DocumentReissueController::class, 'store'])->name('student.document_reissue.store');
 	Route::get('document-reissue/payment/{id}', [DocumentReissueController::class, 'payment'])->name('student.document_reissue.payment');
+	Route::get('document-reissue/payment/group/{group_id}', [DocumentReissueController::class, 'paymentGroup'])->name('student.document_reissue.payment.group');
+	Route::post('document-reissue/payment/group/{group_id}', [DocumentReissueController::class, 'processPaymentGroup'])->name('student.document_reissue.payment.group.process');
 	Route::post('document-reissue/payment/{id}', [DocumentReissueController::class, 'processPayment'])->name('student.document_reissue.payment.process');
 	Route::get('document-reissue/{id}', [DocumentReissueController::class, 'show'])->name('student.document_reissue.show');
 

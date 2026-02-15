@@ -71,8 +71,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            /* Distribute vertical space */
+            justify-content: flex-start;
         }
 
         /* Header */
@@ -183,7 +182,6 @@
             text-align: center;
             padding: 0 160px 0 50px;
             position: relative;
-            flex-grow: 1;
         }
 
         .certify-text {
@@ -220,16 +218,17 @@
             margin-top: 5px;
         }
 
-        /* Photo */
+        /* Photo - aligned beside content, clear spacing from right border */
         .photo-box {
             position: absolute;
-            top: 40px;
-            right: 0;
+            top: 8px;
+            right: 20px;
             width: 100px;
             height: 130px;
             border: 1px solid #000;
             background: #fff;
             padding: 2px;
+            box-sizing: border-box;
         }
 
         .photo-box img {
@@ -238,25 +237,28 @@
             object-fit: cover;
         }
 
-        /* Footer Section */
+        /* Footer Section - sits close below main content, no extra gap */
         .footer-section {
-            margin-top: auto;
+            margin-top: 10px;
             padding-bottom: 3px;
         }
 
         .footer-logos {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
+            gap: 4px;
             margin-bottom: 1px;
             border-top: 1px solid #eee;
             padding-top: 2px;
+            flex-wrap: nowrap;
         }
 
         .footer-logo {
             height: 30px;
             width: auto;
             object-fit: contain;
+            display: block;
         }
 
         .signatures {
@@ -302,6 +304,7 @@
             min-width: 100px;
         }
 
+        /* Stamp & signature - same size as center_certificate.blade.php (both blocks) */
         .sig-overlap-container {
             display: flex;
             flex-direction: column;
@@ -313,7 +316,9 @@
 
         .sig-area {
             position: relative;
-            height: 78px;
+            height: 110px;
+            width: 200px;
+            margin: 0 auto;
             flex-shrink: 0;
             display: flex;
             justify-content: center;
@@ -323,20 +328,29 @@
         .stamp-img {
             position: absolute;
             height: 130px;
+            width: auto;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            object-fit: contain;
             opacity: 0.8;
             z-index: 1;
         }
 
         .sign-img {
-            position: relative;
+            position: absolute;
             height: 50px;
+            width: auto;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            object-fit: contain;
             z-index: 2;
-            margin-bottom: 5px;
         }
 
         .sig-line {
-            padding-top: 2px;
-            margin-top: 0;
+            padding-top: 4px;
+            margin-top: -31px;
             min-height: 18px;
             font-weight: bold;
             font-size: 14px;
@@ -422,17 +436,16 @@
                         <!-- Middle Content -->
                         <div class="main-content">
                             <div class="certify-text"
-                                style="font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; margin-top: 10px; margin-right: -110px;">
+                                style="font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; margin-top: 10px;">
                                 THIS CERTIFICATE / DIPLOMA IS AWARDED TO</div>
                             <div class="center-name"
-                                style="color: blue; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: bold; margin: 8px 0; margin-right: -110px;">
+                                style="color: blue; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: bold; margin: 8px 0;">
                                 {{ strtoupper($certificate->sl_name ?? '') }}
                             </div>
 
-                            <div class="student-details"
-                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; line-height: 1.5; color: #000;">
+                            <div class="student-details" style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; line-height: 1.5; color: #000;">
                                 S/o – <b>{{ ucwords(strtolower($certificate->sl_father_name ?? '')) }}</b> , Reg No.
-                                <b>{{ $certificate->sl_reg_no }}</b> on successfully completion of
+                                <b>{{ $certificate->sl_reg_no }}</b> on successfully completion of<br>
                                 <b>{{ $certificate->c_full_name ?? '' }}</b> ( Duration -
                                 {{ $certificate->c_duration ?? '' }} ) Course and secured
                                 <b>{{ number_format($certificate->sr_percentage ?? 0, 2) }}%</b> with Grade
@@ -440,14 +453,14 @@
                             </div>
 
                             <div class="center-study-details"
-                                style="margin-right: -110px; font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; color: #000; font-weight: bold; line-height: 1.6;">
+                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; color: #000; font-weight: bold; line-height: 1.6;">
                                 {{ $certificate->cl_center_name ?? '' }} , {{ $certificate->cl_center_address ?? '' }}
                                 <br>
                                 Centre Code {{ $certificate->cl_code ?? '' }}
                             </div>
 
                             <div class="recommendation-text"
-                                style="margin-top: 5px; margin-right: -110px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
+                                style="margin-top: 5px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
                                 On the recommendation of the board of examination
                             </div>
 
@@ -461,7 +474,7 @@
                             </div>
 
                             <div class="authorization-text"
-                                style="margin-top: 4px; font-size:14px; margin-right: -110px;">
+                                style="margin-top: 4px; font-size:14px;">
                                 <span class="company-name">MAYA COMPUTER CENTER PRIVATE LIMITED</span>
                             </div>
                         </div>
@@ -494,34 +507,24 @@
                                 </div>
 
                                 <div class="sig-overlap-container">
-                                    <div class="sig-area"
-                                        style="position: relative; height: 78px; width: 220px; margin: 0 auto;">
+                                    <div class="sig-area">
                                         @if(!empty($certificate->cl_center_stamp) && file_exists(public_path($certificate->cl_center_stamp)))
-                                            <img src="{{ asset($certificate->cl_center_stamp) }}" class="stamp-img"
-                                                style="position: absolute; height: 78px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
-                                                alt="Center Stamp">
+                                            <img src="{{ asset($certificate->cl_center_stamp) }}" class="stamp-img" alt="Center Stamp">
                                         @endif
                                         @if(!empty($certificate->cl_authorized_signature) && file_exists(public_path($certificate->cl_authorized_signature)))
-                                            <img src="{{ asset($certificate->cl_authorized_signature) }}" class="sign-img"
-                                                style="position: absolute; height: 50px; z-index: 2; bottom: 10px; left: 50%; transform: translateX(-50%);"
-                                                alt="Center Sign">
+                                            <img src="{{ asset($certificate->cl_authorized_signature) }}" class="sign-img" alt="Center Sign">
                                         @endif
                                     </div>
                                     <div class="sig-line">Center Head Signature</div>
                                 </div>
 
                                 <div class="sig-overlap-container">
-                                    <div class="sig-area"
-                                        style="position: relative; height: 78px; width: 220px; margin: 0 auto;">
+                                    <div class="sig-area">
                                         @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
-                                            <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img"
-                                                style="position: absolute; height: 78px; opacity: 0.8; z-index: 1; top: 0; left: 50%; transform: translateX(-50%);"
-                                                alt="Stamp">
+                                            <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img" alt="Stamp">
                                         @endif
                                         @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
-                                            <img src="{{ asset($setting->authorize_signature) }}" class="sign-img"
-                                                style="position: absolute; height: 50px; z-index: 2; bottom: 10px; left: 50%; transform: translateX(-50%);"
-                                                alt="Sign">
+                                            <img src="{{ asset($setting->authorize_signature) }}" class="sign-img" alt="Sign">
                                         @endif
                                     </div>
                                     <div class="sig-line">Authorized Signatory</div>

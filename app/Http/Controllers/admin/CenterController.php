@@ -403,7 +403,8 @@ class CenterController extends Controller
     public function viewCenterIdCard()
     {
         $data = \Illuminate\Support\Facades\Auth::guard('center')->user();
-        return view('center.view_id_card', compact('data'));
+        $setting = \DB::table('site_settings')->first();
+        return view('center.view_id_card', compact('data', 'setting'));
     }
 
     // View Center Certificate from Center Panel
