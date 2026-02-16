@@ -111,7 +111,7 @@
       <li class="nav-item {{ Request::segment(2) == 'document-reissue' ? 'active' : '' }}">
         <a href="{{ route('student.document_reissue') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-file-circle-plus"></i></span>
-            <span class="sidebar-text">Reissue Documents</span>
+            <span class="sidebar-text">Re-Print Document</span>
         </a>
       </li>
 

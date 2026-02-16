@@ -44,6 +44,7 @@ Route::post('/verification/result-data', [PagesController::class, 'getResultData
 Route::get('/verification/certificate', [PagesController::class, 'certificate'])->name('verification.certificate');
 Route::get('/verification/certificate/view', [PagesController::class, 'showCertificate'])->name('verification.certificate.view');
 Route::post('/verification/certificate-data', [PagesController::class, 'getCertificateData'])->name('verification.certificate.data');
+Route::get('verify-certificate/{certificate_number}', [PagesController::class, 'verifyCertificateByNumber'])->name('verify_certificate');
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
 Route::get('verify-center/{code}', [PagesController::class, 'verifyCenter'])->name('verify_center');
 Route::post('verify-center/send-otp', [PagesController::class, 'sendCenterVerificationOtp'])->name('verify_center.send_otp');

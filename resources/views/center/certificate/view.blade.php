@@ -85,15 +85,17 @@
         .header-banner {
             width: 80%;
             max-height: 120px;
-            /* Reduced to fit */
             object-fit: contain;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .header-subtext {
+            margin-left: 51px;
             margin-top: -26px;
-            position: relative;
-            left: 50px;
-            /* Shift to right as requested */
+            text-align: center;
+            padding-left: 0;
         }
 
         .reg-details {

@@ -703,6 +703,48 @@ class PagesController extends Controller
         }
     }
 
+    /**
+     * QR code verification: verify certificate by certificate number (public, no login).
+     * URL: /verify-certificate/{certificate_number}
+     */
+    public function verifyCertificateByNumber($certificate_number)
+    {
+        $certificate = DB::table('student_certificates')
+            ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+            ->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+            ->where('student_certificates.sc_certificate_number', $certificate_number)
+            ->select(
+                'student_certificates.*',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                'student_login.sl_father_name',
+                'student_login.sl_status',
+                'set_result.sr_percentage',
+                'set_result.sr_grade',
+                'course.c_full_name',
+                'course.c_short_name',
+                'center_login.cl_center_name',
+                'center_login.cl_code'
+            )
+            ->first();
+
+        if (!$certificate || in_array($certificate->sl_status ?? '', ['PENDING', 'BLOCK'])) {
+            return view('frontend.certificate-verify-result', [
+                'verified' => false,
+                'certificate_number' => $certificate_number,
+                'certificate' => null,
+            ]);
+        }
+
+        return view('frontend.certificate-verify-result', [
+            'verified' => true,
+            'certificate_number' => $certificate_number,
+            'certificate' => $certificate,
+        ]);
+    }
+
     // XML Sitemap for search engines
     public function sitemapXml()
     {

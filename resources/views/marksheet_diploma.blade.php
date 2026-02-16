@@ -113,12 +113,19 @@
             object-fit: contain;
             display: block;
             margin: 0 auto;
+            margin-right: 87px;
         }
 
         .header-subtext {
             text-align: center;
             margin-top: -20px;
-            padding-left: 0;
+            padding: 0;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .header-subtext p {
+            margin: 2px 0;
         }
 
         .reg-details {
@@ -135,6 +142,26 @@
             font-size: 12px;
             margin: 2px 0;
             font-family: Arial, sans-serif;
+        }
+
+        /* Hologram on right - same as center_certificate.blade.php */
+        .hologram-wrapper {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            left: auto;
+            z-index: 10;
+            text-align: center;
+        }
+        .hologram-wrapper img {
+            width: 80px;
+            height: auto;
+        }
+        .hologram-wrapper .sn-text {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 2px;
         }
 
         /* Footer row: QR bottom-left, Authorized Signatory bottom-right - aligned on same baseline */
@@ -415,6 +442,12 @@
                                 @else
                                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner"
                                         class="header-banner">
+                                @endif
+                                @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
+                                    <div class="hologram-wrapper">
+                                        <img src="{{ asset($setting->hologram) }}" alt="Hologram">
+                                        <span class="sn-text">SN. MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
+                                    </div>
                                 @endif
                                 <div class="header-subtext">
                                     <p class="reg-details" style="font-size: 16px;">CIN : U85220DL2023PTC422329</p>

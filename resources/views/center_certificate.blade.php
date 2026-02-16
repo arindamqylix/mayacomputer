@@ -212,7 +212,7 @@
 
         .address {
             font-weight: bold;
-            font-size: 13px;
+            font-size: 16px;
             max-width: 90%;
             margin: 0 auto;
             line-height: 1.3;
