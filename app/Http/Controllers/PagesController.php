@@ -330,6 +330,90 @@ class PagesController extends Controller
         }
     }
 
+    /**
+     * QR code verification: verify result/marksheet by registration number (public).
+     * URL: /verify-result/{reg_no}
+     */
+    public function verifyResultByRegNo($reg_no)
+    {
+        $result = DB::table('set_result')
+            ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+            ->where('student_login.sl_reg_no', $reg_no)
+            ->select(
+                'set_result.*',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                'student_login.sl_status',
+                'course.c_full_name',
+                'course.c_short_name',
+                'center_login.cl_center_name',
+                'center_login.cl_code'
+            )
+            ->orderBy('set_result.sr_id', 'desc')
+            ->first();
+
+        if (!$result || in_array($result->sl_status ?? '', ['PENDING', 'BLOCK'])) {
+            return view('frontend.result-verify-result', [
+                'verified' => false,
+                'reg_no' => $reg_no,
+                'data' => null,
+            ]);
+        }
+
+        return view('frontend.result-verify-result', [
+            'verified' => true,
+            'reg_no' => $reg_no,
+            'data' => $result,
+        ]);
+    }
+
+    /**
+     * QR code verification: verify student / admit card by registration number (public).
+     * URL: /verify-student/{reg_no}
+     */
+    public function verifyStudentByRegNo($reg_no)
+    {
+        $student = DB::table('student_login')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+            ->leftJoin('student_admit_cards', function ($join) {
+                $join->on('student_admit_cards.student_id', '=', 'student_login.sl_id');
+            })
+            ->where('student_login.sl_reg_no', $reg_no)
+            ->orderBy('student_admit_cards.ac_id', 'desc')
+            ->select(
+                'student_login.sl_id',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                'student_login.sl_father_name',
+                'student_login.sl_status',
+                'course.c_full_name',
+                'course.c_short_name',
+                'center_login.cl_center_name',
+                'center_login.cl_code',
+                'student_admit_cards.exam_date',
+                'student_admit_cards.exam_venue',
+                'student_admit_cards.exam_time'
+            )
+            ->first();
+
+        if (!$student || in_array($student->sl_status ?? '', ['PENDING', 'BLOCK'])) {
+            return view('frontend.admit-verify-result', [
+                'verified' => false,
+                'reg_no' => $reg_no,
+                'data' => null,
+            ]);
+        }
+
+        return view('frontend.admit-verify-result', [
+            'verified' => true,
+            'reg_no' => $reg_no,
+            'data' => $student,
+        ]);
+    }
+
     // AJAX endpoint to fetch certificate data
     public function getCertificateData(Request $request)
     {

@@ -41,6 +41,8 @@ Route::get('/verification/icard', [PagesController::class, 'icard'])->name('veri
 Route::post('/verification/icard-data', [PagesController::class, 'getIcardData'])->name('verification.icard.data');
 Route::get('/verification/result', [PagesController::class, 'result'])->name('verification.result');
 Route::post('/verification/result-data', [PagesController::class, 'getResultData'])->name('verification.result.data');
+Route::get('verify-result/{reg_no}', [PagesController::class, 'verifyResultByRegNo'])->name('verify_result');
+Route::get('verify-student/{reg_no}', [PagesController::class, 'verifyStudentByRegNo'])->name('verify_student');
 Route::get('/verification/certificate', [PagesController::class, 'certificate'])->name('verification.certificate');
 Route::get('/verification/certificate/view', [PagesController::class, 'showCertificate'])->name('verification.certificate.view');
 Route::post('/verification/certificate-data', [PagesController::class, 'getCertificateData'])->name('verification.certificate.data');

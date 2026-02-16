@@ -341,7 +341,9 @@
             </div>
             <div class="header-right">
                 <div class="qr-code">
-                    @if(file_exists(public_path('document/images/certificate-qr.jpg')))
+                    @if(!empty($admit->reg_no))
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $admit->reg_no) }}" alt="QR Code" style="width:70px;height:70px;">
+                    @elseif(file_exists(public_path('document/images/certificate-qr.jpg')))
                         <img src="{{ asset('document/images/certificate-qr.jpg') }}" alt="QR Code">
                     @else
                         <span>QR</span>
