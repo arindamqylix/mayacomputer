@@ -596,8 +596,9 @@
                                 <!-- Footer row: QR bottom-left, Authorized Signatory bottom-right - aligned -->
                                 <div class="card-footer-row">
                                     <div class="qr-code-wrap">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . $data->sl_reg_no) }}" alt="QR Code" class="qr-code">
-                                        <div class="qr-sr-no">SN. MCC{{ str_pad($data->sl_id, 5, '0', STR_PAD_LEFT) }}</div>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . ($data->sl_reg_no ?? '')) }}" alt="QR Code - Scan to verify" class="qr-code">
+                                        <div class="qr-sr-no">SN. MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</div>
+                                        <div class="qr-sr-no" style="font-size:9px;margin-top:2px;">Scan to verify</div>
                                     </div>
                                     <div class="signatures-wrapper" style="flex-shrink: 0;">
                                         <div class="sig-section right-sig"

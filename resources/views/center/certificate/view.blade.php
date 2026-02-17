@@ -426,9 +426,10 @@
                                 <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
                             </div>
                             <div class="qr-wrapper">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-certificate/' . $certificate->sc_certificate_number) }}"
-                                    alt="QR">
-                                <span class="sn-top-right">SN. MCC{{ str_pad($certificate->sl_id, 5, '0', STR_PAD_LEFT) }}</span>
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-certificate/' . ($certificate->sc_certificate_number ?? '')) }}"
+                                    alt="QR Code - Scan to verify" title="Scan to verify">
+                                <span class="sn-top-right">SN. MCC{{ str_pad($certificate->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
+                                <span class="sn-top-right" style="display:block;font-size:9px;margin-top:2px;">Scan to verify</span>
                             </div>
                         </div>
 

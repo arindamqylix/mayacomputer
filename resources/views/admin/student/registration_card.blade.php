@@ -114,6 +114,13 @@
             background: #fff;
             display: block;
         }
+        .qr-code-wrap .qr-sr-no {
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 4px;
+            text-align: center;
+            color: #333;
+        }
 
         /* Title strip */
         .card-title {
@@ -389,7 +396,8 @@
             <!-- Footer row: QR bottom-left, Controller bottom-right, aligned -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($data->sl_reg_no ?? '')) }}" alt="QR Code" class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($data->sl_reg_no ?? '')) }}" alt="QR Code - Scan to verify" class="qr-code">
+                    <div class="qr-sr-no">Scan to verify</div>
                 </div>
                 <div class="controller-sign">
                     <div class="controller-sig-overlap">

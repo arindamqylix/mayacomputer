@@ -501,8 +501,9 @@
 					<!-- Left: QR Code -->
 					<div class="qr-section">
 						<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/' . ($data->cl_code ?? '')) }}"
-							alt="QR"
+							alt="QR Code - Scan to verify" title="Scan to verify"
 							style="width: 70px; height: 70px; border: 1px solid #ddd; padding: 2px; background:white;">
+						<div style="font-size:10px;font-weight:600;margin-top:4px;text-align:center;color:#333;">Scan to verify</div>
 					</div>
 
 					<!-- Right: Signature -->
