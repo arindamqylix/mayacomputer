@@ -257,7 +257,7 @@
             font-size: 12px;
             margin-top: -1px;
             /* collapse border */
-            margin-bottom: 6px;
+            margin-bottom: 0;
         }
 
         .module-item {
