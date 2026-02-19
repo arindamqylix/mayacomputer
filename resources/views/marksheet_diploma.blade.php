@@ -59,7 +59,7 @@
 
         .border-design {
             border: 1px solid #0f1d46;
-            padding: 15px;
+            padding: 10px;
             height: 100%;
             background-image:
                 linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46),
@@ -73,7 +73,7 @@
 
         .content-area-white {
             background-color: white;
-            padding: 20px;
+            padding: 14px;
             height: 100%;
             border: 1px solid #c5a059;
             position: relative;
@@ -169,9 +169,9 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 24px;
+            margin-top: 10px;
             width: 100%;
-            min-height: 90px;
+            min-height: 72px;
         }
         .qr-code-wrap {
             flex-shrink: 0;
@@ -201,10 +201,10 @@
             text-align: center;
             font-weight: bold;
             font-size: 14px;
-            padding: 5px;
+            padding: 4px;
             text-transform: uppercase;
             font-family: Arial, sans-serif;
-            margin-top: 10px;
+            margin-top: 6px;
             border: 1px solid #000066;
         }
 
@@ -253,11 +253,11 @@
         /* Modules Section */
         .modules-box {
             border: 1px solid #000066;
-            padding: 5px 10px;
+            padding: 4px 10px;
             font-size: 12px;
             margin-top: -1px;
             /* collapse border */
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .module-item {
@@ -281,14 +281,14 @@
         .marks-table th {
             background-color: #000066;
             color: white;
-            padding: 6px;
+            padding: 4px 6px;
             border: 1px solid #fff;
             text-align: center;
         }
 
         .marks-table td {
             border: 1px solid #000;
-            padding: 6px;
+            padding: 4px 6px;
             text-align: center;
             font-weight: bold;
         }
@@ -303,22 +303,22 @@
 
         .marks-table tr.grade-summary-row td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 4px 6px;
         }
 
         /* Grading Details */
         .grading-info {
             font-size: 11px;
             font-weight: bold;
-            margin-top: 5px;
-            margin-bottom: 20px;
+            margin-top: 4px;
+            margin-bottom: 6px;
             white-space: nowrap;
         }
 
         .issue-date {
             font-size: 12px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 6px;
         }
 
         /* Footer */
@@ -327,7 +327,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            padding-bottom: 10px;
+            padding-bottom: 4px;
         }
 
         .logo-strip {
@@ -335,7 +335,7 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 40px;
+            margin-bottom: 12px;
         }
 
         .footer-logo {
@@ -370,12 +370,19 @@
                 box-shadow: none;
                 border: none;
                 width: 210mm;
-                height: 296mm;
+                min-height: auto;
                 margin: 0;
-                padding: 5mm;
+                padding: 4mm;
                 overflow: hidden;
                 page-break-after: avoid;
             }
+            .marksheet-container .border-design { padding: 8px !important; }
+            .marksheet-container .content-area-white { padding: 10px !important; }
+            .marksheet-container .logo-strip { margin-bottom: 8px !important; }
+            .marksheet-container .card-footer-row { margin-top: 6px !important; min-height: 68px !important; }
+            .marksheet-container .footer { padding-bottom: 0 !important; }
+            .marksheet-container .grading-info { margin-bottom: 4px !important; }
+            .marksheet-container .issue-date { margin-bottom: 4px !important; }
 
             /* Force background printing for marksheet elements */
             .marksheet-container * {
