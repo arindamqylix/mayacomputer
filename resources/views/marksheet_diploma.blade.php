@@ -372,17 +372,17 @@
                 width: 210mm;
                 min-height: auto;
                 margin: 0;
-                padding: 4mm;
+                padding: 4mm 4mm 2mm 4mm;
                 overflow: hidden;
                 page-break-after: avoid;
             }
-            .marksheet-container .border-design { padding: 8px !important; }
-            .marksheet-container .content-area-white { padding: 10px !important; }
-            .marksheet-container .logo-strip { margin-bottom: 8px !important; }
-            .marksheet-container .card-footer-row { margin-top: 6px !important; min-height: 68px !important; }
+            .marksheet-container .border-design { padding: 8px 8px 5px 8px !important; }
+            .marksheet-container .content-area-white { padding: 10px 10px 5px 10px !important; }
+            .marksheet-container .logo-strip { margin-bottom: 4px !important; }
+            .marksheet-container .card-footer-row { margin-top: 4px !important; min-height: 64px !important; }
             .marksheet-container .footer { padding-bottom: 0 !important; }
-            .marksheet-container .grading-info { margin-bottom: 4px !important; }
-            .marksheet-container .issue-date { margin-bottom: 4px !important; }
+            .marksheet-container .grading-info { margin-bottom: 3px !important; }
+            .marksheet-container .issue-date { margin-bottom: 3px !important; }
 
             /* Force background printing for marksheet elements */
             .marksheet-container * {
