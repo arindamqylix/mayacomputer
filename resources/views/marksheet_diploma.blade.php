@@ -351,7 +351,7 @@
             margin-right: 20px;
         }
 
-        /* Print styles - scale to 111% so marksheet fills A4 at 100% print scale */
+        /* Print styles */
         @media print {
             @page {
                 size: A4 portrait;
@@ -362,8 +362,6 @@
                 background: white;
                 padding: 0;
                 margin: 0;
-                width: 210mm;
-                overflow: visible;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
@@ -371,14 +369,12 @@
             .marksheet-container {
                 box-shadow: none;
                 border: none;
-                width: 189.19mm; /* 210/1.11 so scaled output is exactly A4 width */
+                width: 210mm;
                 min-height: auto;
                 margin: 0;
                 padding: 4mm 4mm 2mm 4mm;
                 overflow: hidden;
                 page-break-after: avoid;
-                transform: scale(1.11);
-                transform-origin: top left;
             }
             .marksheet-container .border-design { padding: 8px 8px 5px 8px !important; }
             .marksheet-container .content-area-white { padding: 10px 10px 5px 10px !important; }
