@@ -104,9 +104,11 @@
             width: 100%;
             min-height: 90px;
         }
+
         .qr-code-wrap {
             flex-shrink: 0;
         }
+
         .qr-code {
             width: 70px;
             height: 70px;
@@ -114,6 +116,7 @@
             background: #fff;
             display: block;
         }
+
         .qr-code-wrap .qr-sr-no {
             font-size: 10px;
             font-weight: 600;
@@ -161,7 +164,8 @@
             border-top: none;
             display: flex;
             padding: 10px;
-            padding-right: 150px; /* space for photo-box so text doesn't overlap */
+            padding-right: 150px;
+            /* space for photo-box so text doesn't overlap */
             position: relative;
             background-color: #f9f9f980;
         }
@@ -179,9 +183,9 @@
 
         .label {
             font-weight: bold;
-            font-style: italic;
-            text-align: right;
-            width: 160px;
+            font-style: normal;
+            text-align: left;
+            width: 175px;
             padding-right: 10px;
             color: #000;
         }
@@ -235,6 +239,7 @@
             color: #ccc;
             padding: 4px;
         }
+
         .signature-box img {
             max-height: 36px;
             width: auto;
@@ -246,11 +251,13 @@
             flex-shrink: 0;
             font-family: Arial, sans-serif;
         }
+
         .controller-sig-overlap {
             position: relative;
             width: 200px;
             text-align: center;
         }
+
         .controller-sig-area {
             position: relative;
             height: 110px;
@@ -258,6 +265,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .controller-sig-area .auth-stamp {
             position: absolute;
             height: 130px;
@@ -266,6 +274,7 @@
             opacity: 0.8;
             z-index: 1;
         }
+
         .controller-sig-area .auth-sign {
             position: relative;
             height: 50px;
@@ -274,6 +283,7 @@
             z-index: 2;
             margin-bottom: 5px;
         }
+
         .controller-sig-label {
             padding-top: 4px;
             margin-top: -31px;
@@ -355,25 +365,43 @@
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ $data->sl_dob ? \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') : 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'Gen' }}</td>
+                        <td class="value" colspan="2">:
+                            {{ $data->sl_dob ? \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') : 'N/A' }}
+                            &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                            {{ $data->sl_category ?? 'Gen' }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</td>
+                        <td class="value" colspan="2">:
+                            {{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Duration</td>
-                        <td class="value" colspan="2">: @php $dur = $data->c_duration ?? 0; if(is_numeric($dur) && $dur >= 12){ echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); } elseif(is_numeric($dur) && $dur > 0){ echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); } else { echo $data->c_duration ?? 'N/A'; } @endphp</td>
+                        <td class="value" colspan="2">:
+                            @php $dur = $data->c_duration ?? 0;
+                                if (is_numeric($dur) && $dur >= 12) {
+                                    echo (round($dur / 12) == $dur / 12 ? (int) ($dur / 12) : number_format($dur / 12, 1)) . (($dur / 12) == 1 ? ' Year' : ' Years');
+                                } elseif (is_numeric($dur) && $dur > 0) {
+                                    echo (int) $dur . ($dur == 1 ? ' Month' : ' Months');
+                                } else {
+                                    echo $data->c_duration ?? 'N/A';
+                            } @endphp
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Center Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($data->cl_center_name ?? $data->cl_name ?? '') }}</td>
+
+                                                <td class="value" colspan="2">: {{ strtoupper($data->cl_center_name ?? $data->cl_name ?? '') }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Center Code & Address</td>
-                        <td class="value" colspan="2">: {{ $data->cl_code ?? '' }} & {{ $data->cl_center_address ?? 'N/A' }}</td>
+                        <td class="value" colspan="2">: {{ $data->cl_code ?? '' }} &
+                        {{ $data->cl_center_address ?? 'N/A' }}</td>
                     </tr>
-                </table>
+            </table>
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
@@ -396,10 +424,11 @@
             <!-- Footer row: QR bottom-left, Controller bottom-right, aligned -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($data->sl_reg_no ?? '')) }}" alt="QR Code - Scan to verify" class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($data->sl_reg_no ?? '')) }}"
+                    alt="QR Code - Scan to verify" class="qr-code">
                     <div class="qr-sr-no">Scan to verify</div>
                 </div>
-                <div class="controller-sign">
+            <div class="controller-sign">
                     <div class="controller-sig-overlap">
                         <div class="controller-sig-area">
                             @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
@@ -419,7 +448,9 @@
 
     <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Card</button>
+        <button onclick="window.print()"
+            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
+            Card</button>
     </div>
     <style>
         @media print {

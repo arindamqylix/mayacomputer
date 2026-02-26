@@ -101,9 +101,11 @@
             width: 100%;
             min-height: 90px;
         }
+
         .qr-code-wrap {
             flex-shrink: 0;
         }
+
         .qr-code {
             width: 70px;
             height: 70px;
@@ -170,9 +172,9 @@
 
         .label {
             font-weight: bold;
-            font-style: italic;
-            text-align: right;
-            width: 160px;
+            font-style: normal;
+            text-align: left;
+            width: 175px;
             padding-right: 10px;
             color: #000;
         }
@@ -271,11 +273,13 @@
             flex-shrink: 0;
             font-family: Arial, sans-serif;
         }
+
         .controller-sig-overlap {
             position: relative;
             width: 200px;
             text-align: center;
         }
+
         .controller-sig-area {
             position: relative;
             height: 110px;
@@ -283,6 +287,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .controller-sig-area .auth-stamp {
             position: absolute;
             height: 130px;
@@ -291,6 +296,7 @@
             opacity: 0.8;
             z-index: 1;
         }
+
         .controller-sig-area .auth-sign {
             position: relative;
             height: 50px;
@@ -299,6 +305,7 @@
             z-index: 2;
             margin-bottom: 5px;
         }
+
         .controller-sig-label {
             padding-top: 4px;
             margin-top: -31px;
@@ -404,15 +411,27 @@
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $student->sl_category ?? 'Gen' }}</td>
+                        <td class="value" colspan="2">: {{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender :
+                            {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                            {{ $student->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
+                        <td class="value" colspan="2">:
+                            {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Duration</td>
-                        <td class="value" colspan="2">: @php $dur = $course->c_duration ?? 0; if(is_numeric($dur) && $dur >= 12){ echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); } elseif(is_numeric($dur) && $dur > 0){ echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); } else { echo $course->c_duration ?? 'N/A'; } @endphp</td>
+                        <td class="value" colspan="2">:
+                            @php $dur = $course->c_duration ?? 0;
+                                if (is_numeric($dur) && $dur >= 12) {
+                                    echo (round($dur / 12) == $dur / 12 ? (int) ($dur / 12) : number_format($dur / 12, 1)) . (($dur / 12) == 1 ? ' Year' : ' Years');
+                                } elseif (is_numeric($dur) && $dur > 0) {
+                                    echo (int) $dur . ($dur == 1 ? ' Month' : ' Months');
+                                } else {
+                                    echo $course->c_duration ?? 'N/A';
+                            } @endphp
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Center Name</td>
@@ -420,7 +439,8 @@
                     </tr>
                     <tr>
                         <td class="label">Center Code & Address</td>
-                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} & {{ $center->cl_center_address ?? 'N/A' }}</td>
+                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} &
+                            {{ $center->cl_center_address ?? 'N/A' }}</td>
                     </tr>
                 </table>
 
@@ -479,7 +499,8 @@
             <!-- Footer row: QR bottom-left, Controller bottom-right - aligned -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}" alt="QR Code" class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
+                        alt="QR Code" class="qr-code">
                 </div>
                 <div class="controller-sign">
                     <div class="controller-sig-overlap">

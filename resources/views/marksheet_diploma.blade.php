@@ -481,8 +481,7 @@
                                 @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                     <div class="hologram-wrapper">
                                         <img src="{{ asset($setting->hologram) }}" alt="Hologram">
-                                        <span class="sn-text">SN.
-                                            MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
+                                        
                                     </div>
                                 @endif
                                 <div class="header-subtext">

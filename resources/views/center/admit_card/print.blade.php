@@ -101,11 +101,13 @@
             width: 100%;
             min-height: 90px;
         }
+
         .qr-code-wrap {
             flex-shrink: 0;
             text-align: center;
             width: 70px;
         }
+
         .qr-code {
             width: 70px;
             height: 70px;
@@ -113,6 +115,7 @@
             background: #fff;
             display: block;
         }
+
         .qr-code-wrap .qr-sr-no {
             font-size: 10px;
             font-weight: 600;
@@ -179,8 +182,8 @@
 
         .label {
             font-weight: bold;
-            font-style: italic;
-            text-align: right;
+            font-style: normal;
+            text-align: left;
             width: 160px;
             padding-right: 10px;
             color: #000;
@@ -216,8 +219,8 @@
             font-size: 10px;
             width: 100%;
         }
-        
-         .photo-placeholder img {
+
+        .photo-placeholder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -235,6 +238,7 @@
             color: #ccc;
             padding: 4px;
         }
+
         .signature-box img {
             max-height: 36px;
             width: auto;
@@ -285,11 +289,13 @@
             flex-shrink: 0;
             font-family: Arial, sans-serif;
         }
+
         .controller-sig-overlap {
             position: relative;
             width: 160px;
             text-align: center;
         }
+
         .controller-sig-area {
             position: relative;
             height: 47px;
@@ -297,6 +303,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .controller-sig-area .auth-stamp {
             position: absolute;
             height: 95px;
@@ -306,6 +313,7 @@
             opacity: 0.85;
             z-index: 1;
         }
+
         .controller-sig-area .auth-sign {
             position: relative;
             height: 38px;
@@ -313,6 +321,7 @@
             object-fit: contain;
             z-index: 2;
         }
+
         .controller-sig-label {
             padding-top: 4px;
             font-weight: bold;
@@ -334,7 +343,8 @@
                 width: 100%;
                 height: auto;
             }
-             .no-print {
+
+            .no-print {
                 display: none;
             }
         }
@@ -345,13 +355,14 @@
 
     <div class="admit-card">
         <!-- Background Logo / Watermark -->
-         <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif" class="watermark" alt="Watermark" style="opacity: 0.05;">
+        <img src="@if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo))){{ asset($setting->document_logo) }}@else{{ asset('logo.png') }}@endif"
+            class="watermark" alt="Watermark" style="opacity: 0.05;">
 
 
         <div class="content">
             <!-- Header Section -->
             <div class="header">
-                 @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
                     <img src="{{ asset($setting->document_logo) }}" alt="Maya Computer Center Banner" class="header-banner">
                 @else
                     <img src="{{ asset('header_banner.png') }}" alt="Maya Computer Center Banner" class="header-banner">
@@ -397,15 +408,27 @@
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $student->sl_category ?? 'Gen' }}</td>
+                        <td class="value" colspan="2">: {{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender :
+                            {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                            {{ $student->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
+                        <td class="value" colspan="2">:
+                            {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Duration</td>
-                        <td class="value" colspan="2">: @php $dur = $course->c_duration ?? 0; if(is_numeric($dur) && $dur >= 12){ echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); } elseif(is_numeric($dur) && $dur > 0){ echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); } else { echo $course->c_duration ?? 'N/A'; } @endphp</td>
+                        <td class="value" colspan="2">:
+                            @php $dur = $course->c_duration ?? 0;
+                                if (is_numeric($dur) && $dur >= 12) {
+                                    echo (round($dur / 12) == $dur / 12 ? (int) ($dur / 12) : number_format($dur / 12, 1)) . (($dur / 12) == 1 ? ' Year' : ' Years');
+                                } elseif (is_numeric($dur) && $dur > 0) {
+                                    echo (int) $dur . ($dur == 1 ? ' Month' : ' Months');
+                                } else {
+                                    echo $course->c_duration ?? 'N/A';
+                            } @endphp
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Center Name</td>
@@ -413,13 +436,14 @@
                     </tr>
                     <tr>
                         <td class="label">Center Code & Address</td>
-                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} & {{ $center->cl_center_address ?? 'N/A' }}</td>
+                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} &
+                            {{ $center->cl_center_address ?? 'N/A' }}</td>
                     </tr>
                 </table>
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
-                         @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
+                        @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
                             <img src="{{ asset($student->sl_photo) }}" alt="Student Photo">
                         @else
                             Picture<br><br>1.2 in X 1.5 in
@@ -471,7 +495,8 @@
             <!-- Footer row: QR bottom-left, Controller bottom-right - same as marksheet_diploma -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($student->sl_reg_no ?? '')) }}" alt="QR Code - Scan to verify" class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($student->sl_reg_no ?? '')) }}"
+                        alt="QR Code - Scan to verify" class="qr-code">
                     <div class="qr-sr-no">Scan to verify</div>
                 </div>
                 <div class="controller-sign">
@@ -491,10 +516,12 @@
 
         </div>
     </div>
-    
-                  <!-- Print Button (Hidden in Print Mode) -->
+
+    <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print Admit Card</button>
+        <button onclick="window.print()"
+            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
+            Admit Card</button>
     </div>
 
 </body>
