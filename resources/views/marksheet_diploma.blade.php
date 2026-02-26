@@ -124,6 +124,7 @@
             margin-left: auto;
             margin-right: auto;
         }
+
         .header-subtext p {
             margin: 2px 0;
         }
@@ -153,10 +154,12 @@
             z-index: 10;
             text-align: center;
         }
+
         .hologram-wrapper img {
             width: 80px;
             height: auto;
         }
+
         .hologram-wrapper .sn-text {
             display: block;
             font-size: 10px;
@@ -173,11 +176,13 @@
             width: 100%;
             min-height: 72px;
         }
+
         .qr-code-wrap {
             flex-shrink: 0;
             text-align: center;
             width: 70px;
         }
+
         .qr-code {
             width: 70px;
             height: 70px;
@@ -185,6 +190,7 @@
             background: #fff;
             display: block;
         }
+
         .qr-sr-no {
             font-weight: bold;
             font-size: 11px;
@@ -370,19 +376,41 @@
                 box-shadow: none;
                 border: none;
                 width: 210mm;
-                min-height: auto;
+                height: 296mm;
                 margin: 0;
                 padding: 4mm 4mm 2mm 4mm;
                 overflow: hidden;
                 page-break-after: avoid;
             }
-            .marksheet-container .border-design { padding: 8px 8px 5px 8px !important; }
-            .marksheet-container .content-area-white { padding: 10px 10px 5px 10px !important; }
-            .marksheet-container .logo-strip { margin-bottom: 4px !important; }
-            .marksheet-container .card-footer-row { margin-top: 4px !important; min-height: 64px !important; }
-            .marksheet-container .footer { padding-bottom: 0 !important; }
-            .marksheet-container .grading-info { margin-bottom: 3px !important; }
-            .marksheet-container .issue-date { margin-bottom: 3px !important; }
+
+            .marksheet-container .border-design {
+                padding: 8px 8px 5px 8px !important;
+            }
+
+            .marksheet-container .content-area-white {
+                padding: 10px 10px 5px 10px !important;
+            }
+
+            .marksheet-container .logo-strip {
+                margin-bottom: 4px !important;
+            }
+
+            .marksheet-container .card-footer-row {
+                margin-top: 4px !important;
+                min-height: 64px !important;
+            }
+
+            .marksheet-container .footer {
+                padding-bottom: 0 !important;
+            }
+
+            .marksheet-container .grading-info {
+                margin-bottom: 3px !important;
+            }
+
+            .marksheet-container .issue-date {
+                margin-bottom: 3px !important;
+            }
 
             /* Force background printing for marksheet elements */
             .marksheet-container * {
@@ -453,7 +481,8 @@
                                 @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
                                     <div class="hologram-wrapper">
                                         <img src="{{ asset($setting->hologram) }}" alt="Hologram">
-                                        <span class="sn-text">SN. MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
+                                        <span class="sn-text">SN.
+                                            MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
                                     </div>
                                 @endif
                                 <div class="header-subtext">
@@ -464,7 +493,8 @@
                                         India,
                                         Udyam & Startup India</p>
                                     <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
-                                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
+                                    <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website :
+                                        mayacc.in</p>
                                 </div>
                             </div>
 
@@ -476,7 +506,8 @@
                                 <div class="student-details">
                                     <div class="info-row"><span class="info-label">Registration No.</span> : <span
                                             class="info-value">&nbsp;{{ $data->sl_reg_no ?? 'N/A' }}
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year : {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Year :
+                                            {{ $data->sc_issue_date ? \Carbon\Carbon::parse($data->sc_issue_date)->year : \Carbon\Carbon::parse($data->created_at)->year }}</span>
                                     </div>
                                     <div class="info-row"><span class="info-label">Student Name</span> : <span
                                             class="info-value">&nbsp;{{ strtoupper($data->sl_name ?? '') }}</span></div>
@@ -487,16 +518,29 @@
                                             class="info-value">&nbsp;{{ strtoupper($data->sl_father_name ?? '') }}</span>
                                     </div>
                                     <div class="info-row"><span class="info-label">Date of Birth</span> : <span
-                                            class="info-value">&nbsp;{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category : {{ $data->sl_category ?? 'Gen' }}</span></div>
+                                            class="info-value">&nbsp;{{ $data->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender :
+                                            {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                                            {{ $data->sl_category ?? 'Gen' }}</span></div>
                                     <div class="info-row"><span class="info-label">Course Name</span> : <span
                                             class="info-value">&nbsp;{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
                                     </div>
                                     <div class="info-row"><span class="info-label">Course Duration</span> : <span
-                                            class="info-value"> &nbsp;@php $dur = $data->c_duration ?? 0; if(is_numeric($dur) && $dur >= 12){ echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); } elseif(is_numeric($dur) && $dur > 0){ echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); } else { echo $data->c_duration ?? 'N/A'; } @endphp</span></div>
+                                            class="info-value">
+                                            &nbsp;@php $dur = $data->c_duration ?? 0;
+                                                if (is_numeric($dur) && $dur >= 12) {
+                                                    echo (round($dur / 12) == $dur / 12 ? (int) ($dur / 12) : number_format($dur / 12, 1)) . (($dur / 12) == 1 ? ' Year' : ' Years');
+                                                } elseif (is_numeric($dur) && $dur > 0) {
+                                                    echo (int) $dur . ($dur == 1 ? ' Month' : ' Months');
+                                                } else {
+                                                    echo $data->c_duration ?? 'N/A';
+                                            } @endphp</span>
+                                    </div>
                                     <div class="info-row"><span class="info-label">Center Name</span> : <span
-                                            class="info-value">&nbsp;{{ strtoupper($data->cl_center_name ?? $data->cl_name ?? 'N/A') }}</span></div>
+                                            class="info-value">&nbsp;{{ strtoupper($data->cl_center_name ?? $data->cl_name ?? 'N/A') }}</span>
+                                    </div>
                                     <div class="info-row"><span class="info-label">Center Code & Address</span> : <span
-                                            class="info-value"> &nbsp;{{ $data->cl_code ?? 'N/A' }} & {{ $data->cl_center_address ?? 'N/A' }}</span></div>
+                                            class="info-value"> &nbsp;{{ $data->cl_code ?? 'N/A' }} &
+                                            {{ $data->cl_center_address ?? 'N/A' }}</span></div>
                                 </div>
                                 <div class="photo-area">
                                     @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
@@ -603,8 +647,10 @@
                                 <!-- Footer row: QR bottom-left, Authorized Signatory bottom-right - aligned -->
                                 <div class="card-footer-row">
                                     <div class="qr-code-wrap">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . ($data->sl_reg_no ?? '')) }}" alt="QR Code - Scan to verify" class="qr-code">
-                                        <div class="qr-sr-no">SN. MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</div>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-result/' . ($data->sl_reg_no ?? '')) }}"
+                                            alt="QR Code - Scan to verify" class="qr-code">
+                                        <div class="qr-sr-no">SN.
+                                            MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</div>
                                         <div class="qr-sr-no" style="font-size:9px;margin-top:2px;">Scan to verify</div>
                                     </div>
                                     <div class="signatures-wrapper" style="flex-shrink: 0;">

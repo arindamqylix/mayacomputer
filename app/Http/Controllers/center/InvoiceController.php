@@ -8,7 +8,7 @@ use App\Models\center\Recharge;
 use App\Models\center\FeesPayment;
 use App\Models\center\Center;
 use Illuminate\Support\Facades\Auth;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use DB;
 
 class InvoiceController extends Controller

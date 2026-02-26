@@ -14,9 +14,9 @@ use App\Http\Controllers\PagesController;
 |
 */
 
-require __DIR__.'/admin_route.php';
-require __DIR__.'/center_route.php';
-require __DIR__.'/student_route.php';
+require __DIR__ . '/admin_route.php';
+require __DIR__ . '/center_route.php';
+require __DIR__ . '/student_route.php';
 
 Route::get('center/generate-pdf/{id}', [App\Http\Controllers\generatePdfController::class, 'generate_result'])->name('generatePDF');
 
@@ -35,17 +35,23 @@ Route::get('/courses-details/{slug}', [PagesController::class, 'courseDetails'])
 
 // Verification
 Route::get('/verification/registration', [PagesController::class, 'registration'])->name('verification.registration');
+Route::get('/verification/registration/card', [PagesController::class, 'showRegistrationCard'])->name('verification.registration.card');
 Route::post('/verification/registration-card-data', [PagesController::class, 'getRegistrationCardData'])->name('verification.registration.card.data');
 Route::post('/verification/registration-card-pdf', [PagesController::class, 'generateRegistrationCardPDF'])->name('verification.registration.card.pdf');
 Route::get('/verification/icard', [PagesController::class, 'icard'])->name('verification.icard');
+Route::get('/verification/icard/card', [PagesController::class, 'showIcardCard'])->name('verification.icard.card');
+Route::post('/verification/icard-pdf', [PagesController::class, 'generateIcardPDF'])->name('verification.icard.pdf');
 Route::post('/verification/icard-data', [PagesController::class, 'getIcardData'])->name('verification.icard.data');
 Route::get('/verification/result', [PagesController::class, 'result'])->name('verification.result');
 Route::post('/verification/result-data', [PagesController::class, 'getResultData'])->name('verification.result.data');
+Route::get('/verification/result/view', [PagesController::class, 'showResultView'])->name('verification.result.view');
+Route::post('/verification/result-pdf', [PagesController::class, 'generateResultPDF'])->name('verification.result.pdf');
 Route::get('verify-result/{reg_no}', [PagesController::class, 'verifyResultByRegNo'])->name('verify_result');
 Route::get('verify-student/{reg_no}', [PagesController::class, 'verifyStudentByRegNo'])->name('verify_student');
 Route::get('/verification/certificate', [PagesController::class, 'certificate'])->name('verification.certificate');
 Route::get('/verification/certificate/view', [PagesController::class, 'showCertificate'])->name('verification.certificate.view');
 Route::post('/verification/certificate-data', [PagesController::class, 'getCertificateData'])->name('verification.certificate.data');
+Route::post('/verification/certificate-pdf', [PagesController::class, 'generateCertificatePDF'])->name('verification.certificate.pdf');
 Route::get('verify-certificate/{certificate_number}', [PagesController::class, 'verifyCertificateByNumber'])->name('verify_certificate');
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
 Route::get('verify-center/{code}', [PagesController::class, 'verifyCenter'])->name('verify_center');

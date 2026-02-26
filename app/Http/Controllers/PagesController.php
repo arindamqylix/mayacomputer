@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
@@ -26,9 +26,16 @@ class PagesController extends Controller
         $partnerItems = DB::table('cms_homepage_sections')->where('section_type', 'partner_item')->where('status', 1)->orderBy('sort_order')->get();
 
         return view('frontend.index', compact(
-            'counterStats', 'aboutUsHeader', 'aboutUsItems',
-            'whyChooseHeader', 'whyChooseItems', 'serviceItems',
-            'achievementHeader', 'achievementCounters', 'partnerHeader', 'partnerItems'
+            'counterStats',
+            'aboutUsHeader',
+            'aboutUsItems',
+            'whyChooseHeader',
+            'whyChooseItems',
+            'serviceItems',
+            'achievementHeader',
+            'achievementCounters',
+            'partnerHeader',
+            'partnerItems'
         ));
     }
 
@@ -48,6 +55,53 @@ class PagesController extends Controller
     public function registration()
     {
         return view('frontend.registration');
+    }
+
+    public function showRegistrationCard(Request $request)
+    {
+        $registrationNo = $request->query('registration_no');
+        $dob = $request->query('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->route('verification.registration')->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            // Fetch student data with related center and course information
+            $student = DB::table('student_login')
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_login.*',
+                    'center_login.cl_code',
+                    'center_login.cl_center_name',
+                    'center_login.cl_name',
+                    'center_login.cl_cin_no',
+                    'center_login.cl_center_address',
+                    'course.c_full_name',
+                    'course.c_duration',
+                    'course.c_short_name'
+                )
+                ->first();
+
+            if (!$student) {
+                return redirect()->route('verification.registration')->with('error', 'No record found with the provided registration number and date of birth');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($student->sl_status == 'PENDING' || $student->sl_status == 'BLOCK') {
+                return redirect()->route('verification.registration')->with('error', 'Student registration is pending approval. Please contact your center or wait for admin approval.');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            return view('frontend.registration-card-view', compact('student', 'setting'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('verification.registration')->with('error', 'An error occurred while fetching data: ' . $e->getMessage());
+        }
     }
 
     // AJAX endpoint to fetch registration card data
@@ -152,8 +206,9 @@ class PagesController extends Controller
             }
 
             // Get site settings
+            $setting = DB::table('site_settings')->first();
             $siteSettings = site_settings();
-            $siteLogo = $siteSettings && !empty($siteSettings->site_logo) ? $siteSettings->site_logo : 'logo.png';
+            $siteLogo = $siteSettings && !empty($siteSettings->site_logo) ? asset($siteSettings->site_logo) : asset('logo.png');
             $siteName = $siteSettings && !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
             $siteEmail = $siteSettings && !empty($siteSettings->email) ? $siteSettings->email : 'mccsiswar@gmail.com';
             $sitePhone = $siteSettings && !empty($siteSettings->phone) ? $siteSettings->phone : '+91 8825148127';
@@ -169,11 +224,11 @@ class PagesController extends Controller
                     $dobFormatted = $student->sl_dob; // Use as-is if strtotime fails
                 }
             }
-            
+
             $validFrom = date('d-M-Y');
             $validTill = date('d-M-Y', strtotime('+1 year'));
             $issueDate = date('d-M-Y');
-            
+
             if ($student->created_at) {
                 $createdTimestamp = strtotime($student->created_at);
                 if ($createdTimestamp !== false) {
@@ -186,6 +241,7 @@ class PagesController extends Controller
             // Prepare data for PDF
             $data = [
                 'student' => $student,
+                'setting' => $setting,
                 'siteLogo' => $siteLogo,
                 'siteName' => $siteName,
                 'siteEmail' => $siteEmail,
@@ -200,7 +256,7 @@ class PagesController extends Controller
             // Generate PDF
             $pdf = PDF::loadView('frontend.registration-card-pdf', $data);
             $pdf->setPaper('A4', 'portrait');
-            
+
             return $pdf->download('Registration_Card_' . $registrationNo . '.pdf');
 
         } catch (\Exception $e) {
@@ -211,6 +267,219 @@ class PagesController extends Controller
     public function icard()
     {
         return view('frontend.icard');
+    }
+
+    public function showIcardCard(Request $request)
+    {
+        $registrationNo = $request->query('registration_no');
+        $dob = $request->query('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->route('verification.icard')->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            // Fetch student data with related center and course information
+            $data = DB::table('student_login')
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_login.*',
+                    'center_login.cl_code',
+                    'center_login.cl_center_name',
+                    'center_login.cl_name',
+                    'center_login.cl_mobile',
+                    'course.c_full_name',
+                    'course.c_short_name'
+                )
+                ->first();
+
+            if (!$data) {
+                return redirect()->route('verification.icard')->with('error', 'No record found with the provided registration number and date of birth');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($data->sl_status == 'PENDING' || $data->sl_status == 'BLOCK') {
+                return redirect()->route('verification.icard')->with('error', 'Student registration is pending approval. Please contact your center or wait for admin approval.');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            return view('frontend.icard-card-view', compact('data', 'setting'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('verification.icard')->with('error', 'An error occurred while fetching data: ' . $e->getMessage());
+        }
+    }
+
+    public function generateIcardPDF(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->back()->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            // Fetch student data with related center and course information
+            $student = DB::table('student_login')
+                ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_login.*',
+                    'center_login.cl_code',
+                    'center_login.cl_center_name',
+                    'center_login.cl_name',
+                    'center_login.cl_mobile',
+                    'course.c_full_name',
+                    'course.c_short_name'
+                )
+                ->first();
+
+            if (!$student) {
+                abort(404, 'No record found with the provided registration number and date of birth');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($student->sl_status == 'PENDING' || $student->sl_status == 'BLOCK') {
+                abort(403, 'Student registration is pending approval. Please contact your center or wait for admin approval.');
+            }
+
+            // Get site settings
+            $setting = DB::table('site_settings')->first();
+
+            // Prepare data for PDF
+            $data = [
+                'student' => $student,
+                'setting' => $setting,
+            ];
+
+            // Generate PDF
+            $pdf = PDF::loadView('frontend.icard-pdf', $data);
+            $pdf->setPaper([0, 0, 450, 500], 'portrait'); // custom paper size for small card
+
+            return $pdf->download('ID_Card_' . $registrationNo . '.pdf');
+
+        } catch (\Exception $e) {
+            abort(500, 'An error occurred while generating PDF: ' . $e->getMessage());
+        }
+    }
+
+    public function showResultView(Request $request)
+    {
+        $registrationNo = $request->query('registration_no');
+        $dob = $request->query('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->route('verification.result')->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            $data = DB::table('set_result')
+                ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                ->leftJoin('student_certificates', function ($join) {
+                    $join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                        ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id');
+                })
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'set_result.*',
+                    'student_login.*',
+                    'course.*',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_authorized_signature',
+                    'center_login.cl_center_stamp',
+                    'student_certificates.sc_issue_date',
+                    'student_certificates.sc_certificate_number'
+                )
+                ->first();
+
+            if (!$data) {
+                return redirect()->route('verification.result')->with('error', 'No result found with the provided registration number and date of birth');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($data->sl_status == 'PENDING' || $data->sl_status == 'BLOCK') {
+                return redirect()->route('verification.result')->with('error', 'Student registration is pending approval.');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            return view('frontend.result-view', compact('data', 'setting'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('verification.result')->with('error', 'An error occurred while fetching data: ' . $e->getMessage());
+        }
+    }
+
+    public function generateResultPDF(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->back()->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            $data = DB::table('set_result')
+                ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                ->leftJoin('student_certificates', function ($join) {
+                    $join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                        ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id');
+                })
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'set_result.*',
+                    'student_login.*',
+                    'course.*',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_authorized_signature',
+                    'center_login.cl_center_stamp',
+                    'student_certificates.sc_issue_date',
+                    'student_certificates.sc_certificate_number'
+                )
+                ->first();
+
+            if (!$data) {
+                abort(404, 'No result found');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            // Prepare data for PDF
+            $viewData = [
+                'data' => $data,
+                'setting' => $setting,
+                'is_pdf' => true
+            ];
+
+            // Generate PDF
+            $pdf = PDF::loadView('frontend.result-pdf', $viewData);
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->download('Marksheet_' . $registrationNo . '.pdf');
+
+        } catch (\Exception $e) {
+            abort(500, 'An error occurred while generating PDF: ' . $e->getMessage());
+        }
     }
 
     // AJAX endpoint to fetch I-Card data
@@ -504,7 +773,7 @@ class PagesController extends Controller
 
     public function downloadDocument($slug)
     {
-        $data = DB::table('cms_downloads')->where('slug',$slug)->first();
+        $data = DB::table('cms_downloads')->where('slug', $slug)->first();
         return view('frontend.download-document', compact('data'));
     }
 
@@ -560,29 +829,30 @@ class PagesController extends Controller
         return view('frontend.gallery');
     }
 
-    public function courseDetails($slug){
+    public function courseDetails($slug)
+    {
         // Try to find by slug first
         $data = DB::table('cms_course')->where('slug', $slug)->first();
-        
+
         // If not found by slug, try by c_id (fallback)
-        if(!$data && is_numeric($slug)) {
+        if (!$data && is_numeric($slug)) {
             $data = DB::table('cms_course')->where('c_id', $slug)->first();
         }
-        
+
         // If course still not found, return 404
-        if(!$data) {
+        if (!$data) {
             abort(404, 'Course not found');
         }
-        
+
         // Get category name if exists
-        if($data->category_id) {
+        if ($data->category_id) {
             $category = DB::table('cms_course_category')->where('id', $data->category_id)->first();
             $data->category_name = $category->name ?? null;
         }
-        
+
         // Get related courses from same category
         $relatedCourses = [];
-        if($data->category_id) {
+        if ($data->category_id) {
             $relatedCourses = DB::table('cms_course')
                 ->where('category_id', $data->category_id)
                 ->where('c_id', '!=', $data->c_id)
@@ -590,23 +860,24 @@ class PagesController extends Controller
                 ->limit(3)
                 ->get();
         }
-        
+
         // Get all categories for sidebar
         $allCategories = DB::table('cms_course_category')->where('status', 1)->get();
-        
+
         return view('frontend.course-details', compact('data', 'relatedCourses', 'allCategories'));
     }
 
-    public function coursesByCategory($slug){
+    public function coursesByCategory($slug)
+    {
         $category = DB::table('cms_course_category')->where('slug', $slug)->where('status', 1)->first();
-        
-        if(!$category) {
+
+        if (!$category) {
             abort(404);
         }
-        
+
         $courses = DB::table('cms_course')->where('category_id', $category->id)->get();
         $categories = DB::table('cms_course_category')->where('status', 1)->get();
-        
+
         return view('frontend.courses', compact('courses', 'category', 'categories'));
     }
 
@@ -649,7 +920,7 @@ class PagesController extends Controller
     {
         // Try to fetch from cms_pages table, fallback to static view
         $page = DB::table('cms_pages')->where('slug', 'terms-and-conditions')->where('status', 1)->first();
-        if($page) {
+        if ($page) {
             return view('frontend.page', compact('page'));
         }
         return view('frontend.payment-terms');
@@ -659,7 +930,7 @@ class PagesController extends Controller
     {
         // Try to fetch from cms_pages table, fallback to static view
         $page = DB::table('cms_pages')->where('slug', 'refund-policy')->where('status', 1)->first();
-        if($page) {
+        if ($page) {
             return view('frontend.page', compact('page'));
         }
         return view('frontend.payment-refunds');
@@ -674,7 +945,7 @@ class PagesController extends Controller
     {
         // Try to fetch from cms_pages table, fallback to static view
         $page = DB::table('cms_pages')->where('slug', 'disclaimer')->where('status', 1)->first();
-        if($page) {
+        if ($page) {
             return view('frontend.page', compact('page'));
         }
         return view('frontend.disclaimer');
@@ -684,11 +955,11 @@ class PagesController extends Controller
     public function page($slug)
     {
         $page = DB::table('cms_pages')->where('slug', $slug)->where('status', 1)->first();
-        
-        if(!$page) {
+
+        if (!$page) {
             abort(404, 'Page not found');
         }
-        
+
         return view('frontend.page', compact('page'));
     }
 
@@ -702,7 +973,7 @@ class PagesController extends Controller
         $courses = DB::table('cms_course')->get();
         $categories = DB::table('cms_course_category')->where('status', 1)->get();
         $category = null; // all courses
-        
+
         return view('frontend.courses', compact('courses', 'categories', 'category'));
     }
 
@@ -834,7 +1105,7 @@ class PagesController extends Controller
     {
         $courses = DB::table('cms_course')->select('slug', 'updated_at')->get();
         $downloads = DB::table('cms_downloads')->select('slug', 'updated_at')->get();
-        
+
         return response()->view('frontend.sitemap-xml', [
             'courses' => $courses,
             'downloads' => $downloads,
@@ -848,10 +1119,10 @@ class PagesController extends Controller
         if (!$center) {
             return view('frontend.verify_center_error', ['message' => 'Center not found. Please scan a valid QR code.']);
         }
-        
+
         // Ensure center is active
         if ($center->cl_account_status !== 'ACTIVE') {
-             return view('frontend.verify_center_error', ['message' => 'This Center is not currently active.']);
+            return view('frontend.verify_center_error', ['message' => 'This Center is not currently active.']);
         }
 
         return view('frontend.verify_center', compact('center'));
@@ -861,32 +1132,32 @@ class PagesController extends Controller
     {
         $code = $request->input('center_code');
         $center = DB::table('center_login')->where('cl_code', $code)->first();
-        
-        if(!$center){
+
+        if (!$center) {
             return response()->json(['success' => false, 'message' => 'Center not found']);
         }
-        
+
         $otp = rand(100000, 999999);
         Session::put('verify_otp_' . $code, $otp);
         Session::put('verify_otp_time_' . $code, time()); // Store time to check expiry if needed
-        
+
         // Simple text email for OTP
         try {
             // Check if center has email
-            if(!filter_var($center->cl_email, FILTER_VALIDATE_EMAIL)){
-                 return response()->json(['success' => false, 'message' => 'Center does not have a valid email address.']);
+            if (!filter_var($center->cl_email, FILTER_VALIDATE_EMAIL)) {
+                return response()->json(['success' => false, 'message' => 'Center does not have a valid email address.']);
             }
-            
+
             $siteSettings = DB::table('site_settings')->first();
             $senderEmail = $siteSettings->email ?? 'no-reply@mayacomputercenter.com';
             $senderName = $siteSettings->name ?? 'Maya Computer Center';
 
             Mail::raw("Your OTP for Center Certificate Verification is: $otp. Do not share this OTP with anyone.", function ($message) use ($center, $senderEmail, $senderName) {
                 $message->from($senderEmail, $senderName)
-                        ->to($center->cl_email)
-                        ->subject('Verification OTP - Maya Computer Center');
+                    ->to($center->cl_email)
+                    ->subject('Verification OTP - Maya Computer Center');
             });
-            
+
             return response()->json(['success' => true, 'message' => 'OTP sent to registered email address.']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to send OTP: ' . $e->getMessage()]);
@@ -897,14 +1168,14 @@ class PagesController extends Controller
     {
         $code = $request->input('center_code');
         $inputOtp = $request->input('otp');
-        
+
         $sessionOtp = Session::get('verify_otp_' . $code);
-        
-        if($sessionOtp && $sessionOtp == $inputOtp){
+
+        if ($sessionOtp && $sessionOtp == $inputOtp) {
             Session::put('verified_center_' . $code, true);
             return response()->json(['success' => true]);
         }
-        
+
         return response()->json(['success' => false, 'message' => 'Invalid OTP']);
     }
 
@@ -912,19 +1183,19 @@ class PagesController extends Controller
     {
         // Check if verified in session
         if (!Session::get('verified_center_' . $code)) {
-             return redirect()->route('verify_center', $code)->with('error', 'Please verify with OTP first.');
+            return redirect()->route('verify_center', $code)->with('error', 'Please verify with OTP first.');
         }
 
         $center = DB::table('center_login')->where('cl_code', $code)->first();
         if (!$center) {
             abort(404, 'Center not found');
         }
-        
+
         // Optional: Ensure center is active for certificate view too
-         if ($center->cl_account_status !== 'ACTIVE') {
+        if ($center->cl_account_status !== 'ACTIVE') {
             abort(403, 'Center is not active.');
         }
-        
+
         $setting = DB::table('site_settings')->first();
         return view('center_certificate', compact('center', 'setting'));
     }

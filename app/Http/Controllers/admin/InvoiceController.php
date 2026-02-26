@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\center\Recharge;
 use App\Models\center\Center;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use DB;
 
 class InvoiceController extends Controller

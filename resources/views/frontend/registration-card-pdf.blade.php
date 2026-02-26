@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <title>Registration Card - {{ $student->sl_reg_no }}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
@@ -13,24 +11,23 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Times New Roman', serif;
             background: white;
-            padding: 20px;
+            padding: 30px;
         }
         
         .reg-card-container {
             width: 100%;
-            max-width: 8in;
-            margin: 0 auto;
             background: white;
             position: relative;
-            overflow: hidden;
+            padding: 10px;
         }
         
         .reg-card {
             width: 100%;
             position: relative;
-            padding: 12px;
+            padding: 15px;
+            border: 1px solid #ccc;
         }
         
         .reg-outer-border {
@@ -40,7 +37,6 @@
             right: 0;
             bottom: 0;
             border: 3px dashed #dc2626;
-            border-radius: 2px;
         }
         
         .reg-inner-border {
@@ -49,305 +45,214 @@
             left: 6px;
             right: 6px;
             bottom: 6px;
-            border: 2px solid #1e3a8a;
-            border-radius: 2px;
+            border: 2px solid #000066;
         }
         
         .reg-content {
             position: relative;
             z-index: 1;
-            min-height: 5.5in;
         }
         
         .reg-header {
-            display: table;
-            width: 100%;
-            border-bottom: 2px solid #1e3a8a;
-            padding-bottom: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .reg-header-left, .reg-header-center, .reg-header-right {
-            display: table-cell;
-            vertical-align: middle;
-        }
-        
-        .reg-header-left {
-            width: 70px;
-        }
-        
-        .reg-header-left img {
-            width: 60px;
-            height: auto;
-            max-height: 60px;
-        }
-        
-        .reg-logo-placeholder {
-            width: 60px;
-            height: 60px;
-            border: 1px solid #1e3a8a;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            font-weight: bold;
-            color: #1e3a8a;
-            background: #f0f7ff;
-        }
-        
-        .reg-header-center {
             text-align: center;
+            margin-bottom: 20px;
+            position: relative;
         }
         
-        .reg-main-title {
-            color: #1e3a8a;
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
+        .header-banner {
+            width: 80%;
+            max-height: 100px;
+            display: block;
+            margin: 0 auto;
         }
         
-        .reg-hindi-title {
-            color: #1e3a8a;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            margin-bottom: 4px;
+        .header-subtext {
+            text-align: center;
+            margin-top: -10px;
         }
         
-        .reg-info {
-            font-size: 9px;
-            color: #333;
+        .reg-subtext-line {
+            font-size: 11px;
             font-weight: bold;
+            margin: 1px 0;
+            color: #000;
+            font-family: Arial, sans-serif;
         }
         
         .reg-iso-cert {
-            color: #dc2626;
-            font-size: 10px;
+            color: red;
             font-weight: bold;
+            font-size: 14px;
+            margin: 2px 0;
+            font-family: Arial, sans-serif;
         }
         
-        .reg-header-right {
-            width: 70px;
+        .reg-title {
             text-align: center;
-        }
-        
-        .reg-qr-box {
-            width: 55px;
-            height: 55px;
-            border: 1px solid #333;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: green;
+            font-size: 20px;
             font-weight: bold;
-            font-size: 10px;
-            background: #fff;
+            margin: 10px 0;
+            text-transform: uppercase;
         }
         
-        .reg-title-bar {
-            background: #1e3a8a;
+        .blue-bar {
+            background-color: #000066;
             color: white;
-            text-align: center;
-            padding: 6px;
-            margin-bottom: 10px;
-        }
-        
-        .reg-title-bar h2 {
-            font-size: 16px;
+            padding: 5px 15px;
             font-weight: bold;
-            letter-spacing: 2px;
-            margin: 0;
-        }
-        
-        .reg-main-body {
-            display: table;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            margin-bottom: 0;
+            display: block;
             width: 100%;
         }
         
-        .reg-left-section {
-            display: table-cell;
-            vertical-align: top;
-            width: 65%;
-            padding-right: 15px;
+        .blue-bar table {
+            width: 100%;
+            color: white;
         }
         
-        .reg-right-section {
-            display: table-cell;
-            vertical-align: top;
-            width: 35%;
+        .details-section {
+            border: 1px solid #ccc;
+            margin-top: 0;
+            padding: 10px;
+            position: relative;
+            background: #fff;
         }
         
-        .reg-info-table {
+        .info-table {
             width: 100%;
             border-collapse: collapse;
         }
         
-        .reg-info-table tr {
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .reg-info-table td {
-            padding: 5px 8px;
-            font-size: 11px;
+        .info-table td {
+            padding: 6px 5px;
             vertical-align: top;
+            font-size: 14px;
         }
         
-        .reg-info-table .label {
-            width: 120px;
+        .label {
             font-weight: bold;
-            color: #1e3a8a;
-            background: #f0f7ff;
+            font-style: italic;
+            text-align: right;
+            width: 150px;
+            color: #000;
         }
         
-        .reg-info-table .value {
-            font-weight: 600;
-            color: #333;
+        .value {
+            font-weight: bold;
+            color: #000;
+            text-transform: uppercase;
         }
         
-        .reg-info-table .colon {
-            width: 10px;
+        .photo-sign-container {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 120px;
             text-align: center;
         }
         
-        .reg-photo-box {
-            width: 120px;
-            margin: 0 auto 10px;
-        }
-        
-        .reg-photo-frame {
+        .photo-box {
             width: 110px;
             height: 130px;
-            border: 2px solid #1e3a8a;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-            color: #999;
-            font-size: 11px;
+            border: 2px solid #000;
+            margin: 0 auto;
+            background: #fff;
             overflow: hidden;
         }
         
-        .reg-photo-frame img {
+        .photo-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
         
-        .reg-student-sign {
-            text-align: center;
+        .sign-box {
+            width: 110px;
+            height: 40px;
+            border: 1px solid #000;
+            border-top: none;
+            margin: 0 auto;
+            background: #fff;
+            display: block;
         }
         
-        .reg-sign-line {
-            border-bottom: 1px solid #333;
+        .sign-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .sign-label {
+            font-size: 10px;
+            margin-top: 2px;
+            color: #333;
+        }
+        
+        .footer-row {
+            margin-top: 30px;
+            width: 100%;
+        }
+        
+        .footer-row table {
+            width: 100%;
+        }
+        
+        .qr-section {
             width: 100px;
-            margin: 0 auto 3px;
-        }
-        
-        .reg-sign-label {
-            font-size: 8px;
-            color: #666;
-        }
-        
-        .reg-validity-box {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            padding: 6px;
-            margin-top: 8px;
-            text-align: center;
-            border-radius: 4px;
-        }
-        
-        .reg-validity-box p {
-            font-size: 10px;
-            margin: 2px 0;
-        }
-        
-        .reg-validity-box .date {
-            font-weight: bold;
-            color: #1e3a8a;
-        }
-        
-        .reg-footer {
-            margin-top: 10px;
-        }
-        
-        .reg-footer-logos {
-            display: table;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-        
-        .reg-footer-logos td {
-            text-align: center;
-            vertical-align: middle;
-            padding: 0 5px;
-        }
-        
-        .reg-logo-small {
-            width: 45px;
-            height: 30px;
-            border: 1px solid #ddd;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 6px;
-            font-weight: bold;
-            color: #666;
-            background: #f9f9f9;
-        }
-        
-        .reg-footer-bottom {
-            display: table;
-            width: 100%;
-            border-top: 1px solid #1e3a8a;
-            padding-top: 8px;
-        }
-        
-        .reg-footer-bottom td {
-            vertical-align: bottom;
-            padding: 0 5px;
-        }
-        
-        .reg-footer-item {
             text-align: center;
         }
         
-        .reg-footer-item .label {
-            font-size: 9px;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-        
-        .reg-footer-item .value {
-            font-size: 10px;
-            font-weight: bold;
-        }
-        
-        .reg-sig-space {
+        .qr-code {
             width: 80px;
-            height: 25px;
-            border-bottom: 1px solid #333;
-            margin: 0 auto 3px;
+            height: 80px;
+            border: 1px solid #ccc;
         }
         
-        .reg-sig-label {
-            font-size: 8px;
-            font-weight: bold;
-        }
-        
-        .reg-company-info {
-            text-align: center;
-            font-size: 8px;
-            color: #666;
+        .qr-label {
+            font-size: 10px;
             margin-top: 5px;
+            font-weight: bold;
         }
         
-        .reg-company-info .highlight {
-            color: #1e3a8a;
+        .authority-section {
+            text-align: center;
+            position: relative;
+            width: 250px;
+        }
+        
+        .stamp-signature-wrap {
+            position: relative;
+            height: 100px;
+            width: 200px;
+            margin: 0 auto;
+        }
+        
+        .auth-stamp {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            margin-left: -65px;
+            height: 120px;
+            opacity: 0.8;
+            z-index: 1;
+        }
+        
+        .auth-sign {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            margin-left: -50px;
+            height: 60px;
+            z-index: 2;
+        }
+        
+        .authority-label {
             font-weight: bold;
+            font-size: 15px;
+            margin-top: 10px;
+            color: #000;
         }
     </style>
 </head>
@@ -356,188 +261,156 @@
         <div class="reg-card">
             <div class="reg-outer-border"></div>
             <div class="reg-inner-border"></div>
+            
             <div class="reg-content">
+                <!-- Header -->
                 <div class="reg-header">
-                    <div class="reg-header-left">
-                        @php
-                            $logoPath = '';
-                            if (!empty($siteLogo)) {
-                                // Convert asset path to public path
-                                $logoPath = str_replace(url('/'), '', $siteLogo);
-                                $logoPath = ltrim($logoPath, '/');
-                                $logoPath = public_path($logoPath);
-                            }
-                        @endphp
-                        @if(!empty($logoPath) && file_exists($logoPath))
-                            <img src="{{ $logoPath }}" alt="Logo">
-                        @else
-                            <div class="reg-logo-placeholder">LOGO</div>
-                        @endif
-                    </div>
-                    <div class="reg-header-center">
-                        <h1 class="reg-main-title">{{ $siteName }}</h1>
-                        <h2 class="reg-hindi-title">माया कम्प्यूटर सेंटर</h2>
-                        <p class="reg-info">Reg. Under Company Act 2013, MCA, Govt. of India</p>
-                        <p class="reg-iso-cert">An ISO 9001:2015 Certified</p>
-                    </div>
-                    <div class="reg-header-right">
-                        <div class="reg-qr-box">QR</div>
+                    @php
+                        $bannerPath = '';
+                        if(!empty($setting->document_logo)) {
+                            $bannerPath = public_path(ltrim($setting->document_logo, '/'));
+                        } else {
+                            $bannerPath = public_path('header_banner.png');
+                        }
+                    @endphp
+                    @if(!empty($bannerPath) && file_exists($bannerPath))
+                        <img src="{{ $bannerPath }}" class="header-banner">
+                    @endif
+                    
+                    <div class="header-subtext">
+                        <p class="reg-subtext-line" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                        <p class="reg-subtext-line" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                        <p class="reg-subtext-line" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+                        <p class="reg-iso-cert">An ISO 9001: 2015 Certified</p>
+                        <p class="reg-subtext-line" style="font-size: 11px;">Visit Our Website : mayacc.in</p>
                     </div>
                 </div>
-                <div class="reg-title-bar">
-                    <h2>REGISTRATION CARD</h2>
+
+                <!-- Title -->
+                <div class="reg-title">
+                    REGISTRATION CARD – {{ \Carbon\Carbon::parse($student->created_at)->year }}
                 </div>
-                <div class="reg-main-body">
-                    <div class="reg-left-section">
-                        <table class="reg-info-table">
-                            <tr>
-                                <td class="label">Registration No.</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ $student->sl_reg_no ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Student Name</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ strtoupper($student->sl_name ?? 'N/A') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Father's Name</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ strtoupper($student->sl_father_name ?? 'N/A') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Mother's Name</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ strtoupper($student->sl_mother_name ?? 'N/A') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Date of Birth</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ $dobFormatted }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Gender</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ ucfirst($student->sl_sex ?? 'N/A') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Course Name</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ strtoupper($student->c_full_name ?? 'N/A') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Duration</td>
-                                <td class="colon">:</td>
-                                <td class="value">
+
+                <!-- Blue Bar -->
+                <div class="blue-bar">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="left" style="color: white; font-weight: bold;">Registration No. : {{ $student->sl_reg_no }}</td>
+                            <td align="right" style="color: white; font-weight: bold;">Year : {{ \Carbon\Carbon::parse($student->created_at)->year }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Main Content Row -->
+                <div class="details-section">
+                    <table class="info-table">
+                        <tr>
+                            <td class="label">Student Name</td>
+                            <td class="value">: {{ strtoupper($student->sl_name) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Mother's Name</td>
+                            <td class="value">: {{ strtoupper($student->sl_mother_name) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Father's Name</td>
+                            <td class="value">: {{ strtoupper($student->sl_father_name) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Date of Birth</td>
+                            <td class="value">: {{ $student->sl_dob }} &nbsp;&nbsp; Gender : {{ strtoupper($student->sl_sex) }} &nbsp;&nbsp; Category : {{ $student->sl_category ?? 'Gen' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Course Name</td>
+                            <td class="value">: {{ strtoupper($student->c_full_name) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Course Duration</td>
+                            <td class="value">: 
+                                @php 
+                                    $dur = $student->c_duration; 
+                                    if(is_numeric($dur) && $dur >= 12){ 
+                                        echo (round($dur/12)==$dur/12 ? (int)($dur/12) : number_format($dur/12,1)) . (($dur/12)==1 ? ' Year' : ' Years'); 
+                                    } elseif(is_numeric($dur) && $dur > 0){ 
+                                        echo (int)$dur . ($dur==1 ? ' Month' : ' Months'); 
+                                    } else { 
+                                        echo $dur; 
+                                    } 
+                                @endphp
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Center Name</td>
+                            <td class="value">: {{ strtoupper($student->cl_center_name) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Center Code & Address</td>
+                            <td class="value">: {{ $student->cl_code }} & {{ $student->cl_center_address }}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Photo & Sign box (Manual positioning for PDF) -->
+                    <div class="photo-sign-container">
+                        <div class="photo-box">
+                            @php
+                                $photoPath = '';
+                                if(!empty($student->sl_photo)) {
+                                    $photoPath = public_path(ltrim($student->sl_photo, '/'));
+                                }
+                            @endphp
+                            @if(!empty($photoPath) && file_exists($photoPath))
+                                <img src="{{ $photoPath }}">
+                            @endif
+                        </div>
+                        <div class="sign-box">
+                            @php
+                                $signPath = '';
+                                if(!empty($student->sl_signature)) {
+                                    $signPath = public_path(ltrim($student->sl_signature, '/'));
+                                }
+                            @endphp
+                            @if(!empty($signPath) && file_exists($signPath))
+                                <img src="{{ $signPath }}">
+                            @endif
+                        </div>
+                        <p class="sign-label">Student Signature</p>
+                    </div>
+                </div>
+
+                <!-- Footer Section -->
+                <div class="footer-row">
+                    <table width="100%">
+                        <tr>
+                            <td class="qr-section" width="120">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}" class="qr-code">
+                                <p class="qr-label">Scan to verify</p>
+                            </td>
+                            <td class="authority-section" align="right">
+                                <div class="stamp-signature-wrap">
                                     @php
-                                        $duration = null;
-                                        if ($student->c_duration) {
-                                            // Convert to numeric value (handle string values like "12" or "12 months")
-                                            $duration = floatval($student->c_duration);
+                                        $stampPath = '';
+                                        if(!empty($setting->authorize_stamp)) {
+                                            $stampPath = public_path(ltrim($setting->authorize_stamp, '/'));
+                                        }
+                                        $sigPath = '';
+                                        if(!empty($setting->authorize_signature)) {
+                                            $sigPath = public_path(ltrim($setting->authorize_signature, '/'));
                                         }
                                     @endphp
-                                    @if($duration !== null && $duration > 0)
-                                        @if($duration >= 12)
-                                            @php
-                                                $years = $duration / 12;
-                                            @endphp
-                                            {{ number_format($years, ($years == intval($years) ? 0 : 1)) }} {{ $years == 1 ? 'Year' : 'Years' }}
-                                        @else
-                                            {{ intval($duration) }} {{ $duration == 1 ? 'Month' : 'Months' }}
-                                        @endif
-                                    @else
-                                        N/A
+                                    @if(!empty($stampPath) && file_exists($stampPath))
+                                        <img src="{{ $stampPath }}" class="auth-stamp">
                                     @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label">Center Code</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ $student->cl_code ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Center Name</td>
-                                <td class="colon">:</td>
-                                <td class="value">{{ $student->cl_center_name ?? $student->cl_name ?? 'N/A' }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="reg-right-section">
-                        <div class="reg-photo-box">
-                            <div class="reg-photo-frame">
-                                @php
-                                    $photoPath = '';
-                                    if (!empty($student->sl_photo)) {
-                                        $photoPath = public_path(ltrim($student->sl_photo, '/'));
-                                    }
-                                @endphp
-                                @if(!empty($photoPath) && file_exists($photoPath))
-                                    <img src="{{ $photoPath }}" alt="Student Photo">
-                                @else
-                                    <span>Photo</span>
-                                @endif
-                            </div>
-                            <div class="reg-student-sign">
-                                <div class="reg-sign-line"></div>
-                                <p class="reg-sign-label">Student's Signature</p>
-                            </div>
-                        </div>
-                        <div class="reg-validity-box">
-                            <p><strong>Valid From:</strong></p>
-                            <p class="date">{{ $validFrom }}</p>
-                            <p><strong>Valid Till:</strong></p>
-                            <p class="date">{{ $validTill }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="reg-footer">
-                    <table class="reg-footer-logos">
-                        <tr>
-                            <td><div class="reg-logo-small">SKILL INDIA</div></td>
-                            <td><div class="reg-logo-small">MINISTRY</div></td>
-                            <td><div class="reg-logo-small">MSME</div></td>
-                            <td><div class="reg-logo-small">ISO</div></td>
-                            <td><div class="reg-logo-small">STARTUP</div></td>
-                            <td><div class="reg-logo-small">NCS</div></td>
-                        </tr>
-                    </table>
-                    <table class="reg-footer-bottom">
-                        <tr>
-                            <td width="25%">
-                                <div class="reg-footer-item">
-                                    <p class="label">Date of Issue</p>
-                                    <p class="value">{{ $issueDate }}</p>
+                                    @if(!empty($sigPath) && file_exists($sigPath))
+                                        <img src="{{ $sigPath }}" class="auth-sign">
+                                    @endif
                                 </div>
-                            </td>
-                            <td width="25%">
-                                <div class="reg-footer-item">
-                                    <div class="reg-sig-space"></div>
-                                    <p class="reg-sig-label">Center Head</p>
-                                </div>
-                            </td>
-                            <td width="25%">
-                                <div class="reg-footer-item">
-                                    <div class="reg-sig-space"></div>
-                                    <p class="reg-sig-label">Exam Controller</p>
-                                </div>
-                            </td>
-                            <td width="25%">
-                                <div class="reg-footer-item">
-                                    <div class="reg-sig-space"></div>
-                                    <p class="reg-sig-label">Authorized Signatory</p>
-                                </div>
+                                <div class="authority-label">Controller of Examination</div>
                             </td>
                         </tr>
                     </table>
-                    <div class="reg-company-info">
-                        <span class="highlight">CIN: {{ $cinNo }}</span> | 
-                        <span class="highlight">www.mayacomputercenter.in</span> | 
-                        Email: {{ $siteEmail }} | Phone: {{ $sitePhone }}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-
