@@ -116,6 +116,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin:admin'], function () {
 	Route::get('admit-card/edit/{id}', [GenerateAdmitController::class, 'edit_admit_card'])->name('admin.edit_admit_card');
 	Route::post('admit-card/update/{id}', [GenerateAdmitController::class, 'update_admit_card'])->name('admin.update_admit_card');
 	Route::get('print-admit-card/{id}', [GenerateAdmitController::class, 'print_admit_card'])->name('admin.print_admit_card');
+	Route::get('download-admit-card/{id}', [GenerateAdmitController::class, 'download_admit_card'])->name('admin.download_admit_card');
 	Route::get('admit-card/delete/{id}', [GenerateAdmitController::class, 'delete_admit_card'])->name('admin.delete_admit_card');
 
 	// Change Password

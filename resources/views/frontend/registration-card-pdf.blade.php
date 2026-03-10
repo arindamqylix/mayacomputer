@@ -134,8 +134,8 @@
         
         .label {
             font-weight: bold;
-            font-style: italic;
-            text-align: right;
+            font-style: normal;
+            text-align: left;
             width: 150px;
             color: #000;
         }

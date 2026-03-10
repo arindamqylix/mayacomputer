@@ -1,645 +1,582 @@
-@extends('frontend.layouts.master')
-@section('title','Certificate of Diploma')
-@push('custom-css')
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
-    
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    @page {
-        size: landscape;
-        margin: 0;
-    }
-    
-    body {
-        font-family: 'Times New Roman', Times, serif;
-        background: #f0f0f0;
-    }
-    
-    .certificate-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
-        background: #f0f0f0;
-    }
-    
-    .certificate {
-        width: 297mm;
-        height: 210mm;
-        background: #ffffff;
-        border: 3px solid #1a4c8c;
-        padding: 15px 25px;
-        position: relative;
-    }
-    
-    .certificate-inner {
-        width: 100%;
-        height: 100%;
-        position: relative;
-    }
-    
-    /* Logo Section - Big Size at Top */
-    .logo-section {
-        width: 100%;
-        text-align: center;
-        padding: 20px 0;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #1a4c8c;
-    }
-    
-    .logo-section img {
-        max-width: 100%;
-        max-height: 200px;
-        height: auto;
-        width: auto;
-        object-fit: contain;
-    }
-    
-    /* Header Section */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 5px;
-    }
-    
-    .logo-left {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .logo-left img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-    
-    .header-center {
-        text-align: center;
-        flex: 1;
-        padding: 0 20px;
-    }
-    
-    .main-title {
-        font-size: 32px;
-        font-weight: bold;
-        color: #1a4c8c;
-        letter-spacing: 8px;
-        font-family: 'Times New Roman', Times, serif;
-        text-transform: uppercase;
-    }
-    
-    .hindi-title {
-        font-size: 22px;
-        color: #1a4c8c;
-        margin: 5px 0;
-        font-weight: bold;
-    }
-    
-    .cin-number {
-        font-size: 11px;
-        margin: 8px 0 3px;
-    }
-    
-    .cin-number span {
-        color: #1a4c8c;
-        font-weight: bold;
-    }
-    
-    .cin-value {
-        color: #000;
-        font-weight: normal;
-    }
-    
-    .reg-info {
-        font-size: 11px;
-        color: #000;
-        line-height: 1.4;
-    }
-    
-    .iso-certified {
-        font-size: 14px;
-        color: #cc0000;
-        font-weight: bold;
-        margin-top: 5px;
-    }
-    
-    .qr-photo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .qr-code {
-        width: 70px;
-        height: 70px;
-        border: 1px solid #ccc;
-    }
-    
-    .qr-code img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-    
-    /* Certificate Title */
-    .certificate-title {
-        text-align: center;
-        margin: 15px 0 10px;
-    }
-    
-    .certificate-title h1 {
-        font-size: 36px;
-        color: #1a4c8c;
-        font-style: italic;
-        font-weight: normal;
-        font-family: 'Times New Roman', Times, serif;
-    }
-    
-    /* Body Section */
-    .body-section {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-    }
-    
-    .body-content {
-        flex: 1;
-        text-align: center;
-        padding-right: 20px;
-    }
-    
-    .awarded-text {
-        font-size: 18px;
-        font-weight: bold;
-        color: #000;
-        margin-bottom: 8px;
-    }
-    
-    .student-name {
-        font-size: 24px;
-        color: #1a4c8c;
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-    
-    .student-details {
-        font-size: 14px;
-        color: #000;
-        line-height: 1.6;
-        text-align: center;
-        max-width: 650px;
-        margin: 0 auto;
-    }
-    
-    .student-details p {
-        margin: 3px 0;
-    }
-    
-    .passport-photo {
-        width: 100px;
-        height: 120px;
-        border: 1px solid #ccc;
-        margin-left: 20px;
-    }
-    
-    .passport-photo img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    /* Recommendation Section */
-    .recommendation {
-        text-align: center;
-        margin: 15px 0 10px;
-    }
-    
-    .recommendation p {
-        font-size: 14px;
-        font-weight: bold;
-        color: #000;
-    }
-    
-    .date-issue {
-        font-size: 14px;
-        font-weight: bold;
-        color: #000;
-        margin-top: 3px;
-    }
-    
-    /* Logos Section */
-    .logos-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 25px;
-        margin: 20px 0;
-        flex-wrap: wrap;
-    }
-    
-    .logo-item {
-        height: 50px;
-        display: flex;
-        align-items: center;
-    }
-    
-    .logo-item img {
-        height: 100%;
-        width: auto;
-        object-fit: contain;
-    }
-    
-    /* Skill India Logo */
-    .skill-india-logo {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .skill-india-logo .emblem {
-        width: 40px;
-        height: 45px;
-    }
-    
-    .skill-india-logo .text {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .skill-india-logo .skill-text {
-        font-size: 18px;
-        font-weight: bold;
-        color: #1a4c8c;
-        letter-spacing: 2px;
-    }
-    
-    .skill-india-logo .hindi-text {
-        font-size: 10px;
-        color: #e67300;
-    }
-    
-    /* Ministry Logo */
-    .ministry-logo {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 8px;
-        text-align: left;
-        color: #000;
-        line-height: 1.2;
-    }
-    
-    .ministry-logo .emblem {
-        width: 30px;
-    }
-    
-    /* NSDC Logo */
-    .nsdc-logo {
-        display: flex;
-        align-items: center;
-        font-weight: bold;
-        font-size: 14px;
-        letter-spacing: 1px;
-    }
-    
-    .nsdc-logo span {
-        padding: 2px 4px;
-    }
-    
-    .nsdc-n { background: #1a4c8c; color: white; }
-    .nsdc-s { background: #e67300; color: white; }
-    .nsdc-d { background: #228b22; color: white; }
-    .nsdc-c { background: #cc0000; color: white; }
-    
-    /* Corporate Affairs */
-    .corporate-logo {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .corporate-logo .emblem {
-        width: 35px;
-    }
-    
-    .corporate-logo .text {
-        font-size: 9px;
-        line-height: 1.2;
-        text-align: left;
-    }
-    
-    .corporate-logo .ministry-text {
-        font-weight: bold;
-    }
-    
-    /* DPIIT Logo */
-    .dpiit-logo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .dpiit-logo .dpiit-text {
-        font-size: 20px;
-        font-weight: bold;
-        color: #1a4c8c;
-    }
-    
-    .dpiit-logo .startup-text {
-        font-size: 10px;
-        color: #e67300;
-    }
-    
-    /* Signature Section */
-    .signature-section {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-        padding: 0 80px;
-    }
-    
-    .signature-box {
-        text-align: center;
-        width: 200px;
-    }
-    
-    .signature-line {
-        border-top: 1px solid #000;
-        margin-bottom: 5px;
-    }
-    
-    .signature-title {
-        font-size: 12px;
-        color: #1a4c8c;
-        text-decoration: underline;
-    }
-    
-    /* Placeholder styles for images */
-    .placeholder-logo {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #1a4c8c 0%, #2d6cb5 100%);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 10px;
-        text-align: center;
-        font-weight: bold;
-    }
-    
-    .placeholder-qr {
-        width: 70px;
-        height: 70px;
-        background: #f0f0f0;
-        border: 1px solid #ccc;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 8px;
-        color: #666;
-    }
-    
-    .placeholder-photo {
-        width: 100px;
-        height: 120px;
-        background: #f5f5f5;
-        border: 1px solid #ccc;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 10px;
-        color: #666;
-    }
-    
-    .placeholder-emblem {
-        width: 35px;
-        height: 40px;
-        background: #f0f0f0;
-        border-radius: 3px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 6px;
-        color: #666;
-    }
-    
-    @media print {
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Diploma</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Sans+Devanagari:wght@700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&family=DotGothic16&display=swap');
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+
         body {
-            background: white;
-            padding: 0;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Open Sans', sans-serif;
+            min-height: 100vh;
         }
-        .certificate {
-            border: 3px solid #1a4c8c;
-        }
-    }
-</style>
-@endpush
 
-@section('content')
-@php
-    $siteSettings = site_settings();
-    $siteLogo = $siteSettings && !empty($siteSettings->site_logo) ? asset($siteSettings->site_logo) : null;
-    $siteName = $siteSettings && !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
-    $hindiName = 'माया कम्प्यूटर सेंटर';
-    
-    // Format data
-    $studentName = strtoupper(trim($certificate->sl_name ?? 'N/A'));
-    $fatherName = trim($certificate->sl_father_name ?? 'N/A');
-    $regNo = trim($certificate->sl_reg_no ?? 'N/A');
-    $courseName = trim($certificate->c_full_name ?? 'N/A');
-    $durationMonths = intval($certificate->c_duration ?? 0);
-    $duration = 'N/A';
-    if ($durationMonths >= 12) {
-        $duration = ($durationMonths / 12) . ' Months';
-    } elseif ($durationMonths > 0) {
-        $duration = $durationMonths . ' Months';
-    }
-    $percentage = 'N/A';
-    if (!empty($certificate->sr_percentage)) {
-        $percentage = number_format((float)$certificate->sr_percentage, 2) . '%';
-    }
-    $grade = trim($certificate->sr_grade ?? '');
-    $gradeText = $grade ? 'with Grade ' . $grade . ' *' : '';
-    $centerName = trim($certificate->cl_center_name ?? 'N/A');
-    $centerCode = trim($certificate->cl_code ?? 'N/A');
-    $centerAddress = trim($certificate->cl_center_address ?? 'N/A');
-    $cinNo = trim($certificate->cl_cin_no ?? 'U85220DL2023PTC422329');
-    
-    // Issue date
-    $issueDate = 'N/A';
-    if (!empty($certificate->sc_issue_date)) {
-        $issueDate = date('d-M-Y', strtotime($certificate->sc_issue_date));
-    } elseif (!empty($certificate->created_at)) {
-        $issueDate = date('d-M-Y', strtotime($certificate->created_at));
-    } elseif (!empty($certificate->updated_at)) {
-        $issueDate = date('d-M-Y', strtotime($certificate->updated_at));
-    }
-    
-    // Photo
-    $photoUrl = '';
-    if (!empty($certificate->sl_photo)) {
-        $photoPath = $certificate->sl_photo;
-        if (strpos($photoPath, 'http') === 0) {
-            $photoUrl = $photoPath;
+        /* A4 Landscape Dimensions */
+        .certificate-container {
+            width: 297mm;
+            height: 209mm;
+            /* Fixed height for A4 */
+            background-color: white;
+            padding: 6px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            margin: 40px auto 0;
+            /* Changed margin to leave space for top buttons */
+            overflow: hidden;
+            flex-shrink: 0;
         }
-    }
-    
-    // Student relation
-    $relation = 'S/o';
-    if (strtoupper($certificate->sl_sex ?? '') === 'FEMALE') {
-        $relation = 'D/o';
-    }
-    
-    // Logo check
-    $logoExists = false;
-    if ($siteLogo) {
-        $logoPath = str_replace(url('/'), '', $siteLogo);
-        $logoPath = ltrim($logoPath, '/');
-        $fullPath = public_path($logoPath);
-        $logoExists = file_exists($fullPath);
-    }
-@endphp
 
-<div class="certificate-wrapper">
-    <div class="certificate">
-        <div class="certificate-inner">
-            <!-- Logo Section - Big Size at Top -->
-            @if($logoExists && $siteLogo)
-            <div class="logo-section">
-                <img src="{{ $siteLogo }}" alt="{{ $siteName }} Logo">
-            </div>
-            @endif
-            
-            <!-- Header Section -->
-            <div class="header">
-                <div class="logo-left">
-                    @if($logoExists && $siteLogo)
-                        <img src="{{ $siteLogo }}" alt="Logo">
-                    @else
-                        <div class="placeholder-logo">
-                            MAYA<br>COMPUTER<br>CENTER
+        /* Border System */
+        .border-pattern {
+            position: relative;
+            padding: 6px;
+            background: #fff;
+            border: none;
+            height: 100%;
+        }
+
+        .border-inner {
+            border: 2px solid #0f1d46;
+            padding: 3px;
+            height: 100%;
+        }
+
+        .border-design {
+            border: 1px solid #0f1d46;
+            padding: 10px;
+            height: 100%;
+            background-image:
+                linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46),
+                linear-gradient(45deg, #0f1d46 25%, transparent 25%, transparent 75%, #0f1d46 75%, #0f1d46);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+            background-repeat: repeat;
+        }
+
+        .content-area-white {
+            background-color: white;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold' font-size='10' fill='%230f1d46' opacity='0.05' transform='rotate(-45 100 100)'%3EMAYA COMPUTER CENTER PRIVATE LIMITED%3C/text%3E%3C/svg%3E");
+            padding: 5px 30px 12px 30px;
+            height: 100%;
+            border: 1px solid #c5a059;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .header-banner {
+            width: 80%;
+            max-height: 120px;
+            object-fit: contain;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header-subtext {
+            margin-left: 51px;
+            margin-top: -26px;
+            text-align: center;
+            padding-left: 0;
+        }
+
+        .reg-details {
+            font-size: 15px;
+            font-weight: bold;
+            margin: 1px 0;
+            color: #000;
+        }
+
+        .iso-text {
+            color: red;
+            font-weight: bold;
+            font-size: 15px;
+            margin: 2px 0;
+        }
+
+        .qr-wrapper {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            text-align: center;
+        }
+
+        .qr-wrapper img {
+            width: 70px;
+            height: 70px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        .qr-wrapper .sn-top-right {
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            margin-top: 4px;
+            white-space: nowrap;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .hologram-wrapper {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            z-index: 10;
+        }
+
+        .hologram-wrapper img {
+            width: 80px;
+            height: auto;
+        }
+
+        .sn-text {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        /* Content */
+        /* Title Bar */
+        .title-bar {
+            background-color: #0f1d46;
+            color: #fff;
+            text-align: center;
+            padding: 1px 0;
+            margin: 3px -30px;
+            border-top: 1px solid #c5a059;
+            border-bottom: 1px solid #c5a059;
+        }
+
+        .title-bar h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            margin: 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 0 160px 0 50px;
+            position: relative;
+        }
+
+        .certify-text {
+            font-style: italic;
+            font-size: 20px;
+            color: #444;
+            margin-bottom: 5px;
+        }
+
+        .center-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .student-details {
+            font-size: 16px;
+            line-height: 1.45;
+            margin-top: 5px;
+            color: #000;
+        }
+
+        .company-name {
+            color: #002060;
+            font-weight: 800;
+            font-style: normal;
+            text-decoration: underline;
+            text-transform: uppercase;
+            font-size: 20px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Photo - aligned beside content, clear spacing from right border */
+        .photo-box {
+            position: absolute;
+            top: 8px;
+            right: 20px;
+            width: 100px;
+            height: 130px;
+            border: 1px solid #000;
+            background: #fff;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Footer Section */
+        .footer-section {
+            margin-top: 10px;
+            padding-bottom: 3px;
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 1px;
+            border-top: 1px solid #eee;
+            padding-top: 2px;
+            flex-wrap: nowrap;
+        }
+
+        .footer-logo {
+            height: 48px;
+            width: auto;
+            max-width: 180px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            padding: 0 20px;
+            gap: 10px;
+            margin-top: 1px;
+        }
+
+        .sig-block {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            width: 200px;
+            min-width: 180px;
+        }
+
+        .sig-date-area {
+            height: 78px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sig-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .date-val {
+            font-size: 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 2px;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        /* Stamp & signature */
+        .sig-overlap-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            width: 200px;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        .sig-area {
+            position: relative;
+            height: 110px;
+            width: 200px;
+            margin: 0 auto;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stamp-img {
+            position: absolute;
+            height: 130px;
+            width: auto;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            object-fit: contain;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .sign-img {
+            position: absolute;
+            height: 50px;
+            width: auto;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            object-fit: contain;
+            z-index: 2;
+        }
+
+        .sig-line {
+            padding-top: 4px;
+            margin-top: -31px;
+            min-height: 18px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .actions-bar {
+            width: 297mm;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 0 auto 10px;
+            gap: 10px;
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .certificate-container {
+                width: 297mm;
+                height: 209mm;
+                box-shadow: none;
+                border: none;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="actions-bar no-print">
+        <a href="{{ route('index') }}"
+            style="padding: 10px 20px; background: #6c757d; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight:bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-decoration: none; margin-right: auto;">BACK
+            TO HOME</a>
+
+        <form method="POST" action="{{ route('verification.certificate.pdf') }}" style="margin: 0;">
+            @csrf
+            <input type="hidden" name="registration_no" value="{{ $certificate->sl_reg_no }}">
+            <input type="hidden" name="dob" value="{{ $certificate->sl_dob }}">
+            <button type="submit"
+                style="padding: 10px 20px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight:bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">DOWNLOAD
+                PDF</button>
+        </form>
+
+        <button onclick="window.print()"
+            style="padding: 10px 20px; background: #0f1d46; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight:bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">PRINT
+            CERTIFICATE</button>
+    </div>
+
+    <div class="certificate-container">
+        <div class="border-pattern">
+            <div class="border-inner">
+                <div class="border-design">
+                    <div class="content-area-white">
+
+                        <!-- Top Section -->
+                        <div class="header">
+                            @if(!empty($setting->hologram) && file_exists(public_path($setting->hologram)))
+                                <div class="hologram-wrapper">
+                                    <div
+                                        style="font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 5px;">
+                                        Certificate No. : <span
+                                            style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 5px;">{{ $certificate->sc_certificate_number }}</span>
+                                    </div>
+                                    <img src="{{ asset($setting->hologram) }}" alt="Hologram">
+                                </div>
+                            @endif
+
+                            @if(!empty($setting->document_logo) && file_exists(public_path($setting->document_logo)))
+                                <img src="{{ asset($setting->document_logo) }}" alt="Header Banner" class="header-banner">
+                            @else
+                                <img src="{{ asset('header_banner.png') }}" alt="Header Banner" class="header-banner">
+                            @endif
+                            <div class="header-subtext">
+                                <p class="reg-details">CIN : U85220DL2023PTC422329</p>
+                                <p class="reg-details">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                                <p class="reg-details" style="font-size:12px;">Registered Under NCT Delhi, Skill India,
+                                    Udyam & Startup India</p>
+                                <p class="iso-text">An ISO 9001: 2015 Certified</p>
+                                <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website :
+                                    mayacc.in</p>
+                            </div>
+                            <div class="qr-wrapper">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-certificate/' . ($certificate->sc_certificate_number ?? '')) }}"
+                                    alt="QR Code - Scan to verify" title="Scan to verify">
+                                <span class="sn-top-right">SN.
+                                    MCC{{ str_pad($certificate->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
+                                <span class="sn-top-right" style="display:block;font-size:9px;margin-top:2px;">Scan to
+                                    verify</span>
+                            </div>
                         </div>
-                    @endif
-                </div>
-                
-                <div class="header-center">
-                    <div class="main-title">{{ $siteName }}</div>
-                    <div class="hindi-title">{{ $hindiName }}</div>
-                    <div class="cin-number">
-                        <span>CIN:</span> <span class="cin-value">{{ $cinNo }}</span>
+
+                        <div class="title-bar">
+                            <h2>Certificate of Diploma</h2>
+                        </div>
+
+                        <!-- Middle Content -->
+                        <div class="main-content">
+                            <div class="certify-text"
+                                style="font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; margin-top: 10px;">
+                                THIS CERTIFICATE / DIPLOMA IS AWARDED TO</div>
+                            <div class="center-name"
+                                style="color: blue; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: bold; margin: 8px 0;">
+                                {{ strtoupper($certificate->sl_name ?? '') }}
+                            </div>
+
+                            <div class="student-details"
+                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; line-height: 1.5; color: #000;">
+                                S/o – <b>{{ ucwords(strtolower($certificate->sl_father_name ?? '')) }}</b> , Reg No.
+                                <b>{{ $certificate->sl_reg_no }}</b> on successfully completion of<br>
+                                <b>{{ $certificate->c_full_name ?? '' }}</b> ( Duration -
+                                {{ $certificate->c_duration ?? '' }} ) Course and secured
+                                <b>{{ number_format($certificate->sr_percentage ?? 0, 2) }}%</b> with Grade
+                                <b>{{ strtoupper($certificate->sr_grade ?? '') }} *</b> from our authorised Study Centre
+                            </div>
+
+                            <div class="center-study-details"
+                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; color: #000; font-weight: bold; line-height: 1.6;">
+                                {{ $certificate->cl_center_name ?? '' }} , {{ $certificate->cl_center_address ?? '' }}
+                                <br> Centre Code {{ $certificate->cl_code ?? '' }}
+                            </div>
+
+                            <div class="recommendation-text"
+                                style="margin-top: 5px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
+                                On the recommendation of the board of examination
+                            </div>
+
+                            <!-- Photo Positioned Absolute in Content Area -->
+                            <div class="photo-box">
+                                @if(!empty($certificate->sl_photo) && file_exists(public_path($certificate->sl_photo)))
+                                    <img src="{{ asset($certificate->sl_photo) }}" alt="Student">
+                                @else
+                                    <div style="width:100%; height:100%; border:1px solid #000; display: table;">
+                                        <div style="display: table-cell; vertical-align: middle; text-align: center;">PHOTO
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="authorization-text" style="margin-top: 4px; font-size:14px;">
+                                <span class="company-name">MAYA COMPUTER CENTER PRIVATE LIMITED</span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Section -->
+                        <div class="footer-section">
+                            <div class="footer-logos">
+                                @if(!empty($setting->certificate_footer_logos))
+                                    @php $logos = json_decode($setting->certificate_footer_logos); @endphp
+                                    @if(is_array($logos))
+                                        @foreach($logos as $logo)
+                                            <img src="{{ asset($logo) }}" class="footer-logo" alt="Partner">
+                                        @endforeach
+                                    @endif
+                                @else
+                                    <img src="https://via.placeholder.com/100x40?text=Partner+Logos" class="footer-logo"
+                                        alt="Logos">
+                                @endif
+                            </div>
+
+                            <div class="signatures">
+                                <div class="sig-block">
+                                    <div class="sig-date-area">
+                                        <div class="sig-title">Date of Issue</div>
+                                        <div class="date-val">
+                                            {{ $certificate->sc_issue_date ? \Carbon\Carbon::parse($certificate->sc_issue_date)->format('d-M-Y') : 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div class="sig-line">&nbsp;</div>
+                                </div>
+
+                                <div class="sig-overlap-container">
+                                    <div class="sig-area">
+                                        @if(!empty($certificate->cl_center_stamp) && file_exists(public_path($certificate->cl_center_stamp)))
+                                            <img src="{{ asset($certificate->cl_center_stamp) }}" class="stamp-img"
+                                                alt="Center Stamp">
+                                        @endif
+                                        @if(!empty($certificate->cl_authorized_signature) && file_exists(public_path($certificate->cl_authorized_signature)))
+                                            <img src="{{ asset($certificate->cl_authorized_signature) }}" class="sign-img"
+                                                alt="Center Sign">
+                                        @endif
+                                    </div>
+                                    <div class="sig-line">Center Head Signature</div>
+                                </div>
+
+                                <div class="sig-overlap-container">
+                                    <div class="sig-area">
+                                        @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
+                                            <img src="{{ asset($setting->authorize_stamp) }}" class="stamp-img" alt="Stamp">
+                                        @endif
+                                        @if(!empty($setting->authorize_signature) && file_exists(public_path($setting->authorize_signature)))
+                                            <img src="{{ asset($setting->authorize_signature) }}" class="sign-img"
+                                                alt="Sign">
+                                        @endif
+                                    </div>
+                                    <div class="sig-line">Authorized Signatory</div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="reg-info">
-                        Reg. Under the Company Act.2013 MCA, Government of India<br>
-                        Registered Under Skill India, Udyam & Startup India
-                    </div>
-                    <div class="iso-certified">An ISO 9001: 2015 Certified</div>
-                </div>
-                
-                {{-- <div class="qr-photo">
-                    <div class="placeholder-qr">QR Code</div>
-                </div> --}}
-            </div>
-
-            <!-- Certificate Title -->
-            <div class="certificate-title">
-                <h1>Certificate of Diploma</h1>
-            </div>
-
-            <!-- Body Section -->
-            <div class="body-section">
-                <div class="body-content">
-                    <div class="awarded-text">This Certificate / Diploma is Awarded to</div>
-                    <div class="student-name">{{ $studentName }}</div>
-                    <div class="student-details">
-                        <p>{{ $relation }} – {{ $fatherName }}, Reg No. {{ $regNo }} on successfully</p>
-                        <p>completion of {{ $courseName }} (Duration - {{ $duration }})</p>
-                        <p>Course and secured {{ $percentage }} {{ $gradeText }} from our authorised Study Centre {{ $centerName }},</p>
-                        <p>{{ $centerAddress }}, Centre Code {{ $centerCode }}</p>
-                    </div>
-                </div>
-                <div class="passport-photo">
-                    @if($certificate->sl_photo)
-                        <img src="{{ asset($certificate->sl_photo) }}" alt="Student Photo" onerror="this.parentElement.innerHTML='<div class=\'placeholder-photo\'>Passport<br>Photo</div>'">
-                    @else
-                        <div class="placeholder-photo">Passport<br>Photo</div>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Recommendation Section -->
-            <div class="recommendation">
-                <p>On the recommendation of the board of examination</p>
-                <p class="date-issue">Date of Issue: {{ $issueDate }}</p>
-            </div>
-
-            <!-- Logos Section -->
-            <div class="logos-section">
-                <div class="skill-india-logo">
-                    <div class="placeholder-emblem">Emblem</div>
-                    <div class="text">
-                        <span class="skill-text">Skill India</span>
-                        <span class="hindi-text">कौशल भारत-कुशल भारत</span>
-                    </div>
-                </div>
-
-                <div class="ministry-logo">
-                    <div class="placeholder-emblem">Emblem</div>
-                    <div>
-                        <div>भारत सरकार</div>
-                        <div>GOVERNMENT OF INDIA</div>
-                        <div>MINISTRY OF</div>
-                        <div>SKILL DEVELOPMENT</div>
-                        <div>AND ENTREPRENEURSHIP</div>
-                    </div>
-                </div>
-
-                <div class="nsdc-logo">
-                    <span class="nsdc-n">N</span>
-                    <span class="nsdc-s">S</span>
-                    <span class="nsdc-d">D</span>
-                    <span class="nsdc-c">C</span>
-                </div>
-
-                <div class="corporate-logo">
-                    <div class="placeholder-emblem">Emblem</div>
-                    <div class="text">
-                        <div class="ministry-text">MINISTRY OF</div>
-                        <div class="ministry-text">CORPORATE</div>
-                        <div class="ministry-text">AFFAIRS</div>
-                        <div style="font-size: 7px;">GOVERNMENT OF INDIA</div>
-                    </div>
-                </div>
-
-                <div class="dpiit-logo">
-                    <div class="placeholder-emblem">Emblem</div>
-                    <span class="dpiit-text">DPIIT</span>
-                    <span class="startup-text">#startupindia</span>
-                </div>
-            </div>
-
-            <!-- Signature Section -->
-            <div class="signature-section">
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <div class="signature-title">Center Head Signature</div>
-                </div>
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <div class="signature-title">Authorized Signatory</div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
 
+</body>
+
+</html>

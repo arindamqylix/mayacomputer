@@ -5,8 +5,14 @@
     <meta charset="utf-8">
     <title>Marksheet - {{ $data->sl_reg_no }}</title>
     <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
         * {
             box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
         }
 
         body {
@@ -14,17 +20,21 @@
             margin: 0;
             padding: 0;
             background: #fff;
+            line-height: 1.2;
         }
 
         .marksheet-container {
-            width: 100%;
-            height: 100%;
+            width: 210mm;
+            height: 297mm;
             position: relative;
             padding: 5mm;
+            margin: 0;
+            overflow: hidden;
+            page-break-after: always;
         }
 
         .border-pattern {
-            padding: 3px;
+            padding: 2px;
             background: #fff;
             border: 1px solid #0f1d46;
             height: 100%;
@@ -38,13 +48,13 @@
 
         .border-design {
             border: 1px solid #0f1d46;
-            padding: 10px;
+            padding: 8px;
             height: 100%;
         }
 
         .content-area-white {
             background: #fff;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #c5a059;
             height: 100%;
             position: relative;
@@ -52,9 +62,10 @@
 
         .watermark {
             position: absolute;
-            top: 30%;
-            left: 15%;
+            top: 50%;
+            left: 50%;
             width: 70%;
+            transform: translate(-50%, -50%);
             opacity: 0.05;
             z-index: 0;
         }
@@ -71,27 +82,27 @@
         }
 
         .header-banner {
-            width: 85%;
-            max-height: 100px;
+            width: 80%;
+            max-height: 90px;
             margin-bottom: 5px;
         }
 
         .header-subtext {
-            margin-top: -15px;
+            margin-top: -12px;
         }
 
         .reg-details {
             font-size: 10px;
             font-weight: bold;
-            margin: 1px 0;
+            margin: 0;
             font-family: Arial, sans-serif;
         }
 
         .iso-text {
             color: red;
             font-weight: bold;
-            font-size: 12px;
-            margin: 2px 0;
+            font-size: 11px;
+            margin: 1px 0;
             font-family: Arial, sans-serif;
         }
 
@@ -103,13 +114,11 @@
         }
 
         .hologram-wrapper img {
-            width: 60px;
+            width: 55px;
         }
 
         .hologram-wrapper .sn-text {
-            display: block;
-            font-size: 8px;
-            font-weight: bold;
+            display: none;
         }
 
         .section-title {
@@ -117,10 +126,10 @@
             color: #fff;
             text-align: center;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             padding: 3px;
             text-transform: uppercase;
-            margin: 10px 0;
+            margin: 5px 0;
         }
 
         .info-box {
@@ -133,8 +142,9 @@
         .student-details {
             display: table-cell;
             width: 80%;
-            font-size: 12px;
+            font-size: 11px;
             vertical-align: top;
+            text-align: left;
         }
 
         .info-row {
@@ -143,7 +153,7 @@
         }
 
         .info-label {
-            width: 130px;
+            width: 120px;
             font-weight: bold;
             display: inline-block;
         }
@@ -161,23 +171,24 @@
         }
 
         .student-photo {
-            width: 85px;
-            height: 100px;
+            width: 80px;
+            height: 95px;
             border: 1px solid #ccc;
         }
 
         .modules-box {
             border: 1px solid #000066;
-            padding: 5px;
+            padding: 4px;
             font-size: 10px;
             margin-top: -1px;
+            min-height: 40px;
         }
 
         .marks-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 11px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .marks-table th {
@@ -197,7 +208,7 @@
         .grading-info {
             font-size: 9px;
             font-weight: bold;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         .issue-date {
@@ -207,35 +218,27 @@
         }
 
         .footer {
-            margin-top: 20px;
-        }
-
-        .logo-strip {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .footer-logo {
-            width: 60px;
-            margin-right: 10px;
+            margin-top: 15px;
         }
 
         .card-footer-row {
             display: table;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .qr-section {
             display: table-cell;
             width: 30%;
             text-align: left;
+            vertical-align: bottom;
         }
 
         .sign-section {
             display: table-cell;
             width: 70%;
             text-align: right;
+            vertical-align: bottom;
         }
 
         .qr-code {

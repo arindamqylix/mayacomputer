@@ -76,6 +76,7 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 
 	Route::get('admit-card-list', [GenerateAdmitController::class, 'admit_card_list'])->name('admit_card_list');
 	Route::get('print-admit-card/{id}', [GenerateAdmitController::class, 'print_admit_card'])->name('print_admit_card');
+	Route::get('download-admit-card/{id}', [GenerateAdmitController::class, 'download_admit_card'])->name('download_admit_card');
 
 	// Result
 	Route::get('set-result', [ResultController::class, 'set_result'])->name('set_result');

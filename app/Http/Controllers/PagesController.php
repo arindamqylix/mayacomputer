@@ -1012,7 +1012,9 @@ class PagesController extends Controller
                     'center_login.cl_center_name',
                     'center_login.cl_code',
                     'center_login.cl_center_address',
-                    'center_login.cl_cin_no'
+                    'center_login.cl_cin_no',
+                    'center_login.cl_center_stamp',
+                    'center_login.cl_authorized_signature'
                 )
                 ->first();
 
@@ -1034,7 +1036,9 @@ class PagesController extends Controller
                         'center_login.cl_center_name',
                         'center_login.cl_code',
                         'center_login.cl_center_address',
-                        'center_login.cl_cin_no'
+                        'center_login.cl_cin_no',
+                        'center_login.cl_center_stamp',
+                        'center_login.cl_authorized_signature'
                     )
                     ->first();
             }
@@ -1050,11 +1054,98 @@ class PagesController extends Controller
                     ->with('error', 'Student registration is pending approval. Certificate cannot be verified until admin approves the student.');
             }
 
-            return view('frontend.certificate-view', compact('certificate'));
+            $setting = DB::table('site_settings')->first();
+
+            return view('frontend.certificate-view', compact('certificate', 'setting'));
 
         } catch (\Exception $e) {
             return redirect()->route('verification.certificate')
                 ->with('error', 'An error occurred while fetching certificate: ' . $e->getMessage());
+        }
+    }
+
+    public function generateCertificatePDF(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->back()->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            $certificate = DB::table('student_certificates')
+                ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'set_result.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'course.c_duration',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_cin_no',
+                    'center_login.cl_center_stamp',
+                    'center_login.cl_authorized_signature'
+                )
+                ->first();
+
+            if (!$certificate) {
+                $certificate = DB::table('set_result')
+                    ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                    ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                    ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                    ->where('student_login.sl_reg_no', $registrationNo)
+                    ->where('student_login.sl_dob', $dob)
+                    ->select(
+                        'set_result.*',
+                        'student_login.*',
+                        'course.c_full_name',
+                        'course.c_short_name',
+                        'course.c_duration',
+                        'center_login.cl_name',
+                        'center_login.cl_center_name',
+                        'center_login.cl_code',
+                        'center_login.cl_center_address',
+                        'center_login.cl_cin_no',
+                        'center_login.cl_center_stamp',
+                        'center_login.cl_authorized_signature'
+                    )
+                    ->first();
+            }
+
+            if (!$certificate) {
+                abort(404, 'No certificate found');
+            }
+
+            // Check if student is approved (status should be VERIFIED or higher)
+            if ($certificate->sl_status == 'PENDING' || $certificate->sl_status == 'BLOCK') {
+                abort(403, 'Student registration is pending approval.');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            $viewData = [
+                'certificate' => $certificate,
+                'setting' => $setting,
+                'is_pdf' => true
+            ];
+
+            $pdf = PDF::loadView('frontend.certificate-pdf', $viewData);
+            $pdf->setPaper('A4', 'landscape');
+
+            return $pdf->download('Certificate_' . $registrationNo . '.pdf');
+
+        } catch (\Exception $e) {
+            abort(500, 'An error occurred while generating PDF: ' . $e->getMessage());
         }
     }
 

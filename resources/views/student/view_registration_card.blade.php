@@ -351,12 +351,14 @@
                         <td class="value" colspan="2">:
                             {{ $data->sl_dob ? \Carbon\Carbon::parse($data->sl_dob)->format('Y-m-d') : 'N/A' }}
                             &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
-                            {{ $data->sl_category ?? 'Gen' }}</td>
+                            {{ $data->sl_category ?? 'Gen' }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
                         <td class="value" colspan="2">:
-                            {{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</td>
+                            {{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Duration</td>
@@ -373,15 +375,16 @@
                     </tr>
                     <tr>
                         <td class="label">Center Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($data->cl_center_name ?? $data->cl_name ?? '') }}
+
+                                                <td class="value" colspan="2">: {{ strtoupper($data->cl_center_name ?? $data->cl_name ?? '') }}
                         </td>
                     </tr>
                     <tr>
                         <td class="label">Center Code & Address</td>
                         <td class="value" colspan="2">: {{ $data->cl_code ?? '' }} &
-                            {{ $data->cl_center_address ?? 'N/A' }}</td>
+                        {{ $data->cl_center_address ?? 'N/A' }}</td>
                     </tr>
-                </table>
+            </table>
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
@@ -405,10 +408,10 @@
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($data->sl_reg_no ?? '')) }}"
-                        alt="QR Code" class="qr-code">
+                    alt="QR Code" class="qr-code">
                     <div class="qr-sr-no">Scan to verify</div>
                 </div>
-                <div class="controller-sign">
+            <div class="controller-sign">
                     <div class="controller-sig-overlap">
                         <div class="controller-sig-area">
                             @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
@@ -427,11 +430,17 @@
     </div>
 
     <!-- Print Button (Hidden in Print Mode) -->
-    <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()"
-            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
-            Registration Card</button>
-    </div>
+    <form action="{{ route('verification.registration.card.pdf') }}" method="POST" target="_blank" class="no-print">
+        @csrf
+        <input type="hidden" name="registration_no" value="{{ $student->sl_reg_no }}">
+        <input type="hidden" name="dob" value="{{ $student->sl_dob }}">
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit"
+                style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;">
+                <i class="fa fa-download"></i> Download Registration Card PDF
+            </button>
+        </div>
+    </form>
     <style>
         @media print {
             .no-print {

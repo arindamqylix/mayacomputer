@@ -278,22 +278,7 @@
             transition: all 0.3s;
         }
 
-        .btn-print {
-            background: #000077;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-download:hover,
-        .btn-print:hover {
+        .btn-download:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
@@ -500,9 +485,6 @@
                             <i class="fas fa-download"></i> Download PDF
                         </button>
                     </form>
-                    <button onclick="window.print()" class="btn-print">
-                        <i class="fas fa-print"></i> Print ID Card
-                    </button>
                 </div>
             </div>
         </div>

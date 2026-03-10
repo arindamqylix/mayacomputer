@@ -26,6 +26,7 @@ Route::group(['prefix' => 'student', 'middleware' => 'student:student'], functio
 
 	// Admit Card
 	Route::get('view-admit-card', [AdmitCardController::class, 'view_admit_card'])->name('view_admit_card');
+	Route::get('download-admit-card/{id}', [AdmitCardController::class, 'download_admit_card'])->name('student.download_admit_card');
 
 	// Marksheet
 	Route::get('view-marksheet', [MarkSheetController::class, 'view_marksheet'])->name('view_marksheet');

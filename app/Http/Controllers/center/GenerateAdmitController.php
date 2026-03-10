@@ -7,18 +7,58 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+
 class GenerateAdmitController extends Controller
 {
-    public function generate_admit_card(){
+    public function download_admit_card($id)
+    {
+        $admit = DB::table('student_admit_cards')
+            ->where('ac_id', $id)
+            ->first();
+
+        if (!$admit) {
+            return back()->with('error', 'Admit Card not found');
+        }
+
+        $student = DB::table('student_login')
+            ->where('sl_id', $admit->student_id)
+            ->first();
+
+        $course = DB::table('course')
+            ->where('c_id', $student->sl_FK_of_course_id)
+            ->first();
+
+        $center = DB::table('center_login')
+            ->where('cl_id', $admit->center_id)
+            ->first();
+
+        $setting = DB::table('site_settings')->first();
+
+        $data = [
+            'admit' => $admit,
+            'student' => $student,
+            'course' => $course,
+            'center' => $center,
+            'setting' => $setting
+        ];
+
+        $pdf = PDF::loadView('admin.admit_card.pdf', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->download('Admit_Card_' . $student->sl_reg_no . '.pdf');
+    }
+
+    public function generate_admit_card()
+    {
         $centerId = Auth::guard('center')->user()->cl_id;
 
         // Fetch only VERIFIED students + Course (Only approved students)
         // Exclude students who already have admit cards generated
         $students = DB::table('student_login')
             ->leftJoin('course', 'course.c_id', '=', 'student_login.sl_FK_of_course_id')
-            ->leftJoin('student_admit_cards', function($join) use ($centerId) {
+            ->leftJoin('student_admit_cards', function ($join) use ($centerId) {
                 $join->on('student_admit_cards.student_id', '=', 'student_login.sl_id')
-                     ->where('student_admit_cards.center_id', $centerId);
+                    ->where('student_admit_cards.center_id', $centerId);
             })
             ->where('student_login.sl_FK_of_center_id', $centerId)
             ->where('student_login.sl_status', 'VERIFIED') // Only approved/verified students
@@ -51,14 +91,15 @@ class GenerateAdmitController extends Controller
         return view('center.admit_card.create', compact('students', 'courseList', 'activeCenters'));
     }
 
-    public function handle_admit_card(Request $request){
+    public function handle_admit_card(Request $request)
+    {
         $request->validate([
-            'student_ids'  => 'required|array|min:1',
-            'student_ids.*'=> 'required|integer|exists:student_login,sl_id',
-            'exam_date'    => 'required|date',
-            'exam_time'    => 'required',
-            'exam_venue'   => 'required|string',
-            'exam_notice'  => 'nullable|string',
+            'student_ids' => 'required|array|min:1',
+            'student_ids.*' => 'required|integer|exists:student_login,sl_id',
+            'exam_date' => 'required|date',
+            'exam_time' => 'required',
+            'exam_venue' => 'required|string',
+            'exam_notice' => 'nullable|string',
         ]);
 
         $centerId = Auth::guard('center')->user()->cl_id;
@@ -96,23 +137,23 @@ class GenerateAdmitController extends Controller
                     DB::table('student_admit_cards')
                         ->where('ac_id', $existingAdmit->ac_id)
                         ->update([
-                            'exam_date'  => $request->exam_date,
-                            'exam_time'  => $request->exam_time,
+                            'exam_date' => $request->exam_date,
+                            'exam_time' => $request->exam_time,
                             'exam_venue' => $request->exam_venue,
-                            'exam_notice'=> $request->exam_notice,
+                            'exam_notice' => $request->exam_notice,
                             'updated_at' => now(),
                         ]);
                 } else {
                     // Insert new admit card
                     DB::table('student_admit_cards')->insert([
-                        'center_id'  => $centerId,
+                        'center_id' => $centerId,
                         'student_id' => $student->sl_id,
-                        'course_id'  => $student->sl_FK_of_course_id,
-                        'reg_no'     => $student->sl_reg_no,
-                        'exam_date'  => $request->exam_date,
-                        'exam_time'  => $request->exam_time,
+                        'course_id' => $student->sl_FK_of_course_id,
+                        'reg_no' => $student->sl_reg_no,
+                        'exam_date' => $request->exam_date,
+                        'exam_time' => $request->exam_time,
                         'exam_venue' => $request->exam_venue,
-                        'exam_notice'=> $request->exam_notice,
+                        'exam_notice' => $request->exam_notice,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -137,7 +178,8 @@ class GenerateAdmitController extends Controller
         }
     }
 
-    public function admit_card_list(){
+    public function admit_card_list()
+    {
         $center_id = Auth::guard('center')->user()->cl_id;
 
         $admitCards = DB::table('student_admit_cards AS a')
@@ -193,10 +235,10 @@ class GenerateAdmitController extends Controller
         ]);
 
         DB::table('student_admit_cards')->where('ac_id', $id)->update([
-            'student_id'  => $request->reg_no,
-            'exam_date'   => $request->exam_date,
-            'exam_time'   => $request->exam_time,
-            'exam_venue'  => $request->exam_venue,
+            'student_id' => $request->reg_no,
+            'exam_date' => $request->exam_date,
+            'exam_time' => $request->exam_time,
+            'exam_venue' => $request->exam_venue,
             'exam_notice' => $request->exam_notice,
         ]);
 

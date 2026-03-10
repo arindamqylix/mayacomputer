@@ -105,8 +105,8 @@
 
     .label {
         font-weight: bold;
-        font-style: italic;
-        text-align: right;
+        font-style: normal;
+        text-align: left;
         width: 160px;
         padding-right: 10px;
         color: #000;
@@ -447,9 +447,6 @@
                     <i class="fa fa-download"></i> Download PDF
                 </button>
             </form>
-            <button onclick="window.print()" class="btn-print">
-                <i class="fa fa-print"></i> Print Card
-            </button>
         </div>
     </div>
 </div>

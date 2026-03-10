@@ -413,12 +413,14 @@
                         <td class="label">Date of Birth</td>
                         <td class="value" colspan="2">: {{ $student->sl_dob ?? 'N/A' }} &nbsp;&nbsp; Gender :
                             {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
-                            {{ $student->sl_category ?? 'Gen' }}</td>
+                            {{ $student->sl_category ?? 'Gen' }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
                         <td class="value" colspan="2">:
-                            {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
+                            {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Duration</td>
@@ -434,23 +436,24 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="label">Center Name</td>
+
+                                                <td class="label">Center Name</td>
                         <td class="value" colspan="2">: {{ strtoupper($center->cl_center_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Center Code & Address</td>
                         <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} &
-                            {{ $center->cl_center_address ?? 'N/A' }}</td>
+                        {{ $center->cl_center_address ?? 'N/A' }}</td>
                     </tr>
-                </table>
+            </table>
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
                         @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
                             <img src="{{ asset($student->sl_photo) }}" alt="Student Photo">
                         @else
-                            Picture<br><br>1.2 in X 1.5 in
-                        @endif
+                        Picture<br><br>1.2 in X 1.5 in
+                    @endif
                     </div>
                     <div class="signature-box" style="padding: 2px;">
                         @if(!empty($student->sl_signature) && file_exists(public_path($student->sl_signature)))
@@ -473,8 +476,9 @@
                         <th>Address</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+            <tbody>
+
+                                           <tr>
                         <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
                         <td>{{ $admit->exam_time }}</td>
                         <td>{!! nl2br(e($admit->exam_venue)) !!}</td>
@@ -499,10 +503,10 @@
             <!-- Footer row: QR bottom-left, Controller bottom-right - aligned -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
                         alt="QR Code" class="qr-code">
                 </div>
-                <div class="controller-sign">
+            <div class="controller-sign">
                     <div class="controller-sig-overlap">
                         <div class="controller-sig-area">
                             @if(!empty($setting->authorize_stamp) && file_exists(public_path($setting->authorize_stamp)))
@@ -522,9 +526,10 @@
 
     <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()"
-            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
-            Admit Card</button>
+        <a href="{{ route('admin.download_admit_card', $admit->ac_id) }}"
+            style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            <i class="fa fa-download"></i> Download Admit Card PDF
+        </a>
     </div>
 
 </body>

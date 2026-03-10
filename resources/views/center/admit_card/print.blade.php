@@ -519,9 +519,10 @@
 
     <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <button onclick="window.print()"
-            style="padding: 10px 20px; font-size: 16px; background: #000066; color: white; border: none; cursor: pointer;">Print
-            Admit Card</button>
+        <a href="{{ route('download_admit_card', $admit->ac_id) }}"
+            style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            <i class="fa fa-download"></i> Download Admit Card PDF
+        </a>
     </div>
 
 </body>

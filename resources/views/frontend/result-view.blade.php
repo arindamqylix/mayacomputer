@@ -449,8 +449,7 @@
                                             @if(!empty($setting->hologram))
                                                 <div class="hologram-wrapper">
                                                     <img src="{{ asset($setting->hologram) }}">
-                                                    <span class="sn-text">SN.
-                                                        MCC{{ str_pad($data->sl_id ?? 0, 5, '0', STR_PAD_LEFT) }}</span>
+                                                    
                                                 </div>
                                             @endif
 
