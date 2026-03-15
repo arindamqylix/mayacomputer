@@ -108,6 +108,13 @@
         </a>
       </li>
 
+      <li class="nav-item {{ (Request::segment(2) == 'typing-certificates' || Request::segment(2) == 'typing-certificate') ? 'active' : '' }}">
+        <a href="{{ route('student.typing_certificate_list') }}" class="nav-link">
+            <span class="sidebar-icon"><i class="fa-solid fa-keyboard"></i></span>
+            <span class="sidebar-text">Typing Certificate</span>
+        </a>
+      </li>
+
       <li class="nav-item {{ Request::segment(2) == 'document-reissue' ? 'active' : '' }}">
         <a href="{{ route('student.document_reissue') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-file-circle-plus"></i></span>

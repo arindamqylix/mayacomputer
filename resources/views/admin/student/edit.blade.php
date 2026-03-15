@@ -138,6 +138,94 @@
         font-weight: 600;
         font-size: 16px;
     }
+
+    /* Select2 - single select (center, qualification) */
+    .input-icon-wrapper .select2-container {
+        width: 100% !important;
+        display: block !important;
+    }
+    .input-icon-wrapper .select2-container .select2-selection--single {
+        min-height: 42px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding-left: 36px;
+    }
+    .input-icon-wrapper .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-left: 0;
+        line-height: 40px;
+    }
+    .input-icon-wrapper .select2-container .select2-selection--single .select2-selection__arrow {
+        height: 40px;
+    }
+    .select2-container--default .select2-selection--single:focus,
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #667eea;
+        outline: none;
+    }
+    /* Select2 - multi-select (course) - same as create page */
+    .input-icon-wrapper .select2-container .select2-selection--multiple {
+        padding-left: 36px;
+    }
+    .select2-container--default .select2-selection--multiple,
+    .select2-container--bootstrap-5 .select2-selection--multiple {
+        min-height: 44px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 4px 8px;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered,
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
+        display: block;
+        padding: 0;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered ul,
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice,
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+        background-color: #667eea;
+        border: none;
+        border-radius: 999px;
+        color: #fff;
+        padding: 4px 10px;
+        font-size: 13px;
+        margin: 0;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
+        color: rgba(255,255,255,0.9);
+        margin-right: 4px;
+    }
+    .select2-container--default .select2-selection--multiple .select2-search--inline,
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-search--inline {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+    }
+    .select2-container--default .select2-selection--multiple .select2-search__field,
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-search__field {
+        margin: 0 !important;
+        padding: 2px 6px !important;
+        width: 120px !important;
+        min-width: 80px;
+    }
+    /* Dropdown above other fields */
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #667eea;
+    }
+    .select2-dropdown {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        z-index: 9999 !important;
+    }
 </style>
 @endpush
 @section('content')
@@ -191,10 +279,14 @@
                                     <label class="form-label">Select Course Name <span class='badge bg-success ms-2' id='course_data' style='display:none'></span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-graduation-cap"></i>
-								<select onchange="get_course(this.value);" class="form-select select2" name='course_id' id='course_id' required>
-									<option value=''> Select Course </option>
+								<select onchange="get_course_multiple();" class="form-select select2-multi" name='course_id[]' id='course_id' multiple required
+									data-placeholder="Select Course">
+									@php
+										$selectedCourseIds = old('course_id', $student->sl_FK_of_course_id ? [$student->sl_FK_of_course_id] : []);
+										if (!is_array($selectedCourseIds)) $selectedCourseIds = [$selectedCourseIds];
+									@endphp
 									@foreach($course as $data)
-										<option value="{{ $data->c_id }}" {{ (old('course_id', $student->sl_FK_of_course_id ?? '') == $data->c_id) ? 'selected' : '' }}>
+										<option value="{{ $data->c_id }}" {{ in_array($data->c_id, $selectedCourseIds) ? 'selected' : '' }}>
 											{{ $data->c_short_name }} [{{ $data->c_duration }}]
 										</option>
 									@endforeach
@@ -497,8 +589,13 @@
 
 @push('custom-js')
 <script type="text/javascript">
-    $('.select2').select2({
-        theme: 'bootstrap-5'
+    $('#course_id').select2({
+        placeholder: $('#course_id').data('placeholder') || 'Select Course',
+        allowClear: true,
+        width: '100%'
+    });
+    $('.select2').not('#course_id').select2({
+        width: '100%'
     });
 
     // File upload preview
@@ -530,22 +627,15 @@
     setupFilePreview('upload_edu_proof', 'edu-preview');
     setupFilePreview('upload_signature', 'signature-preview');
 
-	// Get Course
-	function get_course(course_id){
-		$.ajax({
-			url: "{{ route('get_course') }}",
-			type: "get",
-			data: {course_id:course_id},
-			dataType: "json",
-			success: function(response){
-				if(response.status == 1){
-					$('#course_data').show();
-					$('#course_data').text(response.msg);
-				} else {
-					$('#course_data').hide();
-				}
-			}
-		});
+	// Get Course (multiple) - badge display
+	function get_course_multiple(){
+		var selectedCourses = $('#course_id').val();
+		if (!selectedCourses || selectedCourses.length === 0) {
+			$('#course_data').hide();
+			return;
+		}
+		$('#course_data').show();
+		$('#course_data').text(selectedCourses.length + ' selected');
 	}
 
 	// Get Registration No (for center change)
@@ -565,12 +655,9 @@
 		});
 	}
 
-	// On page load, trigger course data render (if course id exists)
+	// On page load, show course badge if any selected
 	$(document).ready(function(){
-		let courseId = "{{ old('course_id', $student->sl_FK_of_course_id ?? '') }}";
-		if(courseId) {
-			get_course(courseId);
-		}
+		get_course_multiple();
 	});
 </script>
 @endpush

@@ -33,6 +33,9 @@ Route::group(['prefix' => 'student', 'middleware' => 'student:student'], functio
 
 	// Certificate
 	Route::get('view-certificate', [MarkSheetController::class, 'view_certificate'])->name('student.view_certificate');
+	// Typing Certificate (no result required – list and view)
+	Route::get('typing-certificates', [MarkSheetController::class, 'typing_certificate_list'])->name('student.typing_certificate_list');
+	Route::get('typing-certificate/{id}', [MarkSheetController::class, 'view_typing_certificate'])->name('student.view_typing_certificate');
 
 	// View Payment
 	Route::get('view-payment-history', [PaymentController::class, 'view_payment'])->name('view_payment');

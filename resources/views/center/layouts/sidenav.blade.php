@@ -9,11 +9,7 @@
         <div class="d-block">
           <h2 class="h5 mb-3">Hi, Jane</h2>
           <a href="/login" class="btn btn-secondary btn-sm d-inline-flex align-items-center">
-            <svg class="icon icon-xxs me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-            </svg>
+            <i class="fa-solid fa-right-from-bracket me-1"></i>
             Sign Out
           </a>
         </div>
@@ -21,16 +17,13 @@
       <div class="collapse-close d-md-none">
         <a href="#sidebarMenu" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu"
           aria-expanded="true" aria-label="Toggle navigation">
-          <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"></path>
-          </svg>
+          <i class="fa-solid fa-xmark"></i>
         </a>
       </div>
     </div>
     <ul class="nav flex-column pt-3 pt-md-0">
 
+      <!-- Logo -->
       <li class="nav-item">
         <a href="{{ route('center_dashboard') }}" class="nav-link d-flex align-items-center justify-content-center">
           <span class="sidebar-icon" style="width: 100%; display: flex; justify-content: center; align-items: center;">
@@ -38,12 +31,10 @@
               $siteSettings = site_settings();
               $logoPath = null;
               $siteName = 'MAYA COMPUTER';
-              
               if($siteSettings) {
                 $logoPath = !empty($siteSettings->site_logo) ? $siteSettings->site_logo : null;
                 $siteName = !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER';
               }
-              
               $logoExists = false;
               if($logoPath) {
                 $fullPath = public_path($logoPath);
@@ -59,37 +50,36 @@
         </a>
       </li>
 
-      <li class="nav-item {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}">
+      <!-- Dashboard -->
+      <li class="nav-item {{ Request::segment(1) == 'center' && Request::segment(2) == 'dashboard' ? 'active' : '' }}">
         <a href="{{ route('center_dashboard') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-gauge"></i></span>
           <span class="sidebar-text">Dashboard</span>
         </a>
       </li>
 
-      <!-- <li class="nav-item {{ Request::segment(2) == 'chat' ? 'active' : '' }}">
-        <a href="{{ route('center.chat') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-comments"></i></span>
-          <span class="sidebar-text">Chat</span>
-        </a>
-      </li> -->
-
-      <li class="nav-item">
+      <!-- Add Student -->
+      <li class="nav-item {{ Request::routeIs('add_student') ? 'active' : '' }}">
         <a href="{{ route('add_student') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-user-plus"></i></span>
           <span class="sidebar-text">Add Student</span>
         </a>
       </li>
 
+      <!-- View Student (same as admin structure) -->
+      @php
+        $viewStudentActive = Request::routeIs('pending_student') || Request::routeIs('verified_student') || Request::routeIs('result_updated_student') || Request::routeIs('result_out_student') || Request::routeIs('dispatched_student') || Request::routeIs('block_student');
+      @endphp
       <li class="nav-item">
-        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-          data-bs-target="#submenu-student" aria-expanded="false">
+        <span class="nav-link {{ $viewStudentActive ? '' : 'collapsed' }} d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-student" aria-expanded="{{ $viewStudentActive ? 'true' : 'false' }}">
           <span>
             <span class="sidebar-icon"><i class="fa-solid fa-users"></i></span>
             <span class="sidebar-text">View Student</span>
           </span>
           <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </span>
-        <div class="multi-level collapse" role="list" id="submenu-student" aria-expanded="false">
+        <div class="multi-level collapse {{ $viewStudentActive ? 'show' : '' }}" role="list" id="submenu-student" aria-expanded="{{ $viewStudentActive ? 'true' : 'false' }}">
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('pending_student') }}" class="nav-link"><span class="sidebar-text">Pending</span></a></li>
             <li class="nav-item"><a href="{{ route('verified_student') }}" class="nav-link"><span class="sidebar-text">Verified</span></a></li>
@@ -101,44 +91,53 @@
         </div>
       </li>
 
-      <li class="nav-item">
+      <!-- Student Reg Card (same label as admin) -->
+      <li class="nav-item {{ Request::routeIs('student_registration_card_list') ? 'active' : '' }}">
+        <a href="{{ route('student_registration_card_list') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-address-card"></i></span>
+          <span class="sidebar-text">Student Reg Card</span>
+        </a>
+      </li>
+
+      <!-- Student ID Card -->
+      <li class="nav-item {{ Request::routeIs('student_id_card') ? 'active' : '' }}">
         <a href="{{ route('student_id_card') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-regular fa-id-card"></i></span>
+          <span class="sidebar-icon"><i class="fa-solid fa-id-card"></i></span>
           <span class="sidebar-text">Student ID Card</span>
         </a>
       </li>
 
+      <!-- Admit Card (collapsible, same as admin) -->
+      @php $admitActive = Request::routeIs('generate_admit_card') || Request::routeIs('admit_card_list'); @endphp
       <li class="nav-item">
-        <a href="{{ route('student_registration_card_list') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-regular fa-id-card"></i></span>
-          <span class="sidebar-text">Registration ID Card</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="{{ route('generate_admit_card') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-ticket"></i></span>
-          <span class="sidebar-text">Generate Admit Card</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="{{ route('admit_card_list') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-list"></i></span>
-          <span class="sidebar-text">View Admit Card</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-          data-bs-target="#submenu-result" aria-expanded="false">
+        <span class="nav-link {{ $admitActive ? '' : 'collapsed' }} d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-admit" aria-expanded="{{ $admitActive ? 'true' : 'false' }}">
           <span>
-            <span class="sidebar-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+            <span class="sidebar-icon"><i class="fa-solid fa-ticket"></i></span>
+            <span class="sidebar-text">Admit Card</span>
+          </span>
+          <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </span>
+        <div class="multi-level collapse {{ $admitActive ? 'show' : '' }}" role="list" id="submenu-admit" aria-expanded="{{ $admitActive ? 'true' : 'false' }}">
+          <ul class="flex-column nav">
+            <li class="nav-item"><a href="{{ route('generate_admit_card') }}" class="nav-link"><span class="sidebar-text">Generate Admit Card</span></a></li>
+            <li class="nav-item"><a href="{{ route('admit_card_list') }}" class="nav-link"><span class="sidebar-text">View Admit Card</span></a></li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- Result (collapsible, same as admin) -->
+      @php $resultActive = Request::routeIs('set_result') || Request::routeIs('student_result_list'); @endphp
+      <li class="nav-item">
+        <span class="nav-link {{ $resultActive ? '' : 'collapsed' }} d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-result" aria-expanded="{{ $resultActive ? 'true' : 'false' }}">
+          <span>
+            <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
             <span class="sidebar-text">Result</span>
           </span>
           <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </span>
-        <div class="multi-level collapse" role="list" id="submenu-result" aria-expanded="false">
+        <div class="multi-level collapse {{ $resultActive ? 'show' : '' }}" role="list" id="submenu-result" aria-expanded="{{ $resultActive ? 'true' : 'false' }}">
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('set_result') }}" class="nav-link"><span class="sidebar-text">Set Result</span></a></li>
             <li class="nav-item"><a href="{{ route('student_result_list') }}" class="nav-link"><span class="sidebar-text">Result List</span></a></li>
@@ -146,97 +145,109 @@
         </div>
       </li>
 
+      <!-- Certificates (collapsible, same as admin: Generate + Typing + List) -->
+      @php
+        $certificateActive = Request::routeIs('center.certificate_generate') || Request::routeIs('center.typing_certificate_generate') || Request::routeIs('center.certificate_list');
+      @endphp
       <li class="nav-item">
-        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-          data-bs-target="#submenu-certificate" aria-expanded="false">
+        <span class="nav-link {{ $certificateActive ? '' : 'collapsed' }} d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-certificate" aria-expanded="{{ $certificateActive ? 'true' : 'false' }}">
           <span>
             <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
-            <span class="sidebar-text">Certificate</span>
+            <span class="sidebar-text">Certificates</span>
           </span>
           <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </span>
-        <div class="multi-level collapse" role="list" id="submenu-certificate" aria-expanded="false">
+        <div class="multi-level collapse {{ $certificateActive ? 'show' : '' }}" role="list" id="submenu-certificate" aria-expanded="{{ $certificateActive ? 'true' : 'false' }}">
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('center.certificate_generate') }}" class="nav-link"><span class="sidebar-text">Generate Certificate</span></a></li>
+            <li class="nav-item"><a href="{{ route('center.typing_certificate_generate') }}" class="nav-link"><span class="sidebar-text">Generate Typing Certificate</span></a></li>
             <li class="nav-item"><a href="{{ route('center.certificate_list') }}" class="nav-link"><span class="sidebar-text">Certificate List</span></a></li>
           </ul>
         </div>
       </li>
 
-      <li class="nav-item">
+      <!-- Courier (same label as admin) -->
+      <li class="nav-item {{ Request::routeIs('center.courier.*') ? 'active' : '' }}">
         <a href="{{ route('center.courier.index') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-truck"></i></span>
-          <span class="sidebar-text">Courier Details</span>
+          <span class="sidebar-text">Courier</span>
         </a>
       </li>
 
-      <li class="nav-item">
+      <!-- View Transaction -->
+      <li class="nav-item {{ Request::routeIs('view_transaction') ? 'active' : '' }}">
         <a href="{{ route('view_transaction') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-receipt"></i></span>
           <span class="sidebar-text">View Transaction</span>
         </a>
       </li>
 
-      <li class="nav-item">
+      <!-- Recharge History -->
+      <li class="nav-item {{ Request::routeIs('wallet_statement') ? 'active' : '' }}">
         <a href="{{ route('wallet_statement') }}" class="nav-link">
-          <span class="sidebar-icon"><i class="fa-solid fa-wallet"></i></span>
+          <span class="sidebar-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
           <span class="sidebar-text">Recharge History</span>
         </a>
       </li>
 
-      <li class="nav-item">
-          <a href="{{ route('set_fee') }}" class="nav-link">
-              <span class="sidebar-icon"><i class="fa-solid fa-wallet"></i></span>
-              <span class="sidebar-text">Set Fee</span>
-          </a>
+      <!-- Set Fee -->
+      <li class="nav-item {{ Request::routeIs('set_fee') ? 'active' : '' }}">
+        <a href="{{ route('set_fee') }}" class="nav-link">
+          <span class="sidebar-icon"><i class="fa-solid fa-wallet"></i></span>
+          <span class="sidebar-text">Set Fee</span>
+        </a>
       </li>
 
-      <li class="nav-item">
+      <!-- Search To Pay -->
+      <li class="nav-item {{ Request::routeIs('search_to_pay') ? 'active' : '' }}">
         <a href="{{ route('search_to_pay') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-magnifying-glass-dollar"></i></span>
           <span class="sidebar-text">Search To Pay</span>
         </a>
       </li>
 
+      <!-- Attendance (collapsible) -->
+      @php $attendanceActive = Request::routeIs('attndance_batch') || Request::routeIs('set_attendance_page') || Request::routeIs('make_attendance') || Request::routeIs('attendance_report'); @endphp
       <li class="nav-item">
-        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-          data-bs-target="#submenu-attendance" aria-expanded="false">
+        <span class="nav-link {{ $attendanceActive ? '' : 'collapsed' }} d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-attendance" aria-expanded="{{ $attendanceActive ? 'true' : 'false' }}">
           <span>
             <span class="sidebar-icon"><i class="fa-solid fa-calendar-check"></i></span>
             <span class="sidebar-text">Attendance</span>
           </span>
           <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </span>
-        <div class="multi-level collapse" role="list" id="submenu-attendance" aria-expanded="false">
+        <div class="multi-level collapse {{ $attendanceActive ? 'show' : '' }}" role="list" id="submenu-attendance" aria-expanded="{{ $attendanceActive ? 'true' : 'false' }}">
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('attndance_batch') }}" class="nav-link"><span class="sidebar-text">Manage Batch</span></a></li>
             <li class="nav-item"><a href="{{ route('set_attendance_page') }}" class="nav-link"><span class="sidebar-text">Set Attendance</span></a></li>
             <li class="nav-item"><a href="{{ route('make_attendance') }}" class="nav-link"><span class="sidebar-text">Manage Attendance</span></a></li>
-            <li class="nav-item"><a href="{{route('attendance_report')}}" class="nav-link"><span class="sidebar-text">Attendance Report</span></a></li>
+            <li class="nav-item"><a href="{{ route('attendance_report') }}" class="nav-link"><span class="sidebar-text">Attendance Report</span></a></li>
           </ul>
         </div>
       </li>
 
-      <li class="nav-item">
+      <!-- Income/Expense -->
+      <li class="nav-item {{ Request::routeIs('income_expense') ? 'active' : '' }}">
         <a href="{{ route('income_expense') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-chart-line"></i></span>
           <span class="sidebar-text">Income/Expense</span>
         </a>
       </li>
 
-      
-
-      <!-- Invoice -->
+      <!-- Invoices (collapsible) -->
+      @php $invoiceActive = Request::routeIs('center.invoice.wallet_recharge_list') || Request::routeIs('center.invoice.student_payment_list'); @endphp
       <li class="nav-item">
-        <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-          data-bs-target="#submenu-invoice" aria-expanded="false">
+        <span class="nav-link {{ $invoiceActive ? '' : 'collapsed' }} d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-invoice" aria-expanded="{{ $invoiceActive ? 'true' : 'false' }}">
           <span>
             <span class="sidebar-icon"><i class="fa-solid fa-file-invoice"></i></span>
             <span class="sidebar-text">Invoices</span>
           </span>
           <span class="link-arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </span>
-        <div class="multi-level collapse" role="list" id="submenu-invoice" aria-expanded="false">
+        <div class="multi-level collapse {{ $invoiceActive ? 'show' : '' }}" role="list" id="submenu-invoice" aria-expanded="{{ $invoiceActive ? 'true' : 'false' }}">
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('center.invoice.wallet_recharge_list') }}" class="nav-link"><span class="sidebar-text">Wallet Recharge</span></a></li>
             <li class="nav-item"><a href="{{ route('center.invoice.student_payment_list') }}" class="nav-link"><span class="sidebar-text">Student Payment</span></a></li>
@@ -245,14 +256,12 @@
       </li>
 
       <!-- Course Syllabus -->
-      <li class="nav-item {{ Request::segment(2) == 'syllabus' ? 'active' : '' }}">
+      <li class="nav-item {{ Request::routeIs('center.syllabus.*') ? 'active' : '' }}">
         <a href="{{ route('center.syllabus.index') }}" class="nav-link">
           <span class="sidebar-icon"><i class="fa-solid fa-book-open"></i></span>
           <span class="sidebar-text">Course Syllabus</span>
         </a>
       </li>
-
-      
 
     </ul>
   </div>

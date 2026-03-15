@@ -435,7 +435,13 @@
 										</span>
 									</td>
 									<td>
-										<span class="course-badge">{{ $data->c_short_name }}</span>
+										@if(!empty($data->course_names))
+											@foreach(explode(', ', $data->course_names) as $courseName)
+												<span class="course-badge me-1">{{ trim($courseName) }}</span>
+											@endforeach
+										@else
+											<span class="course-badge">—</span>
+										@endif
 									</td>
 									<td>
 										@php

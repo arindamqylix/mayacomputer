@@ -192,6 +192,8 @@
           <ul class="flex-column nav">
             <li class="nav-item"><a href="{{ route('admin.certificate_generate') }}" class="nav-link"><span
                   class="sidebar-text">Generate Certificate</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.typing_certificate_generate') }}" class="nav-link"><span
+                  class="sidebar-text">Generate Typing Certificate</span></a></li>
             <li class="nav-item"><a href="{{ route('admin.certificate_list') }}" class="nav-link"><span
                   class="sidebar-text">Certificate List</span></a></li>
           </ul>

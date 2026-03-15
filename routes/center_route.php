@@ -90,6 +90,8 @@ Route::group(['prefix' => 'center', 'middleware' => 'center:center'], function (
 	Route::get('generate-certificate', [CertificateController::class, 'generate_certificate'])->name('center.certificate_generate');
 	Route::post('generate-certificate', [CertificateController::class, 'generate_certificate_now'])->name('center.certificate_generate_now');
 	Route::get('view-certificate/{id}', [CertificateController::class, 'view_certificate'])->name('center.certificate_view');
+	Route::get('certificate/typing/generate', [CertificateController::class, 'generate_typing_certificate'])->name('center.typing_certificate_generate');
+	Route::post('certificate/typing/generate', [CertificateController::class, 'generate_typing_certificate_now'])->name('center.typing_certificate_store');
 
 	// View Transaction
 	Route::get('view-transaction', [TransactionController::class, 'view_transaction'])->name('view_transaction');

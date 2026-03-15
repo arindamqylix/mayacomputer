@@ -21,16 +21,30 @@ class StudentController extends Controller
 			->orderBy('cl_center_name', 'asc')
 			->get();
 
-		$query = DB::table('student_login')
-			->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id');
+		// One row per person (group by reg_no + center); show all courses in one cell
+		$query = DB::table('student_login as s')
+			->join('center_login', 's.sl_FK_of_center_id', 'center_login.cl_id')
+			->join('course', 's.sl_FK_of_course_id', 'course.c_id')
+			->select(
+				DB::raw('ANY_VALUE(s.sl_id) as sl_id'),
+				DB::raw('ANY_VALUE(s.sl_reg_no) as sl_reg_no'),
+				DB::raw('ANY_VALUE(s.sl_name) as sl_name'),
+				DB::raw('ANY_VALUE(s.sl_photo) as sl_photo'),
+				DB::raw('ANY_VALUE(s.sl_dob) as sl_dob'),
+				DB::raw('ANY_VALUE(s.sl_status) as sl_status'),
+				DB::raw('ANY_VALUE(s.sl_mobile_no) as sl_mobile_no'),
+				DB::raw('ANY_VALUE(center_login.cl_code) as cl_code'),
+				DB::raw('ANY_VALUE(center_login.cl_name) as cl_name'),
+				DB::raw('GROUP_CONCAT(DISTINCT course.c_short_name ORDER BY course.c_short_name SEPARATOR ", ") as course_names')
+			)
+			->groupBy('s.sl_reg_no', 's.sl_FK_of_center_id');
 
 		if ($request->has('center_id') && !empty($request->center_id)) {
-			$query->where('student_login.sl_FK_of_center_id', $request->center_id);
+			$query->where('s.sl_FK_of_center_id', $request->center_id);
 		}
 
 		if ($request->has('status') && !empty($request->status)) {
-			$query->where('student_login.sl_status', $request->status);
+			$query->where('s.sl_status', $request->status);
 		}
 
 		$student['student'] = $query->get();
@@ -57,8 +71,14 @@ class StudentController extends Controller
 		Log::info("----- Student Registration Start -----");
 		Log::info("Incoming Request Data: ", $request->all());
 
-		// $student_reg_fee = StudentRegFee::first(); // Old logic
-        $course = Course::findOrFail($request->course_id); // Fetch course for price
+		$courseIds = is_array($request->course_id) ? $request->course_id : [$request->course_id];
+		$courses = Course::whereIn('c_id', $courseIds)->get();
+
+		if ($courses->isEmpty()) {
+			return redirect()->back()->with('error', 'No valid courses selected.');
+		}
+
+		$totalPrice = $courses->sum('c_price');
 		$center = Center::where('cl_id', $request->center_id)->first();
 
 		if (!$center) {
@@ -68,8 +88,8 @@ class StudentController extends Controller
 
 		Log::info("Center found: {$center->cl_id}, Wallet Balance: {$center->cl_wallet_balance}");
 
-		if ($center->cl_wallet_balance < $course->c_price) {
-			Log::warning("Low wallet balance: Needed {$course->c_price}, Have {$center->cl_wallet_balance}");
+		if ($center->cl_wallet_balance < $totalPrice) {
+			Log::warning("Low wallet balance: Needed {$totalPrice}, Have {$center->cl_wallet_balance}");
 			return redirect()->back()->with('error', 'Your Balance Is Low. Please Recharge');
 		}
 
@@ -104,7 +124,7 @@ class StudentController extends Controller
 			$student_educational_certificate = 'student/' . $fileName;
 			Log::info("Educational Certificate stored at: " . $student_educational_certificate);
 		}
-		
+
 		$student_signature = null;
 		if ($request->hasFile('student_signature')) {
 			Log::info("Uploading Student Signature...");
@@ -118,62 +138,130 @@ class StudentController extends Controller
 		// REGISTRATION NUMBER LOGIC
 		$centerCode = $center->cl_code ?? $center->cl_center_code ?? $center->cl_id;
 
-		$countForCenter = Student::where('sl_FK_of_center_id', $request->center_id)->count();
-		$nextSeq = $countForCenter + 1;
-		$seqPadded = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
+		// Check if student already exists in this center (by mobile or email)
+		$existingStudent = Student::where('sl_FK_of_center_id', $request->center_id)
+			->where(function ($q) use ($request) {
+				$q->where('sl_mobile_no', $request->student_mobile);
+				if ($request->student_email)
+					$q->orWhere('sl_email', $request->student_email);
+			})->first();
 
-		$registrationDisplay = $centerCode . $seqPadded;
+		if ($existingStudent) {
+			$registrationDisplay = $existingStudent->sl_reg_no;
+			Log::info("Existing student found. Reusing Registration No: {$registrationDisplay}");
 
-		Log::info("Generated Registration No: {$registrationDisplay}");
+			// Reuse existing student's files if not provided
+			if (!$student_photo)
+				$student_photo = $existingStudent->sl_photo;
+			if (!$student_id_card)
+				$student_id_card = $existingStudent->sl_id_card;
+			if (!$student_educational_certificate)
+				$student_educational_certificate = $existingStudent->sl_educational_certificate;
+			if (!$student_signature)
+				$student_signature = $existingStudent->sl_signature;
+		} else {
+			$countForCenter = Student::where('sl_FK_of_center_id', $request->center_id)->count();
+			$nextSeq = $countForCenter + 1;
+			$seqPadded = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
+			$registrationDisplay = $centerCode . $seqPadded;
+			Log::info("New student. Generated Registration No: {$registrationDisplay}");
+		}
 
 		DB::beginTransaction();
 		try {
+			$firstInsertId = null;
+			$totalDeducted = 0;
+			$firstCourse = $courses->first();
 
-			Log::info("Creating Student Record...");
+			// Check if person already exists in this center (by mobile or email)
+			$existingStudent = Student::where('sl_FK_of_center_id', $request->center_id)
+				->where(function ($q) use ($request) {
+					$q->where('sl_mobile_no', $request->student_mobile);
+					if ($request->student_email)
+						$q->orWhere('sl_email', $request->student_email);
+				})->first();
 
-			$insert = Student::create([
-				'sl_FK_of_course_id' => $request->course_id,
-				'sl_FK_of_center_id' => $request->center_id,
-				'sl_dob' => $request->date_of_birth,
-				'sl_qualification' => $request->student_qualification,
-				'sl_reg_no' => $registrationDisplay,
-				'sl_sex' => $request->student_sex,
-				'sl_address' => $request->student_address,
-				'sl_name' => $request->student_name,
-				'sl_photo' => $student_photo,
-				'sl_id_card' => $student_id_card,
-				'sl_mother_name' => $request->student_mother,
-				'sl_mobile_no' => $request->student_mobile,
-				'password' => Hash::make($request->student_mobile),
-				'sl_father_name' => $request->student_father,
-				'sl_educational_certificate' => $student_educational_certificate,
-				'sl_signature' => $student_signature,
-				'sl_email' => $request->student_email,
-				'sl_status' => 'PENDING',
-			]);
+			if ($existingStudent) {
+				$studentRow = $existingStudent;
+				$firstInsertId = $existingStudent->sl_id;
+				Log::info("Using existing student record: " . $firstInsertId);
+			} else {
+				// Create one student record (one row per person)
+				$studentRow = Student::create([
+					'sl_FK_of_course_id' => $firstCourse->c_id,
+					'sl_FK_of_center_id' => $request->center_id,
+					'sl_dob' => $request->date_of_birth,
+					'sl_qualification' => $request->student_qualification,
+					'sl_reg_no' => $registrationDisplay,
+					'sl_sex' => $request->student_sex,
+					'sl_address' => $request->student_address,
+					'sl_name' => $request->student_name,
+					'sl_photo' => $student_photo,
+					'sl_id_card' => $student_id_card,
+					'sl_mother_name' => $request->student_mother,
+					'sl_mobile_no' => $request->student_mobile,
+					'password' => Hash::make($request->student_mobile),
+					'sl_father_name' => $request->student_father,
+					'sl_educational_certificate' => $student_educational_certificate,
+					'sl_signature' => $student_signature,
+					'sl_email' => $request->student_email,
+					'sl_status' => 'PENDING',
+				]);
+				$firstInsertId = $studentRow->sl_id;
+				Log::info("Created one student record: " . $firstInsertId);
+			}
 
-			Log::info("Student Created: ID {$insert->id}");
+			// Insert one row per course in student_enrollments and log transaction
+			foreach ($courses as $course) {
+				$alreadyEnrolled = DB::table('student_enrollments')
+					->where('se_FK_of_student_id', $studentRow->sl_id)
+					->where('se_FK_of_course_id', $course->c_id)
+					->where('se_FK_of_center_id', $request->center_id)
+					->exists();
 
-			DB::table('transaction')->insert([
-				't_student_reg_no' => $insert->sl_reg_no,
-				't_FK_of_center_id' => $request->center_id,
-				't_amount' => $course->c_price,
-			]);
+				if ($alreadyEnrolled) {
+					Log::info("Student already enrolled in course ID: " . $course->c_id . ". Skipping.");
+					continue;
+				}
 
-			Log::info("Transaction Logged for Student {$insert->sl_reg_no}");
+				DB::table('student_enrollments')->insert([
+					'se_FK_of_student_id' => $studentRow->sl_id,
+					'se_FK_of_course_id' => $course->c_id,
+					'se_FK_of_center_id' => $request->center_id,
+					'se_status' => 'PENDING',
+					'created_at' => now(),
+					'updated_at' => now(),
+				]);
 
-			$newBalance = $center->cl_wallet_balance - $course->c_price;
+				DB::table('transaction')->insert([
+					't_student_reg_no' => $studentRow->sl_reg_no,
+					't_FK_of_center_id' => $request->center_id,
+					't_amount' => $course->c_price,
+					'created_at' => now(),
+					'updated_at' => now(),
+				]);
+
+				$totalDeducted += $course->c_price;
+				Log::info("Enrollment and transaction for course ID: " . $course->c_id);
+			}
+
+			if ($totalDeducted <= 0) {
+				DB::rollBack();
+				return redirect()->back()->with('error', 'Student is already enrolled in all selected courses.');
+			}
+
+			$newBalance = $center->cl_wallet_balance - $totalDeducted;
 			Center::where('cl_id', $request->center_id)->update([
 				'cl_wallet_balance' => $newBalance,
 			]);
 
-			Log::info("Wallet Updated: Old = {$center->cl_wallet_balance}, New = {$newBalance}");
+			Log::info("Wallet Updated: Old = {$center->cl_wallet_balance}, New = {$newBalance}, Total Deducted = {$totalDeducted}");
 
 			DB::commit();
 			Log::info("----- Student Registration SUCCESS -----");
 
 			// Redirect to registration card after successful registration
-			return redirect()->route('student_registration_card', $insert->sl_id)->with('success', 'Student Registration Successfully! Registration No: ' . $registrationDisplay);
+			return redirect()->route('student_registration_card', $firstInsertId)->with('success', 'Student Registration Successfully! Registration No: ' . $registrationDisplay);
 
 		} catch (\Exception $e) {
 			DB::rollBack();
@@ -185,6 +273,7 @@ class StudentController extends Controller
 			return redirect()->back()->with('error', 'Failed to register student. Please try again.');
 		}
 	}
+
 
 
 
@@ -235,8 +324,8 @@ class StudentController extends Controller
 		// return view (make sure your blade expects $student, $center, $course as in previous view)
 		return view('admin.student.edit', [
 			'student' => $student,
-			'center'  => $centers,
-			'course'  => $courses,
+			'center' => $centers,
+			'course' => $courses,
 		]);
 	}
 
@@ -312,9 +401,9 @@ class StudentController extends Controller
 				$uploadedFile->move(public_path('student'), $fileName);
 				$currentEduCert = 'student/' . $fileName;
 			}
-			
+
 			$currentSignature = $student->sl_signature;
-			
+
 			// Upload new Signature
 			if ($request->hasFile('student_signature')) {
 				// delete old file if exists
@@ -328,9 +417,15 @@ class StudentController extends Controller
 				$currentSignature = 'student/' . $fileName;
 			}
 
+			// course_id can be single or array (multi-select on edit)
+			$courseId = $request->course_id;
+			if (is_array($courseId)) {
+				$courseId = !empty($courseId) ? $courseId[0] : null;
+			}
+
 			// Prepare update data
 			$updateData = [
-				'sl_FK_of_course_id' => $request->course_id,
+				'sl_FK_of_course_id' => $courseId,
 				'sl_dob' => $request->date_of_birth ?: null,
 				'sl_qualification' => $request->student_qualification ?: null,
 				'sl_sex' => $request->student_sex ?: null,
@@ -357,7 +452,7 @@ class StudentController extends Controller
 		} catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 			return redirect()->back()->with('error', 'Student not found.');
 		} catch (\Exception $e) {
-			Log::error('update_student error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+			Log::error('update_student error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 			return redirect()->back()->with('error', 'Something went wrong. Please try again.');
 		}
 	}
@@ -367,32 +462,32 @@ class StudentController extends Controller
 	{
 		try {
 			DB::beginTransaction();
-			
+
 			$student = DB::table('student_login')->where('sl_id', $id)->first();
-			
+
 			if (!$student) {
 				return redirect()->back()->with('error', 'Student not found!');
 			}
-			
+
 			// Delete related records first (if needed, database should handle CASCADE)
 			// Delete student results if any
 			DB::table('set_result')->where('sr_FK_of_student_id', $id)->delete();
-			
+
 			// Delete student certificates if any
 			DB::table('student_certificates')->where('sc_FK_of_student_id', $id)->delete();
-			
+
 			// Delete student fees if any
 			DB::table('set_fee')->where('sf_FK_of_student_id', $id)->delete();
-			
+
 			// Delete fees payments if any
 			DB::table('fees_payment')->where('fp_FK_of_student_id', $id)->delete();
-			
+
 			// Delete student admit cards if any
 			DB::table('student_admit_cards')->where('student_id', $id)->delete();
-			
+
 			// Delete transactions if any
 			DB::table('transaction')->where('t_student_reg_no', $student->sl_reg_no)->delete();
-			
+
 			// Delete student files if exist
 			if ($student->sl_photo && file_exists(public_path($student->sl_photo))) {
 				@unlink(public_path($student->sl_photo));
@@ -406,15 +501,15 @@ class StudentController extends Controller
 			if ($student->sl_signature && file_exists(public_path($student->sl_signature))) {
 				@unlink(public_path($student->sl_signature));
 			}
-			
+
 			// Finally delete the student
 			DB::table('student_login')->where('sl_id', $id)->delete();
-			
+
 			DB::commit();
 			return redirect()->back()->with('success', 'Student and all related records deleted successfully!');
 		} catch (\Exception $e) {
 			DB::rollBack();
-			Log::error('delete_student error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+			Log::error('delete_student error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 			return redirect()->back()->with('error', 'Failed to delete student. Please try again.');
 		}
 	}
@@ -457,13 +552,13 @@ class StudentController extends Controller
 			->select('student_login.*', 'center_login.cl_center_name', 'center_login.cl_code', 'center_login.cl_name', 'center_login.cl_center_address', 'course.c_full_name', 'course.c_short_name', 'course.c_duration')
 			->where('student_login.sl_id', $id)
 			->first();
-		
+
 		if (!$data) {
 			return redirect()->route('student_list')->with('error', 'Student not found.');
 		}
-		
-        $setting = DB::table('site_settings')->first();
-        
+
+		$setting = DB::table('site_settings')->first();
+
 		return view('admin.student.registration_card', compact('data', 'setting'));
 	}
 
@@ -554,73 +649,74 @@ class StudentController extends Controller
 		return view('admin.student.id_card_list', compact('student', 'centers', 'selectedCenterId'));
 	}
 
-    public function student_id_card($id)
-    {
-        $data = DB::table('student_login')
+	public function student_id_card($id)
+	{
+		$data = DB::table('student_login')
 			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
 			->leftJoin('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
 			->where('student_login.sl_id', $id)
 			->select(
 				'student_login.*',
-				'center_login.cl_center_name', 
+				'center_login.cl_center_name',
 				'center_login.cl_name',
-				'center_login.cl_code', 
+				'center_login.cl_code',
 				'center_login.cl_mobile',
-				'course.c_short_name', 
+				'course.c_short_name',
 				'course.c_full_name'
 			)
 			->first();
 
-        if (!$data) {
+		if (!$data) {
 			return redirect()->back()->with('error', 'Student not found.');
 		}
 
-        $setting = DB::table('site_settings')->first();
+		$setting = DB::table('site_settings')->first();
 
-        return view('admin.student.id_card', compact('data', 'setting'));
-    }
+		return view('admin.student.id_card', compact('data', 'setting'));
+	}
 
-    public function reset_student_password(Request $request){
-        $student = Student::where('sl_id', $request->student_id)->first();
-        
-        if(!$student):
-            return response()->json([
-                'msg' => 'Student not found!',
-                'status' => 0,
-            ]);
-        endif;
-        
-        // Reset password to mobile number
-        $mobileNumber = $student->sl_mobile_no;
-        if(!$mobileNumber):
-            return response()->json([
-                'msg' => 'Student mobile number not found!',
-                'status' => 0,
-            ]);
-        endif;
-        
-        // Use Hash::make() explicitly
-        $update = Student::where('sl_id', $request->student_id)->update([
-            'password' => Hash::make($mobileNumber),
-            // Also update sl_password if your system uses that column for legacy reasons, 
-            // but auth uses 'password' usually. Based on create(), it uses 'password'.
-            // Let's just update 'password' as per create method.
-            // If you have a separate sl_password column that needs syncing, add it here.
-             'sl_password' => Hash::make($mobileNumber) 
-        ]);
-        
-        if($update):
-            $data = [
-                'msg' => 'Password Reset Successfully! New password is: ' . $mobileNumber,
-                'status' => 1,
-            ];
-        else:
-            $data = [
-                'msg' => 'Something Went Wrong!',
-                'status' => 0,
-            ];
-        endif;
-        
-        return response()->json($data);
-    }
+	public function reset_student_password(Request $request)
+	{
+		$student = Student::where('sl_id', $request->student_id)->first();
+
+		if (!$student):
+			return response()->json([
+				'msg' => 'Student not found!',
+				'status' => 0,
+			]);
+		endif;
+
+		// Reset password to mobile number
+		$mobileNumber = $student->sl_mobile_no;
+		if (!$mobileNumber):
+			return response()->json([
+				'msg' => 'Student mobile number not found!',
+				'status' => 0,
+			]);
+		endif;
+
+		// Use Hash::make() explicitly
+		$update = Student::where('sl_id', $request->student_id)->update([
+			'password' => Hash::make($mobileNumber),
+			// Also update sl_password if your system uses that column for legacy reasons, 
+			// but auth uses 'password' usually. Based on create(), it uses 'password'.
+			// Let's just update 'password' as per create method.
+			// If you have a separate sl_password column that needs syncing, add it here.
+			'sl_password' => Hash::make($mobileNumber)
+		]);
+
+		if ($update):
+			$data = [
+				'msg' => 'Password Reset Successfully! New password is: ' . $mobileNumber,
+				'status' => 1,
+			];
+		else:
+			$data = [
+				'msg' => 'Something Went Wrong!',
+				'status' => 0,
+			];
+		endif;
+
+		return response()->json($data);
+	}
 }

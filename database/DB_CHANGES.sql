@@ -636,3 +636,58 @@ MODIFY drr_document_type VARCHAR(255) NOT NULL;
 ALTER TABLE document_reissue_requests
 ADD COLUMN drr_group_id VARCHAR(64) NULL AFTER drr_FK_of_student_id,
 ADD KEY idx_drr_group_id (drr_group_id);
+
+-- 13-03-2026
+-- Support multiple course enrollments per student
+
+CREATE TABLE IF NOT EXISTS `student_enrollments` (
+  `se_id` int(11) NOT NULL AUTO_INCREMENT,
+  `se_FK_of_student_id` int(11) NOT NULL,
+  `se_FK_of_course_id` int(11) NOT NULL,
+  `se_FK_of_center_id` int(11) NOT NULL,
+  `se_status` varchar(50) NOT NULL DEFAULT 'VERIFIED',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`se_id`),
+  KEY `idx_se_student` (`se_FK_of_student_id`),
+  KEY `idx_se_course` (`se_FK_of_course_id`),
+  KEY `idx_se_center` (`se_FK_of_center_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Seed enrollments from existing single-course linkage on student_login
+INSERT INTO `student_enrollments` (
+  `se_FK_of_student_id`,
+  `se_FK_of_course_id`,
+  `se_FK_of_center_id`,
+  `se_status`,
+  `created_at`,
+  `updated_at`
+)
+SELECT
+  `sl_id`           AS se_FK_of_student_id,
+  `sl_FK_of_course_id` AS se_FK_of_course_id,
+  `sl_FK_of_center_id` AS se_FK_of_center_id,
+  `sl_status`       AS se_status,
+  `created_at`,
+  `updated_at`
+FROM `student_login`
+WHERE `sl_FK_of_course_id` IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1
+    FROM `student_enrollments` se
+    WHERE se.`se_FK_of_student_id` = `student_login`.`sl_id`
+      AND se.`se_FK_of_course_id` = `student_login`.`sl_FK_of_course_id`
+      AND se.`se_FK_of_center_id` = `student_login`.`sl_FK_of_center_id`
+  );
+
+-- 10-03-2026
+-- Migration: add_typing_and_course_to_certificates_table (certificates + set_result)
+
+ALTER TABLE `student_certificates`
+  ADD COLUMN `sc_FK_of_course_id` INT(11) NULL AFTER `sc_FK_of_center_id`,
+  ADD COLUMN `sc_type` ENUM('REGULAR','TYPING') NOT NULL DEFAULT 'REGULAR' AFTER `sc_status`,
+  ADD COLUMN `sc_typing_speed` VARCHAR(255) NULL AFTER `sc_type`,
+  ADD COLUMN `sc_typing_accuracy` VARCHAR(255) NULL AFTER `sc_typing_speed`;
+
+ALTER TABLE `set_result`
+  ADD COLUMN `sr_FK_of_course_id` INT(11) NULL AFTER `sr_FK_of_center_id`;

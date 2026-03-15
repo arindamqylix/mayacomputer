@@ -108,6 +108,12 @@
           </a>
         </li>
         <li>
+          <a href="{{ route('student.typing_certificate_list') }}">
+            <i class="bx bx-keyboard"></i>
+            <span key="t-layouts">Typing Certificate</span>
+          </a>
+        </li>
+        <li>
           <a href="{{ route('view_transaction') }}">
             <i class="bx bx-chart"></i>
             <span key="t-layouts">View Transaction</span>

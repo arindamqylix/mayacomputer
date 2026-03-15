@@ -148,19 +148,19 @@ class StudentController extends Controller
         $request->validate([
             'student_name' => 'required|string',
             'student_mobile' => 'required',
-            'course_id' => 'required|integer',
+            'course_id' => 'required|array',
             'reg_date' => 'required|date',
             'category' => 'required|string',
-            // add other rules...
         ]);
 
-        // $student_reg_fee = StudentRegFee::first(); // Old logic
-        $course = Course::findOrFail($request->course_id); // Fetch course for price
+        $courseIds = $request->course_id;
+        $courses = Course::whereIn('c_id', $courseIds)->get();
+        $totalPrice = $courses->sum('c_price');
         $center = Center::where('cl_id', Auth::guard('center')->user()->cl_id)->firstOrFail();
 
-        // Check if balance is sufficient for the course price
-        if ($center->cl_wallet_balance < $course->c_price) {
-            return back()->with('error', 'Your Balance Is Low (' . $center->cl_wallet_balance . '). Required for this course: ' . $course->c_price . '. Please Recharge');
+        // Check if balance is sufficient for the total course prices
+        if ($center->cl_wallet_balance < $totalPrice) {
+            return back()->with('error', 'Your Balance Is Low (' . $center->cl_wallet_balance . '). Required for selected courses: ' . $totalPrice . '. Please Recharge');
         }
 
         // handle files (default null)
@@ -182,7 +182,6 @@ class StudentController extends Controller
             $student_id_card = 'student/' . $fileName;
         }
 
-        // FIXED: use correct input name 'student_educational_certificate'
         if ($request->hasFile('student_educational_certificate')) {
             $uploadedFile = $request->file('student_educational_certificate');
             $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
@@ -198,85 +197,114 @@ class StudentController extends Controller
             $student_signature = 'student/' . $fileName;
         }
 
-        // Generate registration number per-center, concurrency safe
-        // Use center code if available, otherwise fall back to cl_id
-        $centerCode = $center->cl_code ?? $center->cl_id; // adjust attribute name if different
+        $centerCode = $center->cl_code ?? $center->cl_id;
         $centerCode = (string) $centerCode;
 
+        // Check if student already exists in this center (by mobile or email)
+        $existingStudent = Student::where('sl_FK_of_center_id', $center->cl_id)
+            ->where(function ($q) use ($request) {
+                $q->where('sl_mobile_no', $request->student_mobile);
+                if ($request->student_email)
+                    $q->orWhere('sl_email', $request->student_email);
+            })->first();
+
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
+            $firstInsertId = null;
+            $newRegNo = null;
+            $totalDeducted = 0;
 
-            // Lock the rows for this center and get the last reg_no
-            // Here we attempt to fetch the last student for this center ordered by reg_no desc with FOR UPDATE
-            $lastStudent = Student::where('sl_FK_of_center_id', $center->cl_id)
-                ->where('sl_reg_no', 'like', $centerCode . '%')
-                ->orderBy('sl_reg_no', 'desc')
-                ->lockForUpdate()
-                ->first();
-
-            if ($lastStudent) {
-                // Extract numeric suffix after centerCode
-                $lastRegNo = $lastStudent->sl_reg_no;
-                $suffix = substr($lastRegNo, strlen($centerCode)); // e.g. "0004"
-                $lastSeq = intval($suffix);
-                $nextSeq = $lastSeq + 1;
+            if ($existingStudent) {
+                $newRegNo = $existingStudent->sl_reg_no;
+                // Reuse files if not uploaded
+                if (!$student_photo)
+                    $student_photo = $existingStudent->sl_photo;
+                if (!$student_id_card)
+                    $student_id_card = $existingStudent->sl_id_card;
+                if (!$student_educational_certificate)
+                    $student_educational_certificate = $existingStudent->sl_educational_certificate;
+                if (!$student_signature)
+                    $student_signature = $existingStudent->sl_signature;
             } else {
-                // first student for this center
-                $nextSeq = 1;
+                $lastStudent = Student::where('sl_FK_of_center_id', $center->cl_id)
+                    ->where('sl_reg_no', 'like', $centerCode . '%')
+                    ->orderBy('sl_reg_no', 'desc')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($lastStudent) {
+                    $lastRegNo = $lastStudent->sl_reg_no;
+                    $suffix = substr($lastRegNo, strlen($centerCode));
+                    $lastSeq = intval($suffix);
+                    $nextSeq = $lastSeq + 1;
+                } else {
+                    $nextSeq = 1;
+                }
+                $suffixPadded = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
+                $newRegNo = $centerCode . $suffixPadded;
             }
 
-            // zero-pad to 4 digits (0001, 0002, ...)
-            $suffixPadded = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
-            $newRegNo = $centerCode . $suffixPadded;
+            foreach ($courses as $course) {
+                $alreadyEnrolled = Student::where('sl_FK_of_center_id', $center->cl_id)
+                    ->where('sl_FK_of_course_id', $course->c_id)
+                    ->where(function ($q) use ($request) {
+                        $q->where('sl_mobile_no', $request->student_mobile);
+                        if ($request->student_email)
+                            $q->orWhere('sl_email', $request->student_email);
+                    })->exists();
 
-            // prepare data
-            $data = [
-                'sl_FK_of_course_id' => $request->course_id,
-                'sl_FK_of_center_id' => $center->cl_id,
-                'sl_reg_date' => $request->reg_date,
-                'sl_category' => $request->category,
-                'sl_dob' => $request->date_of_birth,
-                'sl_qualification' => $request->student_qualification,
-                'sl_reg_no' => $newRegNo,
-                'sl_sex' => $request->student_sex,
-                'sl_address' => $request->student_address,
-                'sl_name' => $request->student_name,
-                'sl_photo' => $student_photo,
-                'sl_id_card' => $student_id_card,
-                'sl_mother_name' => $request->student_mother,
-                'sl_mobile_no' => $request->student_mobile,
-                // hash the password (do not store raw mobile)
-                'password' => Hash::make($request->student_mobile),
-                'sl_father_name' => $request->student_father,
-                'sl_educational_certificate' => $student_educational_certificate,
-                'sl_signature' => $student_signature,
-                'sl_email' => $request->student_email,
-                'sl_status' => 'PENDING',
-            ];
+                if ($alreadyEnrolled)
+                    continue;
 
-            // create student
-            $insert = Student::create($data);
+                $insert = Student::create([
+                    'sl_FK_of_course_id' => $course->c_id,
+                    'sl_FK_of_center_id' => $center->cl_id,
+                    'sl_reg_date' => $request->reg_date,
+                    'sl_category' => $request->category,
+                    'sl_dob' => $request->date_of_birth,
+                    'sl_qualification' => $request->student_qualification,
+                    'sl_reg_no' => $newRegNo,
+                    'sl_sex' => $request->student_sex,
+                    'sl_address' => $request->student_address,
+                    'sl_name' => $request->student_name,
+                    'sl_photo' => $student_photo,
+                    'sl_id_card' => $student_id_card,
+                    'sl_mother_name' => $request->student_mother,
+                    'sl_mobile_no' => $request->student_mobile,
+                    'password' => Hash::make($request->student_mobile),
+                    'sl_father_name' => $request->student_father,
+                    'sl_educational_certificate' => $student_educational_certificate,
+                    'sl_signature' => $student_signature,
+                    'sl_email' => $request->student_email,
+                    'sl_status' => 'PENDING',
+                ]);
 
-            // insert payment transaction (use Eloquent model if you have one; here we keep your original table)
-            DB::table('transaction')->insert([
-                't_student_reg_no' => $insert->sl_reg_no,
-                't_FK_of_center_id' => $center->cl_id,
-                't_amount' => $course->c_price, // Deduct course price
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                if (!$firstInsertId)
+                    $firstInsertId = $insert->sl_id;
 
-            // deduct wallet balance
-            $center->cl_wallet_balance = $center->cl_wallet_balance - $course->c_price; // Deduct course price
+                DB::table('transaction')->insert([
+                    't_student_reg_no' => $insert->sl_reg_no,
+                    't_FK_of_center_id' => $center->cl_id,
+                    't_amount' => $course->c_price,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $totalDeducted += $course->c_price;
+            }
+
+            if (!$firstInsertId) {
+                DB::rollBack();
+                return back()->with('error', 'Student is already enrolled in all selected courses.');
+            }
+
+            $center->cl_wallet_balance -= $totalDeducted;
             $center->save();
 
             DB::commit();
-
-            // Redirect to registration card after successful registration
-            return redirect()->route('center.student_registration_card', $insert->sl_id)->with('success', 'Student Registration Successfully! Reg No: ' . $newRegNo);
+            return redirect()->route('center.student_registration_card', $firstInsertId)->with('success', 'Student Registration Successfully! Reg No: ' . $newRegNo);
         } catch (\Exception $e) {
             DB::rollBack();
-            // log error if you want: \Log::error($e);
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
