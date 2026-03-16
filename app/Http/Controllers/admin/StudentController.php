@@ -26,15 +26,15 @@ class StudentController extends Controller
 			->join('center_login', 's.sl_FK_of_center_id', 'center_login.cl_id')
 			->join('course', 's.sl_FK_of_course_id', 'course.c_id')
 			->select(
-				DB::raw('ANY_VALUE(s.sl_id) as sl_id'),
-				DB::raw('ANY_VALUE(s.sl_reg_no) as sl_reg_no'),
-				DB::raw('ANY_VALUE(s.sl_name) as sl_name'),
-				DB::raw('ANY_VALUE(s.sl_photo) as sl_photo'),
-				DB::raw('ANY_VALUE(s.sl_dob) as sl_dob'),
-				DB::raw('ANY_VALUE(s.sl_status) as sl_status'),
-				DB::raw('ANY_VALUE(s.sl_mobile_no) as sl_mobile_no'),
-				DB::raw('ANY_VALUE(center_login.cl_code) as cl_code'),
-				DB::raw('ANY_VALUE(center_login.cl_name) as cl_name'),
+				DB::raw('MAX(s.sl_id) as sl_id'),
+				DB::raw('MAX(s.sl_reg_no) as sl_reg_no'),
+				DB::raw('MAX(s.sl_name) as sl_name'),
+				DB::raw('MAX(s.sl_photo) as sl_photo'),
+				DB::raw('MAX(s.sl_dob) as sl_dob'),
+				DB::raw('MAX(s.sl_status) as sl_status'),
+				DB::raw('MAX(s.sl_mobile_no) as sl_mobile_no'),
+				DB::raw('MAX(center_login.cl_code) as cl_code'),
+				DB::raw('MAX(center_login.cl_name) as cl_name'),
 				DB::raw('GROUP_CONCAT(DISTINCT course.c_short_name ORDER BY course.c_short_name SEPARATOR ", ") as course_names')
 			)
 			->groupBy('s.sl_reg_no', 's.sl_FK_of_center_id');
