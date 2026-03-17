@@ -430,17 +430,12 @@
     </div>
 
     <!-- Print Button (Hidden in Print Mode) -->
-    <form action="{{ route('verification.registration.card.pdf') }}" method="POST" target="_blank" class="no-print">
-        @csrf
-        <input type="hidden" name="registration_no" value="{{ $student->sl_reg_no }}">
-        <input type="hidden" name="dob" value="{{ $student->sl_dob }}">
-        <div style="text-align: center; margin-top: 20px;">
-            <button type="submit"
-                style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;">
-                <i class="fa fa-download"></i> Download Registration Card PDF
-            </button>
-        </div>
-    </form>
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button type="button" onclick="window.print()"
+            style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;">
+            <i class="fa fa-print"></i> Print Registration Card
+        </button>
+    </div>
     <style>
         @media print {
             .no-print {

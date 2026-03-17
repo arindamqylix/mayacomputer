@@ -218,13 +218,21 @@
         min-width: 80px;
     }
     /* Dropdown above other fields */
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    .select2-container--default .select2-results__option--highlighted[aria-selected],
+    .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
         background-color: #667eea;
     }
-    .select2-dropdown {
+    .select2-dropdown,
+    .select2-container--bootstrap-5 .select2-dropdown {
         border-radius: 8px;
         border: 1px solid #e2e8f0;
-        z-index: 9999 !important;
+        z-index: 99999 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .select2-container--bootstrap-5 .select2-selection {
+        min-height: 44px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
     }
 </style>
 @endpush
@@ -268,7 +276,7 @@
 									<option value=''> Select Center </option>
 									@foreach($center as $data)
                                                 <option value="{{ $data->cl_id }}" {{ (old('center_id', $student->sl_FK_of_center_id ?? '') == $data->cl_id) ? 'selected' : '' }}>
-											{{ $data->cl_name }} [{{ $data->cl_code }}]
+											{{ $data->cl_name ?? $data->cl_center_name ?? 'N/A' }} [{{ $data->cl_code }}]
 										</option>
 									@endforeach
 								</select>
@@ -279,15 +287,18 @@
                                     <label class="form-label">Select Course Name <span class='badge bg-success ms-2' id='course_data' style='display:none'></span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-graduation-cap"></i>
-								<select onchange="get_course_multiple();" class="form-select select2-multi" name='course_id[]' id='course_id' multiple required
-									data-placeholder="Select Course">
 									@php
-										$selectedCourseIds = old('course_id', $student->sl_FK_of_course_id ? [$student->sl_FK_of_course_id] : []);
+										$selectedCourseIds = old('course_id', $selectedCourseIds ?? ($student->sl_FK_of_course_id ? [$student->sl_FK_of_course_id] : []));
 										if (!is_array($selectedCourseIds)) $selectedCourseIds = [$selectedCourseIds];
+										$selectedCourseIds = array_map('intval', $selectedCourseIds);
 									@endphp
+								<select onchange="get_course_multiple();" class="form-select select2" name='course_id[]' id='course_id' multiple required
+									data-placeholder="Select Course"
+									data-course-options='@json($course->map(fn($c) => ["id" => (string)$c->c_id, "text" => ($c->c_short_name ?? "N/A") . " [" . ($c->c_duration ?? "-") . "]"])->values())'
+									data-selected-ids='@json(array_map("strval", $selectedCourseIds))'>
 									@foreach($course as $data)
-										<option value="{{ $data->c_id }}" {{ in_array($data->c_id, $selectedCourseIds) ? 'selected' : '' }}>
-											{{ $data->c_short_name }} [{{ $data->c_duration }}]
+										<option value="{{ $data->c_id }}" {{ in_array((int) $data->c_id, $selectedCourseIds) ? 'selected' : '' }}>
+											{{ $data->c_short_name ?? 'N/A' }} [{{ $data->c_duration ?? '-' }}]
 										</option>
 									@endforeach
 								</select>
@@ -585,14 +596,24 @@
         </div>
 	</div>
 </div>
-@endsection
 
 @push('custom-js')
 <script type="text/javascript">
-    $('#course_id').select2({
-        placeholder: $('#course_id').data('placeholder') || 'Select Course',
-        allowClear: true,
-        width: '100%'
+    $(document).ready(function() {
+        var $courseSelect = $('#course_id');
+        var courseOptions = $courseSelect.data('course-options') || [];
+        var courseSelectedIds = $courseSelect.data('selected-ids') || [];
+        $courseSelect.empty();
+        $courseSelect.select2({
+            data: courseOptions,
+            placeholder: $courseSelect.data('placeholder') || 'Select Course',
+            allowClear: true,
+            width: '100%'
+        });
+        if (courseSelectedIds.length > 0) {
+            $courseSelect.val(courseSelectedIds).trigger('change');
+        }
+        get_course_multiple();
     });
     $('.select2').not('#course_id').select2({
         width: '100%'
@@ -654,10 +675,8 @@
 			}
 		});
 	}
-
-	// On page load, show course badge if any selected
-	$(document).ready(function(){
-		get_course_multiple();
-	});
 </script>
 @endpush
+@endsection
+
+

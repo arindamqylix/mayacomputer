@@ -312,20 +312,51 @@ class StudentController extends Controller
 	public function edit_student($id)
 	{
 		// Fetch student record using DB::table
-		$student = DB::table('student_login')->where('sl_id', $id)->first(); // adjust primary key column if not 'id'
+		$student = DB::table('student_login')->where('sl_id', $id)->first();
 		if (!$student) {
 			return redirect()->route('student_list')->with('error', 'Student not found.');
 		}
 
-		// Fetch centers and courses for selects
-		$centers = DB::table('center_login')->orderBy('cl_name')->get();
-		$courses = DB::table('course')->orderBy('c_short_name')->get();
+		// Fetch centers for selects (use cl_center_name for consistency)
+		$centers = DB::table('center_login')->orderBy('cl_center_name')->get();
 
-		// return view (make sure your blade expects $student, $center, $course as in previous view)
+		// Fetch all courses (use Course model like add_student for consistency)
+		$courses = Course::orderBy('c_short_name')->get();
+
+		// Get ALL course IDs for this student (multiple rows per reg_no+center)
+		$studentCourseIds = DB::table('student_login')
+			->where('sl_reg_no', $student->sl_reg_no)
+			->where('sl_FK_of_center_id', $student->sl_FK_of_center_id)
+			->whereNotNull('sl_FK_of_course_id')
+			->pluck('sl_FK_of_course_id')
+			->map(fn ($id) => (int) $id)
+			->unique()
+			->values()
+			->toArray();
+
+		// Always include current row's course (fallback if query returns empty)
+		if ($student->sl_FK_of_course_id && !in_array((int) $student->sl_FK_of_course_id, $studentCourseIds)) {
+			$studentCourseIds[] = (int) $student->sl_FK_of_course_id;
+		}
+
+		// Ensure student's courses are in the options (add placeholder for deleted courses)
+		$courseIdsInList = $courses->pluck('c_id')->map(fn ($id) => (int) $id)->toArray();
+		foreach ($studentCourseIds as $cid) {
+			if (!in_array($cid, $courseIdsInList)) {
+				$courses->push((object)[
+					'c_id' => $cid,
+					'c_short_name' => 'Course #' . $cid . ' (inactive)',
+					'c_duration' => '-',
+				]);
+			}
+		}
+		$courses = $courses->sortBy('c_short_name')->values();
+
 		return view('admin.student.edit', [
 			'student' => $student,
 			'center' => $centers,
 			'course' => $courses,
+			'selectedCourseIds' => $studentCourseIds,
 		]);
 	}
 
@@ -418,14 +449,17 @@ class StudentController extends Controller
 			}
 
 			// course_id can be single or array (multi-select on edit)
-			$courseId = $request->course_id;
-			if (is_array($courseId)) {
-				$courseId = !empty($courseId) ? $courseId[0] : null;
+			$courseIds = $request->course_id;
+			if (!is_array($courseIds)) {
+				$courseIds = $courseIds ? [$courseIds] : [];
+			}
+			$courseIds = array_values(array_filter(array_map('intval', $courseIds)));
+
+			if (empty($courseIds)) {
+				return redirect()->back()->with('error', 'Please select at least one course.')->withInput();
 			}
 
-			// Prepare update data
-			$updateData = [
-				'sl_FK_of_course_id' => $courseId,
+			$commonData = [
 				'sl_dob' => $request->date_of_birth ?: null,
 				'sl_qualification' => $request->student_qualification ?: null,
 				'sl_sex' => $request->student_sex ?: null,
@@ -433,7 +467,6 @@ class StudentController extends Controller
 				'sl_name' => $request->student_name,
 				'sl_mother_name' => $request->student_mother ?: null,
 				'sl_mobile_no' => $request->student_mobile,
-				// Uncomment below line if you want to reset password to mobile on update:
 				'password' => Hash::make($request->student_mobile),
 				'sl_reg_date' => $request->reg_date,
 				'sl_category' => $request->category,
@@ -446,7 +479,67 @@ class StudentController extends Controller
 				'updated_at' => now(),
 			];
 
-			$student->update($updateData);
+			$regNo = $student->sl_reg_no;
+			$centerId = $student->sl_FK_of_center_id;
+
+			// Get existing rows for this student (same reg_no + center)
+			$existingRows = DB::table('student_login')
+				->where('sl_reg_no', $regNo)
+				->where('sl_FK_of_center_id', $centerId)
+				->get();
+
+			foreach ($courseIds as $courseId) {
+				$rowData = array_merge($commonData, ['sl_FK_of_course_id' => $courseId]);
+				$existing = $existingRows->firstWhere('sl_FK_of_course_id', $courseId);
+
+				if ($existing) {
+					DB::table('student_login')->where('sl_id', $existing->sl_id)->update($rowData);
+				} else {
+					$rowData['sl_FK_of_center_id'] = $centerId;
+					$rowData['sl_reg_no'] = $regNo;
+					$rowData['sl_status'] = $student->sl_status ?? 'PENDING';
+					$rowData['created_at'] = now();
+					DB::table('student_login')->insert($rowData);
+				}
+			}
+
+			// Update student_enrollments to match selected courses
+			$primarySlId = $student->sl_id;
+			foreach ($courseIds as $courseId) {
+				$exists = DB::table('student_enrollments')
+					->where('se_FK_of_student_id', $primarySlId)
+					->where('se_FK_of_course_id', $courseId)
+					->where('se_FK_of_center_id', $centerId)
+					->exists();
+				if (!$exists) {
+					$slRow = DB::table('student_login')
+						->where('sl_reg_no', $regNo)
+						->where('sl_FK_of_center_id', $centerId)
+						->where('sl_FK_of_course_id', $courseId)
+						->first();
+					if ($slRow) {
+						DB::table('student_enrollments')->insertOrIgnore([
+							'se_FK_of_student_id' => $slRow->sl_id,
+							'se_FK_of_course_id' => $courseId,
+							'se_FK_of_center_id' => $centerId,
+							'se_status' => $student->sl_status ?? 'PENDING',
+							'created_at' => now(),
+							'updated_at' => now(),
+						]);
+					}
+				}
+			}
+
+			// Remove student_login rows for deselected courses (only if no results/certificates)
+			$toRemove = $existingRows->filter(fn ($row) => !in_array((int) $row->sl_FK_of_course_id, $courseIds))->values();
+			foreach ($toRemove as $row) {
+				$hasResults = DB::table('set_result')->where('sr_FK_of_student_id', $row->sl_id)->exists();
+				$hasCerts = DB::table('student_certificates')->where('sc_FK_of_student_id', $row->sl_id)->exists();
+				if (!$hasResults && !$hasCerts) {
+					DB::table('student_enrollments')->where('se_FK_of_student_id', $row->sl_id)->delete();
+					DB::table('student_login')->where('sl_id', $row->sl_id)->delete();
+				}
+			}
 
 			return redirect()->back()->with('success', 'Student Updated Successfully!');
 		} catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

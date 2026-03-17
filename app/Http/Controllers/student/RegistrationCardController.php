@@ -35,7 +35,8 @@ class RegistrationCardController extends Controller
         }
 
         $setting = DB::table('site_settings')->first();
-        return view('student.view_registration_card', compact('data', 'setting'));
+        $student = $data;
+        return view('student.view_registration_card', compact('data', 'setting', 'student'));
     }
 }
 
