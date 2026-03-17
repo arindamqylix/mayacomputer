@@ -124,7 +124,7 @@
 .verify-btn i {
     font-size: 18px;
 }
-.verification-Type Certificate-card {
+.verification-typing-card {
     background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
@@ -327,9 +327,10 @@
         <div class="verification-form-card">
             <div class="section-title">
                 <h2>Verify Your Type Certificate</h2>
+                <p>Enter your Registration Number and Date of Birth to verify your typing certificate details</p>
             </div>
             
-            <form action="{{ route('verification.registration') }}" method="GET" id="registrationVerifyForm">
+            <form action="{{ route('verification.typing.view') }}" method="GET" id="typingVerifyForm">
                 <div class="form-row-aligned">
                     <div class="verification-form-group">
                         <label for="registration_no">
@@ -366,87 +367,17 @@
             </form>
         </div>
 
-        <!-- Verification Type Certificate -->
-        @if(request('registration_no') && request('dob'))
-            @php
-                $student = DB::table('students')
-                    ->where('s_reg_no', request('registration_no'))
-                    ->where('s_dob', request('dob'))
-                    ->first();
-            @endphp
-
-            @if($student)
-                <div class="verification-Type Certificate-card">
-                    <div class="success-alert">
-                        <i class="fa fa-check-circle"></i>
-                        <div>
-                            <strong style="font-size: 18px;">Registration Verified Successfully!</strong>
-                            <p style="margin: 5px 0 0 0; font-size: 14px;">Your registration details have been verified and displayed below.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="student-info-wrapper">
-                        <div class="student-photo-section">
-                            @if($student->s_photo)
-                                <img src="{{ asset($student->s_photo) }}" alt="Student Photo" class="student-photo">
-                            @else
-                                <div class="student-photo-placeholder">
-                                    <i class="fa fa-user"></i>
-                                </div>
-                            @endif
-                        </div>
-                        
-                        <div class="student-details-section">
-                            <table class="info-table">
-                                <tr>
-                                    <th><i class="fa fa-id-card"></i> Registration No</th>
-                                    <td><strong>{{ $student->s_reg_no }}</strong></td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-user"></i> Student Name</th>
-                                    <td>{{ $student->s_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-user-tie"></i> Father's Name</th>
-                                    <td>{{ $student->s_father_name ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-calendar"></i> Date of Birth</th>
-                                    <td>{{ \Carbon\Carbon::parse($student->s_dob)->format('d-M-Y') }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-book"></i> Course</th>
-                                    <td>{{ $student->s_course ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-building"></i> Center Name</th>
-                                    <td>{{ $student->s_center_name ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fa fa-check-circle"></i> Status</th>
-                                    <td>
-                                        <span class="verified-badge">
-                                            <i class="fa fa-check"></i>
-                                            Verified
-                                        </span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="verification-Type Certificate-card">
+            @if(session('error'))
+                <div class="verification-form-card" style="margin-top: 30px;">
                     <div class="error-alert">
                         <i class="fa fa-times-circle"></i>
                         <div>
-                            <strong style="font-size: 18px;">No Record Found!</strong>
-                            <p style="margin: 5px 0 0 0; font-size: 14px;">Please check your Registration Number and Date of Birth. If the problem persists, please contact the administration.</p>
+                            <strong style="font-size: 18px;">Error!</strong>
+                            <p style="margin: 5px 0 0 0; font-size: 14px;">{{ session('error') }}</p>
                         </div>
                     </div>
                 </div>
             @endif
-        @endif
     </div>
 </div>
 <!-- Registration Verification Section End -->

@@ -782,6 +782,178 @@ class PagesController extends Controller
         return view('frontend.typing');
     }
 
+    public function showTypingCertificate(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->route('verification.typing')
+                ->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            $certificate = DB::table('student_certificates')
+                ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_certificates.sc_type', 'TYPING')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'course.c_duration',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_cin_no',
+                    'center_login.cl_center_stamp',
+                    'center_login.cl_authorized_signature'
+                )
+                ->first();
+
+            if (!$certificate) {
+                return redirect()->route('verification.typing')
+                    ->with('error', 'No typing certificate found with the provided registration number and date of birth');
+            }
+
+            if ($certificate->sl_status == 'PENDING' || $certificate->sl_status == 'BLOCK') {
+                return redirect()->route('verification.typing')
+                    ->with('error', 'Student registration is pending approval. Certificate cannot be verified until admin approves the student.');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            return view('frontend.typing-view', compact('certificate', 'setting'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('verification.typing')
+                ->with('error', 'An error occurred while fetching typing certificate: ' . $e->getMessage());
+        }
+    }
+
+    public function getTypingData(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration number and date of birth are required'
+            ], 400);
+        }
+
+        try {
+            $certificate = DB::table('student_certificates')
+                ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_certificates.sc_type', 'TYPING')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'course.c_duration',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_cin_no'
+                )
+                ->first();
+
+            if (!$certificate) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No typing certificate found with the provided registration number and date of birth'
+                ], 404);
+            }
+
+            if ($certificate->sl_status == 'PENDING' || $certificate->sl_status == 'BLOCK') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student registration is pending approval. Certificate cannot be verified until admin approves the student.'
+                ], 403);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $certificate
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function generateTypingPDF(Request $request)
+    {
+        $registrationNo = $request->input('registration_no');
+        $dob = $request->input('dob');
+
+        if (!$registrationNo || !$dob) {
+            return redirect()->back()->with('error', 'Registration number and date of birth are required');
+        }
+
+        try {
+            $certificate = DB::table('student_certificates')
+                ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_certificates.sc_type', 'TYPING')
+                ->where('student_login.sl_reg_no', $registrationNo)
+                ->where('student_login.sl_dob', $dob)
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    'course.c_duration',
+                    'center_login.cl_name',
+                    'center_login.cl_center_name',
+                    'center_login.cl_code',
+                    'center_login.cl_center_address',
+                    'center_login.cl_cin_no',
+                    'center_login.cl_center_stamp',
+                    'center_login.cl_authorized_signature'
+                )
+                ->first();
+
+            if (!$certificate) {
+                abort(404, 'No typing certificate found');
+            }
+
+            if ($certificate->sl_status == 'PENDING' || $certificate->sl_status == 'BLOCK') {
+                abort(403, 'Student registration is pending approval.');
+            }
+
+            $setting = DB::table('site_settings')->first();
+
+            $pdf = PDF::loadView('frontend.typing-pdf', [
+                'certificate' => $certificate,
+                'setting' => $setting,
+                'is_pdf' => true
+            ]);
+            $pdf->setPaper('A4', 'landscape');
+
+            return $pdf->download('Typing_Certificate_' . $registrationNo . '.pdf');
+
+        } catch (\Exception $e) {
+            abort(500, 'An error occurred while generating PDF: ' . $e->getMessage());
+        }
+    }
+
     // Downloads
     public function franchisee()
     {

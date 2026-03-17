@@ -54,6 +54,9 @@ Route::post('/verification/certificate-data', [PagesController::class, 'getCerti
 Route::post('/verification/certificate-pdf', [PagesController::class, 'generateCertificatePDF'])->name('verification.certificate.pdf');
 Route::get('verify-certificate/{certificate_number}', [PagesController::class, 'verifyCertificateByNumber'])->name('verify_certificate');
 Route::get('/verification/typing', [PagesController::class, 'typing'])->name('verification.typing');
+Route::get('/verification/typing/view', [PagesController::class, 'showTypingCertificate'])->name('verification.typing.view');
+Route::post('/verification/typing-data', [PagesController::class, 'getTypingData'])->name('verification.typing.data');
+Route::post('/verification/typing-pdf', [PagesController::class, 'generateTypingPDF'])->name('verification.typing.pdf');
 Route::get('verify-center/{code}', [PagesController::class, 'verifyCenter'])->name('verify_center');
 Route::post('verify-center/send-otp', [PagesController::class, 'sendCenterVerificationOtp'])->name('verify_center.send_otp');
 Route::post('verify-center/verify-otp', [PagesController::class, 'verifyCenterOtp'])->name('verify_center.verify_otp');
