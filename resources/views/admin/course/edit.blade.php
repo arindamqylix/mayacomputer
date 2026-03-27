@@ -36,6 +36,15 @@
                             <input type="text" class="form-control" name="course_duration" value="{{ $data->c_duration ?? '' }}" required>
                         </div>
 
+                        <div class="col-lg-6 mb-2">
+                            <label>Course type (typing related)? <span class="text-danger">*</span></label>
+                            @php $typing = (int) ($data->is_typing_related ?? 0); @endphp
+                            <select class="form-control" name="is_typing_related" required>
+                                <option value="1" {{ $typing === 1 ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ $typing === 0 ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+
                         <div class="col-lg-12 mb-2">
                             <label>Description</label>
                             <textarea class="form-control" rows="3" name="description" id="description">{{ $data->description ?? '' }}</textarea>

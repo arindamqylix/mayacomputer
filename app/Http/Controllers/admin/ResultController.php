@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\admin\Course;
 use App\Models\center\Result;
 use App\Models\center\Student;
 use DB;
@@ -20,6 +21,10 @@ class ResultController extends Controller
             ->leftJoin('set_result', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
             ->where('student_login.sl_status', 'VERIFIED') // Only verified/approved students
             ->whereNull('set_result.sr_id') // Exclude students who already have results
+            ->where(function ($q) {
+                $q->whereNull('course.is_typing_related')
+                    ->orWhere('course.is_typing_related', 0);
+            })
             ->select(
                 'student_login.*',
                 'course.c_full_name',
@@ -66,6 +71,10 @@ class ResultController extends Controller
 
         // Get student to find center_id
         $student = Student::findOrFail($request->student_id);
+
+        if (Course::isTypingRelated((int) $student->sl_FK_of_course_id)) {
+            return back()->with('error', 'Results are not published for typing-related courses. Use Generate Typing Certificate instead.');
+        }
 
         $data = [
             'sr_FK_of_student_id'         => $request->student_id,
@@ -204,6 +213,10 @@ class ResultController extends Controller
 
         // Get result to find student_id and center_id
         $resultRecord = Result::findOrFail($id);
+        $resultStudent = Student::find($resultRecord->sr_FK_of_student_id);
+        if ($resultStudent && Course::isTypingRelated((int) $resultStudent->sl_FK_of_course_id)) {
+            return back()->with('error', 'Typing-related courses do not use published results; use typing certificates instead.');
+        }
 
         $data = [
             'sr_written'                  => $request->written,

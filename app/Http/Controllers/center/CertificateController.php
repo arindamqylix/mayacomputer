@@ -4,6 +4,7 @@ namespace App\Http\Controllers\center;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\admin\Course;
 use App\Models\center\Certificate;
 use App\Models\center\Result;
 use App\Models\center\Student;
@@ -47,6 +48,10 @@ class CertificateController extends Controller
             })
             ->where('set_result.sr_FK_of_center_id', Auth::guard('center')->user()->cl_id)
             ->where('student_login.sl_status', 'RESULT OUT')
+            ->where(function ($q) {
+                $q->whereNull('course.is_typing_related')
+                    ->orWhere('course.is_typing_related', 0);
+            })
             ->select(
                 'student_login.sl_id',
                 'student_login.sl_name',
@@ -89,6 +94,11 @@ class CertificateController extends Controller
 
         if ($existingCertificate) {
             return back()->with('error', 'Certificate already generated for this student!');
+        }
+
+        $resultStudent = Student::where('sl_id', $studentId)->first();
+        if ($resultStudent && Course::isTypingRelated((int) $resultStudent->sl_FK_of_course_id)) {
+            return back()->with('error', 'Typing-related courses use typing certificates, not result-based certificates.');
         }
 
         // Generate certificate number
@@ -147,20 +157,21 @@ class CertificateController extends Controller
     public function generate_typing_certificate()
     {
         $centerId = (int) Auth::guard('center')->user()->cl_id;
+        $typingCourseSql = "(c.is_typing_related = 1 OR LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%')";
         $enrolledSubSql = "
             (SELECT s.sl_id AS sid, c.c_id AS cid
              FROM student_login s
              JOIN course c ON c.c_id = s.sl_FK_of_course_id
              WHERE s.sl_FK_of_center_id = {$centerId}
-               AND (LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%')
+               AND {$typingCourseSql}
              UNION
              SELECT se.se_FK_of_student_id AS sid, c.c_id AS cid
              FROM student_enrollments se
              JOIN course c ON c.c_id = se.se_FK_of_course_id
              JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
              WHERE se.se_FK_of_center_id = {$centerId}
-               AND (LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%'))
-        ";
+               AND {$typingCourseSql}
+        )";
 
         $students = DB::table(DB::raw("({$enrolledSubSql}) AS enr"))
             ->join('student_login', 'student_login.sl_id', '=', 'enr.sid')
@@ -214,6 +225,10 @@ class CertificateController extends Controller
         $student = Student::findOrFail($studentId);
         if ((int) $student->sl_FK_of_center_id !== (int) $centerId) {
             return back()->with('error', 'Student does not belong to your center.');
+        }
+
+        if (! Course::qualifiesForTypingCertificateById((int) $courseId)) {
+            return back()->with('error', 'Selected course is not eligible for a typing certificate.');
         }
 
         $certificateNumber = 'TYP' . str_pad($studentId, 5, '0', STR_PAD_LEFT) . rand(10, 99);

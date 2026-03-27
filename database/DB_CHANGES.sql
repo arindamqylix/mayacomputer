@@ -691,3 +691,10 @@ ALTER TABLE `student_certificates`
 
 ALTER TABLE `set_result`
   ADD COLUMN `sr_FK_of_course_id` INT(11) NULL AFTER `sr_FK_of_center_id`;
+
+  -- 27-03-2026
+
+ALTER TABLE `course`
+ADD COLUMN `is_typing_related` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0
+COMMENT '1 = typing-related course, 0 = not'
+AFTER `c_duration`;

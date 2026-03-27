@@ -42,6 +42,16 @@
                             <input type="text" class="form-control" name="course_duration" required>
                         </div>
 
+                        <div class="col-lg-6 mb-2">
+                            <label>Course type (typing related)? <span class="text-danger">*</span></label>
+                            <select class="form-control" name="is_typing_related" required>
+                                <option value="">-- Select --</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                            <small class="text-muted">Choose Yes if this course is typing-related.</small>
+                        </div>
+
                         <div class="col-lg-12 mb-2">
                             <label>Course Details <span class="text-danger">*</span></label>
                             <textarea class="form-control" name="description" id="editor"></textarea>

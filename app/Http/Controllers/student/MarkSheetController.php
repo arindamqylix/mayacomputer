@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
+use App\Models\admin\Course;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
@@ -10,6 +11,11 @@ class MarkSheetController extends Controller
 {
 	public function view_marksheet()
 	{
+		$courseId = (int) Auth::guard('student')->user()->sl_FK_of_course_id;
+		if ($courseId > 0 && Course::qualifiesForTypingCertificateById($courseId)) {
+			return redirect()->route('student_dashboard')->with('error', 'Results are not published for your course type. Use Typing Certificate from the menu when your center issues it.');
+		}
+
 		$data = DB::table('set_result')
 			->join('student_login', 'set_result.sr_FK_of_student_id', 'student_login.sl_id')
 			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')

@@ -87,6 +87,7 @@
         </a>
       </li>
 
+      @if(!($hideExamMenusForStudent ?? false))
       <li class="nav-item {{ Request::segment(2) == 'view-admit-card' ? 'active' : '' }}">
         <a href="{{ route('view_admit_card') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-ticket"></i></span>
@@ -100,6 +101,7 @@
             <span class="sidebar-text">View Result</span>
         </a>
       </li>
+      @endif
 
       <li class="nav-item {{ Request::segment(2) == 'view-certificate' ? 'active' : '' }}">
         <a href="{{ route('student.view_certificate') }}" class="nav-link">

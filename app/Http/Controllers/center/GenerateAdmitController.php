@@ -4,6 +4,7 @@ namespace App\Http\Controllers\center;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\admin\Course;
 use DB;
 use Auth;
 
@@ -63,6 +64,10 @@ class GenerateAdmitController extends Controller
             ->where('student_login.sl_FK_of_center_id', $centerId)
             ->where('student_login.sl_status', 'VERIFIED') // Only approved/verified students
             ->whereNull('student_admit_cards.ac_id') // Exclude students who already have admit cards
+            ->where(function ($q) {
+                $q->whereNull('course.is_typing_related')
+                    ->orWhere('course.is_typing_related', 0);
+            })
             ->select(
                 'student_login.*',
                 'course.c_full_name',
@@ -106,6 +111,7 @@ class GenerateAdmitController extends Controller
         $studentIds = $request->student_ids;
         $successCount = 0;
         $errorCount = 0;
+        $skippedTyping = 0;
 
         DB::beginTransaction();
         try {
@@ -124,6 +130,11 @@ class GenerateAdmitController extends Controller
 
                 if (!$student) {
                     $errorCount++;
+                    continue;
+                }
+
+                if (Course::isTypingRelated((int) $student->sl_FK_of_course_id)) {
+                    $skippedTyping++;
                     continue;
                 }
 
@@ -168,10 +179,15 @@ class GenerateAdmitController extends Controller
                 if ($errorCount > 0) {
                     $message .= ' (' . $errorCount . ' failed)';
                 }
+                if ($skippedTyping > 0) {
+                    $message .= ' ' . $skippedTyping . ' skipped (typing-related courses use typing certificate only, no admit card).';
+                }
                 return back()->with('success', $message);
-            } else {
-                return back()->with('error', 'No admit cards were created. Please select valid students.');
             }
+            if ($skippedTyping > 0 && $errorCount === 0) {
+                return back()->with('error', 'No admit cards created. Typing-related courses do not use admit cards—generate a typing certificate instead.');
+            }
+            return back()->with('error', 'No admit cards were created. Please select valid students.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Failed to create admit cards: ' . $e->getMessage());

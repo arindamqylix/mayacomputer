@@ -608,7 +608,8 @@
             data: courseOptions,
             placeholder: $courseSelect.data('placeholder') || 'Select Course',
             allowClear: true,
-            width: '100%'
+            width: '100%',
+            multiple: true
         });
         if (courseSelectedIds.length > 0) {
             $courseSelect.val(courseSelectedIds).trigger('change');

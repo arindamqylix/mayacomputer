@@ -23,21 +23,23 @@ class CmsCourseController extends Controller
     public function store(Request $request) {
         // Validation
 		$request->validate([
-			'course_short_name' => 'required|string|max:255',
-			'course_full_name'  => 'required|string|max:255',
-			'course_price'      => 'required|string|max:255',
-			'course_duration'   => 'required|string|max:255',
-            'description'       => 'nullable|string',
+			'course_short_name'   => 'required|string|max:255',
+			'course_full_name'    => 'required|string|max:255',
+			'course_price'        => 'required|string|max:255',
+			'course_duration'     => 'required|string|max:255',
+			'is_typing_related'   => 'required|in:0,1',
+            'description'         => 'nullable|string',
 		]);
 
 		try {
 			// Insert into DB - using 'course' table
 			$insert = DB::table('course')->insert([
-				'c_short_name'     => $request->course_short_name,
-				'c_full_name'      => $request->course_full_name,
-				'c_price'          => $request->course_price,
-				'c_duration'       => $request->course_duration,
-                'description'      => $request->description,
+				'c_short_name'       => $request->course_short_name,
+				'c_full_name'        => $request->course_full_name,
+				'c_price'            => $request->course_price,
+				'c_duration'         => $request->course_duration,
+				'is_typing_related'  => (int) $request->is_typing_related,
+                'description'        => $request->description,
 				'created_at'       => now(),
 				'updated_at'       => now(),
 			]);
@@ -60,20 +62,22 @@ class CmsCourseController extends Controller
     public function update(Request $request, $id) {
         // Validation
         $request->validate([
-            'course_short_name' => 'required|string|max:255',
-            'course_full_name'  => 'required|string|max:255',
-            'course_price'      => 'required|string|max:255',
-            'course_duration'   => 'required|string|max:255',
-            'description'       => 'nullable|string',
+            'course_short_name'  => 'required|string|max:255',
+            'course_full_name'   => 'required|string|max:255',
+            'course_price'       => 'required|string|max:255',
+            'course_duration'    => 'required|string|max:255',
+            'is_typing_related'  => 'required|in:0,1',
+            'description'        => 'nullable|string',
         ]);
 
         try {
             $update = DB::table('course')->where('c_id', $id)->update([
-                'c_short_name'     => $request->course_short_name,
-                'c_full_name'      => $request->course_full_name,
-                'c_price'          => $request->course_price,
-                'c_duration'       => $request->course_duration,
-                'description'      => $request->description,
+                'c_short_name'       => $request->course_short_name,
+                'c_full_name'        => $request->course_full_name,
+                'c_price'            => $request->course_price,
+                'c_duration'         => $request->course_duration,
+                'is_typing_related'  => (int) $request->is_typing_related,
+                'description'        => $request->description,
                 'updated_at'       => now(),
             ]);
 

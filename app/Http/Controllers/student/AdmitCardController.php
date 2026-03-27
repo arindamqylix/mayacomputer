@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
+use App\Models\admin\Course;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
@@ -13,6 +14,11 @@ class AdmitCardController extends Controller
 {
     public function download_admit_card($id)
     {
+        $courseId = (int) Auth::guard('student')->user()->sl_FK_of_course_id;
+        if ($courseId > 0 && Course::qualifiesForTypingCertificateById($courseId)) {
+            return redirect()->route('student_dashboard')->with('error', 'Admit cards are not used for your course. Use Typing Certificate from the menu.');
+        }
+
         $admit = DB::table('student_admit_cards')
             ->where('student_id', Auth::guard('student')->user()->sl_id)
             ->first();
@@ -50,6 +56,11 @@ class AdmitCardController extends Controller
 
     public function view_admit_card()
     {
+        $courseId = (int) Auth::guard('student')->user()->sl_FK_of_course_id;
+        if ($courseId > 0 && Course::qualifiesForTypingCertificateById($courseId)) {
+            return redirect()->route('student_dashboard')->with('error', 'Admit cards are not used for your course. Use Typing Certificate from the menu.');
+        }
+
         // Get student's admit card data
         $admit = DB::table('student_admit_cards')
             ->where('student_id', Auth::guard('student')->user()->sl_id)

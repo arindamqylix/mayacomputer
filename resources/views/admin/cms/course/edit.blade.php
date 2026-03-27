@@ -54,6 +54,16 @@
                             <input type="text" class="form-control" name="course_duration" value="{{ $course->c_duration }}">
                         </div>
 
+                        <!-- Typing related -->
+                        <div class="col-lg-6 mb-2">
+                            <label>Course type (typing related)?</label>
+                            @php $typing = (int) ($course->is_typing_related ?? 0); @endphp
+                            <select class="form-control" name="is_typing_related" required>
+                                <option value="1" {{ $typing === 1 ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ $typing === 0 ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+
                         <!-- Eligibility -->
                         <div class="col-lg-6 mb-2">
                             <label>Course Eligibility</label>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use App\Models\admin\Course;
 use App\Models\center\Certificate;
 use App\Models\center\Student;
 use Carbon\Carbon;
@@ -51,6 +52,10 @@ class CertificateController extends Controller
             })
             ->where('student_login.sl_status', 'RESULT OUT')
             ->whereNull('student_certificates.sc_id')
+            ->where(function ($q) {
+                $q->whereNull('course.is_typing_related')
+                    ->orWhere('course.is_typing_related', 0);
+            })
             ->select(
                 'student_login.sl_id',
                 'student_login.sl_name',
@@ -79,18 +84,19 @@ class CertificateController extends Controller
     // Typing course: category_name = 'Typing' OR course name contains 'Typing'
     public function generate_typing_certificate()
     {
+        $typingCourseSql = "(c.is_typing_related = 1 OR LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%')";
         $enrolledSubSql = "
             (SELECT s.sl_id AS sid, c.c_id AS cid
              FROM student_login s
              JOIN course c ON c.c_id = s.sl_FK_of_course_id
-             WHERE (LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%')
+             WHERE {$typingCourseSql}
              UNION
              SELECT se.se_FK_of_student_id AS sid, c.c_id AS cid
              FROM student_enrollments se
              JOIN course c ON c.c_id = se.se_FK_of_course_id
              JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
-             WHERE (LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%'))
-        ";
+             WHERE {$typingCourseSql}
+        )";
 
         $students = DB::table(DB::raw("{$enrolledSubSql} AS enr"))
             ->join('student_login', 'student_login.sl_id', '=', 'enr.sid')
@@ -151,6 +157,14 @@ class CertificateController extends Controller
         }
 
         $student = Student::findOrFail($studentId);
+
+        if ($type === 'TYPING') {
+            if (! Course::qualifiesForTypingCertificateById((int) $courseId)) {
+                return back()->with('error', 'Selected course is not eligible for a typing certificate. Mark the course as typing-related or use the legacy typing category/name.');
+            }
+        } elseif (Course::isTypingRelated((int) $courseId)) {
+            return back()->with('error', 'Regular certificates are not issued for typing-related courses. Use a typing certificate instead.');
+        }
 
         // Generate certificate number
         $prefix = $type == 'TYPING' ? 'TYP' : 'COD';

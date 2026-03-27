@@ -25,6 +25,7 @@ class CourseController extends Controller
 			'course_full_name'  => 'required|string|max:255',
 			'course_price'      => 'required|numeric',
 			'course_duration'   => 'required|string|max:100',
+			'is_typing_related' => 'required|in:0,1',
 			'category_name'     => 'nullable|string|max:255',
 			'file'              => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
 			'description'       => 'nullable|string',
@@ -68,11 +69,12 @@ class CourseController extends Controller
 
 		// Insert into DB
 		$insert = Course::create([
-			'c_short_name'  => $request->course_short_name,
-			'c_full_name'   => $request->course_full_name,
-			'c_price'       => $request->course_price,
-			'c_duration'    => $request->course_duration,
-			'category_name' => $request->category_name,
+			'c_short_name'        => $request->course_short_name,
+			'c_full_name'         => $request->course_full_name,
+			'c_price'             => $request->course_price,
+			'c_duration'          => $request->course_duration,
+			'is_typing_related'   => (int) $request->is_typing_related,
+			'category_name'       => $request->category_name,
 			'file'          => $filePath,
 			'description'   => $request->description,
 			'information'   => json_encode($information),
@@ -100,6 +102,7 @@ class CourseController extends Controller
             'course_full_name'  => 'required|string|max:255',
             'course_price'      => 'required|string|max:255',
             'course_duration'   => 'required|string|max:255',
+            'is_typing_related' => 'required|in:0,1',
             'description'       => 'nullable|string',
         ]);
 
@@ -109,10 +112,11 @@ class CourseController extends Controller
 
             // Update DB - only these 3 fields
             $update = $course->update([
-                'c_full_name'     => $request->course_full_name,
-                'c_price'         => $request->course_price,
-                'c_duration'      => $request->course_duration,
-                'description'     => $request->description,
+                'c_full_name'       => $request->course_full_name,
+                'c_price'           => $request->course_price,
+                'c_duration'        => $request->course_duration,
+                'is_typing_related' => (int) $request->is_typing_related,
+                'description'       => $request->description,
             ]);
 
             if ($update) {

@@ -519,6 +519,7 @@ body {
                         </div>
                         <span>ID Card</span>
                     </a>
+                    @if(!($hideExamMenusForStudent ?? false))
                     <a href="{{ route('view_admit_card') }}" class="action-btn">
                         <div class="icon">
                             <i class="fas fa-ticket"></i>
@@ -531,6 +532,7 @@ body {
                         </div>
                         <span>Result</span>
                     </a>
+                    @endif
                     <a href="{{ route('student.view_certificate') }}" class="action-btn">
                         <div class="icon">
                             <i class="fas fa-certificate"></i>

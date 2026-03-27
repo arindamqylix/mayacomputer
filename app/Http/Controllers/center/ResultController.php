@@ -4,6 +4,7 @@ namespace App\Http\Controllers\center;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\admin\Course;
 use App\Models\center\Result;
 use App\Models\center\Student;
 use DB;
@@ -23,6 +24,10 @@ class ResultController extends Controller
     						 ->where('student_login.sl_FK_of_center_id', $centerId)
     						 ->where('student_login.sl_status', 'VERIFIED') // Only VERIFIED students - exclude PENDING, BLOCKED, etc.
     						 ->whereNull('set_result.sr_id') // Exclude students who already have results published
+    						 ->where(function ($q) {
+    						     $q->whereNull('course.is_typing_related')
+    						         ->orWhere('course.is_typing_related', 0);
+    						 })
     						 ->select(
     						 	'student_login.*',
     						 	'course.c_full_name',
@@ -70,6 +75,13 @@ class ResultController extends Controller
                 $grade = $gradeSymbol;
                 break;
             }
+        }
+
+        $studentRow = Student::where('sl_id', $request->student_id)
+            ->where('sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+            ->first();
+        if (!$studentRow || Course::isTypingRelated((int) $studentRow->sl_FK_of_course_id)) {
+            return back()->with('error', 'Results are not published for typing-related courses. Use Generate Typing Certificate instead.');
         }
 
     	$data = [
@@ -128,6 +140,10 @@ class ResultController extends Controller
                              ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
                              ->where('student_login.sl_status', 'VERIFIED')
                              ->where('student_login.sl_FK_of_center_id', $centerId)
+                             ->where(function ($q) {
+                                 $q->whereNull('course.is_typing_related')
+                                     ->orWhere('course.is_typing_related', 0);
+                             })
                              ->get();
         $student_data = Student::where('sl_id',$id)->first();
         
@@ -151,6 +167,11 @@ class ResultController extends Controller
             // Result already generated, updating is disabled for centers
             return redirect()->route('student_result_list')
                             ->with('error', 'Result has already been generated. Updating is disabled. Please contact admin for any changes.');
+        }
+
+        $target = Student::where('sl_id', $request->student_id)->first();
+        if ($target && Course::isTypingRelated((int) $target->sl_FK_of_course_id)) {
+            return back()->with('error', 'Results are not published for typing-related courses. Use Generate Typing Certificate instead.');
         }
         
         $total_full_marks = $request->wr_full_marks + $request->pr_full_marks + $request->ap_full_marks + $request->vv_full_marks;

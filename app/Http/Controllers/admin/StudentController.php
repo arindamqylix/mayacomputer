@@ -13,6 +13,8 @@ use Auth;
 use Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+
 class StudentController extends Controller
 {
 	public function student_list(Request $request)
@@ -459,6 +461,8 @@ class StudentController extends Controller
 				return redirect()->back()->with('error', 'Please select at least one course.')->withInput();
 			}
 
+			DB::beginTransaction();
+
 			$commonData = [
 				'sl_dob' => $request->date_of_birth ?: null,
 				'sl_qualification' => $request->student_qualification ?: null,
@@ -487,6 +491,12 @@ class StudentController extends Controller
 				->where('sl_reg_no', $regNo)
 				->where('sl_FK_of_center_id', $centerId)
 				->get();
+
+			$courseIds = array_values(array_unique($courseIds));
+			$toRemove = $existingRows->filter(function ($row) use ($courseIds) {
+				return $row->sl_FK_of_course_id !== null
+					&& !in_array((int) $row->sl_FK_of_course_id, $courseIds, true);
+			})->values();
 
 			foreach ($courseIds as $courseId) {
 				$rowData = array_merge($commonData, ['sl_FK_of_course_id' => $courseId]);
@@ -530,21 +540,47 @@ class StudentController extends Controller
 				}
 			}
 
-			// Remove student_login rows for deselected courses (only if no results/certificates)
-			$toRemove = $existingRows->filter(fn ($row) => !in_array((int) $row->sl_FK_of_course_id, $courseIds))->values();
+			// Remove deselected course enrollments (delete related docs/fees/results for that sl_id only)
 			foreach ($toRemove as $row) {
-				$hasResults = DB::table('set_result')->where('sr_FK_of_student_id', $row->sl_id)->exists();
-				$hasCerts = DB::table('student_certificates')->where('sc_FK_of_student_id', $row->sl_id)->exists();
-				if (!$hasResults && !$hasCerts) {
-					DB::table('student_enrollments')->where('se_FK_of_student_id', $row->sl_id)->delete();
-					DB::table('student_login')->where('sl_id', $row->sl_id)->delete();
-				}
+				$this->deleteEnrollmentDependencies((int) $row->sl_id);
 			}
 
-			return redirect()->back()->with('success', 'Student Updated Successfully!');
+			$remainingSlIds = DB::table('student_login')
+				->where('sl_reg_no', $regNo)
+				->where('sl_FK_of_center_id', $centerId)
+				->pluck('sl_id');
+			if ($remainingSlIds->isNotEmpty()) {
+				DB::table('student_enrollments')
+					->where('se_FK_of_center_id', $centerId)
+					->whereIn('se_FK_of_student_id', $remainingSlIds)
+					->whereNotIn('se_FK_of_course_id', $courseIds)
+					->delete();
+			}
+
+			$redirectRow = DB::table('student_login')
+				->where('sl_reg_no', $regNo)
+				->where('sl_FK_of_center_id', $centerId)
+				->whereIn('sl_FK_of_course_id', $courseIds)
+				->orderBy('sl_id')
+				->first();
+
+			if (!$redirectRow) {
+				DB::rollBack();
+				return redirect()->route('student_list')->with('error', 'Student update incomplete: no course row found.');
+			}
+
+			DB::commit();
+
+			return redirect()->route('edit_student', $redirectRow->sl_id)->with('success', 'Student Updated Successfully!');
 		} catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+			if (DB::transactionLevel() > 0) {
+				DB::rollBack();
+			}
 			return redirect()->back()->with('error', 'Student not found.');
 		} catch (\Exception $e) {
+			if (DB::transactionLevel() > 0) {
+				DB::rollBack();
+			}
 			Log::error('update_student error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 			return redirect()->back()->with('error', 'Something went wrong. Please try again.');
 		}
@@ -811,5 +847,31 @@ class StudentController extends Controller
 		endif;
 
 		return response()->json($data);
+	}
+
+	/**
+	 * Remove one student_login enrollment and all records tied to that sl_id
+	 * (does not delete shared files or center-wide transaction history by reg no).
+	 */
+	private function deleteEnrollmentDependencies(int $slId): void
+	{
+		DB::table('set_result')->where('sr_FK_of_student_id', $slId)->delete();
+		DB::table('student_certificates')->where('sc_FK_of_student_id', $slId)->delete();
+		DB::table('set_fee')->where('sf_FK_of_student_id', $slId)->delete();
+		DB::table('fees_payment')->where('fp_FK_of_student_id', $slId)->delete();
+		DB::table('student_admit_cards')->where('student_id', $slId)->delete();
+		DB::table('student_enrollments')->where('se_FK_of_student_id', $slId)->delete();
+
+		if (Schema::hasTable('attendance_mark')) {
+			DB::table('attendance_mark')->where('am_FK_of_student_id', $slId)->delete();
+		}
+		if (Schema::hasTable('attendence_set')) {
+			DB::table('attendence_set')->where('as_FK_of_student_id', $slId)->delete();
+		}
+		if (Schema::hasTable('document_reissue_requests')) {
+			DB::table('document_reissue_requests')->where('drr_FK_of_student_id', $slId)->delete();
+		}
+
+		DB::table('student_login')->where('sl_id', $slId)->delete();
 	}
 }

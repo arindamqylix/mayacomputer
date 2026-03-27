@@ -57,6 +57,15 @@
                         </div>
 
                         <div class="col-lg-4 mb-2">
+                            <label>Course type (typing related)? <span class="text-danger">*</span></label>
+                            <select class="form-control" name="is_typing_related" required>
+                                <option value="">-- Select --</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 mb-2">
                             <label>Course Category</label>
                             <input type="text" class="form-control" name="category_name">
                         </div>
