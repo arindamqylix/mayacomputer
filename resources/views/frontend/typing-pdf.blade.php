@@ -281,12 +281,7 @@
                                     <b>{{ $certificate->sl_reg_no }}</b> on successfully completion of<br>
                                     <b>{{ $certificate->c_full_name ?? '' }}</b> ( Duration -
                                     {{ $certificate->c_duration ?? '' }} ) Course.
-                                    @if($certificate->sc_typing_speed)
-                                        <br>Having attained a typing speed of <b>{{ $certificate->sc_typing_speed }} WPM</b>
-                                        with an accuracy of <b>{{ $certificate->sc_typing_accuracy ?? '100' }}%</b>
-                                    @else
-                                        <br>Successfully completed the typing course from our authorised Study Centre
-                                    @endif
+                                    <br>@include('partials.certificate_typing_speed_line')
                                 </div>
 
                                 <div class="study-center">

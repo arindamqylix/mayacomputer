@@ -70,9 +70,22 @@
         }
 
         .cert-form-wrapper .form-control-sm {
-            max-width: 100px;
+            max-width: 90px;
             font-size: 0.875rem;
             padding: 0.375rem 0.5rem;
+        }
+
+        .speed-hindi-english {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            min-width: 7rem;
+        }
+
+        .speed-hindi-english label {
+            font-size: 0.7rem;
+            margin: 0;
+            color: #6b7280;
         }
 
         .date-input {
@@ -117,7 +130,7 @@
                                             <th>Student Name</th>
                                             <th>Course</th>
                                             <th>Center</th>
-                                            <th>Speed (WPM)</th>
+                                            <th>Hindi / English (WPM)</th>
                                             <th>Accuracy (%)</th>
                                             <th>Issue Date & Action</th>
                                         </tr>
@@ -141,9 +154,18 @@
                                                     <input type="hidden" name="student_id" value="{{ $student->sl_id }}">
                                                     <input type="hidden" name="course_id" value="{{ $student->c_id }}">
                                                     <td>
-                                                        <input type="number" name="typing_speed"
-                                                            class="form-control form-control-sm" placeholder="Speed" required
-                                                            min="1">
+                                                        <div class="speed-hindi-english">
+                                                            <label>Hindi
+                                                                <input type="number" name="typing_speed_hindi"
+                                                                    class="form-control form-control-sm" placeholder="H"
+                                                                    required min="1" step="0.1">
+                                                            </label>
+                                                            <label>English
+                                                                <input type="number" name="typing_speed_english"
+                                                                    class="form-control form-control-sm" placeholder="E"
+                                                                    required min="1" step="0.1">
+                                                            </label>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         <input type="number" name="typing_accuracy"

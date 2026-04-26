@@ -273,7 +273,13 @@
 														<span class="text-muted">–</span>
 													@endif
 												</td>
-												<td><span class="stat-pill">{{ $cert->sc_typing_speed ?? '–' }} WPM</span></td>
+												<td>
+													@if(($cert->sc_typing_speed_hindi != null && $cert->sc_typing_speed_hindi !== '') || ($cert->sc_typing_speed_english != null && $cert->sc_typing_speed_english !== ''))
+														<span class="stat-pill">H: {{ $cert->sc_typing_speed_hindi }} / E: {{ $cert->sc_typing_speed_english }} WPM</span>
+													@else
+														<span class="stat-pill">{{ $cert->sc_typing_speed ?? '–' }} WPM</span>
+													@endif
+												</td>
 												<td><span class="stat-pill">{{ $cert->sc_typing_accuracy ?? '–' }}%</span></td>
 												<td>
 													<a href="{{ route('student.view_typing_certificate', $cert->sc_id) }}" class="btn-view" title="View / Download certificate">

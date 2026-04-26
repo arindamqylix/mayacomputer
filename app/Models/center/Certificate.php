@@ -20,6 +20,8 @@ class Certificate extends Model
         'sc_status',
         'sc_type',
         'sc_typing_speed',
+        'sc_typing_speed_hindi',
+        'sc_typing_speed_english',
         'sc_typing_accuracy',
         'sc_dispatch_thru',
         'sc_dispatch_date',

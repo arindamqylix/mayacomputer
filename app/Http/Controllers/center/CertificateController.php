@@ -206,7 +206,8 @@ class CertificateController extends Controller
             'student_id' => 'required|integer',
             'course_id' => 'required|integer',
             'issue_date' => 'required|date',
-            'typing_speed' => 'required|numeric|min:1',
+            'typing_speed_hindi' => 'required|numeric|min:1',
+            'typing_speed_english' => 'required|numeric|min:1',
             'typing_accuracy' => 'required|numeric|min:1|max:100',
         ]);
 
@@ -232,6 +233,9 @@ class CertificateController extends Controller
         }
 
         $certificateNumber = 'TYP' . str_pad($studentId, 5, '0', STR_PAD_LEFT) . rand(10, 99);
+        $h = (string) $request->input('typing_speed_hindi');
+        $e = (string) $request->input('typing_speed_english');
+        $speedSummary = 'Hindi: ' . $h . ' WPM, English: ' . $e . ' WPM';
         $certificate = Certificate::create([
             'sc_FK_of_student_id' => $studentId,
             'sc_FK_of_center_id' => $centerId,
@@ -240,7 +244,9 @@ class CertificateController extends Controller
             'sc_certificate_number' => $certificateNumber,
             'sc_issue_date' => $request->input('issue_date'),
             'sc_type' => 'TYPING',
-            'sc_typing_speed' => $request->input('typing_speed'),
+            'sc_typing_speed' => $speedSummary,
+            'sc_typing_speed_hindi' => $h,
+            'sc_typing_speed_english' => $e,
             'sc_typing_accuracy' => $request->input('typing_accuracy'),
             'sc_status' => 'GENERATED',
         ]);

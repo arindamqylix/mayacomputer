@@ -150,6 +150,8 @@ class MarkSheetController extends Controller
 					->orWhereRaw('(student_certificates.sc_type IS NULL AND student_certificates.sc_FK_of_result_id IS NULL)')
 					->orWhereRaw('(student_certificates.sc_type = \'REGULAR\' AND student_certificates.sc_FK_of_result_id IS NULL)')
 					->orWhereNotNull('student_certificates.sc_typing_speed')
+					->orWhereNotNull('student_certificates.sc_typing_speed_hindi')
+					->orWhereNotNull('student_certificates.sc_typing_speed_english')
 					->orWhereNotNull('student_certificates.sc_typing_accuracy')
 					->orWhereRaw('(LOWER(TRIM(COALESCE(course.category_name,\'\'))) = \'typing\' OR course.c_short_name LIKE \'%Typing%\' OR course.c_full_name LIKE \'%Typing%\')');
 			})
@@ -158,6 +160,8 @@ class MarkSheetController extends Controller
 				'student_certificates.sc_certificate_number',
 				'student_certificates.sc_issue_date',
 				'student_certificates.sc_typing_speed',
+				'student_certificates.sc_typing_speed_hindi',
+				'student_certificates.sc_typing_speed_english',
 				'student_certificates.sc_typing_accuracy',
 				'course.c_short_name',
 				'course.c_full_name'
@@ -205,6 +209,8 @@ class MarkSheetController extends Controller
 					->orWhereRaw('(student_certificates.sc_type IS NULL AND student_certificates.sc_FK_of_result_id IS NULL)')
 					->orWhereRaw('(student_certificates.sc_type = \'REGULAR\' AND student_certificates.sc_FK_of_result_id IS NULL)')
 					->orWhereNotNull('student_certificates.sc_typing_speed')
+					->orWhereNotNull('student_certificates.sc_typing_speed_hindi')
+					->orWhereNotNull('student_certificates.sc_typing_speed_english')
 					->orWhereNotNull('student_certificates.sc_typing_accuracy');
 			})
 			->select('student_certificates.sc_id')
