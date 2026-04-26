@@ -90,24 +90,6 @@
         font-size: 16px;
         color: #333;
     }
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-    .info-grid-item {
-        display: flex;
-        align-items: center;
-        padding: 12px 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border-left: 3px solid #ff6b35;
-    }
-    .info-grid-item span {
-        font-weight: 600;
-        color: #333;
-        margin-right: 8px;
-    }
     .section-title {
         font-size: 22px;
         font-weight: 700;
@@ -185,20 +167,8 @@
         padding-bottom: 15px;
         border-bottom: 2px solid #ff6b35;
     }
-    .price-box {
-        text-align: center;
-        padding: 30px;
-        background: linear-gradient(135deg, #000055 0%, #000088 100%);
-        border-radius: 15px;
-        color: #fff;
-    }
-    .price-box .price {
-        font-size: 42px;
-        font-weight: 700;
-    }
-    .price-box .price-label {
-        font-size: 14px;
-        opacity: 0.8;
+    .sidebar-card .btn-enroll {
+        margin-top: 0;
     }
     .btn-enroll {
         display: block;
@@ -281,16 +251,6 @@
     .related-course .course-info h5 a:hover {
         color: #000055;
     }
-    .related-course .course-info .price {
-        font-size: 14px;
-        color: #ff6b35;
-        font-weight: 700;
-    }
-    @media (max-width: 991px) {
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
-    }
 </style>
 @endpush
 @section('content')
@@ -347,27 +307,11 @@
                 <div class="course-info-card">
                     <h1 class="course-title-main">{{ $data->c_full_name ?? '' }}</h1>
                     
+                    @if(
+                        (isset($data->course_eligibility) && $data->course_eligibility)
+                        || isset($data->category_name)
+                    )
                     <div class="course-meta-info">
-                        @if($data->c_duration)
-                        <div class="meta-item">
-                            <i class="fa fa-clock-o"></i>
-                            <div class="meta-content">
-                                <span>Duration</span>
-                                <strong>{{ $data->c_duration }}</strong>
-                            </div>
-                        </div>
-                        @endif
-                        
-                        @if($data->c_price)
-                        <div class="meta-item">
-                            <i class="fa fa-inr"></i>
-                            <div class="meta-content">
-                                <span>Course Fee</span>
-                                <strong>₹{{ number_format($data->c_price) }}</strong>
-                            </div>
-                        </div>
-                        @endif
-                        
                         @if(isset($data->course_eligibility) && $data->course_eligibility)
                         <div class="meta-item">
                             <i class="fa fa-graduation-cap"></i>
@@ -387,21 +331,6 @@
                             </div>
                         </div>
                         @endif
-                    </div>
-
-                    <!-- Basic Information -->
-                    @php
-                        $information = json_decode($data->information, true);
-                    @endphp
-                    @if(!empty($information))
-                    <h3 class="section-title">Basic Information</h3>
-                    <div class="info-grid mb-4">
-                        @foreach($information as $info)
-                        <div class="info-grid-item">
-                            <span>{{ $info['title'] ?? '' }}:</span>
-                            {{ $info['value'] ?? '' }}
-                        </div>
-                        @endforeach
                     </div>
                     @endif
                 </div>
@@ -453,12 +382,7 @@
 
             <!-- Sidebar -->
             <div class="col-lg-4">
-                <!-- Price & Enroll -->
                 <div class="sidebar-card">
-                    <div class="price-box">
-                        <div class="price-label">Course Fee</div>
-                        <div class="price">₹{{ number_format($data->c_price ?? 0) }}</div>
-                    </div>
                     <a href="{{ route('contact') }}" class="btn-enroll">
                         <i class="fa fa-graduation-cap"></i> Enroll Now
                     </a>
@@ -504,9 +428,6 @@
                                     {{ Str::limit($related->c_full_name ?? $related->c_short_name, 40) }}
                                 </a>
                             </h5>
-                            @if($related->c_price)
-                                <span class="price">₹{{ number_format($related->c_price) }}</span>
-                            @endif
                         </div>
                     </div>
                     @endforeach

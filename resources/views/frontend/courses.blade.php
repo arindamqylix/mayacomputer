@@ -251,19 +251,6 @@
     .btn-explore:hover i {
         transform: translateX(3px);
     }
-    /* Price Tag */
-    .price-display {
-        position: absolute;
-        bottom: 15px;
-        right: 15px;
-        background: #fff;
-        color: #000055;
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 700;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
     /* No Courses */
     .no-courses {
         text-align: center;
@@ -377,9 +364,6 @@
                             <span class="category-tag">{{ $courseCat->name }}</span>
                         @endif
                         
-                        @if($course->c_price)
-                            <span class="price-display">₹{{ number_format($course->c_price) }}</span>
-                        @endif
                     </div>
                     
                     <div class="course-content">
@@ -396,10 +380,6 @@
                         @endif
                         
                         <div class="course-meta">
-                            <div class="meta-item">
-                                <i class="fa fa-clock-o"></i>
-                                <span>{{ $course->c_duration ?? '3-6 Months' }}</span>
-                            </div>
                             <div class="meta-item">
                                 <i class="fa fa-user"></i>
                                 <span>All Levels</span>

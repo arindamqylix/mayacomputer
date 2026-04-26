@@ -255,16 +255,7 @@
     padding: 0 25px 25px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-}
-.course-card-modern .course-price {
-    font-size: 24px;
-    font-weight: 700;
-    color: #d00226;
-}
-.course-card-modern .course-price .currency {
-    font-size: 16px;
-    margin-right: 3px;
+    justify-content: flex-end;
 }
 .course-card-modern .course-btn {
     background: linear-gradient(135deg, #000077 0%, #000099 100%);
@@ -878,12 +869,6 @@
                         </p>
                         @endif
                         <div class="course-meta">
-                            @if($course->c_duration)
-                            <div class="course-meta-item">
-                                <i class="fa fa-clock-o"></i>
-                                <span>{{ $course->c_duration }}</span>
-                            </div>
-                            @endif
                             <div class="course-meta-item">
                                 <i class="fa fa-certificate"></i>
                                 <span>Certificate</span>
@@ -891,15 +876,6 @@
                         </div>
                     </div>
                     <div class="course-footer">
-                        @if($course->c_price)
-                        <div class="course-price">
-                            <span class="currency">₹</span>{{ number_format($course->c_price, 0) }}
-                        </div>
-                        @else
-                        <div class="course-price" style="font-size: 16px; color: #28a745;">
-                            Free
-                        </div>
-                        @endif
                         <a href="{{ route('courses.details', $course->slug ?? $course->c_id) }}" class="course-btn">
                             View Details
                         </a>
