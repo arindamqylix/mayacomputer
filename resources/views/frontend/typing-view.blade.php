@@ -438,7 +438,7 @@
                                     Udyam & Startup India</p>
                                 <p class="iso-text">An ISO 9001: 2015 Certified</p>
                                 <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website :
-                                    mayacc.in</p>
+                                    https://mayacomputercenter.in</p>
                             </div>
                             <div class="qr-wrapper">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-certificate/' . ($certificate->sc_certificate_number ?? '')) }}"

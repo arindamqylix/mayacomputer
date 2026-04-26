@@ -493,7 +493,7 @@
                                         Udyam & Startup India</p>
                                     <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
                                     <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website :
-                                        mayacc.in</p>
+                                        https://mayacomputercenter.in</p>
                                 </div>
                             </div>
 

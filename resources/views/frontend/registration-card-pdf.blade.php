@@ -282,7 +282,7 @@
                         <p class="reg-subtext-line" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
                         <p class="reg-subtext-line" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
                         <p class="reg-iso-cert">An ISO 9001: 2015 Certified</p>
-                        <p class="reg-subtext-line" style="font-size: 11px;">Visit Our Website : mayacc.in</p>
+                        <p class="reg-subtext-line" style="font-size: 11px;">Visit Our Website : https://mayacomputercenter.in</p>
                     </div>
                 </div>
 

@@ -280,7 +280,7 @@
                                     <p class="reg-details">Registered Under NCT Delhi, Skill India, Udyam & Startup
                                         India</p>
                                     <p class="iso-text">An ISO 9001: 2015 Certified</p>
-                                    <p class="reg-details" style="font-size: 10px;">Visit Our Website : mayacc.in</p>
+                                    <p class="reg-details" style="font-size: 10px;">Visit Our Website : https://mayacomputercenter.in</p>
                                 </div>
                             </div>
                             <div class="section-title">Statement of Marks</div>

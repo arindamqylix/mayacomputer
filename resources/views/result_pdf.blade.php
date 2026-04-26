@@ -214,7 +214,7 @@
                 <div class="norm-bold-text">C-81, F/F, Gali No-01, Jitar Nagar, Near By Gurudwara, Delhi-110051</div>
                 <div class="red-text">Corporate Office</div>
                 <div class="norm-bold-text">Siswar, Phulparas, Madhubani, Bihar-847409</div>
-                <div class="blue-text">Visit: www.mayacomputercenter.in</div>
+                <div class="blue-text">Visit: https://mayacomputercenter.in</div>
             </div>
             <div>
                 <img src="{{ asset('document/images/auth_sign_overlay.jpg') }}" alt="auth_sign" width="100%" height="100px">

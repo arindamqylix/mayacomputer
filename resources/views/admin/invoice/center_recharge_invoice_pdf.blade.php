@@ -137,7 +137,7 @@
         <p class="reg-details" style="font-size: 13px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
         <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
         <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
-        <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : mayacc.in</p>
+        <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : https://mayacomputercenter.in</p>
     </div>
     <!-- <div class="qr-block">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('invoice/' . ($recharge->cr_id ?? '')) }}"

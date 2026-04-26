@@ -254,7 +254,7 @@
                                             Skill India, Udyam & Startup India</div>
                                         <div style="font-size: 13px; font-weight: bold; color: red;">An ISO 9001: 2015
                                             Certified</div>
-                                        <div style="font-size: 10px; font-weight: bold;">Visit Our Website : mayacc.in
+                                        <div style="font-size: 10px; font-weight: bold;">Visit Our Website : https://mayacomputercenter.in
                                         </div>
                                     </td>
                                     <td style="width: 25%; text-align: right; padding-right: 10px;">

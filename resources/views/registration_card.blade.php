@@ -495,7 +495,7 @@
                     <!-- Company Info -->
                     <div class="company-info">
                         <span class="highlight">CIN: U47411DL2023PTC422329</span> | 
-                        <span class="highlight">www.mayacomputercenter.in</span> | 
+                        <span class="highlight">https://mayacomputercenter.in</span> | 
                         Email: mccsiswar@gmail.com | Phone: +91 8825148127
                     </div>
                 </div>
