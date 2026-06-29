@@ -139,100 +139,14 @@
         font-size: 16px;
     }
 
-    /* Select2 - single select (center, qualification) */
-    .input-icon-wrapper .select2-container {
-        width: 100% !important;
-        display: block !important;
+    .input-icon-wrapper select.form-select[multiple] {
+        min-height: 140px;
+        padding-left: 45px;
     }
-    .input-icon-wrapper .select2-container .select2-selection--single {
-        min-height: 42px;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding-left: 36px;
-    }
-    .input-icon-wrapper .select2-container .select2-selection--single .select2-selection__rendered {
-        padding-left: 0;
-        line-height: 40px;
-    }
-    .input-icon-wrapper .select2-container .select2-selection--single .select2-selection__arrow {
-        height: 40px;
-    }
-    .select2-container--default .select2-selection--single:focus,
-    .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #667eea;
-        outline: none;
-    }
-    /* Select2 - multi-select (course) - same as create page */
-    .input-icon-wrapper .select2-container .select2-selection--multiple {
-        padding-left: 36px;
-    }
-    .select2-container--default .select2-selection--multiple,
-    .select2-container--bootstrap-5 .select2-selection--multiple {
-        min-height: 44px;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 4px 8px;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__rendered,
-    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
-        display: block;
-        padding: 0;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__rendered ul,
-    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        align-items: center;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice,
-    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
-        background-color: #667eea;
-        border: none;
-        border-radius: 999px;
-        color: #fff;
-        padding: 4px 10px;
-        font-size: 13px;
-        margin: 0;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
-    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
-        color: rgba(255,255,255,0.9);
-        margin-right: 4px;
-    }
-    .select2-container--default .select2-selection--multiple .select2-search--inline,
-    .select2-container--bootstrap-5 .select2-selection--multiple .select2-search--inline {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: inline-block;
-    }
-    .select2-container--default .select2-selection--multiple .select2-search__field,
-    .select2-container--bootstrap-5 .select2-selection--multiple .select2-search__field {
-        margin: 0 !important;
-        padding: 2px 6px !important;
-        width: 120px !important;
-        min-width: 80px;
-    }
-    /* Dropdown above other fields */
-    .select2-container--default .select2-results__option--highlighted[aria-selected],
-    .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
-        background-color: #667eea;
-    }
-    .select2-dropdown,
-    .select2-container--bootstrap-5 .select2-dropdown {
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        z-index: 99999 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .select2-container--bootstrap-5 .select2-selection {
-        min-height: 44px;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
+
+    .input-icon-wrapper:has(select[multiple]) i {
+        top: 1.1rem;
+        transform: none;
     }
 </style>
 @endpush
@@ -272,7 +186,7 @@
                                     <label class="form-label">Select Center <span class="required-star">*</span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-building"></i>
-								<select onchange="get_reg_no(this.value);" class="form-select select2" name='center_id' id='center_id' required>
+								<select onchange="get_reg_no(this.value);" class="form-select" name='center_id' id='center_id' required>
 									<option value=''> Select Center </option>
 									@foreach($center as $data)
                                                 <option value="{{ $data->cl_id }}" {{ (old('center_id', $student->sl_FK_of_center_id ?? '') == $data->cl_id) ? 'selected' : '' }}>
@@ -292,8 +206,8 @@
 										if (!is_array($selectedCourseIds)) $selectedCourseIds = [$selectedCourseIds];
 										$selectedCourseIds = array_map('intval', $selectedCourseIds);
 									@endphp
-								<select class="form-select select2" name='course_id[]' id='course_id' multiple required
-									data-placeholder="Select Course">
+								<select class="form-select" name='course_id[]' id='course_id' multiple size="6"
+									required onchange="get_course_multiple();">
 									@foreach($course as $data)
 										<option value="{{ $data->c_id }}" {{ in_array((int) $data->c_id, $selectedCourseIds) ? 'selected' : '' }}>
 											{{ $data->c_short_name ?? 'N/A' }} [{{ $data->c_duration ?? '-' }}]
@@ -301,6 +215,7 @@
 									@endforeach
 								</select>
 							</div>
+							<p class="help-text mb-0">Hold Ctrl (Windows) or Cmd (Mac) to select multiple courses.</p>
 							</div>
 								
                                 <div class="col-md-4 mb-4">
@@ -384,7 +299,7 @@
                                     <label class="form-label">Select Qualification <span class="required-star">*</span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-certificate"></i>
-								<select class="form-select select2" name='student_qualification' required>
+								<select class="form-select" name='student_qualification' required>
                                             <option value=''>Select Qualification</option>
 									@php $qual = old('student_qualification', $student->sl_qualification ?? ''); @endphp
 									<option value='Non Matric' {{ $qual == 'Non Matric' ? 'selected' : '' }}>Non Matric</option>
@@ -597,29 +512,8 @@
 
 @push('custom-js')
 <script type="text/javascript">
-    $(document).ready(function() {
-        var $courseSelect = $('#course_id');
-        if ($courseSelect.hasClass('select2-hidden-accessible')) {
-            $courseSelect.select2('destroy');
-        }
-        $courseSelect.prop('multiple', true);
-        $courseSelect.select2({
-            placeholder: $courseSelect.data('placeholder') || 'Select Course',
-            allowClear: true,
-            width: '100%',
-            multiple: true,
-            closeOnSelect: false,
-            theme: 'bootstrap-5'
-        });
-        $courseSelect.on('change', get_course_multiple);
+    document.addEventListener('DOMContentLoaded', function () {
         get_course_multiple();
-
-        $('.select2').not('#course_id').each(function () {
-            var $el = $(this);
-            if (!$el.hasClass('select2-hidden-accessible')) {
-                $el.select2({ width: '100%', theme: 'bootstrap-5' });
-            }
-        });
     });
 
     // File upload preview

@@ -112,76 +112,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Select2 course multi-select - single clean box (default + bootstrap-5 theme) */
-        .input-icon-wrapper .select2-container {
-            width: 100% !important;
-            display: block !important;
-            padding-left: 0;
-        }
-
-        .input-icon-wrapper .select2-container .select2-selection--multiple {
-            padding-left: 36px;
-        }
-
-        .select2-container--default .select2-selection--multiple,
-        .select2-container--bootstrap-5 .select2-selection--multiple {
-            min-height: 44px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            padding: 4px 8px;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__rendered,
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
-            display: block;
-            padding: 0;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__rendered ul,
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice,
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
-            background-color: #667eea;
-            border: none;
-            border-radius: 999px;
-            color: #fff;
-            padding: 4px 10px;
-            font-size: 13px;
-            margin: 0;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
-            color: rgba(255,255,255,0.9);
-            margin-right: 4px;
-        }
-
-        /* Inline search: no bullet, no extra row - sits next to tags */
-        .select2-container--default .select2-selection--multiple .select2-search--inline,
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-search--inline {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: inline-block;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-search__field,
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-search__field {
-            margin: 0 !important;
-            padding: 2px 6px !important;
-            width: 120px !important;
-            min-width: 80px;
-        }
-
         .card-header-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -205,6 +135,16 @@
             font-size: 12px;
             color: #718096;
             margin-top: 5px;
+        }
+
+        .input-icon-wrapper select.form-select[multiple] {
+            min-height: 140px;
+            padding-left: 45px;
+        }
+
+        .input-icon-wrapper:has(select[multiple]) i {
+            top: 1.1rem;
+            transform: none;
         }
     </style>
 @endpush
@@ -260,15 +200,15 @@
                                                 id='course_data' style='display:none'></span></label>
                                         <div class="input-icon-wrapper">
                                             <i class="fas fa-graduation-cap"></i>
-                                            <select class="form-select select2"
-                                                name='course_id[]' id='course_id' multiple required
-                                                data-placeholder="Select Course">
+                                            <select class="form-select" name='course_id[]' id='course_id' multiple
+                                                size="6" required onchange="get_course_multiple();">
                                                 @foreach($course as $data)
                                                     <option value="{{ $data->c_id }}">{{ $data->c_short_name }}
                                                         [{{ $data->c_duration }}]</option>
                                                 @endforeach
                                             </select>
                                         </div>
+                                        <p class="help-text mb-0">Hold Ctrl (Windows) or Cmd (Mac) to select multiple courses.</p>
                                     </div>
 
                                     <div class="col-md-4 mb-4">
@@ -505,23 +445,6 @@
 
 @push('custom-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            var $courseSelect = $('#course_id');
-            if ($courseSelect.hasClass('select2-hidden-accessible')) {
-                $courseSelect.select2('destroy');
-            }
-            $courseSelect.prop('multiple', true);
-            $courseSelect.select2({
-                placeholder: $courseSelect.data('placeholder') || 'Select Course',
-                allowClear: true,
-                width: '100%',
-                multiple: true,
-                closeOnSelect: false,
-                theme: 'bootstrap-5'
-            });
-            $courseSelect.on('change', get_course_multiple);
-        });
-
         // File upload preview
         function setupFilePreview(inputId, previewId) {
             const input = document.getElementById(inputId);
