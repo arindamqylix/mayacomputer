@@ -186,13 +186,33 @@
 						@else
 							<div class="alert alert-info">
 								<i class="fas fa-info-circle"></i>
-								No students with a published result are ready for certificate generation.
+								No students are ready for certificate generation right now.
 							</div>
+							@if(!empty($alreadyCertifiedCount) && $alreadyCertifiedCount > 0)
+								<div class="alert alert-success mt-2">
+									<i class="fas fa-certificate"></i>
+									<strong>{{ $alreadyCertifiedCount }}</strong> student(s) already have a regular certificate for their published result.
+									Open <a href="{{ route('admin.certificate_list') }}"><strong>Certificates → Certificate List</strong></a> to view or print them.
+								</div>
+							@endif
+							@if(!empty($typingBlockedCount) && $typingBlockedCount > 0)
+								<div class="alert alert-warning mt-2">
+									<i class="fas fa-keyboard"></i>
+									<strong>{{ $typingBlockedCount }}</strong> published result(s) are for typing-related courses.
+									Use <a href="{{ route('admin.typing_certificate_generate') }}"><strong>Generate Typing Certificate</strong></a> instead.
+								</div>
+							@endif
 							@if(!empty($missingResultCount) && $missingResultCount > 0)
 								<div class="alert alert-warning mt-2">
 									<i class="fas fa-exclamation-triangle"></i>
-									<strong>{{ $missingResultCount }}</strong> student(s) show <strong>RESULT OUT</strong> in the list but have no result/marks saved yet.
-									Open <strong>Result → Set Result</strong>, publish marks for the student, then return here to generate the certificate.
+									<strong>{{ $missingResultCount }}</strong> student(s) show <strong>RESULT OUT</strong> but have no result/marks saved yet.
+									Open <strong>Result → Set Result</strong>, publish marks first, then return here.
+								</div>
+							@endif
+							@if(!empty($publishedResultCount) && $publishedResultCount > 0 && empty($alreadyCertifiedCount) && empty($typingBlockedCount))
+								<div class="alert alert-secondary mt-2">
+									<i class="fas fa-search"></i>
+									There {{ $publishedResultCount === 1 ? 'is' : 'are' }} <strong>{{ $publishedResultCount }}</strong> published result(s) in the system, but none match the certificate rules above. Check course typing flags or contact support.
 								</div>
 							@endif
 						@endif

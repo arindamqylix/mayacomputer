@@ -12,21 +12,55 @@ use Carbon\Carbon;
 
 class CertificateController extends Controller
 {
+    /** Backfill missing course id on older certificate rows (center generate omitted this field). */
+    private function backfillCertificateCourseIds(): void
+    {
+        $rows = DB::table('student_certificates')
+            ->whereNull('sc_FK_of_course_id')
+            ->select('sc_id', 'sc_FK_of_student_id', 'sc_FK_of_result_id')
+            ->get();
+
+        foreach ($rows as $row) {
+            $courseId = null;
+            if ($row->sc_FK_of_result_id) {
+                $courseId = DB::table('set_result')
+                    ->where('sr_id', $row->sc_FK_of_result_id)
+                    ->value('sr_FK_of_course_id');
+                if ((int) $courseId === 0) {
+                    $courseId = null;
+                }
+            }
+            if (! $courseId) {
+                $courseId = DB::table('student_login')
+                    ->where('sl_id', $row->sc_FK_of_student_id)
+                    ->value('sl_FK_of_course_id');
+            }
+            if ($courseId) {
+                DB::table('student_certificates')
+                    ->where('sc_id', $row->sc_id)
+                    ->update(['sc_FK_of_course_id' => $courseId]);
+            }
+        }
+    }
+
     // List all certificates (admin panel)
     // Join course on certificate's course (sc_FK_of_course_id) so Typing certs show correct course
     public function certificate_list()
     {
+        $this->backfillCertificateCourseIds();
+
         $certificates = DB::table('student_certificates')
             ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-            ->join('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('course as course_sl', 'student_login.sl_FK_of_course_id', '=', 'course_sl.c_id')
             ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
             ->select(
                 'student_certificates.*',
                 'student_login.sl_name',
                 'student_login.sl_reg_no',
                 'student_login.sl_photo',
-                'course.c_full_name',
-                'course.c_short_name',
+                DB::raw('COALESCE(course.c_full_name, course_sl.c_full_name) as c_full_name'),
+                DB::raw('COALESCE(course.c_short_name, course_sl.c_short_name) as c_short_name'),
                 'center_login.cl_center_name',
                 'center_login.cl_name',
                 'center_login.cl_code'
@@ -40,27 +74,43 @@ class CertificateController extends Controller
     // Generate certificate page (admin panel)
     public function generate_certificate()
     {
-        // Students with a published result (set_result) and no REGULAR certificate yet
-        $students = DB::table('set_result')
-            ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
-            ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
-            ->join('course', function ($join) {
-                $join->whereRaw('course.c_id = COALESCE(set_result.sr_FK_of_course_id, student_login.sl_FK_of_course_id)');
-            })
-            ->leftJoin('student_certificates', function ($join) {
-                $join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-                    ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
-                    ->where(function ($q) {
-                        $q->where('student_certificates.sc_type', 'REGULAR')
-                            ->orWhereNull('student_certificates.sc_type');
-                    });
-            })
-            ->whereNull('student_certificates.sc_id')
-            ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
-            ->where(function ($q) {
-                $q->whereNull('course.is_typing_related')
-                    ->orWhere('course.is_typing_related', 0);
-            })
+        $this->backfillCertificateCourseIds();
+
+        $courseIdSql = 'COALESCE(NULLIF(set_result.sr_FK_of_course_id, 0), student_login.sl_FK_of_course_id)';
+
+        $regularCertExists = function ($query) use ($courseIdSql) {
+            $query->select(DB::raw(1))
+                ->from('student_certificates as sc')
+                ->whereColumn('sc.sc_FK_of_student_id', 'student_login.sl_id')
+                ->where(function ($q) {
+                    $q->where('sc.sc_type', 'REGULAR')->orWhereNull('sc.sc_type');
+                })
+                ->where(function ($q) use ($courseIdSql) {
+                    $q->whereColumn('sc.sc_FK_of_result_id', 'set_result.sr_id')
+                        ->orWhere(function ($q2) use ($courseIdSql) {
+                            $q2->whereNull('sc.sc_FK_of_result_id')
+                                ->whereRaw("sc.sc_FK_of_course_id = {$courseIdSql}");
+                        });
+                });
+        };
+
+        $baseResultQuery = function () use ($courseIdSql, $regularCertExists) {
+            return DB::table('set_result')
+                ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+                ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+                ->join('course', function ($join) use ($courseIdSql) {
+                    $join->whereRaw("course.c_id = {$courseIdSql}");
+                })
+                ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
+                ->where(function ($q) {
+                    $q->whereNull('course.is_typing_related')
+                        ->orWhere('course.is_typing_related', 0);
+                });
+        };
+
+        // Students with a published result and no REGULAR certificate yet
+        $students = $baseResultQuery()
+            ->whereNotExists($regularCertExists)
             ->select(
                 'student_login.sl_id',
                 'student_login.sl_name',
@@ -82,7 +132,25 @@ class CertificateController extends Controller
             ->orderBy('student_login.sl_name', 'ASC')
             ->get();
 
-        // RESULT OUT in list but no marks/result row yet (usually status changed manually)
+        // Diagnostics for empty list
+        $publishedResultCount = DB::table('set_result')
+            ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+            ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
+            ->count();
+
+        $alreadyCertifiedCount = $baseResultQuery()
+            ->whereExists($regularCertExists)
+            ->count();
+
+        $typingBlockedCount = DB::table('set_result')
+            ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
+            ->join('course', function ($join) use ($courseIdSql) {
+                $join->whereRaw("course.c_id = {$courseIdSql}");
+            })
+            ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
+            ->where('course.is_typing_related', 1)
+            ->count();
+
         $missingResultCount = DB::table('student_login as s')
             ->where('s.sl_status', 'RESULT OUT')
             ->whereNotExists(function ($q) {
@@ -92,7 +160,13 @@ class CertificateController extends Controller
             })
             ->count();
 
-        return view('admin.certificate.generate', compact('students', 'missingResultCount'));
+        return view('admin.certificate.generate', compact(
+            'students',
+            'missingResultCount',
+            'publishedResultCount',
+            'alreadyCertifiedCount',
+            'typingBlockedCount'
+        ));
     }
 
     // Generate typing certificate page (admin panel)

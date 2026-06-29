@@ -110,6 +110,8 @@ class CertificateController extends Controller
             return back()->with('error', 'Typing-related courses use typing certificates, not result-based certificates.');
         }
 
+        $courseId = $resultStudent->sl_FK_of_course_id ?? null;
+
         // Generate certificate number
         $certificateNumber = 'COD' . str_pad($studentId, 5, '0', STR_PAD_LEFT);
 
@@ -117,10 +119,12 @@ class CertificateController extends Controller
         $certificate = Certificate::create([
             'sc_FK_of_student_id' => $studentId,
             'sc_FK_of_center_id' => Auth::guard('center')->user()->cl_id,
+            'sc_FK_of_course_id' => $courseId,
             'sc_FK_of_result_id' => $resultId,
             'sc_certificate_number' => $certificateNumber,
             'sc_issue_date' => $issueDate,
-            'sc_status' => 'GENERATED'
+            'sc_type' => 'REGULAR',
+            'sc_status' => 'GENERATED',
         ]);
 
         if ($certificate) {
