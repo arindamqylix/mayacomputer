@@ -325,19 +325,30 @@ class StudentController extends Controller
 		// Fetch all courses (use Course model like add_student for consistency)
 		$courses = Course::orderBy('c_short_name')->get();
 
-		// Get ALL course IDs for this student (multiple rows per reg_no+center)
+		// Course IDs from student_login rows (legacy: one row per course) and student_enrollments (current model)
+		$studentSlIds = DB::table('student_login')
+			->where('sl_reg_no', $student->sl_reg_no)
+			->where('sl_FK_of_center_id', $student->sl_FK_of_center_id)
+			->pluck('sl_id');
+
 		$studentCourseIds = DB::table('student_login')
 			->where('sl_reg_no', $student->sl_reg_no)
 			->where('sl_FK_of_center_id', $student->sl_FK_of_center_id)
 			->whereNotNull('sl_FK_of_course_id')
 			->pluck('sl_FK_of_course_id')
 			->map(fn ($id) => (int) $id)
+			->merge(
+				DB::table('student_enrollments')
+					->whereIn('se_FK_of_student_id', $studentSlIds)
+					->where('se_FK_of_center_id', $student->sl_FK_of_center_id)
+					->pluck('se_FK_of_course_id')
+					->map(fn ($id) => (int) $id)
+			)
 			->unique()
 			->values()
 			->toArray();
 
-		// Always include current row's course (fallback if query returns empty)
-		if ($student->sl_FK_of_course_id && !in_array((int) $student->sl_FK_of_course_id, $studentCourseIds)) {
+		if ($student->sl_FK_of_course_id && !in_array((int) $student->sl_FK_of_course_id, $studentCourseIds, true)) {
 			$studentCourseIds[] = (int) $student->sl_FK_of_course_id;
 		}
 

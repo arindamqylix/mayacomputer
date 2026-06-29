@@ -260,7 +260,7 @@
                                                 id='course_data' style='display:none'></span></label>
                                         <div class="input-icon-wrapper">
                                             <i class="fas fa-graduation-cap"></i>
-                                            <select onchange="get_course_multiple();" class="form-select select2"
+                                            <select class="form-select select2"
                                                 name='course_id[]' id='course_id' multiple required
                                                 data-placeholder="Select Course">
                                                 @foreach($course as $data)
@@ -505,10 +505,21 @@
 
 @push('custom-js')
     <script type="text/javascript">
-        $('#course_id').select2({
-            placeholder: $('#course_id').data('placeholder') || 'Select Course',
-            allowClear: true,
-            width: '100%'
+        $(document).ready(function () {
+            var $courseSelect = $('#course_id');
+            if ($courseSelect.hasClass('select2-hidden-accessible')) {
+                $courseSelect.select2('destroy');
+            }
+            $courseSelect.prop('multiple', true);
+            $courseSelect.select2({
+                placeholder: $courseSelect.data('placeholder') || 'Select Course',
+                allowClear: true,
+                width: '100%',
+                multiple: true,
+                closeOnSelect: false,
+                theme: 'bootstrap-5'
+            });
+            $courseSelect.on('change', get_course_multiple);
         });
 
         // File upload preview

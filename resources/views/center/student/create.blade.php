@@ -240,7 +240,7 @@
 										Select Course Name <span class="text-danger">*</span>
 										<span class='course-badge' id='course_data' style='display:none'></span>
 									</label>
-									<select onchange="get_course_multiple();" class="form-select select2" name='course_id[]'
+									<select class="form-select select2" name='course_id[]'
 										id='course_id' multiple required>
 										<option value='' disabled>--Select Course--</option>
 										@foreach($course as $data)
@@ -443,12 +443,24 @@
 @push('custom-js')
 	<script type="text/javascript">
 		$(document).ready(function () {
-			if ($.fn.select2) {
-				$('.select2').select2({
-					placeholder: "--Select Course--",
+			if (!$.fn.select2) {
+				return;
+			}
+			var $courseSelect = $('#course_id');
+			if ($courseSelect.length) {
+				if ($courseSelect.hasClass('select2-hidden-accessible')) {
+					$courseSelect.select2('destroy');
+				}
+				$courseSelect.prop('multiple', true);
+				$courseSelect.select2({
+					placeholder: '--Select Course--',
 					allowClear: true,
-					width: '100%'
+					width: '100%',
+					multiple: true,
+					closeOnSelect: false,
+					theme: 'bootstrap-5'
 				});
+				$courseSelect.on('change', get_course_multiple);
 			}
 		});
 

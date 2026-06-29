@@ -292,10 +292,8 @@
 										if (!is_array($selectedCourseIds)) $selectedCourseIds = [$selectedCourseIds];
 										$selectedCourseIds = array_map('intval', $selectedCourseIds);
 									@endphp
-								<select onchange="get_course_multiple();" class="form-select select2" name='course_id[]' id='course_id' multiple required
-									data-placeholder="Select Course"
-									data-course-options='@json($course->map(fn($c) => ["id" => (string)$c->c_id, "text" => ($c->c_short_name ?? "N/A") . " [" . ($c->c_duration ?? "-") . "]"])->values())'
-									data-selected-ids='@json(array_map("strval", $selectedCourseIds))'>
+								<select class="form-select select2" name='course_id[]' id='course_id' multiple required
+									data-placeholder="Select Course">
 									@foreach($course as $data)
 										<option value="{{ $data->c_id }}" {{ in_array((int) $data->c_id, $selectedCourseIds) ? 'selected' : '' }}>
 											{{ $data->c_short_name ?? 'N/A' }} [{{ $data->c_duration ?? '-' }}]
@@ -601,23 +599,27 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var $courseSelect = $('#course_id');
-        var courseOptions = $courseSelect.data('course-options') || [];
-        var courseSelectedIds = $courseSelect.data('selected-ids') || [];
-        $courseSelect.empty();
+        if ($courseSelect.hasClass('select2-hidden-accessible')) {
+            $courseSelect.select2('destroy');
+        }
+        $courseSelect.prop('multiple', true);
         $courseSelect.select2({
-            data: courseOptions,
             placeholder: $courseSelect.data('placeholder') || 'Select Course',
             allowClear: true,
             width: '100%',
-            multiple: true
+            multiple: true,
+            closeOnSelect: false,
+            theme: 'bootstrap-5'
         });
-        if (courseSelectedIds.length > 0) {
-            $courseSelect.val(courseSelectedIds).trigger('change');
-        }
+        $courseSelect.on('change', get_course_multiple);
         get_course_multiple();
-    });
-    $('.select2').not('#course_id').select2({
-        width: '100%'
+
+        $('.select2').not('#course_id').each(function () {
+            var $el = $(this);
+            if (!$el.hasClass('select2-hidden-accessible')) {
+                $el.select2({ width: '100%', theme: 'bootstrap-5' });
+            }
+        });
     });
 
     // File upload preview
