@@ -138,16 +138,6 @@
         font-weight: 600;
         font-size: 16px;
     }
-
-    .input-icon-wrapper select.form-select[multiple] {
-        min-height: 140px;
-        padding-left: 45px;
-    }
-
-    .input-icon-wrapper:has(select[multiple]) i {
-        top: 1.1rem;
-        transform: none;
-    }
 </style>
 @endpush
 @section('content')
@@ -198,24 +188,21 @@
 							</div>
 
                                 <div class="col-md-4 mb-4">
-                                    <label class="form-label">Select Course Name <span class='badge bg-success ms-2' id='course_data' style='display:none'></span></label>
+                                    <label class="form-label">Select Course Name <span class="required-star">*</span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-graduation-cap"></i>
 									@php
-										$selectedCourseIds = old('course_id', $selectedCourseIds ?? ($student->sl_FK_of_course_id ? [$student->sl_FK_of_course_id] : []));
-										if (!is_array($selectedCourseIds)) $selectedCourseIds = [$selectedCourseIds];
-										$selectedCourseIds = array_map('intval', $selectedCourseIds);
+										$selectedCourseId = old('course_id', ($selectedCourseIds[0] ?? null) ?: ($student->sl_FK_of_course_id ?? ''));
 									@endphp
-								<select class="form-select" name='course_id[]' id='course_id' multiple size="6"
-									required onchange="get_course_multiple();">
+								<select class="form-select" name="course_id" id="course_id" required>
+									<option value="">Select Course</option>
 									@foreach($course as $data)
-										<option value="{{ $data->c_id }}" {{ in_array((int) $data->c_id, $selectedCourseIds) ? 'selected' : '' }}>
+										<option value="{{ $data->c_id }}" {{ (int) $selectedCourseId === (int) $data->c_id ? 'selected' : '' }}>
 											{{ $data->c_short_name ?? 'N/A' }} [{{ $data->c_duration ?? '-' }}]
 										</option>
 									@endforeach
 								</select>
 							</div>
-							<p class="help-text mb-0">Hold Ctrl (Windows) or Cmd (Mac) to select multiple courses.</p>
 							</div>
 								
                                 <div class="col-md-4 mb-4">
@@ -512,10 +499,6 @@
 
 @push('custom-js')
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        get_course_multiple();
-    });
-
     // File upload preview
     function setupFilePreview(inputId, previewId) {
         const input = document.getElementById(inputId);
@@ -544,17 +527,6 @@
     setupFilePreview('upload_id_proof', 'idcard-preview');
     setupFilePreview('upload_edu_proof', 'edu-preview');
     setupFilePreview('upload_signature', 'signature-preview');
-
-	// Get Course (multiple) - badge display
-	function get_course_multiple(){
-		var selectedCourses = $('#course_id').val();
-		if (!selectedCourses || selectedCourses.length === 0) {
-			$('#course_data').hide();
-			return;
-		}
-		$('#course_data').show();
-		$('#course_data').text(selectedCourses.length + ' selected');
-	}
 
 	// Get Registration No (for center change)
 	function get_reg_no(center_id){

@@ -136,16 +136,6 @@
             color: #718096;
             margin-top: 5px;
         }
-
-        .input-icon-wrapper select.form-select[multiple] {
-            min-height: 140px;
-            padding-left: 45px;
-        }
-
-        .input-icon-wrapper:has(select[multiple]) i {
-            top: 1.1rem;
-            transform: none;
-        }
     </style>
 @endpush
 @section('content')
@@ -196,19 +186,17 @@
                                     </div>
 
                                     <div class="col-md-4 mb-4">
-                                        <label class="form-label">Select Course Name <span class='badge bg-success ms-2'
-                                                id='course_data' style='display:none'></span></label>
+                                        <label class="form-label">Select Course Name <span class="required-star">*</span></label>
                                         <div class="input-icon-wrapper">
                                             <i class="fas fa-graduation-cap"></i>
-                                            <select class="form-select" name='course_id[]' id='course_id' multiple
-                                                size="6" required onchange="get_course_multiple();">
+                                            <select class="form-select" name="course_id" id="course_id" required>
+                                                <option value="">Select Course</option>
                                                 @foreach($course as $data)
                                                     <option value="{{ $data->c_id }}">{{ $data->c_short_name }}
                                                         [{{ $data->c_duration }}]</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <p class="help-text mb-0">Hold Ctrl (Windows) or Cmd (Mac) to select multiple courses.</p>
                                     </div>
 
                                     <div class="col-md-4 mb-4">
@@ -472,38 +460,6 @@
         setupFilePreview('upload_id_proof', 'idcard-preview');
         setupFilePreview('upload_edu_proof', 'edu-preview');
         setupFilePreview('upload_signature', 'signature-preview');
-
-        // Get Course Multiple
-        function get_course_multiple() {
-            let selectedCourses = $('#course_id').val();
-            if (!selectedCourses || selectedCourses.length === 0) {
-                $('#course_data').hide();
-                return;
-            }
-
-            let totalLength = selectedCourses.length;
-            let totalPrice = 0;
-            let count = 0;
-
-            selectedCourses.forEach(function (course_id) {
-                $.ajax({
-                    url: "{{ route('get_course') }}",
-                    type: "get",
-                    data: { course_id: course_id },
-                    dataType: "json",
-                    success: function (response) {
-                        if (response.status == 1) {
-                            totalPrice += parseFloat(response.price);
-                        }
-                        count++;
-                        if (count === totalLength) {
-                            $('#course_data').show();
-                            $('#course_data').text(totalLength + ' Courses Selected | Total Price: ' + totalPrice);
-                        }
-                    }
-                });
-            });
-        }
 
         // Get Registration No
         function get_reg_no(center_id) {
