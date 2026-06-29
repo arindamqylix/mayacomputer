@@ -94,3 +94,26 @@ if (!function_exists('generateInvoiceNumber')) {
         return $invoiceNumber;
     }
 }
+
+if (!function_exists('format_dob_display')) {
+    /**
+     * Display date of birth in ordinal form, e.g. 15th Oct, 2001
+     */
+    function format_dob_display($date, $default = 'N/A') {
+        if ($date === null || $date === '' || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') {
+            return $default;
+        }
+        try {
+            $d = \Carbon\Carbon::parse($date);
+        } catch (\Exception $e) {
+            return is_string($date) ? $date : $default;
+        }
+        $day = (int) $d->format('j');
+        if (in_array($day % 100, [11, 12, 13], true)) {
+            $suffix = 'th';
+        } else {
+            $suffix = [1 => 'st', 2 => 'nd', 3 => 'rd'][$day % 10] ?? 'th';
+        }
+        return $day . $suffix . ' ' . $d->format('M') . ', ' . $d->format('Y');
+    }
+}

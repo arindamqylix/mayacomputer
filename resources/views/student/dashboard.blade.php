@@ -492,7 +492,7 @@ body {
                     <i class="fas fa-birthday-cake me-2 text-danger"></i>
                     <span class="text-muted">
                         @if($data->sl_dob)
-                            {{ \Carbon\Carbon::parse($data->sl_dob)->format('d M, Y') }}
+                            {{ format_dob_display($data->sl_dob) }}
                         @else
                             N/A
                         @endif

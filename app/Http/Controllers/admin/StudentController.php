@@ -645,6 +645,18 @@ class StudentController extends Controller
 
 	public function student_status_updated(Request $request)
 	{
+		if ($request->status === 'RESULT OUT') {
+			$hasResult = DB::table('set_result')
+				->where('sr_FK_of_student_id', $request->student_id)
+				->exists();
+			if (! $hasResult) {
+				return response()->json([
+					'msg' => 'Publish the student result first (Result → Set Result). Certificate needs marks on record.',
+					'status' => 0,
+				]);
+			}
+		}
+
 		$student = Student::where('sl_id', $request->student_id)->update([
 			'sl_status' => $request->status
 		]);

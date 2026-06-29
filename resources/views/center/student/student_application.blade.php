@@ -56,7 +56,7 @@ hr{solid 1px #000;}
 								<tr>
 									<td> </td>
 									<td> Date of Birth *</td>
-									<td>{{ $data->sl_dob }}	</td>
+									<td>{{ format_dob_display($data->sl_dob) }}	</td>
 									<tr>
 										<tr>
 											<td>  </td>

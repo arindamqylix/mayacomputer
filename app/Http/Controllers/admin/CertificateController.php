@@ -40,18 +40,23 @@ class CertificateController extends Controller
     // Generate certificate page (admin panel)
     public function generate_certificate()
     {
-        // Get all students with RESULT OUT status who don't have REGULAR certificates yet
+        // Students with a published result (set_result) and no REGULAR certificate yet
         $students = DB::table('set_result')
             ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
             ->join('center_login', 'set_result.sr_FK_of_center_id', '=', 'center_login.cl_id')
+            ->join('course', function ($join) {
+                $join->whereRaw('course.c_id = COALESCE(set_result.sr_FK_of_course_id, student_login.sl_FK_of_course_id)');
+            })
             ->leftJoin('student_certificates', function ($join) {
                 $join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
                     ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
-                    ->where('student_certificates.sc_type', 'REGULAR');
+                    ->where(function ($q) {
+                        $q->where('student_certificates.sc_type', 'REGULAR')
+                            ->orWhereNull('student_certificates.sc_type');
+                    });
             })
-            ->where('student_login.sl_status', 'RESULT OUT')
             ->whereNull('student_certificates.sc_id')
+            ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
             ->where(function ($q) {
                 $q->whereNull('course.is_typing_related')
                     ->orWhere('course.is_typing_related', 0);
@@ -66,6 +71,7 @@ class CertificateController extends Controller
                 'course.c_short_name',
                 'course.c_duration',
                 'student_login.sl_reg_date',
+                'student_login.sl_status',
                 'set_result.sr_id as result_id',
                 'set_result.sr_total_marks_obtained',
                 'set_result.sr_percentage',
@@ -76,7 +82,17 @@ class CertificateController extends Controller
             ->orderBy('student_login.sl_name', 'ASC')
             ->get();
 
-        return view('admin.certificate.generate', compact('students'));
+        // RESULT OUT in list but no marks/result row yet (usually status changed manually)
+        $missingResultCount = DB::table('student_login as s')
+            ->where('s.sl_status', 'RESULT OUT')
+            ->whereNotExists(function ($q) {
+                $q->select(DB::raw(1))
+                    ->from('set_result as r')
+                    ->whereColumn('r.sr_FK_of_student_id', 's.sl_id');
+            })
+            ->count();
+
+        return view('admin.certificate.generate', compact('students', 'missingResultCount'));
     }
 
     // Generate typing certificate page (admin panel)

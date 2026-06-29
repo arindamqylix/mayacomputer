@@ -396,7 +396,7 @@
                             <tr>
                                 <td class="label">Date of Birth</td>
                                 <td class="colon">:</td>
-                                <td class="value">{{ \Carbon\Carbon::parse($data->sl_dob ?? now())->format('d-M-Y') }}</td>
+                                <td class="value">{{ format_dob_display($data->sl_dob) }}</td>
                             </tr>
                             <tr>
                                 <td class="label">Gender</td>

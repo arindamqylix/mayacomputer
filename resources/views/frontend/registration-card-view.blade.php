@@ -368,7 +368,7 @@
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value">: {{ $student->sl_dob }} &nbsp;&nbsp; Gender : {{ strtoupper($student->sl_sex) }} &nbsp;&nbsp; Category : {{ $student->sl_category ?? 'Gen' }}</td>
+                        <td class="value">: {{ format_dob_display($student->sl_dob) }} &nbsp;&nbsp; Gender : {{ strtoupper($student->sl_sex) }} &nbsp;&nbsp; Category : {{ $student->sl_category ?? 'Gen' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>

@@ -448,7 +448,7 @@
                                 <div class="info-label-icon"><i class="fas fa-birthday-cake"></i></div>
                                 <div class="info-label-text">DOB:</div>
                                 <div class="info-value">
-                                    {{ \Carbon\Carbon::parse($data->sl_dob)->format('d-m-Y') }}
+                                    {{ format_dob_display($data->sl_dob) }}
                                 </div>
                             </div>
                         @endif

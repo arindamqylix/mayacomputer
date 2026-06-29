@@ -213,17 +213,8 @@ class PagesController extends Controller
             $siteEmail = $siteSettings && !empty($siteSettings->email) ? $siteSettings->email : 'mccsiswar@gmail.com';
             $sitePhone = $siteSettings && !empty($siteSettings->phone) ? $siteSettings->phone : '+91 8825148127';
 
-            // Format dates - ensure proper date format handling
-            $dobFormatted = 'N/A';
-            if ($student->sl_dob) {
-                // Handle YYYY-MM-DD format from database
-                $dobTimestamp = strtotime($student->sl_dob);
-                if ($dobTimestamp !== false) {
-                    $dobFormatted = date('d-M-Y', $dobTimestamp);
-                } else {
-                    $dobFormatted = $student->sl_dob; // Use as-is if strtotime fails
-                }
-            }
+            // Date of birth for PDF (e.g. 15th Oct, 2001)
+            $dobFormatted = format_dob_display($student->sl_dob);
 
             $validFrom = date('d-M-Y');
             $validTill = date('d-M-Y', strtotime('+1 year'));

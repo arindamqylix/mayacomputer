@@ -168,7 +168,7 @@
 										<td>
 											<span class="date-display">
 												@if($data->sl_dob)
-													{{ \Carbon\Carbon::parse($data->sl_dob)->format('d M, Y') }}
+													{{ format_dob_display($data->sl_dob) }}
 												@else
 													N/A
 												@endif

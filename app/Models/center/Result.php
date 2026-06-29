@@ -13,6 +13,7 @@ class Result extends Model
     protected $fillable = [
     	'sr_FK_of_student_id',
         'sr_FK_of_center_id',
+        'sr_FK_of_course_id',
     	'sr_written',
     	'sr_wr_full_marks',
     	'sr_wr_pass_marks',

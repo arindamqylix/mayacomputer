@@ -186,8 +186,15 @@
 						@else
 							<div class="alert alert-info">
 								<i class="fas fa-info-circle"></i>
-								No students with RESULT OUT status available for certificate generation.
+								No students with a published result are ready for certificate generation.
 							</div>
+							@if(!empty($missingResultCount) && $missingResultCount > 0)
+								<div class="alert alert-warning mt-2">
+									<i class="fas fa-exclamation-triangle"></i>
+									<strong>{{ $missingResultCount }}</strong> student(s) show <strong>RESULT OUT</strong> in the list but have no result/marks saved yet.
+									Open <strong>Result → Set Result</strong>, publish marks for the student, then return here to generate the certificate.
+								</div>
+							@endif
 						@endif
 					</div>
 				</div>

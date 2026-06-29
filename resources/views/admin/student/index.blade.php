@@ -420,18 +420,7 @@
 									</td>
 									<td>
 										<span class="date-display">
-											@if($data->sl_dob && $data->sl_dob != '0000-00-00')
-												@php
-													try {
-														$date = \Carbon\Carbon::parse($data->sl_dob)->format('d M, Y');
-													} catch (\Exception $e) {
-														$date = $data->sl_dob;
-													}
-												@endphp
-												{{ $date }}
-											@else
-												N/A
-											@endif
+											{{ format_dob_display($data->sl_dob) }}
 										</span>
 									</td>
 									<td>

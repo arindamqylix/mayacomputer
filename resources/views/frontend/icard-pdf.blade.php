@@ -277,7 +277,7 @@
                     @if($student->sl_dob)
                         <tr class="info-row">
                             <td class="info-label">DOB:</td>
-                            <td class="info-value">{{ \Carbon\Carbon::parse($student->sl_dob)->format('d-m-Y') }}</td>
+                            <td class="info-value">{{ format_dob_display($student->sl_dob) }}</td>
                         </tr>
                     @endif
                     @if($student->sl_mobile_no ?? $student->cl_mobile ?? null)

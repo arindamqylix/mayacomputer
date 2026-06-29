@@ -234,6 +234,7 @@ class CourierController extends Controller
             'sc_dispatch_date' => $request->dispatch_date,
             'sc_tracking_number' => $request->tracking_number,
             'sc_doc_quantity' => $request->doc_quantity,
+            'sc_status' => 'DISPATCHED',
         ]);
         
         // Update student status to DISPATCHED

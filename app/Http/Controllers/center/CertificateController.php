@@ -39,15 +39,23 @@ class CertificateController extends Controller
     // List students with results (for generating certificates)
     public function generate_certificate()
     {
+        $centerId = Auth::guard('center')->user()->cl_id;
+
         $students = DB::table('set_result')
             ->join('student_login', 'set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->join('course', function ($join) {
+                $join->whereRaw('course.c_id = COALESCE(set_result.sr_FK_of_course_id, student_login.sl_FK_of_course_id)');
+            })
             ->leftJoin('student_certificates', function ($join) {
                 $join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-                    ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id');
+                    ->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+                    ->where(function ($q) {
+                        $q->where('student_certificates.sc_type', 'REGULAR')
+                            ->orWhereNull('student_certificates.sc_type');
+                    });
             })
-            ->where('set_result.sr_FK_of_center_id', Auth::guard('center')->user()->cl_id)
-            ->where('student_login.sl_status', 'RESULT OUT')
+            ->where('set_result.sr_FK_of_center_id', $centerId)
+            ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
             ->where(function ($q) {
                 $q->whereNull('course.is_typing_related')
                     ->orWhere('course.is_typing_related', 0);
@@ -57,6 +65,7 @@ class CertificateController extends Controller
                 'student_login.sl_name',
                 'student_login.sl_reg_no',
                 'student_login.sl_photo',
+                'course.c_id',
                 'course.c_full_name',
                 'course.c_short_name',
                 'set_result.sr_id as result_id',

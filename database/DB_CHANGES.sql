@@ -699,6 +699,18 @@ ADD COLUMN `is_typing_related` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0
 COMMENT '1 = typing-related course, 0 = not'
 AFTER `c_duration`;
 
+-- 29-06-2026: courier dispatch status values on student_certificates.sc_status
+ALTER TABLE `student_certificates`
+MODIFY COLUMN `sc_status` ENUM(
+    'GENERATED',
+    'ISSUED',
+    'VERIFIED',
+    'RECEIVED',
+    'DISPATCHED',
+    'PENDING',
+    'RETURNED'
+) NULL DEFAULT 'GENERATED';
+
 -- 26-04-2026: typing certificate Hindi / English WPM
 ALTER TABLE `student_certificates`
 ADD COLUMN `sc_typing_speed_hindi` VARCHAR(50) NULL DEFAULT NULL AFTER `sc_typing_speed`,

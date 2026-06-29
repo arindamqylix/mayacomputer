@@ -87,6 +87,7 @@ class ResultController extends Controller
     	$data = [
             'sr_FK_of_student_id'         => $request->student_id,
             'sr_FK_of_center_id'          => Auth::guard('center')->user()->cl_id,
+            'sr_FK_of_course_id'          => $studentRow->sl_FK_of_course_id,
             'sr_written'                  => $request->written,
             'sr_wr_full_marks'            => 100,
             'sr_wr_pass_marks'            => 40,

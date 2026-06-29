@@ -375,7 +375,7 @@
                 </div>
                 <div class="detail-row-multi">
                     <div class="detail-label">Date of Birth:</div>
-                    <div class="detail-value">{{ \Carbon\Carbon::parse($student->sl_dob)->format('d/m/Y') }}</div>
+                    <div class="detail-value">{{ format_dob_display($student->sl_dob) }}</div>
                     <div class="detail-label" style="width: 60px;">Gender:</div>
                     <div class="detail-value">{{ ucfirst($student->sl_sex ?? 'N/A') }}</div>
                     <div class="detail-label" style="width: 70px;">Category:</div>

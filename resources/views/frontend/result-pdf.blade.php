@@ -297,7 +297,7 @@
                                     <div class="info-row"><span class="info-label">Father's Name</span>: <span
                                             class="info-value">{{ strtoupper($data->sl_father_name) }}</span></div>
                                     <div class="info-row"><span class="info-label">Date of Birth</span>: <span
-                                            class="info-value">{{ $data->sl_dob }} &nbsp; Gender:
+                                            class="info-value">{{ format_dob_display($data->sl_dob) }} &nbsp; Gender:
                                             {{ strtoupper($data->sl_sex) }}</span></div>
                                     <div class="info-row"><span class="info-label">Course Name</span>: <span
                                             class="info-value">{{ strtoupper($data->c_full_name) }}</span></div>
