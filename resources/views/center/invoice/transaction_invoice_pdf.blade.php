@@ -6,18 +6,15 @@
     $sitePhone = $siteSettings && !empty($siteSettings->phone) ? $siteSettings->phone : '+91 8825148127';
     $siteAddress = $siteSettings && !empty($siteSettings->address) ? $siteSettings->address : '';
 
-    $logoPath = null;
+    $logoPath = 'header_banner.png';
     if ($siteSettings) {
-        if (!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))) {
-            $logoPath = $siteSettings->document_logo;
-        } elseif (!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))) {
-            $logoPath = $siteSettings->site_logo;
-        } else {
+        if (!empty($siteSettings->document_logo) && file_exists(public_path(ltrim($siteSettings->document_logo, '/')))) {
+            $logoPath = ltrim($siteSettings->document_logo, '/');
+        } elseif (file_exists(public_path('header_banner.png'))) {
             $logoPath = 'header_banner.png';
         }
-    } else {
-        $logoPath = 'header_banner.png';
     }
+    $bannerSrc = file_exists(public_path($logoPath)) ? public_path($logoPath) : public_path('header_banner.png');
 @endphp
 
 <style>
@@ -66,6 +63,14 @@
         background: #000077;
         color: white;
         padding: 5px;
+        margin-bottom: 8px;
+    }
+
+    .invoice-meta {
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
         margin-bottom: 20px;
     }
 
@@ -103,7 +108,7 @@
 
 <!-- Header - same structure as center_certificate.blade.php -->
 <div class="header">
-    <img src="{{ asset($logoPath) }}" alt="Maya Computer Center Banner" class="header-banner">
+    <img src="{{ $bannerSrc }}" alt="Maya Computer Center Banner" class="header-banner">
     <div class="header-subtext">
         <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
         <p class="reg-details" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
@@ -115,10 +120,10 @@
 
 <div class="invoice-title-bar">
     <h1 style="margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">TRANSACTION RECEIPT</h1>
-    <p style="margin: 2px 0 0 0; font-size: 12px; color: #fff;">
-        Receipt No: {{ $invoice_no }} | Date: {{ $invoice_date }}
-    </p>
 </div>
+<p class="invoice-meta">
+    Receipt No: {{ $invoice_no }} | Date: {{ $invoice_date }}
+</p>
 
 <div class="invoice-details">
     <table>

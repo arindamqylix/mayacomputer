@@ -127,6 +127,19 @@
 			background: linear-gradient(135deg, #5a6268 0%, #6c757d 100%);
 		}
 
+		.btn-view {
+			background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+			color: white;
+			box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+		}
+
+		.btn-view:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4);
+			color: white;
+			background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+		}
+
 		.btn-print {
 			background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 			color: white;
@@ -361,7 +374,12 @@
 												</span>
 											</td>
 											<td>
-												<div class="d-flex gap-2">
+												<div class="d-flex gap-2 flex-wrap">
+													<a href="{{ route('admin.print_admit_card', $val->ac_id) }}"
+														class="btn-action btn-view" target="_blank">
+														<i class="fas fa-eye"></i>
+														View
+													</a>
 													<a href="{{ route('admin.edit_admit_card', $val->ac_id) }}"
 														class="btn-action btn-edit">
 														<i class="fas fa-edit"></i>

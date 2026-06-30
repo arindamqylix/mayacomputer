@@ -154,11 +154,15 @@
         .footer-row {
             margin-top: 20px;
             width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
         .qr-section {
             width: 80px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .qr-code {
@@ -168,20 +172,21 @@
         }
 
         .authority-section {
-            text-align: center;
-            position: relative;
-            width: 200px;
+            text-align: right;
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .stamp-signature-wrapper {
             position: relative;
-            height: 80px;
+            height: 90px;
+            width: 200px;
+            margin-left: auto;
         }
 
         .auth-stamp {
             position: absolute;
-            left: 50%;
-            margin-left: -50px;
+            right: 0;
             height: 90px;
             opacity: 0.7;
             z-index: 1;
@@ -189,8 +194,7 @@
 
         .auth-sign {
             position: absolute;
-            left: 50%;
-            margin-left: -40px;
+            right: 12px;
             top: 20px;
             height: 45px;
             z-index: 2;
@@ -200,6 +204,7 @@
             font-weight: bold;
             font-size: 13px;
             margin-top: 5px;
+            text-align: right;
         }
     </style>
 </head>
@@ -219,12 +224,12 @@
                 <img src="{{ $bannerPath }}" class="header-banner">
             @endif
             <div class="header-subtext">
-                <p style="font-size: 12px; font-weight: bold; margin: 2px 0;">CIN : U85220DL2023PTC422329</p>
-                <p style="font-size: 10px; font-weight: bold; margin: 1px 0;">Reg. Under the Company Act.2013 MCA, Govt.
-                    of India</p>
-                <p style="font-size: 14px; font-weight: bold; color: red; margin: 2px 0;">An ISO 9001: 2015 Certified
-                </p>
-            </div>
+                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                    <p class="reg-details" style="font-size: 11px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                    <p class="reg-details" style="font-size:9px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+                    <p class="iso-text" style="font-size: 14px;">An ISO 9001: 2015 Certified</p>
+                    <p class="reg-details" style="font-size: 10px; margin-top: 2px;">Visit Our Website : https://mayacomputercenter.in</p>
+                </div>
         </div>
 
         <div class="card-title">ADMIT CARD – {{ \Carbon\Carbon::parse($admit->exam_date)->year }}</div>
@@ -317,31 +322,25 @@
         </div>
 
         <div class="footer-row">
-            <table width="100%">
-                <tr>
-                    <td class="qr-section">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
-                            class="qr-code">
-                    </td>
-                    <td align="right">
-                        <div class="authority-section">
-                            <div class="stamp-signature-wrapper">
-                                @php
-                                    $stampPath = !empty($setting->authorize_stamp) ? public_path(ltrim($setting->authorize_stamp, '/')) : '';
-                                    $sigPath = !empty($setting->authorize_signature) ? public_path(ltrim($setting->authorize_signature, '/')) : '';
-                                @endphp
-                                @if(!empty($stampPath) && file_exists($stampPath))
-                                    <img src="{{ $stampPath }}" class="auth-stamp">
-                                @endif
-                                @if(!empty($sigPath) && file_exists($sigPath))
-                                    <img src="{{ $sigPath }}" class="auth-sign">
-                                @endif
-                            </div>
-                            <div class="authority-label">Controller of Examination</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+            <div class="qr-section">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
+                    class="qr-code">
+            </div>
+            <div class="authority-section">
+                <div class="stamp-signature-wrapper">
+                    @php
+                        $stampPath = !empty($setting->authorize_stamp) ? public_path(ltrim($setting->authorize_stamp, '/')) : '';
+                        $sigPath = !empty($setting->authorize_signature) ? public_path(ltrim($setting->authorize_signature, '/')) : '';
+                    @endphp
+                    @if(!empty($stampPath) && file_exists($stampPath))
+                        <img src="{{ $stampPath }}" class="auth-stamp">
+                    @endif
+                    @if(!empty($sigPath) && file_exists($sigPath))
+                        <img src="{{ $sigPath }}" class="auth-sign">
+                    @endif
+                </div>
+                <div class="authority-label">Controller of Examination</div>
+            </div>
         </div>
     </div>
 </body>

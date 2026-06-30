@@ -1,10 +1,19 @@
 @php
     $siteSettings = site_settings();
-    $siteLogo = $siteSettings && !empty($siteSettings->site_logo) ? asset($siteSettings->site_logo) : asset('logo.png');
     $siteName = $siteSettings && !empty($siteSettings->name) ? $siteSettings->name : 'MAYA COMPUTER CENTER';
     $siteEmail = $siteSettings && !empty($siteSettings->email) ? $siteSettings->email : 'mccsiswar@gmail.com';
     $sitePhone = $siteSettings && !empty($siteSettings->phone) ? $siteSettings->phone : '+91 8825148127';
     $siteAddress = $siteSettings && !empty($siteSettings->address) ? $siteSettings->address : '';
+
+    $logoPath = 'header_banner.png';
+    if ($siteSettings) {
+        if (!empty($siteSettings->document_logo) && file_exists(public_path(ltrim($siteSettings->document_logo, '/')))) {
+            $logoPath = ltrim($siteSettings->document_logo, '/');
+        } elseif (file_exists(public_path('header_banner.png'))) {
+            $logoPath = 'header_banner.png';
+        }
+    }
+    $bannerSrc = file_exists(public_path($logoPath)) ? public_path($logoPath) : public_path('header_banner.png');
 @endphp
 
 <style>
@@ -13,45 +22,92 @@
         font-size: 12px;
         color: #333;
     }
-    .invoice-header {
-        border-bottom: 2px solid #333;
-        padding-bottom: 15px;
+
+    .header {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .header-banner {
+        width: 80%;
+        max-height: 120px;
+        object-fit: contain;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .header-subtext {
+        text-align: center;
+        margin-top: -20px;
+        padding-left: 0;
+    }
+
+    .reg-details {
+        font-size: 10px;
+        font-weight: bold;
+        margin: 1px 0;
+        color: #000;
+        font-family: Arial, sans-serif;
+    }
+
+    .iso-text {
+        color: red;
+        font-weight: bold;
+        font-size: 12px;
+        margin: 2px 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .invoice-title-bar {
+        text-align: center;
+        background: #000077;
+        color: white;
+        padding: 5px;
+        margin-bottom: 8px;
+    }
+
+    .invoice-meta {
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
         margin-bottom: 20px;
     }
-    .invoice-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #2c3e50;
-        margin: 0;
-    }
-    .company-info {
-        margin-top: 10px;
-    }
+
     .invoice-details {
         margin-top: 20px;
     }
+
     table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
     }
-    table th, table td {
+
+    table th,
+    table td {
         padding: 10px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
+
     table th {
         background-color: #f8f9fa;
         font-weight: bold;
     }
+
     .text-right {
         text-align: right;
     }
+
     .total-section {
         margin-top: 20px;
         border-top: 2px solid #333;
         padding-top: 10px;
     }
+
     .footer {
         margin-top: 40px;
         padding-top: 20px;
@@ -62,39 +118,23 @@
     }
 </style>
 
-<!-- New Header Structure -->
-@php
-    $siteSettings = site_settings();
-    $logoPath = null;
-    if($siteSettings) {
-         if(!empty($siteSettings->document_logo) && file_exists(public_path($siteSettings->document_logo))){
-             $logoPath = $siteSettings->document_logo;
-         } elseif(!empty($siteSettings->site_logo) && file_exists(public_path($siteSettings->site_logo))){
-             $logoPath = $siteSettings->site_logo;
-         } else {
-             $logoPath = 'header_banner.png';
-         }
-    } else {
-         $logoPath = 'header_banner.png';
-    }
-@endphp
-
-<div class="header-container" style="text-align: center; margin-bottom: 10px; border-bottom: 2px solid #000077; padding-bottom: 5px;">
-    <img src="{{ asset($logoPath) }}" alt="Banner" style="width: 100%; max-height: 80px; object-fit: contain;">
-    
-    <div style="text-align: center; margin-top: -10px;">
-        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Reg. Under the Company Act.2013 MCA, Government of India</p>
-        <p style="font-size: 8px; font-weight: bold; margin: 2px 0; color: #000; font-family: Arial, sans-serif;">Registered Under Skill India, Udyam & Startup India</p>
-        <p style="color: red; font-weight: bold; font-size: 8px; margin: 2px 0; font-family: Arial, sans-serif;">An ISO 9001: 2015 Certified</p>
+<div class="header">
+    <img src="{{ $bannerSrc }}" alt="Maya Computer Center Banner" class="header-banner">
+    <div class="header-subtext">
+        <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+        <p class="reg-details" style="font-size: 12px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+        <p class="reg-details" style="font-size: 11px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
+        <p class="iso-text" style="font-size: 15px;">An ISO 9001: 2015 Certified</p>
+        <p class="reg-details" style="font-size: 11px; margin-top: 2px;">Visit Our Website : https://mayacomputercenter.in</p>
     </div>
 </div>
 
-<div class="invoice-title-bar" style="text-align: center; background: #000077; color: white; padding: 5px; margin-bottom: 20px;">
-    <h1 style="margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">INVOICE</h1>
-    <p style="margin: 2px 0 0 0; font-size: 12px; color: #fff;">
-        Invoice No: {{ $invoice_no }} | Date: {{ $invoice_date }}
-    </p>
+<div class="invoice-title-bar">
+    <h1 style="margin: 0; font-size: 18px; letter-spacing: 1px;">Wallet Invoice</h1>
 </div>
+<p class="invoice-meta">
+    Invoice No: {{ $invoice_no }} | Date: {{ $invoice_date }}
+</p>
 
 <div class="invoice-details">
     <table>
@@ -125,19 +165,19 @@
         <thead>
             <tr>
                 <th>Description</th>
-                <th class="text-right">Amount (₹)</th>
+                <th class="text-right">Amount (Rs.)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Wallet Recharge - Payment ID: {{ $recharge->cr_razorpay_id ?? $recharge->cr_payment_id }}</td>
-                <td class="text-right">₹ {{ number_format($recharge->cr_amount, 2) }}</td>
+                <td class="text-right">Rs. {{ number_format($recharge->cr_amount, 2) }}</td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <th class="text-right">Total Amount:</th>
-                <th class="text-right">₹ {{ number_format($recharge->cr_amount, 2) }}</th>
+                <th class="text-right">Rs. {{ number_format($recharge->cr_amount, 2) }}</th>
             </tr>
         </tfoot>
     </table>
@@ -152,4 +192,3 @@
         <p>{{ $siteName }} | {{ $siteEmail }} | {{ $sitePhone }}</p>
     </div>
 </div>
-

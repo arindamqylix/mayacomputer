@@ -288,25 +288,28 @@
         /* Stamp & signature - same size as center_certificate.blade.php */
         .controller-sign {
             flex-shrink: 0;
+            margin-left: auto;
             font-family: Arial, sans-serif;
         }
 
         .controller-sig-overlap {
             position: relative;
             width: 200px;
-            text-align: center;
+            text-align: right;
+            margin-left: auto;
         }
 
         .controller-sig-area {
             position: relative;
             height: 110px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 200px;
+            margin-left: auto;
         }
 
         .controller-sig-area .auth-stamp {
             position: absolute;
+            right: 0;
+            left: auto;
             height: 130px;
             width: auto;
             object-fit: contain;
@@ -315,12 +318,13 @@
         }
 
         .controller-sig-area .auth-sign {
-            position: relative;
+            position: absolute;
+            right: 12px;
+            top: 28px;
             height: 50px;
             width: auto;
             object-fit: contain;
             z-index: 2;
-            margin-bottom: 5px;
         }
 
         .controller-sig-label {
@@ -330,6 +334,7 @@
             font-size: 14px;
             color: #333;
             white-space: nowrap;
+            text-align: right;
         }
 
         /* Print styles */

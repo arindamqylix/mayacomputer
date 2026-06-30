@@ -287,25 +287,28 @@
 
         .controller-sign {
             flex-shrink: 0;
+            margin-left: auto;
             font-family: Arial, sans-serif;
         }
 
         .controller-sig-overlap {
             position: relative;
             width: 160px;
-            text-align: center;
+            text-align: right;
+            margin-left: auto;
         }
 
         .controller-sig-area {
             position: relative;
             height: 47px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 160px;
+            margin-left: auto;
         }
 
         .controller-sig-area .auth-stamp {
             position: absolute;
+            right: 0;
+            left: auto;
             height: 95px;
             width: auto;
             max-width: 140px;
@@ -315,7 +318,9 @@
         }
 
         .controller-sig-area .auth-sign {
-            position: relative;
+            position: absolute;
+            right: 8px;
+            top: 8px;
             height: 38px;
             max-width: 90px;
             object-fit: contain;
@@ -328,6 +333,7 @@
             font-size: 14px;
             color: #333;
             white-space: nowrap;
+            text-align: right;
         }
 
         /* Print styles */
