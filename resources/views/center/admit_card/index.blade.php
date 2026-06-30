@@ -275,11 +275,7 @@
 											</td>
 											<td>
 												<span class="date-display">
-													@if($val->sl_dob)
-														{{ format_dob_display($val->sl_dob) }}
-													@else
-														N/A
-													@endif
+													{{ format_dob_display($val->sl_dob ?? null) }}
 												</span>
 											</td>
 											<td>

@@ -206,6 +206,7 @@
 			color: #495057;
 			font-weight: 500;
 			font-family: 'Courier New', monospace;
+			white-space: nowrap;
 		}
 
 		.time-display {
@@ -342,11 +343,7 @@
 											</td>
 											<td>
 												<span class="date-display">
-													@if($val->sl_dob)
-														{{ format_dob_display($val->sl_dob) }}
-													@else
-														N/A
-													@endif
+													{{ format_dob_display($val->sl_dob ?? null) }}
 												</span>
 											</td>
 											<td>

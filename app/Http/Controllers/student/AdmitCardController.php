@@ -27,31 +27,14 @@ class AdmitCardController extends Controller
             return back()->with('error', 'Admit Card not found');
         }
 
-        $student = DB::table('student_login')
-            ->where('sl_id', $admit->student_id)
-            ->first();
-
-        $course = DB::table('course')
-            ->where('c_id', $student->sl_FK_of_course_id)
-            ->first();
-
-        $center = DB::table('center_login')
-            ->where('cl_id', $admit->center_id)
-            ->first();
-
-        $setting = DB::table('site_settings')->first();
-
-        $data = [
-            'admit' => $admit,
-            'student' => $student,
-            'course' => $course,
-            'center' => $center,
-            'setting' => $setting
-        ];
+        $data = admit_card_view_data($admit->ac_id);
+        if (!$data) {
+            return back()->with('error', 'Admit Card not found');
+        }
 
         $pdf = PDF::loadView('admin.admit_card.pdf', $data);
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->download('Admit_Card_' . $student->sl_reg_no . '.pdf');
+        return $pdf->download('Admit_Card_' . $data['student']->sl_reg_no . '.pdf');
     }
 
     public function view_admit_card()
@@ -70,23 +53,12 @@ class AdmitCardController extends Controller
             return redirect()->route('student_dashboard')->with('error', 'Admit Card not found. Please contact your center.');
         }
 
-        // Get student details
-        $student = DB::table('student_login')
-            ->where('sl_id', $admit->student_id)
-            ->first();
+        $data = admit_card_view_data($admit->ac_id);
+        if (!$data) {
+            return redirect()->route('student_dashboard')->with('error', 'Admit Card not found. Please contact your center.');
+        }
 
-        // Get course details
-        $course = DB::table('course')
-            ->where('c_id', $student->sl_FK_of_course_id)
-            ->first();
-
-        // Get center details
-        $center = DB::table('center_login')
-            ->where('cl_id', $admit->center_id)
-            ->first();
-
-        $setting = DB::table('site_settings')->first();
-        return view('student.view_admit_card', compact('admit', 'student', 'course', 'center', 'setting'));
+        return view('student.view_admit_card', $data);
     }
 }
 

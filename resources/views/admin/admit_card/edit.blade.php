@@ -249,7 +249,7 @@
 									@foreach($students as $val)
 										<option value="{{ $val->sl_id }}" 
 											{{ $admit->student_id == $val->sl_id ? 'selected' : '' }}>
-											[{{ $val->sl_reg_no }}] {{ $val->sl_name }} - {{ $val->c_full_name }} 
+											[{{ $val->sl_reg_no }}] {{ $val->sl_name }} — DOB: {{ format_dob_display($val->sl_dob ?? null) }} — {{ $val->c_full_name }} 
 											@if(isset($val->center_name)) ({{ $val->center_name }}) @endif
 										</option>
 									@endforeach

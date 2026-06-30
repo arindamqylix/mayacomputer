@@ -250,7 +250,9 @@
 
         .signature-wrapper {
             position: relative;
-            width: 140px;
+            min-width: 165px;
+            width: auto;
+            flex-shrink: 0;
             text-align: center;
         }
 
@@ -292,15 +294,15 @@
         }
 
         .signature-label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
             color: #000077;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             position: relative;
             z-index: 0;
             margin-top: -10px;
-            /* Slight overlap upwards */
+            white-space: nowrap;
         }
 
         .sig-text-wrapper {
@@ -308,6 +310,7 @@
             z-index: 0;
             width: 100%;
             text-align: center;
+            white-space: nowrap;
         }
 
         @media print {

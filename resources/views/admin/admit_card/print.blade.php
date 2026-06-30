@@ -398,7 +398,7 @@
             <!-- Blue Strip -->
             <div class="blue-bar">
                 <span>Registration No. &nbsp;&nbsp;: {{ $student->sl_reg_no }}</span>
-                <span>Year : {{ \Carbon\Carbon::parse($student->created_at)->year }}</span>
+                <span>Year : {{ \Carbon\Carbon::parse($admit->exam_date)->year }}</span>
             </div>
 
             <!-- Student Details -->
@@ -406,65 +406,47 @@
                 <table class="info-table">
                     <tr>
                         <td class="label">Student Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($student->sl_name) }}</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Father’s Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($student->sl_mother_name) }}</td>
+                        <td class="label">Father's Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_father_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Mother’s Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($student->sl_father_name) }}</td>
+                        <td class="label">Mother's Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($student->sl_mother_name ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ format_dob_display($student->sl_dob) }} &nbsp;&nbsp; Gender :
-                            {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
-                            {{ $student->sl_category ?? 'Gen' }}
-                        </td>
+                        <td class="value" colspan="2">: {{ strtoupper(format_dob_display($student->sl_dob ?? null)) }} &nbsp;&nbsp; Gen: {{ strtoupper($student->sl_sex ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
-                        <td class="value" colspan="2">:
-                            {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}
-                        </td>
+                        <td class="value" colspan="2">: {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Course Duration</td>
-                        <td class="value" colspan="2">:
-                            @php $dur = $course->c_duration ?? 0;
-                                if (is_numeric($dur) && $dur >= 12) {
-                                    echo (round($dur / 12) == $dur / 12 ? (int) ($dur / 12) : number_format($dur / 12, 1)) . (($dur / 12) == 1 ? ' Year' : ' Years');
-                                } elseif (is_numeric($dur) && $dur > 0) {
-                                    echo (int) $dur . ($dur == 1 ? ' Month' : ' Months');
-                                } else {
-                                    echo $course->c_duration ?? 'N/A';
-                            } @endphp
-                        </td>
+                        <td class="label">Center Name</td>
+                        <td class="value" colspan="2">: {{ strtoupper($center->cl_center_name ?? $center->cl_name ?? '') }}</td>
                     </tr>
                     <tr>
-
-                                                <td class="label">Center Name</td>
-                        <td class="value" colspan="2">: {{ strtoupper($center->cl_center_name ?? '') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Center Code & Address</td>
-                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} &
-                        {{ $center->cl_center_address ?? 'N/A' }}</td>
+                        <td class="label">Center Code</td>
+                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }}</td>
                     </tr>
             </table>
 
                 <div class="photo-box">
                     <div class="photo-placeholder">
-                        @if(!empty($student->sl_photo) && file_exists(public_path($student->sl_photo)))
-                            <img src="{{ asset($student->sl_photo) }}" alt="Student Photo">
+                        @php $photoUrl = student_media_url($student->sl_photo ?? null); @endphp
+                        @if($photoUrl)
+                            <img src="{{ $photoUrl }}" alt="Student Photo">
                         @else
                         Picture<br><br>1.2 in X 1.5 in
                     @endif
                     </div>
                     <div class="signature-box" style="padding: 2px;">
-                        @if(!empty($student->sl_signature) && file_exists(public_path($student->sl_signature)))
-                            <img src="{{ asset($student->sl_signature) }}" alt="Student Signature"
+                        @php $signUrl = student_media_url($student->sl_signature ?? null); @endphp
+                        @if($signUrl)
+                            <img src="{{ $signUrl }}" alt="Student Signature"
                                 style="max-height: 25px; max-width: 100%;">
                         @else
                             Student Signature

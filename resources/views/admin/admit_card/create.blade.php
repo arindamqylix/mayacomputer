@@ -491,6 +491,7 @@
 										</th>
 										<th>Student Details</th>
 										<th>Registration No.</th>
+										<th>DOB</th>
 										<th>Course</th>
 										<th>Center</th>
 									</tr>
@@ -516,6 +517,9 @@
 											</td>
 											<td>
 												<span class="badge-reg">{{ $student->sl_reg_no ?? 'N/A' }}</span>
+											</td>
+											<td>
+												<span class="date-display">{{ format_dob_display($student->sl_dob ?? null) }}</span>
 											</td>
 											<td>
 												<span class="badge-course">{{ $student->c_short_name ?? $student->c_full_name ?? 'N/A' }}</span>

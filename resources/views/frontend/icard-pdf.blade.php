@@ -201,11 +201,14 @@
         }
 
         .signature-label {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
             color: #000077;
             text-transform: uppercase;
+            letter-spacing: 0.2px;
             margin-top: 5px;
+            white-space: nowrap;
+            text-align: center;
         }
     </style>
 </head>

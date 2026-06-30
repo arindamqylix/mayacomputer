@@ -35,6 +35,10 @@
             margin-top: -10px;
         }
 
+        .header-subtext p {
+            margin: 2px 0;
+        }
+
         .card-title {
             text-align: center;
             color: green;
@@ -68,7 +72,7 @@
         }
 
         .info-table {
-            width: 100%;
+            width: 75%;
             border-collapse: collapse;
         }
 
@@ -102,6 +106,7 @@
             height: 120px;
             border: 1px solid #000;
             margin-bottom: 2px;
+            overflow: hidden;
         }
 
         .photo-box img {
@@ -115,6 +120,7 @@
             height: 35px;
             border: 1px solid #000;
             border-top: none;
+            overflow: hidden;
         }
 
         .sign-box img {
@@ -154,15 +160,17 @@
         .footer-row {
             margin-top: 20px;
             width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+        }
+
+        .footer-row table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
         .qr-section {
             width: 80px;
-            text-align: center;
-            flex-shrink: 0;
+            text-align: left;
+            vertical-align: bottom;
         }
 
         .qr-code {
@@ -172,14 +180,15 @@
         }
 
         .authority-section {
-            flex-shrink: 0;
-            margin-left: auto;
             width: 240px;
+            text-align: right;
+            vertical-align: bottom;
         }
 
         .controller-sig-overlap {
             position: relative;
             width: 240px;
+            margin-left: auto;
             text-align: center;
         }
 
@@ -221,81 +230,85 @@
 </head>
 
 <body>
+    @php
+        $examYear = \Carbon\Carbon::parse($admit->exam_date)->year;
+        $examAddress = $center->cl_center_address ?? 'N/A';
+        $venueCenter = \DB::table('center_login')->where('cl_center_name', $admit->exam_venue)->orWhere('cl_name', $admit->exam_venue)->first();
+        if ($venueCenter && !empty($venueCenter->cl_center_address)) {
+            $examAddress = $venueCenter->cl_center_address;
+        }
+        $bannerPath = !empty($setting->document_logo) ? public_path(ltrim($setting->document_logo, '/')) : public_path('header_banner.png');
+        $stampPath = !empty($setting->authorize_stamp) ? public_path(ltrim($setting->authorize_stamp, '/')) : '';
+        $sigPath = !empty($setting->authorize_signature) ? public_path(ltrim($setting->authorize_signature, '/')) : '';
+        $photoPath = student_media_public_path($student->sl_photo ?? null);
+        $signPath = student_media_public_path($student->sl_signature ?? null);
+    @endphp
+
     <div class="admit-card">
         <div class="header">
-            @php
-                $bannerPath = '';
-                if (!empty($setting->document_logo)) {
-                    $bannerPath = public_path(ltrim($setting->document_logo, '/'));
-                } else {
-                    $bannerPath = public_path('header_banner.png');
-                }
-            @endphp
             @if(!empty($bannerPath) && file_exists($bannerPath))
                 <img src="{{ $bannerPath }}" class="header-banner">
             @endif
             <div class="header-subtext">
-                    <p class="reg-details" style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
-                    <p class="reg-details" style="font-size: 11px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
-                    <p class="reg-details" style="font-size:9px;">Registered Under NCT Delhi, Skill India, Udyam & Startup India</p>
-                    <p class="iso-text" style="font-size: 14px;">An ISO 9001: 2015 Certified</p>
-                    <p class="reg-details" style="font-size: 10px; margin-top: 2px;">Visit Our Website : https://mayacomputercenter.in</p>
-                </div>
+                <p style="font-size: 14px;">CIN : U85220DL2023PTC422329</p>
+                <p style="font-size: 11px;">Reg. Under the Company Act.2013 MCA, Government of India</p>
+                <p style="font-size: 9px;">Registered Under NCT Delhi, Skill India, Udyam &amp; Startup India</p>
+                <p style="font-size: 14px;">An ISO 9001: 2015 Certified</p>
+                <p style="font-size: 10px;">Visit Our Website : https://mayacomputercenter.in</p>
+            </div>
         </div>
 
-        <div class="card-title">ADMIT CARD – {{ \Carbon\Carbon::parse($admit->exam_date)->year }}</div>
+        <div class="card-title">ADMIT CARD – {{ $examYear }}</div>
 
         <div class="blue-bar">
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td align="left">Registration No. : {{ $student->sl_reg_no }}</td>
-                    <td align="right">Year : {{ \Carbon\Carbon::parse($student->created_at)->year }}</td>
+                    <td align="right">Year : {{ $examYear }}</td>
                 </tr>
             </table>
         </div>
 
         <div class="details-section">
-            <table class="info-table" style="width: 75%;">
+            <table class="info-table">
                 <tr>
                     <td class="label">Student Name</td>
-                    <td class="value">: {{ strtoupper($student->sl_name) }}</td>
+                    <td class="value">: {{ strtoupper($student->sl_name ?? '') }}</td>
                 </tr>
                 <tr>
-                    <td class="label">Father’s Name</td>
-                    <td class="value">: {{ strtoupper($student->sl_father_name) }}</td>
+                    <td class="label">Father's Name</td>
+                    <td class="value">: {{ strtoupper($student->sl_father_name ?? '') }}</td>
                 </tr>
                 <tr>
-                    <td class="label">Mother’s Name</td>
-                    <td class="value">: {{ strtoupper($student->sl_mother_name) }}</td>
+                    <td class="label">Mother's Name</td>
+                    <td class="value">: {{ strtoupper($student->sl_mother_name ?? '') }}</td>
                 </tr>
                 <tr>
                     <td class="label">Date of Birth</td>
-                    <td class="value">: {{ format_dob_display($student->sl_dob) }} &nbsp; Gen: {{ $student->sl_sex }}</td>
+                    <td class="value">: {{ strtoupper(format_dob_display($student->sl_dob ?? null)) }} &nbsp; Gen: {{ strtoupper($student->sl_sex ?? '') }}</td>
                 </tr>
                 <tr>
                     <td class="label">Course Name</td>
-                    <td class="value">: {{ strtoupper($course->c_full_name) }}</td>
+                    <td class="value">: {{ strtoupper($course->c_full_name ?? $course->c_short_name ?? '') }}</td>
                 </tr>
                 <tr>
                     <td class="label">Center Name</td>
-                    <td class="value">: {{ strtoupper($center->cl_center_name) }}</td>
+                    <td class="value">: {{ strtoupper($center->cl_center_name ?? $center->cl_name ?? '') }}</td>
                 </tr>
                 <tr>
                     <td class="label">Center Code</td>
-                    <td class="value">: {{ $center->cl_code }}</td>
+                    <td class="value">: {{ $center->cl_code ?? '' }}</td>
                 </tr>
             </table>
 
             <div class="photo-sign-container">
                 <div class="photo-box">
-                    @php $photoPath = !empty($student->sl_photo) ? public_path(ltrim($student->sl_photo, '/')) : ''; @endphp
-                    @if(!empty($photoPath) && file_exists($photoPath))
+                    @if($photoPath)
                         <img src="{{ $photoPath }}">
                     @endif
                 </div>
                 <div class="sign-box">
-                    @php $signPath = !empty($student->sl_signature) ? public_path(ltrim($student->sl_signature, '/')) : ''; @endphp
-                    @if(!empty($signPath) && file_exists($signPath))
+                    @if($signPath)
                         <img src="{{ $signPath }}">
                     @endif
                 </div>
@@ -316,44 +329,38 @@
                     <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
                     <td>{{ $admit->exam_time }}</td>
                     <td>{{ $admit->exam_venue }}</td>
-                    <td>
-                        @php
-                            $examCenter = \DB::table('center_login')->where('cl_center_name', $admit->exam_venue)->first();
-                            $examAddress = $examCenter ? $examCenter->cl_center_address : $center->cl_center_address;
-                        @endphp
-                        {{ $examAddress }}
-                    </td>
+                    <td>{{ $examAddress }}</td>
                 </tr>
             </tbody>
         </table>
 
         <div class="footer-note">Note: Any kind of specific identifying marks made by student in the Answer Book is
             subject to non evaluation / or shall be treated as Unfairmeans. Bringing of Calculators / Phone or any other
-            electronic gadget in side the examination hall shall be deemed as Unfairmeans & breach of examination rules.
+            electronic gadget in side the examination hall shall be deemed as Unfairmeans &amp; breach of examination rules.
         </div>
 
         <div class="footer-row">
-            <div class="qr-section">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
-                    class="qr-code">
-            </div>
-            <div class="authority-section">
-                <div class="controller-sig-overlap">
-                    <div class="stamp-signature-wrapper">
-                        @php
-                            $stampPath = !empty($setting->authorize_stamp) ? public_path(ltrim($setting->authorize_stamp, '/')) : '';
-                            $sigPath = !empty($setting->authorize_signature) ? public_path(ltrim($setting->authorize_signature, '/')) : '';
-                        @endphp
-                        @if(!empty($stampPath) && file_exists($stampPath))
-                            <img src="{{ $stampPath }}" class="auth-stamp">
-                        @endif
-                        @if(!empty($sigPath) && file_exists($sigPath))
-                            <img src="{{ $sigPath }}" class="auth-sign">
-                        @endif
-                    </div>
-                    <div class="authority-label">Controller of Examination</div>
-                </div>
-            </div>
+            <table>
+                <tr>
+                    <td class="qr-section">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . $student->sl_reg_no) }}"
+                            class="qr-code">
+                    </td>
+                    <td class="authority-section">
+                        <div class="controller-sig-overlap">
+                            <div class="stamp-signature-wrapper">
+                                @if(!empty($stampPath) && file_exists($stampPath))
+                                    <img src="{{ $stampPath }}" class="auth-stamp">
+                                @endif
+                                @if(!empty($sigPath) && file_exists($sigPath))
+                                    <img src="{{ $sigPath }}" class="auth-sign">
+                                @endif
+                            </div>
+                            <div class="authority-label">Controller of Examination</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

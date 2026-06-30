@@ -207,6 +207,7 @@ class StudentController extends Controller
 					'sl_educational_certificate' => $student_educational_certificate,
 					'sl_signature' => $student_signature,
 					'sl_email' => $request->student_email,
+					'sl_reg_date' => now()->toDateString(),
 					'sl_status' => 'PENDING',
 				]);
 				$firstInsertId = $studentRow->sl_id;
@@ -483,7 +484,6 @@ class StudentController extends Controller
 				'sl_mother_name' => $request->student_mother ?: null,
 				'sl_mobile_no' => $request->student_mobile,
 				'password' => Hash::make($request->student_mobile),
-				'sl_reg_date' => $request->reg_date,
 				'sl_category' => $request->category,
 				'sl_father_name' => $request->student_father ?: null,
 				'sl_email' => $request->student_email ?: null,
@@ -495,12 +495,17 @@ class StudentController extends Controller
 			];
 
 			$regNo = $student->sl_reg_no;
-			$centerId = $student->sl_FK_of_center_id;
+			$centerId = (int) ($request->center_id ?: $student->sl_FK_of_center_id);
 
 			// Get existing rows for this student (same reg_no + center)
 			$existingRows = DB::table('student_login')
 				->where('sl_reg_no', $regNo)
-				->where('sl_FK_of_center_id', $centerId)
+				->where(function ($q) use ($centerId, $student) {
+					$q->where('sl_FK_of_center_id', $centerId);
+					if ((int) $student->sl_FK_of_center_id !== $centerId) {
+						$q->orWhere('sl_FK_of_center_id', $student->sl_FK_of_center_id);
+					}
+				})
 				->get();
 
 			$courseIds = array_values(array_unique($courseIds));
@@ -510,13 +515,15 @@ class StudentController extends Controller
 			})->values();
 
 			foreach ($courseIds as $courseId) {
-				$rowData = array_merge($commonData, ['sl_FK_of_course_id' => $courseId]);
+				$rowData = array_merge($commonData, [
+					'sl_FK_of_course_id' => $courseId,
+					'sl_FK_of_center_id' => $centerId,
+				]);
 				$existing = $existingRows->firstWhere('sl_FK_of_course_id', $courseId);
 
 				if ($existing) {
 					DB::table('student_login')->where('sl_id', $existing->sl_id)->update($rowData);
 				} else {
-					$rowData['sl_FK_of_center_id'] = $centerId;
 					$rowData['sl_reg_no'] = $regNo;
 					$rowData['sl_status'] = $student->sl_status ?? 'PENDING';
 					$rowData['created_at'] = now();

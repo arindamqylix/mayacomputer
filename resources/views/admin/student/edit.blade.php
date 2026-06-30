@@ -206,14 +206,6 @@
 							</div>
 								
                                 <div class="col-md-4 mb-4">
-                                    <label class="form-label">Registration Date <span class="required-star">*</span></label>
-                                    <div class="input-icon-wrapper">
-                                        <i class="fas fa-calendar-check"></i>
-                                        <input class="form-control" type='date' name='reg_date' value='{{ old("reg_date", $student->sl_reg_date ?? "") }}' required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 mb-4">
                                     <label class="form-label">Enter Student Name <span class="required-star">*</span></label>
                                     <div class="input-icon-wrapper">
                                         <i class="fas fa-user"></i>

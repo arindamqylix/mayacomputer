@@ -14,39 +14,14 @@ class GenerateAdmitController extends Controller
 {
     public function download_admit_card($id)
     {
-        $admit = DB::table('student_admit_cards')
-            ->where('ac_id', $id)
-            ->first();
-
-        if (!$admit) {
+        $data = admit_card_view_data($id);
+        if (!$data) {
             return back()->with('error', 'Admit Card not found');
         }
 
-        $student = DB::table('student_login')
-            ->where('sl_id', $admit->student_id)
-            ->first();
-
-        $course = DB::table('course')
-            ->where('c_id', $student->sl_FK_of_course_id)
-            ->first();
-
-        $center = DB::table('center_login')
-            ->where('cl_id', $admit->center_id)
-            ->first();
-
-        $setting = DB::table('site_settings')->first();
-
-        $data = [
-            'admit' => $admit,
-            'student' => $student,
-            'course' => $course,
-            'center' => $center,
-            'setting' => $setting
-        ];
-
         $pdf = PDF::loadView('admin.admit_card.pdf', $data);
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->download('Admit_Card_' . $student->sl_reg_no . '.pdf');
+        return $pdf->download('Admit_Card_' . $data['student']->sl_reg_no . '.pdf');
     }
 
     public function generate_admit_card()
@@ -137,9 +112,11 @@ class GenerateAdmitController extends Controller
 
                 if ($existingAdmit) {
                     // Update existing admit card
+                    $resolvedCenterId = resolve_admit_center_id($student, $request->exam_venue);
                     DB::table('student_admit_cards')
                         ->where('ac_id', $existingAdmit->ac_id)
                         ->update([
+                            'center_id' => $resolvedCenterId > 0 ? $resolvedCenterId : $existingAdmit->center_id,
                             'exam_date' => $request->exam_date,
                             'exam_time' => $request->exam_time,
                             'exam_venue' => $request->exam_venue,
@@ -148,8 +125,9 @@ class GenerateAdmitController extends Controller
                         ]);
                 } else {
                     // Insert new admit card
+                    $resolvedCenterId = resolve_admit_center_id($student, $request->exam_venue);
                     DB::table('student_admit_cards')->insert([
-                        'center_id' => $student->sl_FK_of_center_id,
+                        'center_id' => $resolvedCenterId,
                         'student_id' => $student->sl_id,
                         'course_id' => $student->sl_FK_of_course_id,
                         'reg_no' => $student->sl_reg_no,
@@ -193,13 +171,25 @@ class GenerateAdmitController extends Controller
 
         $query = DB::table('student_admit_cards AS a')
             ->join('student_login AS s', 's.sl_id', '=', 'a.student_id')
-            ->join('course AS c', 'c.c_id', '=', 's.sl_FK_of_course_id')
+            ->join('course AS c', 'c.c_id', '=', DB::raw('COALESCE(NULLIF(a.course_id, 0), s.sl_FK_of_course_id)'))
             ->leftJoin('center_login AS cl', 'cl.cl_id', '=', 'a.center_id')
             ->select(
-                'a.*',
-                's.*',
+                'a.ac_id',
+                'a.center_id',
+                'a.student_id',
+                'a.course_id',
+                'a.reg_no',
+                'a.exam_date',
+                'a.exam_time',
+                'a.exam_venue',
+                'a.exam_notice',
+                's.sl_reg_no',
+                's.sl_name',
+                's.sl_dob',
+                's.sl_FK_of_center_id',
                 'c.c_full_name',
-                'cl.cl_name as center_name'
+                DB::raw('COALESCE(cl.cl_center_name, cl.cl_name) as center_name'),
+                DB::raw("(SELECT MAX(sl_dob) FROM student_login p WHERE p.sl_reg_no = COALESCE(a.reg_no, s.sl_reg_no) AND p.sl_dob IS NOT NULL AND p.sl_dob != '' AND p.sl_dob != '0000-00-00') as profile_dob")
             )
             ->orderBy('a.ac_id', 'DESC');
 
@@ -207,7 +197,16 @@ class GenerateAdmitController extends Controller
             $query->where('a.center_id', $request->center_id);
         }
 
-        $admitCards = $query->get();
+        $admitCards = $query->get()->map(function ($row) {
+            if (is_weak_student_field('sl_dob', $row->sl_dob ?? null) && !is_weak_student_field('sl_dob', $row->profile_dob ?? null)) {
+                $row->sl_dob = $row->profile_dob;
+            }
+            $enriched = enrich_admit_card_list_item($row);
+            if (!empty($enriched->sl_reg_no)) {
+                $enriched->reg_no = $enriched->sl_reg_no;
+            }
+            return $enriched;
+        });
         $selectedCenterId = $request->center_id;
 
         return view('admin.admit_card.index', compact('admitCards', 'centers', 'selectedCenterId'));
@@ -252,9 +251,13 @@ class GenerateAdmitController extends Controller
             return back()->with('error', 'Invalid student selected');
         }
 
+        $resolvedCenterId = resolve_admit_center_id($student, $request->exam_venue);
+
         DB::table('student_admit_cards')->where('ac_id', $id)->update([
-            'student_id' => $request->reg_no,
-            'center_id' => $student->sl_FK_of_center_id,
+            'student_id' => $student->sl_id,
+            'center_id' => $resolvedCenterId > 0 ? $resolvedCenterId : (int) ($student->sl_FK_of_center_id ?? 0),
+            'course_id' => (int) ($student->sl_FK_of_course_id ?? 0),
+            'reg_no' => $student->sl_reg_no,
             'exam_date' => $request->exam_date,
             'exam_time' => $request->exam_time,
             'exam_venue' => $request->exam_venue,
@@ -267,28 +270,12 @@ class GenerateAdmitController extends Controller
 
     public function print_admit_card($id)
     {
-        $admit = DB::table('student_admit_cards')
-            ->where('ac_id', $id)
-            ->first();
-
-        if (!$admit) {
+        $data = admit_card_view_data($id);
+        if (!$data) {
             return back()->with('error', 'Admit Card not found');
         }
 
-        $student = DB::table('student_login')
-            ->where('sl_id', $admit->student_id)
-            ->first();
-
-        $course = DB::table('course')
-            ->where('c_id', $student->sl_FK_of_course_id)
-            ->first();
-
-        $center = DB::table('center_login')
-            ->where('cl_id', $admit->center_id)
-            ->first();
-
-        $setting = DB::table('site_settings')->first();
-        return view('admin.admit_card.print', compact('admit', 'student', 'course', 'center', 'setting'));
+        return view('admin.admit_card.print', $data);
     }
 
     public function delete_admit_card($id)
