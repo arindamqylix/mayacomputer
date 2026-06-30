@@ -172,21 +172,27 @@
         }
 
         .authority-section {
-            text-align: right;
             flex-shrink: 0;
             margin-left: auto;
+            width: 240px;
+        }
+
+        .controller-sig-overlap {
+            position: relative;
+            width: 240px;
+            text-align: center;
         }
 
         .stamp-signature-wrapper {
             position: relative;
-            height: 90px;
-            width: 200px;
-            margin-left: auto;
+            height: 95px;
+            width: 240px;
         }
 
         .auth-stamp {
             position: absolute;
-            right: 0;
+            left: 50%;
+            margin-left: -50px;
             height: 90px;
             opacity: 0.7;
             z-index: 1;
@@ -194,8 +200,9 @@
 
         .auth-sign {
             position: absolute;
-            right: 12px;
-            top: 20px;
+            left: 50%;
+            margin-left: -40px;
+            top: 22px;
             height: 45px;
             z-index: 2;
         }
@@ -203,8 +210,12 @@
         .authority-label {
             font-weight: bold;
             font-size: 13px;
-            margin-top: 5px;
-            text-align: right;
+            text-align: center;
+            margin-top: -30px;
+            padding-top: 4px;
+            position: relative;
+            z-index: 3;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -327,19 +338,21 @@
                     class="qr-code">
             </div>
             <div class="authority-section">
-                <div class="stamp-signature-wrapper">
-                    @php
-                        $stampPath = !empty($setting->authorize_stamp) ? public_path(ltrim($setting->authorize_stamp, '/')) : '';
-                        $sigPath = !empty($setting->authorize_signature) ? public_path(ltrim($setting->authorize_signature, '/')) : '';
-                    @endphp
-                    @if(!empty($stampPath) && file_exists($stampPath))
-                        <img src="{{ $stampPath }}" class="auth-stamp">
-                    @endif
-                    @if(!empty($sigPath) && file_exists($sigPath))
-                        <img src="{{ $sigPath }}" class="auth-sign">
-                    @endif
+                <div class="controller-sig-overlap">
+                    <div class="stamp-signature-wrapper">
+                        @php
+                            $stampPath = !empty($setting->authorize_stamp) ? public_path(ltrim($setting->authorize_stamp, '/')) : '';
+                            $sigPath = !empty($setting->authorize_signature) ? public_path(ltrim($setting->authorize_signature, '/')) : '';
+                        @endphp
+                        @if(!empty($stampPath) && file_exists($stampPath))
+                            <img src="{{ $stampPath }}" class="auth-stamp">
+                        @endif
+                        @if(!empty($sigPath) && file_exists($sigPath))
+                            <img src="{{ $sigPath }}" class="auth-sign">
+                        @endif
+                    </div>
+                    <div class="authority-label">Controller of Examination</div>
                 </div>
-                <div class="authority-label">Controller of Examination</div>
             </div>
         </div>
     </div>
