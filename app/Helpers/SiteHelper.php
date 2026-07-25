@@ -605,3 +605,42 @@ if (!function_exists('enrich_admit_card_list_item')) {
         return $row;
     }
 }
+
+if (!function_exists('next_certificate_number')) {
+    /**
+     * Next sequential certificate number (TYP0001, TYP0002, …).
+     * Reuses the lowest available number when certificates are deleted.
+     */
+    function next_certificate_number(string $prefix, int $padLength = 4): string
+    {
+        $pattern = '/^' . preg_quote($prefix, '/') . '(\d+)$/';
+
+        $usedNumbers = DB::table('student_certificates')
+            ->where('sc_certificate_number', 'like', $prefix . '%')
+            ->pluck('sc_certificate_number')
+            ->map(function ($number) use ($pattern) {
+                if (preg_match($pattern, (string) $number, $matches)) {
+                    return (int) $matches[1];
+                }
+
+                return null;
+            })
+            ->filter(fn ($n) => $n !== null && $n > 0)
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+
+        $next = 1;
+        foreach ($usedNumbers as $used) {
+            if ($used > $next) {
+                break;
+            }
+            if ($used === $next) {
+                $next++;
+            }
+        }
+
+        return $prefix . str_pad((string) $next, $padLength, '0', STR_PAD_LEFT);
+    }
+}

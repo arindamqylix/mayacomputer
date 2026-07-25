@@ -112,8 +112,8 @@ class CertificateController extends Controller
 
         $courseId = $resultStudent->sl_FK_of_course_id ?? null;
 
-        // Generate certificate number
-        $certificateNumber = 'COD' . str_pad($studentId, 5, '0', STR_PAD_LEFT);
+        // Generate certificate number (COD0001, COD0002, … — reuses gaps after delete)
+        $certificateNumber = next_certificate_number('COD');
 
         // Create certificate
         $certificate = Certificate::create([
@@ -245,7 +245,7 @@ class CertificateController extends Controller
             return back()->with('error', 'Selected course is not eligible for a typing certificate.');
         }
 
-        $certificateNumber = 'TYP' . str_pad($studentId, 5, '0', STR_PAD_LEFT) . rand(10, 99);
+        $certificateNumber = next_certificate_number('TYP');
         $h = (string) $request->input('typing_speed_hindi');
         $e = (string) $request->input('typing_speed_english');
         $speedSummary = 'Hindi: ' . $h . ' WPM, English: ' . $e . ' WPM';

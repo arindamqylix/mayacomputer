@@ -264,9 +264,9 @@ class CertificateController extends Controller
             return back()->with('error', 'Regular certificates are not issued for typing-related courses. Use a typing certificate instead.');
         }
 
-        // Generate certificate number
+        // Generate certificate number (TYP0001, TYP0002, … — reuses gaps after delete)
         $prefix = $type == 'TYPING' ? 'TYP' : 'COD';
-        $certificateNumber = $prefix . str_pad($studentId, 5, '0', STR_PAD_LEFT) . rand(10, 99);
+        $certificateNumber = next_certificate_number($prefix);
 
         $typingHindi = $type === 'TYPING' ? (string) $request->input('typing_speed_hindi') : null;
         $typingEnglish = $type === 'TYPING' ? (string) $request->input('typing_speed_english') : null;
