@@ -81,16 +81,15 @@ class CertificateController extends Controller
         $regularCertExists = function ($query) use ($courseIdSql) {
             $query->select(DB::raw(1))
                 ->from('student_certificates as sc')
-                ->whereColumn('sc.sc_FK_of_student_id', 'student_login.sl_id')
+                ->join('student_login as cert_sl', 'cert_sl.sl_id', '=', 'sc.sc_FK_of_student_id')
+                ->whereColumn('cert_sl.sl_reg_no', 'student_login.sl_reg_no')
+                ->whereColumn('cert_sl.sl_FK_of_center_id', 'set_result.sr_FK_of_center_id')
                 ->where(function ($q) {
                     $q->where('sc.sc_type', 'REGULAR')->orWhereNull('sc.sc_type');
                 })
                 ->where(function ($q) use ($courseIdSql) {
                     $q->whereColumn('sc.sc_FK_of_result_id', 'set_result.sr_id')
-                        ->orWhere(function ($q2) use ($courseIdSql) {
-                            $q2->whereNull('sc.sc_FK_of_result_id')
-                                ->whereRaw("sc.sc_FK_of_course_id = {$courseIdSql}");
-                        });
+                        ->orWhereRaw("sc.sc_FK_of_course_id = {$courseIdSql}");
                 });
         };
 
@@ -152,20 +151,54 @@ class CertificateController extends Controller
             ->count();
 
         $missingResultCount = DB::table('student_login as s')
+            ->join('course as c', 's.sl_FK_of_course_id', '=', 'c.c_id')
             ->where('s.sl_status', 'RESULT OUT')
+            ->where(function ($q) {
+                $q->whereNull('c.is_typing_related')
+                    ->orWhere('c.is_typing_related', 0);
+            })
             ->whereNotExists(function ($q) {
                 $q->select(DB::raw(1))
                     ->from('set_result as r')
-                    ->whereColumn('r.sr_FK_of_student_id', 's.sl_id');
+                    ->whereColumn('r.sr_FK_of_student_id', 's.sl_id')
+                    ->where(function ($q2) {
+                        $q2->whereColumn('r.sr_FK_of_course_id', 's.sl_FK_of_course_id')
+                            ->orWhereNull('s.sl_FK_of_course_id');
+                    });
             })
             ->count();
+
+        $alreadyCertifiedStudents = DB::table('student_certificates as sc')
+            ->join('student_login', 'sc.sc_FK_of_student_id', '=', 'student_login.sl_id')
+            ->leftJoin('set_result', 'sc.sc_FK_of_result_id', '=', 'set_result.sr_id')
+            ->leftJoin('course', 'sc.sc_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('course as course_sl', 'student_login.sl_FK_of_course_id', '=', 'course_sl.c_id')
+            ->join('center_login', 'sc.sc_FK_of_center_id', '=', 'center_login.cl_id')
+            ->where(function ($q) {
+                $q->where('sc.sc_type', 'REGULAR')->orWhereNull('sc.sc_type');
+            })
+            ->select(
+                'sc.sc_id',
+                'sc.sc_certificate_number',
+                'sc.sc_issue_date',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                DB::raw('COALESCE(course.c_short_name, course_sl.c_short_name) as c_short_name'),
+                'set_result.sr_percentage',
+                'set_result.sr_grade',
+                'center_login.cl_center_name',
+                'center_login.cl_code'
+            )
+            ->orderBy('sc.sc_id', 'DESC')
+            ->get();
 
         return view('admin.certificate.generate', compact(
             'students',
             'missingResultCount',
             'publishedResultCount',
             'alreadyCertifiedCount',
-            'typingBlockedCount'
+            'typingBlockedCount',
+            'alreadyCertifiedStudents'
         ));
     }
 
@@ -174,45 +207,7 @@ class CertificateController extends Controller
     // Typing course: category_name = 'Typing' OR course name contains 'Typing'
     public function generate_typing_certificate()
     {
-        $typingCourseSql = "(c.is_typing_related = 1 OR LOWER(TRIM(COALESCE(c.category_name,''))) = 'typing' OR c.c_short_name LIKE '%Typing%' OR c.c_full_name LIKE '%Typing%')";
-        $enrolledSubSql = "
-            (SELECT s.sl_id AS sid, c.c_id AS cid
-             FROM student_login s
-             JOIN course c ON c.c_id = s.sl_FK_of_course_id
-             WHERE {$typingCourseSql}
-             UNION
-             SELECT se.se_FK_of_student_id AS sid, c.c_id AS cid
-             FROM student_enrollments se
-             JOIN course c ON c.c_id = se.se_FK_of_course_id
-             JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
-             WHERE {$typingCourseSql}
-        )";
-
-        $students = DB::table(DB::raw("{$enrolledSubSql} AS enr"))
-            ->join('student_login', 'student_login.sl_id', '=', 'enr.sid')
-            ->join('course', 'course.c_id', '=', 'enr.cid')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
-            ->leftJoin('student_certificates', function ($join) {
-                $join->on('student_certificates.sc_FK_of_student_id', '=', 'enr.sid')
-                    ->on('student_certificates.sc_FK_of_course_id', '=', 'enr.cid')
-                    ->where('student_certificates.sc_type', 'TYPING');
-            })
-            ->whereNull('student_certificates.sc_id')
-            ->select(
-                'student_login.sl_id',
-                'student_login.sl_name',
-                'student_login.sl_reg_no',
-                'student_login.sl_photo',
-                'course.c_id',
-                'course.c_full_name',
-                'course.c_short_name',
-                'course.c_duration',
-                'student_login.sl_reg_date',
-                'center_login.cl_center_name',
-                'center_login.cl_code'
-            )
-            ->orderBy('student_login.sl_name', 'ASC')
-            ->get();
+        $students = typing_certificate_eligible_students();
 
         return view('admin.certificate.generate_typing', compact('students'));
     }
@@ -242,9 +237,15 @@ class CertificateController extends Controller
         $issueDate = $request->input('issue_date');
 
         // Check if certificate already exists for this course and type
-        $existingCertificateQuery = Certificate::where('sc_FK_of_student_id', $studentId)
-            ->where('sc_FK_of_course_id', $courseId)
-            ->where('sc_type', $type);
+        $student = Student::findOrFail($studentId);
+        $personSlIds = student_sl_ids_for_person(
+            (string) $student->sl_reg_no,
+            (int) $student->sl_FK_of_center_id
+        );
+
+        $existingCertificateQuery = Certificate::where('sc_FK_of_course_id', $courseId)
+            ->where('sc_type', $type)
+            ->whereIn('sc_FK_of_student_id', $personSlIds);
 
         if ($type == 'REGULAR' && $resultId) {
             $existingCertificateQuery->where('sc_FK_of_result_id', $resultId);
@@ -253,8 +254,6 @@ class CertificateController extends Controller
         if ($existingCertificateQuery->first()) {
             return back()->with('error', 'Certificate already generated for this student and course!');
         }
-
-        $student = Student::findOrFail($studentId);
 
         if ($type === 'TYPING') {
             if (! Course::qualifiesForTypingCertificateById((int) $courseId)) {

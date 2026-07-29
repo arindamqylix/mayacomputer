@@ -60,6 +60,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin:admin'], function () {
 	Route::post('add-student', [StudentController::class, 'add_student_now'])->name('add_student');
 	Route::get('edit-student/{id}', [StudentController::class, 'edit_student'])->name('edit_student');
 	Route::post('edit-student/{id}', [StudentController::class, 'update_student'])->name('edit_student');
+	Route::get('student/{id}/courses', [StudentController::class, 'student_courses'])->name('admin.student.courses');
+	Route::post('student/{id}/courses/add', [StudentController::class, 'add_student_course'])->name('admin.student.courses.add');
+	Route::get('student/{id}/courses/remove/{courseId}', [StudentController::class, 'remove_student_course'])->name('admin.student.courses.remove');
+	Route::post('student/{id}/courses/status', [StudentController::class, 'update_enrollment_status'])->name('admin.student.courses.status');
 	Route::get('delete-student/{id}', [StudentController::class, 'delete_student'])->name('delete_student');
 	Route::get('student-status-update', [StudentController::class, 'student_status_updated'])->name('student_status_updated');
 	Route::get('print-student-application/{id}', [StudentController::class, 'student_application'])->name('student_application_view');

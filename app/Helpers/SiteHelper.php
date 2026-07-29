@@ -644,3 +644,325 @@ if (!function_exists('next_certificate_number')) {
         return $prefix . str_pad((string) $next, $padLength, '0', STR_PAD_LEFT);
     }
 }
+
+if (!function_exists('student_course_names')) {
+    /**
+     * Comma-separated short names of all courses a student is enrolled in (login rows + enrollments).
+     */
+    function student_course_names(string $regNo, int $centerId): string
+    {
+        $slIds = DB::table('student_login')
+            ->where('sl_reg_no', $regNo)
+            ->where('sl_FK_of_center_id', $centerId)
+            ->pluck('sl_id');
+
+        $fromLogin = DB::table('student_login')
+            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->where('student_login.sl_reg_no', $regNo)
+            ->where('student_login.sl_FK_of_center_id', $centerId)
+            ->whereNotNull('student_login.sl_FK_of_course_id')
+            ->pluck('course.c_short_name');
+
+        $fromEnrollments = collect();
+        if ($slIds->isNotEmpty()) {
+            $fromEnrollments = DB::table('student_enrollments')
+                ->join('course', 'student_enrollments.se_FK_of_course_id', '=', 'course.c_id')
+                ->where('student_enrollments.se_FK_of_center_id', $centerId)
+                ->whereIn('student_enrollments.se_FK_of_student_id', $slIds)
+                ->pluck('course.c_short_name');
+        }
+
+        return $fromLogin->merge($fromEnrollments)->unique()->sort()->values()->implode(', ');
+    }
+}
+
+if (!function_exists('typing_course_sql')) {
+    function typing_course_sql(string $courseAlias = 'c'): string
+    {
+        $c = $courseAlias;
+
+        return "({$c}.is_typing_related = 1 OR LOWER(TRIM(COALESCE({$c}.category_name,''))) = 'typing' OR {$c}.c_short_name LIKE '%Typing%' OR {$c}.c_full_name LIKE '%Typing%')";
+    }
+}
+
+if (!function_exists('typing_certificate_eligible_students')) {
+    /**
+     * Students eligible for a typing certificate — one row per reg no + center + typing course.
+     */
+    function typing_certificate_eligible_students(?int $centerId = null): \Illuminate\Support\Collection
+    {
+        $typingSql = typing_course_sql('c');
+        $centerFilterLogin = $centerId ? 'AND s.sl_FK_of_center_id = ' . (int) $centerId : '';
+        $centerFilterEnroll = $centerId ? 'AND se.se_FK_of_center_id = ' . (int) $centerId : '';
+
+        $enrolledSubSql = "
+            SELECT
+                COALESCE(
+                    (SELECT s2.sl_id FROM student_login s2
+                     WHERE s2.sl_reg_no = enr.sl_reg_no
+                       AND s2.sl_FK_of_center_id = enr.center_id
+                       AND s2.sl_FK_of_course_id = enr.cid
+                     ORDER BY s2.sl_id ASC LIMIT 1),
+                    MIN(enr.sl_id)
+                ) AS sid,
+                enr.cid,
+                enr.sl_reg_no,
+                enr.center_id
+            FROM (
+                SELECT s.sl_id, s.sl_reg_no, s.sl_FK_of_center_id AS center_id, c.c_id AS cid
+                FROM student_login s
+                JOIN course c ON c.c_id = s.sl_FK_of_course_id
+                WHERE {$typingSql} {$centerFilterLogin}
+                UNION ALL
+                SELECT se.se_FK_of_student_id, s.sl_reg_no, se.se_FK_of_center_id, c.c_id
+                FROM student_enrollments se
+                JOIN course c ON c.c_id = se.se_FK_of_course_id
+                JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
+                WHERE {$typingSql} {$centerFilterEnroll}
+            ) AS enr
+            GROUP BY enr.sl_reg_no, enr.center_id, enr.cid
+        ";
+
+        return DB::table(DB::raw("({$enrolledSubSql}) AS enr"))
+            ->join('student_login', 'student_login.sl_id', '=', 'enr.sid')
+            ->join('course', 'course.c_id', '=', 'enr.cid')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('student_certificates as sc')
+                    ->join('student_login as cert_sl', 'cert_sl.sl_id', '=', 'sc.sc_FK_of_student_id')
+                    ->whereColumn('sc.sc_FK_of_course_id', 'enr.cid')
+                    ->where('sc.sc_type', 'TYPING')
+                    ->whereColumn('cert_sl.sl_reg_no', 'enr.sl_reg_no')
+                    ->whereColumn('cert_sl.sl_FK_of_center_id', 'enr.center_id');
+            })
+            ->select(
+                'student_login.sl_id',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                'student_login.sl_photo',
+                'course.c_id',
+                'course.c_full_name',
+                'course.c_short_name',
+                'course.c_duration',
+                'student_login.sl_reg_date',
+                'center_login.cl_center_name',
+                'center_login.cl_code'
+            )
+            ->orderBy('student_login.sl_name', 'ASC')
+            ->get();
+    }
+}
+
+if (!function_exists('student_sl_ids_for_person')) {
+    function student_sl_ids_for_person(string $regNo, int $centerId): array
+    {
+        return DB::table('student_login')
+            ->where('sl_reg_no', $regNo)
+            ->where('sl_FK_of_center_id', $centerId)
+            ->pluck('sl_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+    }
+}
+
+if (!function_exists('non_typing_course_sql')) {
+    function non_typing_course_sql(string $courseAlias = 'c'): string
+    {
+        return 'NOT ' . typing_course_sql($courseAlias);
+    }
+}
+
+if (!function_exists('student_course_enrollment_rows')) {
+    /**
+     * One row per reg no + center + course (deduped login + student_enrollments).
+     *
+     * @param  bool|null  $typingOnly  true = typing only, false = non-typing only, null = all
+     */
+    function student_course_enrollment_rows(?int $centerId = null, ?bool $typingOnly = null): \Illuminate\Support\Collection
+    {
+        if ($typingOnly === true) {
+            $courseFilter = typing_course_sql('c');
+        } elseif ($typingOnly === false) {
+            $courseFilter = non_typing_course_sql('c');
+        } else {
+            $courseFilter = '1=1';
+        }
+
+        $centerFilterLogin = $centerId ? 'AND s.sl_FK_of_center_id = ' . (int) $centerId : '';
+        $centerFilterEnroll = $centerId ? 'AND se.se_FK_of_center_id = ' . (int) $centerId : '';
+
+        $enrolledSubSql = "
+            SELECT
+                COALESCE(
+                    (SELECT s2.sl_id FROM student_login s2
+                     WHERE s2.sl_reg_no = enr.sl_reg_no
+                       AND s2.sl_FK_of_center_id = enr.center_id
+                       AND s2.sl_FK_of_course_id = enr.cid
+                     ORDER BY s2.sl_id ASC LIMIT 1),
+                    MIN(enr.sl_id)
+                ) AS sid,
+                enr.cid,
+                enr.sl_reg_no,
+                enr.center_id
+            FROM (
+                SELECT s.sl_id, s.sl_reg_no, s.sl_FK_of_center_id AS center_id, c.c_id AS cid
+                FROM student_login s
+                JOIN course c ON c.c_id = s.sl_FK_of_course_id
+                WHERE {$courseFilter} {$centerFilterLogin}
+                UNION ALL
+                SELECT se.se_FK_of_student_id, s.sl_reg_no, se.se_FK_of_center_id, c.c_id
+                FROM student_enrollments se
+                JOIN course c ON c.c_id = se.se_FK_of_course_id
+                JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
+                WHERE {$courseFilter} {$centerFilterEnroll}
+            ) AS enr
+            GROUP BY enr.sl_reg_no, enr.center_id, enr.cid
+        ";
+
+        return DB::table(DB::raw("({$enrolledSubSql}) AS enr"))
+            ->join('student_login', 'student_login.sl_id', '=', 'enr.sid')
+            ->join('course', 'course.c_id', '=', 'enr.cid')
+            ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+            ->select(
+                'enr.sid as sl_id',
+                'enr.cid as course_id',
+                'enr.sl_reg_no',
+                'enr.center_id',
+                'student_login.sl_name',
+                'student_login.sl_photo',
+                'course.c_full_name',
+                'course.c_short_name',
+                'center_login.cl_center_name',
+                'center_login.cl_code'
+            )
+            ->orderBy('student_login.sl_name')
+            ->orderBy('course.c_short_name')
+            ->get();
+    }
+}
+
+if (!function_exists('enrollment_status_for_course')) {
+    function enrollment_status_for_course(string $regNo, int $centerId, int $courseId): string
+    {
+        $loginStatus = DB::table('student_login')
+            ->where('sl_reg_no', $regNo)
+            ->where('sl_FK_of_center_id', $centerId)
+            ->where('sl_FK_of_course_id', $courseId)
+            ->value('sl_status');
+
+        if ($loginStatus) {
+            return (string) $loginStatus;
+        }
+
+        $slIds = student_sl_ids_for_person($regNo, $centerId);
+        if ($slIds === []) {
+            return 'PENDING';
+        }
+
+        $enrollStatus = DB::table('student_enrollments')
+            ->where('se_FK_of_center_id', $centerId)
+            ->where('se_FK_of_course_id', $courseId)
+            ->whereIn('se_FK_of_student_id', $slIds)
+            ->value('se_status');
+
+        return $enrollStatus ? (string) $enrollStatus : 'PENDING';
+    }
+}
+
+if (!function_exists('result_exists_for_course')) {
+    function result_exists_for_course(string $regNo, int $centerId, int $courseId): bool
+    {
+        $slIds = student_sl_ids_for_person($regNo, $centerId);
+        if ($slIds === []) {
+            return false;
+        }
+
+        return DB::table('set_result')
+            ->where('sr_FK_of_course_id', $courseId)
+            ->whereIn('sr_FK_of_student_id', $slIds)
+            ->exists();
+    }
+}
+
+if (!function_exists('resolve_student_sl_id_for_course')) {
+    function resolve_student_sl_id_for_course(string $regNo, int $centerId, int $courseId, int $fallbackSlId): int
+    {
+        $loginSlId = DB::table('student_login')
+            ->where('sl_reg_no', $regNo)
+            ->where('sl_FK_of_center_id', $centerId)
+            ->where('sl_FK_of_course_id', $courseId)
+            ->orderBy('sl_id')
+            ->value('sl_id');
+
+        return $loginSlId ? (int) $loginSlId : $fallbackSlId;
+    }
+}
+
+if (!function_exists('result_pending_enrollments')) {
+    /**
+     * Non-typing enrollments eligible for Set Result (new or update when VERIFIED).
+     */
+    function result_pending_enrollments(?int $centerId = null): \Illuminate\Support\Collection
+    {
+        return student_course_enrollment_rows($centerId, false)
+            ->filter(function ($row) {
+                $regNo = (string) $row->sl_reg_no;
+                $centerId = (int) $row->center_id;
+                $courseId = (int) $row->course_id;
+                $status = enrollment_status_for_course($regNo, $centerId, $courseId);
+                $hasResult = result_exists_for_course($regNo, $centerId, $courseId);
+
+                if (in_array($status, ['PENDING', 'BLOCK'], true)) {
+                    return false;
+                }
+
+                // Allow update when admin set course back to VERIFIED
+                if ($hasResult) {
+                    return $status === 'VERIFIED';
+                }
+
+                return true;
+            })
+            ->values();
+    }
+}
+
+if (!function_exists('find_result_for_course')) {
+    function find_result_for_course(string $regNo, int $centerId, int $courseId): ?object
+    {
+        $slIds = student_sl_ids_for_person($regNo, $centerId);
+        if ($slIds === []) {
+            return null;
+        }
+
+        return DB::table('set_result')
+            ->where('sr_FK_of_course_id', $courseId)
+            ->whereIn('sr_FK_of_student_id', $slIds)
+            ->first();
+    }
+}
+
+if (!function_exists('mark_course_result_out')) {
+    function mark_course_result_out(string $regNo, int $centerId, int $courseId, int $resultSlId): void
+    {
+        DB::table('student_login')
+            ->where('sl_reg_no', $regNo)
+            ->where('sl_FK_of_center_id', $centerId)
+            ->where('sl_FK_of_course_id', $courseId)
+            ->update(['sl_status' => 'RESULT OUT', 'updated_at' => now()]);
+
+        $slIds = student_sl_ids_for_person($regNo, $centerId);
+        if ($slIds !== []) {
+            DB::table('student_enrollments')
+                ->where('se_FK_of_center_id', $centerId)
+                ->where('se_FK_of_course_id', $courseId)
+                ->whereIn('se_FK_of_student_id', $slIds)
+                ->update(['se_status' => 'RESULT OUT', 'updated_at' => now()]);
+        }
+
+        DB::table('student_login')
+            ->where('sl_id', $resultSlId)
+            ->update(['sl_status' => 'RESULT OUT', 'updated_at' => now()]);
+    }
+}

@@ -211,22 +211,38 @@
 						</div>
 					@endif
 					
-					<!-- Student Selection -->
+					@if(count($student) === 0)
+						<div class="alert alert-info">
+							<strong>No regular courses waiting for a result.</strong>
+							<ul class="mb-0 mt-2">
+								<li>Typing courses are not listed here — use <strong>Certificates → Generate Typing Certificate</strong>.</li>
+								<li>Courses with status <strong>VERIFIED</strong> appear here (new result or update if marks were set before).</li>
+								<li>Add another regular course from <strong>Student List → Manage Courses</strong>, set it to <strong>VERIFIED</strong>, then return here.</li>
+							</ul>
+						</div>
+					@endif
+
+					<!-- Student + Course Selection -->
 					<div class="row mb-4">
-						<div class="col-md-6">
+						<div class="col-md-8">
 							<div class="form-group">
 								<label>
 									<i class="fas fa-id-card"></i>
-									Student Reg.No <span class="text-danger">*</span>
+									Student & Course <span class="text-danger">*</span>
 								</label>
-								<select name="student_id" class="form-select" required>
-									<option value="">--Select Reg.No--</option>
+								<select name="student_id" id="student_course_select" class="form-select" required>
+									<option value="">-- Select Reg.No & Course --</option>
 									@foreach($student as $data)
-										<option value="{{ $data->sl_id }}">
-											{{ $data->sl_reg_no }} [{{ $data->sl_name }} - {{ $data->c_short_name }}] ({{ $data->cl_center_name }} - {{ $data->cl_code }})
+										@php
+											$hasResult = result_exists_for_course((string) $data->sl_reg_no, (int) $data->center_id, (int) $data->course_id);
+										@endphp
+										<option value="{{ $data->sl_id }}" data-course-id="{{ $data->course_id }}">
+											{{ $data->sl_reg_no }} — {{ $data->sl_name }} — {{ $data->c_short_name }}@if($hasResult) (update result)@endif ({{ $data->cl_center_name }} - {{ $data->cl_code }})
 										</option>
 									@endforeach
 								</select>
+								<input type="hidden" name="course_id" id="course_id" value="{{ old('course_id') }}">
+								<small class="text-muted">One result per course. Select the course you are publishing marks for.</small>
 							</div>
 						</div>
 					</div>
@@ -404,6 +420,14 @@
 @push('custom-script')
 <script>
 	$(document).ready(function() {
+		function syncCourseId() {
+			var courseId = $('#student_course_select option:selected').data('course-id') || '';
+			$('#course_id').val(courseId);
+		}
+
+		$('#student_course_select').on('change', syncCourseId);
+		syncCourseId();
+
 		function calculateSummary() {
 			// Fixed values: Full Marks = 100, Pass Marks = 40
 			const wr_full = 100;

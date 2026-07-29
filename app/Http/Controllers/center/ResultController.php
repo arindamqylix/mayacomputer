@@ -12,34 +12,15 @@ use Auth;
 class ResultController extends Controller
 {
     public function set_result(){
-    	$centerId = Auth::guard('center')->user()->cl_id;
-    	
-    	// Fetch only VERIFIED students who don't have results published yet
-    	$student['student'] = DB::table('student_login')
-    						 ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-    						 ->leftJoin('set_result', function($join) use ($centerId) {
-    						 	$join->on('set_result.sr_FK_of_student_id', '=', 'student_login.sl_id')
-    						 		 ->where('set_result.sr_FK_of_center_id', $centerId);
-    						 })
-    						 ->where('student_login.sl_FK_of_center_id', $centerId)
-    						 ->where('student_login.sl_status', 'VERIFIED') // Only VERIFIED students - exclude PENDING, BLOCKED, etc.
-    						 ->whereNull('set_result.sr_id') // Exclude students who already have results published
-    						 ->where(function ($q) {
-    						     $q->whereNull('course.is_typing_related')
-    						         ->orWhere('course.is_typing_related', 0);
-    						 })
-    						 ->select(
-    						 	'student_login.*',
-    						 	'course.c_full_name',
-    						 	'course.c_short_name'
-    						 )
-    						 ->orderBy('student_login.sl_id', 'DESC')
-    						 ->get();
+    	$centerId = (int) Auth::guard('center')->user()->cl_id;
+    	$student['student'] = result_pending_enrollments($centerId);
     	return view('center.result.create',$student);
     }
 
     public function set_result_now(Request $request){
         $request->validate([
+            'student_id' => 'required|integer',
+            'course_id' => 'required|integer',
             'wr_marks_obtained' => 'required|numeric|min:1|max:85',
             'pr_marks_obtained' => 'required|numeric|min:1|max:85',
             'ap_marks_obtained' => 'required|numeric|min:1|max:85',
@@ -77,17 +58,45 @@ class ResultController extends Controller
             }
         }
 
+        $centerId = (int) Auth::guard('center')->user()->cl_id;
         $studentRow = Student::where('sl_id', $request->student_id)
-            ->where('sl_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+            ->where('sl_FK_of_center_id', $centerId)
             ->first();
-        if (!$studentRow || Course::isTypingRelated((int) $studentRow->sl_FK_of_course_id)) {
+
+        if (!$studentRow) {
+            return back()->with('error', 'Student not found for your center.');
+        }
+
+        $courseId = (int) $request->course_id;
+        $regNo = (string) $studentRow->sl_reg_no;
+
+        if (Course::isTypingRelated($courseId)) {
             return back()->with('error', 'Results are not published for typing-related courses. Use Generate Typing Certificate instead.');
         }
 
+        if (result_exists_for_course($regNo, $centerId, $courseId)) {
+            $existingResult = find_result_for_course($regNo, $centerId, $courseId);
+            if (enrollment_status_for_course($regNo, $centerId, $courseId) !== 'VERIFIED') {
+                return back()->with('error', 'Result already published for this course. Set course to VERIFIED on Manage Courses to update marks here.');
+            }
+        } else {
+            $existingResult = null;
+        }
+
+        if (enrollment_status_for_course($regNo, $centerId, $courseId) === 'BLOCK') {
+            return back()->with('error', 'This student course is blocked.');
+        }
+
+        if (in_array(enrollment_status_for_course($regNo, $centerId, $courseId), ['PENDING'], true)) {
+            return back()->with('error', 'Set this course to VERIFIED on Manage Courses before publishing a result.');
+        }
+
+        $resultSlId = resolve_student_sl_id_for_course($regNo, $centerId, $courseId, (int) $studentRow->sl_id);
+
     	$data = [
-            'sr_FK_of_student_id'         => $request->student_id,
-            'sr_FK_of_center_id'          => Auth::guard('center')->user()->cl_id,
-            'sr_FK_of_course_id'          => $studentRow->sl_FK_of_course_id,
+            'sr_FK_of_student_id'         => $resultSlId,
+            'sr_FK_of_center_id'          => $centerId,
+            'sr_FK_of_course_id'          => $courseId,
             'sr_written'                  => $request->written,
             'sr_wr_full_marks'            => 100,
             'sr_wr_pass_marks'            => 40,
@@ -111,13 +120,14 @@ class ResultController extends Controller
             'sr_grade'                    => $grade,
         ];
 
-        $insert = Result::create($data);
-        
+        $insert = $existingResult
+            ? Result::where('sr_id', $existingResult->sr_id)->update($data)
+            : Result::create($data);
 
         if($insert):
-            // Update student status to RESULT OUT (removes from RESULT UPDATED list)
-            Student::where('sl_id',$request->student_id)->update(['sl_status'=> 'RESULT OUT']);
-            return back()->with('success', 'Result Set Successfully!');
+            mark_course_result_out($regNo, $centerId, $courseId, $resultSlId);
+            $msg = $existingResult ? 'Result updated successfully for this course!' : 'Result set successfully for this course!';
+            return back()->with('success', $msg);
         else:
             return back()->with('error', 'Something Went Wrong!');
         endif;
@@ -246,9 +256,15 @@ class ResultController extends Controller
     } 
 
     public function student_result_list (){
+        $centerId = (int) Auth::guard('center')->user()->cl_id;
         $result['result'] = DB::table('set_result')
                   ->join('student_login', 'set_result.sr_FK_of_student_id', 'student_login.sl_id')
-                  ->where('set_result.sr_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+                  ->join('course', function ($join) {
+                      $join->whereRaw('course.c_id = COALESCE(NULLIF(set_result.sr_FK_of_course_id, 0), student_login.sl_FK_of_course_id)');
+                  })
+                  ->where('set_result.sr_FK_of_center_id', $centerId)
+                  ->select('set_result.*', 'student_login.*', 'course.c_short_name', 'course.c_full_name')
+                  ->orderBy('set_result.sr_id', 'DESC')
                   ->get();
         return view('center.result.index',$result);
     }

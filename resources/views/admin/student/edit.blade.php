@@ -188,22 +188,25 @@
 							</div>
 
                                 <div class="col-md-4 mb-4">
-                                    <label class="form-label">Select Course Name <span class="required-star">*</span></label>
-                                    <div class="input-icon-wrapper">
-                                        <i class="fas fa-graduation-cap"></i>
-									@php
-										$selectedCourseId = old('course_id', ($selectedCourseIds[0] ?? null) ?: ($student->sl_FK_of_course_id ?? ''));
-									@endphp
-								<select class="form-select" name="course_id" id="course_id" required>
-									<option value="">Select Course</option>
-									@foreach($course as $data)
-										<option value="{{ $data->c_id }}" {{ (int) $selectedCourseId === (int) $data->c_id ? 'selected' : '' }}>
-											{{ $data->c_short_name ?? 'N/A' }} [{{ $data->c_duration ?? '-' }}]
-										</option>
-									@endforeach
-								</select>
-							</div>
-							</div>
+                                    <label class="form-label">Courses</label>
+                                    <div class="p-3 bg-light rounded border">
+                                        <p class="mb-2 small text-muted">
+                                            This student can be enrolled in multiple courses. Use the dedicated page to add, remove, or update course status.
+                                        </p>
+                                        <a href="{{ route('admin.student.courses', $student->sl_id) }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-book-open me-1"></i> Manage Courses
+                                            @if(!empty($selectedCourseIds))
+                                                <span class="badge bg-light text-dark ms-1">{{ count($selectedCourseIds) }}</span>
+                                            @endif
+                                        </a>
+                                    </div>
+                                    @foreach($selectedCourseIds as $cid)
+                                        <input type="hidden" name="course_id[]" value="{{ $cid }}">
+                                    @endforeach
+                                    @if(empty($selectedCourseIds) && !empty($student->sl_FK_of_course_id))
+                                        <input type="hidden" name="course_id[]" value="{{ $student->sl_FK_of_course_id }}">
+                                    @endif
+                                </div>
 								
                                 <div class="col-md-4 mb-4">
                                     <label class="form-label">Enter Student Name <span class="required-star">*</span></label>

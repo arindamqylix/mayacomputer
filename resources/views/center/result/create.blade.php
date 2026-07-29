@@ -208,22 +208,35 @@
 					</div>
 				</div>
 				<div class="card-body p-4">
-					<!-- Student Selection -->
+					@if(count($student) === 0)
+						<div class="alert alert-info">
+							<strong>No regular courses waiting for a result.</strong>
+							<ul class="mb-0 mt-2">
+								<li>Typing courses use <strong>Generate Typing Certificate</strong> (no marks here).</li>
+								<li>If a course already has a result, it will not appear again.</li>
+								<li>Add another regular course from <strong>Manage Courses</strong>, set it to <strong>VERIFIED</strong>, then return here.</li>
+							</ul>
+						</div>
+					@endif
+
+					<!-- Student + Course Selection -->
 					<div class="row mb-4">
-						<div class="col-md-6">
+						<div class="col-md-8">
 							<div class="form-group">
 								<label>
 									<i class="fas fa-id-card"></i>
-									Student Reg.No <span class="text-danger">*</span>
+									Student & Course <span class="text-danger">*</span>
 								</label>
-								<select name="student_id" class="form-select" required>
-									<option value="">--Select Reg.No--</option>
+								<select name="student_id" id="student_course_select" class="form-select" required>
+									<option value="">-- Select Reg.No & Course --</option>
 									@foreach($student as $data)
-										<option value="{{ $data->sl_id }}">
-											{{ $data->sl_reg_no }} [{{ $data->sl_name }} - {{ $data->c_short_name }}]
+										<option value="{{ $data->sl_id }}" data-course-id="{{ $data->course_id }}">
+											{{ $data->sl_reg_no }} — {{ $data->sl_name }} — {{ $data->c_short_name }}
 										</option>
 									@endforeach
 								</select>
+								<input type="hidden" name="course_id" id="course_id" value="{{ old('course_id') }}">
+								<small class="text-muted">One result per course. Select the course you are publishing marks for.</small>
 							</div>
 						</div>
 					</div>
@@ -406,6 +419,14 @@
 @push('custom-js')
 <script>
 	$(document).ready(function() {
+		function syncCourseId() {
+			var courseId = $('#student_course_select option:selected').data('course-id') || '';
+			$('#course_id').val(courseId);
+		}
+
+		$('#student_course_select').on('change', syncCourseId);
+		syncCourseId();
+
 		// Calculate totals on input change
 		function calculateTotals() {
 			// Get all marks obtained

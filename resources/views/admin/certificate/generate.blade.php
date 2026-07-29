@@ -188,7 +188,44 @@
 								<i class="fas fa-info-circle"></i>
 								No students are ready for certificate generation right now.
 							</div>
-							@if(!empty($alreadyCertifiedCount) && $alreadyCertifiedCount > 0)
+							@if(!empty($alreadyCertifiedStudents) && $alreadyCertifiedStudents->count() > 0)
+								<div class="alert alert-success mt-2 mb-3">
+									<i class="fas fa-certificate"></i>
+									These students already have a regular certificate for their published result.
+									View or print from the list below or open
+									<a href="{{ route('admin.certificate_list') }}"><strong>Certificates → Certificate List</strong></a>.
+								</div>
+								<div class="table-responsive mb-3">
+									<table class="table modern-table table-sm">
+										<thead>
+											<tr>
+												<th>Reg. No.</th>
+												<th>Student</th>
+												<th>Course</th>
+												<th>Certificate No.</th>
+												<th>Result</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach($alreadyCertifiedStudents as $certRow)
+												<tr>
+													<td><strong>{{ $certRow->sl_reg_no }}</strong></td>
+													<td>{{ $certRow->sl_name }}</td>
+													<td>{{ $certRow->c_short_name ?? '—' }}</td>
+													<td><strong>{{ $certRow->sc_certificate_number }}</strong></td>
+													<td>{{ $certRow->sr_percentage ?? '—' }}% / {{ $certRow->sr_grade ?? '—' }}</td>
+													<td>
+														<a href="{{ route('admin.view_certificate', $certRow->sc_id) }}" class="btn btn-sm btn-success" target="_blank">
+															<i class="fas fa-eye"></i> View
+														</a>
+													</td>
+												</tr>
+											@endforeach
+										</tbody>
+									</table>
+								</div>
+							@elseif(!empty($alreadyCertifiedCount) && $alreadyCertifiedCount > 0)
 								<div class="alert alert-success mt-2">
 									<i class="fas fa-certificate"></i>
 									<strong>{{ $alreadyCertifiedCount }}</strong> student(s) already have a regular certificate for their published result.

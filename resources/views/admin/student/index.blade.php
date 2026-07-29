@@ -428,6 +428,11 @@
 											@foreach(explode(', ', $data->course_names) as $courseName)
 												<span class="course-badge me-1">{{ trim($courseName) }}</span>
 											@endforeach
+											<div class="mt-1">
+												<a href="{{ route('admin.student.courses', $data->sl_id) }}" class="small text-primary fw-semibold">
+													<i class="fas fa-book-open me-1"></i>Manage Courses
+												</a>
+											</div>
 										@else
 											<span class="course-badge">—</span>
 										@endif
@@ -465,6 +470,12 @@
 										   title="Edit Student (All Status Allowed)" 
 										   class="btn btn-sm action-btn action-btn-edit text-white">
 											<i class="fas fa-edit"></i>
+										</a>
+										<a href="{{ route('admin.student.courses', $data->sl_id) }}"
+										   title="Manage Courses"
+										   class="btn btn-sm action-btn text-white"
+										   style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+											<i class="fas fa-book-open"></i>
 										</a>
 										<a onclick="return confirm('Are you sure you want to delete this student? This will delete all related records (results, certificates, fees, etc.). This action cannot be undone!');" 
 										   href="{{ route('delete_student', $data->sl_id) }}" 
