@@ -103,7 +103,7 @@
       </li>
       @endif
 
-      <li class="nav-item {{ Request::segment(2) == 'view-certificate' ? 'active' : '' }}">
+      <li class="nav-item {{ Request::segment(2) == 'view-certificate' || Request::segment(2) == 'regular-certificate' ? 'active' : '' }}">
         <a href="{{ route('student.view_certificate') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-certificate"></i></span>
             <span class="sidebar-text">Certificate</span>

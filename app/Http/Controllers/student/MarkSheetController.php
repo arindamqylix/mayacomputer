@@ -49,58 +49,80 @@ class MarkSheetController extends Controller
 		return view('marksheet_diploma', compact('data', 'setting'));
 	}
 
-	// View certificate (student panel) – supports both REGULAR and TYPING certificates
+	// Regular course certificates (student panel)
 	public function view_certificate()
 	{
-		$studentId = Auth::guard('student')->user()->sl_id;
+		$user = Auth::guard('student')->user();
+		$slIds = student_sl_ids_for_person((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+		if ($slIds === []) {
+			$slIds = [(int) $user->sl_id];
+		}
 
-		// Get latest certificate for this student (any type) – works even if sc_type column missing (old DB)
+		$certificates = DB::table('student_certificates')
+			->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
+			->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
+			->leftJoin('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+			->whereIn('student_certificates.sc_FK_of_student_id', $slIds)
+			->where(function ($q) {
+				$q->where('student_certificates.sc_type', 'REGULAR')
+					->orWhere(function ($q2) {
+						$q2->whereNull('student_certificates.sc_type')
+							->whereNotNull('student_certificates.sc_FK_of_result_id');
+					});
+			})
+			->select(
+				'student_certificates.sc_id',
+				'student_certificates.sc_certificate_number',
+				'student_certificates.sc_issue_date',
+				'course.c_short_name',
+				'course.c_full_name',
+				'set_result.sr_percentage',
+				'set_result.sr_grade'
+			)
+			->orderBy('student_certificates.sc_id', 'DESC')
+			->get();
+
+		return view('student.certificate.regular_list', compact('certificates'));
+	}
+
+	public function view_regular_certificate($id)
+	{
+		$user = Auth::guard('student')->user();
+		$slIds = student_sl_ids_for_person((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+		if ($slIds === []) {
+			$slIds = [(int) $user->sl_id];
+		}
+
 		$certificateBase = DB::table('student_certificates')
-			->where('sc_FK_of_student_id', $studentId)
-			->orderBy('sc_id', 'DESC')
+			->where('sc_id', $id)
+			->whereIn('sc_FK_of_student_id', $slIds)
+			->where(function ($q) {
+				$q->where('sc_type', 'REGULAR')
+					->orWhere(function ($q2) {
+						$q2->whereNull('sc_type')
+							->whereNotNull('sc_FK_of_result_id');
+					});
+			})
 			->first();
 
 		if (!$certificateBase) {
-			// Show dedicated page instead of redirect with error (avoids red alert on dashboard)
-			return view('student.certificate.not_available');
+			return redirect()->route('student.view_certificate')->with('error', 'Certificate not found.');
 		}
 
-		// Treat as REGULAR (with result) when sc_type is not TYPING and result_id is set (handles old certs with null sc_type)
-		$isTyping = isset($certificateBase->sc_type) && $certificateBase->sc_type === 'TYPING';
-		$needSetResult = !$isTyping && !empty($certificateBase->sc_FK_of_result_id);
-
-		// Load full data: leftJoin center so missing center_id does not drop row; course from cert or student
-		$query = DB::table('student_certificates')
+		$certificate = DB::table('student_certificates')
 			->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
 			->leftJoin('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
-			->where('student_certificates.sc_id', $certificateBase->sc_id);
-
-		$query->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id');
-		$query->leftJoin('course as course_sl', 'student_login.sl_FK_of_course_id', '=', 'course_sl.c_id');
-
-		if ($needSetResult) {
-			$query->leftJoin('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
-				->select(
-					'student_certificates.*',
-					'student_login.*',
-					'set_result.sr_id',
-					'set_result.sr_total_marks_obtained',
-					'set_result.sr_percentage',
-					'set_result.sr_grade',
-					DB::raw('COALESCE(course.c_full_name, course_sl.c_full_name) as c_full_name'),
-					DB::raw('COALESCE(course.c_short_name, course_sl.c_short_name) as c_short_name'),
-					DB::raw('COALESCE(course.c_duration, course_sl.c_duration) as c_duration'),
-					'center_login.cl_center_name',
-					'center_login.cl_name',
-					'center_login.cl_code',
-					'center_login.cl_center_address',
-					'center_login.cl_authorized_signature',
-					'center_login.cl_center_stamp'
-				);
-		} else {
-			$query->select(
+			->leftJoin('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+			->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
+			->leftJoin('course as course_sl', 'student_login.sl_FK_of_course_id', '=', 'course_sl.c_id')
+			->where('student_certificates.sc_id', $id)
+			->select(
 				'student_certificates.*',
 				'student_login.*',
+				'set_result.sr_id',
+				'set_result.sr_total_marks_obtained',
+				'set_result.sr_percentage',
+				'set_result.sr_grade',
 				DB::raw('COALESCE(course.c_full_name, course_sl.c_full_name) as c_full_name'),
 				DB::raw('COALESCE(course.c_short_name, course_sl.c_short_name) as c_short_name'),
 				DB::raw('COALESCE(course.c_duration, course_sl.c_duration) as c_duration'),
@@ -110,20 +132,14 @@ class MarkSheetController extends Controller
 				'center_login.cl_center_address',
 				'center_login.cl_authorized_signature',
 				'center_login.cl_center_stamp'
-			);
-		}
-
-		$certificate = $query->first();
+			)
+			->first();
 
 		if (!$certificate) {
-			return view('student.certificate.not_available');
+			return redirect()->route('student.view_certificate')->with('error', 'Certificate not found.');
 		}
 
 		$setting = DB::table('site_settings')->first();
-
-		if ($isTyping) {
-			return view('center.certificate.typing_view', compact('certificate', 'setting'));
-		}
 
 		return view('center.certificate.view', compact('certificate', 'setting'));
 	}
@@ -132,29 +148,16 @@ class MarkSheetController extends Controller
 	public function typing_certificate_list()
 	{
 		$user = Auth::guard('student')->user();
-		$studentId = $user->sl_id;
-		$regNo = $user->sl_reg_no ?? null;
+		$slIds = student_sl_ids_for_person((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+		if ($slIds === []) {
+			$slIds = [(int) $user->sl_id];
+		}
 
-		// Match by sl_id OR by same registration number (in case cert is linked to another sl_id for same person)
 		$certificates = DB::table('student_certificates')
 			->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
 			->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
-			->where(function ($q) use ($studentId, $regNo) {
-				$q->where('student_certificates.sc_FK_of_student_id', $studentId);
-				if ($regNo) {
-					$q->orWhere('student_login.sl_reg_no', $regNo);
-				}
-			})
-			->where(function ($q) {
-				$q->where('student_certificates.sc_type', 'TYPING')
-					->orWhereRaw('(student_certificates.sc_type IS NULL AND student_certificates.sc_FK_of_result_id IS NULL)')
-					->orWhereRaw('(student_certificates.sc_type = \'REGULAR\' AND student_certificates.sc_FK_of_result_id IS NULL)')
-					->orWhereNotNull('student_certificates.sc_typing_speed')
-					->orWhereNotNull('student_certificates.sc_typing_speed_hindi')
-					->orWhereNotNull('student_certificates.sc_typing_speed_english')
-					->orWhereNotNull('student_certificates.sc_typing_accuracy')
-					->orWhereRaw('(LOWER(TRIM(COALESCE(course.category_name,\'\'))) = \'typing\' OR course.c_short_name LIKE \'%Typing%\' OR course.c_full_name LIKE \'%Typing%\')');
-			})
+			->whereIn('student_certificates.sc_FK_of_student_id', $slIds)
+			->where('student_certificates.sc_type', 'TYPING')
 			->select(
 				'student_certificates.sc_id',
 				'student_certificates.sc_certificate_number',
@@ -172,9 +175,9 @@ class MarkSheetController extends Controller
 		// If course name missing, get from student's primary course
 		foreach ($certificates as $cert) {
 			if (empty($cert->c_short_name) && empty($cert->c_full_name)) {
-				$course = DB::table('student_login')
-					->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
-					->where('student_login.sl_id', $studentId)
+				$course = DB::table('student_certificates as sc')
+					->join('course', 'sc.sc_FK_of_course_id', '=', 'course.c_id')
+					->where('sc.sc_id', $cert->sc_id)
 					->select('course.c_short_name', 'course.c_full_name')
 					->first();
 				if ($course) {
@@ -191,29 +194,15 @@ class MarkSheetController extends Controller
 	public function view_typing_certificate($id)
 	{
 		$user = Auth::guard('student')->user();
-		$studentId = $user->sl_id;
-		$regNo = $user->sl_reg_no ?? null;
+		$slIds = student_sl_ids_for_person((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+		if ($slIds === []) {
+			$slIds = [(int) $user->sl_id];
+		}
 
-		// Same criteria as list; allow if cert is for this sl_id OR for same reg_no
 		$certificateBase = DB::table('student_certificates')
-			->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-			->where('student_certificates.sc_id', $id)
-			->where(function ($q) use ($studentId, $regNo) {
-				$q->where('student_certificates.sc_FK_of_student_id', $studentId);
-				if ($regNo) {
-					$q->orWhere('student_login.sl_reg_no', $regNo);
-				}
-			})
-			->where(function ($q) {
-				$q->where('student_certificates.sc_type', 'TYPING')
-					->orWhereRaw('(student_certificates.sc_type IS NULL AND student_certificates.sc_FK_of_result_id IS NULL)')
-					->orWhereRaw('(student_certificates.sc_type = \'REGULAR\' AND student_certificates.sc_FK_of_result_id IS NULL)')
-					->orWhereNotNull('student_certificates.sc_typing_speed')
-					->orWhereNotNull('student_certificates.sc_typing_speed_hindi')
-					->orWhereNotNull('student_certificates.sc_typing_speed_english')
-					->orWhereNotNull('student_certificates.sc_typing_accuracy');
-			})
-			->select('student_certificates.sc_id')
+			->where('sc_id', $id)
+			->whereIn('sc_FK_of_student_id', $slIds)
+			->where('sc_type', 'TYPING')
 			->first();
 
 		if (!$certificateBase) {
