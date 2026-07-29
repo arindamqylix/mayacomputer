@@ -3,28 +3,67 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
-use App\Models\admin\Course;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
 class MarkSheetController extends Controller
 {
-	public function view_marksheet()
+	public function result_list()
 	{
-		$courseId = (int) Auth::guard('student')->user()->sl_FK_of_course_id;
-		if ($courseId > 0 && Course::qualifiesForTypingCertificateById($courseId)) {
-			return redirect()->route('student_dashboard')->with('error', 'Results are not published for your course type. Use Typing Certificate from the menu when your center issues it.');
+		$user = Auth::guard('student')->user();
+		$slIds = student_sl_ids_for_person((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+		if ($slIds === []) {
+			$slIds = [(int) $user->sl_id];
+		}
+
+		$results = DB::table('set_result')
+			->join('course', 'set_result.sr_FK_of_course_id', '=', 'course.c_id')
+			->whereIn('set_result.sr_FK_of_student_id', $slIds)
+			->where(function ($q) {
+				$q->whereNull('course.is_typing_related')
+					->orWhere('course.is_typing_related', 0);
+			})
+			->select(
+				'set_result.sr_id',
+				'set_result.sr_total_marks_obtained',
+				'set_result.sr_total_full_marks',
+				'set_result.sr_percentage',
+				'set_result.sr_grade',
+				'course.c_short_name',
+				'course.c_full_name'
+			)
+			->orderBy('set_result.sr_id', 'DESC')
+			->get();
+
+		return view('student.result.list', compact('results'));
+	}
+
+	public function view_marksheet($id = null)
+	{
+		$user = Auth::guard('student')->user();
+		$slIds = student_sl_ids_for_person((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+		if ($slIds === []) {
+			$slIds = [(int) $user->sl_id];
+		}
+
+		if ($id === null) {
+			return $this->result_list();
 		}
 
 		$data = DB::table('set_result')
 			->join('student_login', 'set_result.sr_FK_of_student_id', 'student_login.sl_id')
-			->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
+			->join('course', 'set_result.sr_FK_of_course_id', 'course.c_id')
 			->join('center_login', 'set_result.sr_FK_of_center_id', 'center_login.cl_id')
 			->leftJoin('student_certificates', function ($join) {
 				$join->on('student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
 					->on('student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id');
 			})
-			->where('set_result.sr_FK_of_student_id', Auth::guard('student')->user()->sl_id)
+			->where('set_result.sr_id', (int) $id)
+			->whereIn('set_result.sr_FK_of_student_id', $slIds)
+			->where(function ($q) {
+				$q->whereNull('course.is_typing_related')
+					->orWhere('course.is_typing_related', 0);
+			})
 			->select(
 				'set_result.*',
 				'student_login.*',
@@ -41,11 +80,11 @@ class MarkSheetController extends Controller
 			->first();
 
 		if (!$data) {
-			return redirect()->route('student_dashboard')->with('error', 'Result not found. Please contact your center.');
+			return redirect()->route('view_marksheet')->with('error', 'Result not found. Please contact your center.');
 		}
 
-		// Use the new diploma marksheet template
 		$setting = DB::table('site_settings')->first();
+
 		return view('marksheet_diploma', compact('data', 'setting'));
 	}
 

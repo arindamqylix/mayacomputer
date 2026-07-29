@@ -94,14 +94,14 @@
             <span class="sidebar-text">Admit Card</span>
         </a>
       </li>
+      @endif
 
       <li class="nav-item {{ Request::segment(2) == 'view-marksheet' ? 'active' : '' }}">
         <a href="{{ route('view_marksheet') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-file-lines"></i></span>
-            <span class="sidebar-text">View Result</span>
+            <span class="sidebar-text">Result</span>
         </a>
       </li>
-      @endif
 
       <li class="nav-item {{ Request::segment(2) == 'view-certificate' || Request::segment(2) == 'regular-certificate' ? 'active' : '' }}">
         <a href="{{ route('student.view_certificate') }}" class="nav-link">

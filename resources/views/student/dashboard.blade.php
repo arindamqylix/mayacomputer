@@ -526,13 +526,13 @@ body {
                         </div>
                         <span>Admit Card</span>
                     </a>
+                    @endif
                     <a href="{{ route('view_marksheet') }}" class="action-btn">
                         <div class="icon">
                             <i class="fas fa-file-lines"></i>
                         </div>
                         <span>Result</span>
                     </a>
-                    @endif
                     <a href="{{ route('student.view_certificate') }}" class="action-btn">
                         <div class="icon">
                             <i class="fas fa-certificate"></i>
