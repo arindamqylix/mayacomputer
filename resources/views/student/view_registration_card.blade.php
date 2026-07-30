@@ -349,8 +349,8 @@
                     <tr>
                         <td class="label">Date of Birth</td>
                         <td class="value" colspan="2">:
-                            {{ format_dob_display($data->sl_dob) }}
-                            &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                            {!! format_dob_display_html($data->sl_dob, 'N/A', true) !!}
+                            &nbsp;&nbsp; Gen : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Cat :
                             {{ $data->sl_category ?? 'Gen' }}
                         </td>
                     </tr>
@@ -431,6 +431,10 @@
 
     <!-- Print Button (Hidden in Print Mode) -->
     <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <a href="{{ route('view_registration_card') }}"
+            style="display: inline-block; padding: 10px 20px; font-size: 16px; background: #2563eb; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; text-decoration: none; margin-right: 10px;">
+            <i class="fa fa-arrow-left"></i> Back to List
+        </a>
         <button type="button" onclick="window.print()"
             style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;">
             <i class="fa fa-print"></i> Print Registration Card

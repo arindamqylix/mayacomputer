@@ -27,6 +27,30 @@
 
         .print-button-container {
             margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .back-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            color: white;
+            opacity: 0.95;
         }
 
         .print-btn {
@@ -382,7 +406,10 @@
 
 <body>
 
-    <div class="print-button-container">
+    <div class="print-button-container no-print">
+        <a href="{{ route('view_id_card') }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
         <button onclick="window.print()" class="print-btn">
             <i class="fas fa-print"></i> Print ID Card
         </button>

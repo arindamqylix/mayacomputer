@@ -202,20 +202,21 @@
         }
 
         .photo-box {
-            width: 90px;
-            height: 110px;
-            border: 1px dashed #1a5276;
+            width: 115px;
+            height: 144px;
+            border: 1px solid #000;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             background: #fff;
+            overflow: hidden;
         }
 
         .photo-box img {
-            width: 100%;
-            height: 100%;
+            width: 115px;
+            height: 144px;
             object-fit: cover;
+            display: block;
         }
 
         .photo-text {
@@ -375,10 +376,10 @@
                 </div>
                 <div class="detail-row-multi">
                     <div class="detail-label">Date of Birth:</div>
-                    <div class="detail-value">{{ format_dob_display($student->sl_dob) }}</div>
-                    <div class="detail-label" style="width: 60px;">Gender:</div>
+                    <div class="detail-value">{!! format_dob_display_html($student->sl_dob) !!}</div>
+                    <div class="detail-label" style="width: 60px;">Gen:</div>
                     <div class="detail-value">{{ ucfirst($student->sl_sex ?? 'N/A') }}</div>
-                    <div class="detail-label" style="width: 70px;">Category:</div>
+                    <div class="detail-label" style="width: 70px;">Cat:</div>
                     <div class="detail-value">{{ strtoupper($student->sl_category ?? 'N/A') }}</div>
                 </div>
                 <div class="detail-row">

@@ -19,8 +19,12 @@ class GenerateAdmitController extends Controller
             return back()->with('error', 'Admit Card not found');
         }
 
-        $pdf = PDF::loadView('admin.admit_card.pdf', $data);
+        ensure_admit_card_pdf_font();
+        $data['forPdf'] = true;
+        $pdf = PDF::loadView('admin.admit_card.print', $data);
         $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
         return $pdf->download('Admit_Card_' . $data['student']->sl_reg_no . '.pdf');
     }
 

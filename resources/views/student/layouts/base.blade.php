@@ -96,9 +96,8 @@
 <script src="{{ asset('backend/assets/libs/select2/js/select2.min.js') }}"></script>
 <!-- Datatable init js -->
 <script src="{{ asset('backend/assets/js/pages/datatables.init.js') }}"></script>  
-    
 
-
+    @stack('custom-css')
 
 </head>
 

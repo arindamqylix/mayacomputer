@@ -33,10 +33,11 @@ class AuthController extends Controller
 
     public function student_dashboard(){
 		 $convId = ChatConversations::getOrCreateStudentCenterConversation();
+		 $user = Auth::guard('student')->user();
     	$data = DB::table('student_login')
     			->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
     			->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
-    			->where('student_login.sl_id', Auth::guard('student')->user()->sl_id)
+    			->where('student_login.sl_id', $user->sl_id)
                 ->select(
                     'student_login.*',
                     'center_login.cl_center_name', 
@@ -49,7 +50,12 @@ class AuthController extends Controller
                     'course.c_duration'
                 )
     			->first();
-    			// dd($data);
-    	return view('student.dashboard', compact('data','convId'));
+
+		$enrolledCourses = student_course_enrollment_rows((int) $user->sl_FK_of_center_id, null)
+			->filter(fn ($row) => (string) $row->sl_reg_no === (string) $user->sl_reg_no)
+			->values();
+		$courseNames = student_course_names((string) $user->sl_reg_no, (int) $user->sl_FK_of_center_id);
+
+    	return view('student.dashboard', compact('data', 'convId', 'enrolledCourses', 'courseNames'));
     }
 }

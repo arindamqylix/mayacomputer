@@ -118,6 +118,96 @@ if (!function_exists('format_dob_display')) {
     }
 }
 
+if (!function_exists('format_dob_display_html')) {
+    /**
+     * Date of birth with small superscript ordinal suffix, e.g. 1<sup>st</sup> Jan, 2015
+     */
+    function format_dob_display_html($date, $default = 'N/A', $uppercase = false) {
+        if ($date === null || $date === '' || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') {
+            return e($default);
+        }
+        try {
+            $d = \Carbon\Carbon::parse($date);
+        } catch (\Exception $e) {
+            return e(is_string($date) ? $date : $default);
+        }
+        $day = (int) $d->format('j');
+        if (in_array($day % 100, [11, 12, 13], true)) {
+            $suffix = 'th';
+        } else {
+            $suffix = [1 => 'st', 2 => 'nd', 3 => 'rd'][$day % 10] ?? 'th';
+        }
+        $monthYear = $d->format('M') . ', ' . $d->format('Y');
+        if ($uppercase) {
+            $suffix = strtoupper($suffix);
+            $monthYear = strtoupper($monthYear);
+        }
+        $ordinal = '<sup style="font-size:0.5em; vertical-align:super; line-height:0;">' . $suffix . '</sup>';
+
+        return $day . $ordinal . ' ' . e($monthYear);
+    }
+}
+
+if (!function_exists('admit_card_public_img')) {
+    /**
+     * Image src for admit card — file path for DomPDF, asset URL for browser.
+     */
+    function admit_card_public_img($relativePath, $forPdf = false) {
+        if ($relativePath === null || trim((string) $relativePath) === '') {
+            return null;
+        }
+        $relative = ltrim(str_replace('\\', '/', (string) $relativePath), '/');
+        $full = public_path($relative);
+        if (!is_file($full)) {
+            return null;
+        }
+
+        return $forPdf ? $full : asset($relative);
+    }
+}
+
+if (!function_exists('ensure_admit_card_pdf_font')) {
+    /**
+     * Register Devanagari font with DomPDF (storage/fonts).
+     */
+    function ensure_admit_card_pdf_font() {
+        $fontDir = storage_path('fonts');
+        if (!is_dir($fontDir)) {
+            mkdir($fontDir, 0755, true);
+        }
+
+        $source = public_path('fonts/NotoSansDevanagari-Regular.ttf');
+        $target = $fontDir . DIRECTORY_SEPARATOR . 'NotoSansDevanagari-Regular.ttf';
+        if (is_file($source)) {
+            if (!is_file($target) || filesize($target) !== filesize($source)) {
+                copy($source, $target);
+            }
+        }
+
+        $ufmPath = $fontDir . DIRECTORY_SEPARATOR . 'NotoSansDevanagari-Regular.ufm';
+        if (is_file($target) && !is_file($ufmPath) && class_exists(\FontLib\Font::class)) {
+            try {
+                $font = \FontLib\Font::load($target);
+                $font->parse();
+                $font->saveAdobeFontMetrics($ufmPath);
+                $font->close();
+            } catch (\Throwable $e) {
+                // DomPDF may still load the TTF directly.
+            }
+        }
+
+        $registryFile = $fontDir . DIRECTORY_SEPARATOR . 'installed-fonts.json';
+        $registry = is_readable($registryFile)
+            ? (json_decode(file_get_contents($registryFile), true) ?: [])
+            : [];
+
+        if (is_file($target)) {
+            $registry['noto devanagari'] = ['normal' => 'NotoSansDevanagari-Regular'];
+            file_put_contents($registryFile, json_encode($registry, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
+    }
+}
+
 if (!function_exists('student_media_public_path')) {
     /**
      * Resolve a student photo/signature path to an existing file under public/.

@@ -2,184 +2,356 @@
 @section('title', 'Typing Certificates')
 @push('custom-css')
 <style type="text/css">
-	.typing-page .page-card {
-		background: #fff;
-		border-radius: 16px;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-		border: none;
+	.doc-list-page {
+		--dl-primary: #2563eb;
+		--dl-primary-dark: #1e40af;
+		--dl-surface: #ffffff;
+		--dl-muted: #64748b;
+		--dl-border: #e2e8f0;
+		--dl-row-hover: #f8fafc;
+	}
+
+	.doc-list-page .page-card {
+		background: var(--dl-surface);
+		border-radius: 18px;
+		box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+		border: 1px solid rgba(226, 232, 240, 0.9);
 		overflow: hidden;
-		transition: box-shadow 0.3s ease;
+		transition: box-shadow 0.3s ease, transform 0.3s ease;
 	}
-	.typing-page .page-card:hover {
-		box-shadow: 0 8px 30px rgba(37, 99, 235, 0.12);
+
+	.doc-list-page .page-card:hover {
+		box-shadow: 0 10px 40px rgba(37, 99, 235, 0.12);
 	}
-	.typing-page .list-header {
-		background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-		padding: 1.5rem 1.75rem;
+
+	.doc-list-page .list-header {
+		background: linear-gradient(135deg, var(--dl-primary) 0%, var(--dl-primary-dark) 100%);
+		padding: 1.75rem 2rem;
 		position: relative;
 		overflow: hidden;
 	}
-	.typing-page .list-header::after {
+
+	.doc-list-page .list-header::before {
 		content: '';
 		position: absolute;
-		top: -50%;
-		right: -10%;
-		width: 280px;
-		height: 280px;
-		background: rgba(255, 255, 255, 0.08);
+		top: -60%;
+		right: -8%;
+		width: 320px;
+		height: 320px;
+		background: rgba(255, 255, 255, 0.1);
 		border-radius: 50%;
 	}
-	.typing-page .list-header h4 {
-		color: white;
-		margin: 0;
-		font-weight: 700;
-		font-size: 1.5rem;
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
+
+	.doc-list-page .list-header::after {
+		content: '';
+		position: absolute;
+		bottom: -70%;
+		left: 10%;
+		width: 200px;
+		height: 200px;
+		background: rgba(255, 255, 255, 0.06);
+		border-radius: 50%;
+	}
+
+	.doc-list-page .list-header-inner {
 		position: relative;
 		z-index: 1;
-		text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 	}
-	.typing-page .list-header .header-icon {
-		width: 44px;
-		height: 44px;
-		border-radius: 12px;
-		background: rgba(255, 255, 255, 0.2);
+
+	.doc-list-page .list-header h4 {
+		color: #fff;
+		margin: 0;
+		font-weight: 700;
+		font-size: 1.45rem;
 		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+	}
+
+	.doc-list-page .header-icon {
+		width: 48px;
+		height: 48px;
+		border-radius: 14px;
+		background: rgba(255, 255, 255, 0.18);
+		backdrop-filter: blur(4px);
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 1.25rem;
+		font-size: 1.2rem;
+		flex-shrink: 0;
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 	}
-	.typing-page .list-header .subtitle {
-		color: rgba(255, 255, 255, 0.9);
-		font-size: 0.9rem;
-		margin: 0.5rem 0 0 0;
-		position: relative;
-		z-index: 1;
+
+	.doc-list-page .count-badge {
+		background: rgba(255, 255, 255, 0.22);
+		color: #fff;
+		padding: 0.3rem 0.75rem;
+		border-radius: 999px;
+		font-size: 0.78rem;
+		font-weight: 600;
+		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
-	.typing-page .card-body {
-		padding: 1.5rem 1.75rem;
+
+	.doc-list-page .subtitle {
+		color: rgba(255, 255, 255, 0.92);
+		font-size: 0.92rem;
+		margin: 0.65rem 0 0 0;
+		max-width: 640px;
+		line-height: 1.5;
 	}
-	.typing-page .info-banner {
+
+	.doc-list-page .card-body {
+		padding: 1.75rem 2rem 2rem;
+	}
+
+	.doc-list-page .info-banner {
 		background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-		border-left: 4px solid #2563eb;
-		border-radius: 0 8px 8px 0;
-		padding: 0.875rem 1rem;
+		border: 1px solid #bfdbfe;
+		border-left: 4px solid var(--dl-primary);
+		border-radius: 0 12px 12px 0;
+		padding: 1rem 1.15rem;
 		margin-bottom: 1.5rem;
-		font-size: 0.9rem;
+		font-size: 0.92rem;
 		color: #1e40af;
+		display: flex;
+		align-items: flex-start;
+		gap: 0.65rem;
+		line-height: 1.55;
 	}
-	.typing-page .cert-table-wrap {
-		border-radius: 12px;
+
+	.doc-list-page .info-banner i {
+		margin-top: 0.15rem;
+		flex-shrink: 0;
+	}
+
+	.doc-list-page .list-table-wrap {
+		border-radius: 14px;
 		overflow: hidden;
-		border: 1px solid #e5e7eb;
+		border: 1px solid var(--dl-border);
+		background: #fff;
+		box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 	}
-	.typing-page .modern-table {
+
+	.doc-list-page .modern-table {
 		margin: 0;
 	}
-	.typing-page .modern-table thead th {
-		background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-		color: white;
+
+	.doc-list-page .modern-table thead th {
+		background: linear-gradient(135deg, var(--dl-primary) 0%, var(--dl-primary-dark) 100%);
+		color: #fff;
 		font-weight: 600;
 		text-transform: uppercase;
-		font-size: 0.7rem;
-		letter-spacing: 0.6px;
+		font-size: 0.68rem;
+		letter-spacing: 0.55px;
 		padding: 1rem 1.25rem;
 		border: none;
+		white-space: nowrap;
 	}
-	.typing-page .modern-table thead th:first-child {
-		border-radius: 0;
+
+	.doc-list-page .modern-table tbody tr {
+		transition: background 0.2s ease, transform 0.2s ease;
 	}
-	.typing-page .modern-table tbody tr {
-		transition: background 0.2s ease;
+
+	.doc-list-page .modern-table tbody tr:hover {
+		background: var(--dl-row-hover);
 	}
-	.typing-page .modern-table tbody tr:hover {
-		background: #f8fafc;
-	}
-	.typing-page .modern-table tbody td {
-		padding: 1rem 1.25rem;
+
+	.doc-list-page .modern-table tbody td {
+		padding: 1.05rem 1.25rem;
 		vertical-align: middle;
 		border-bottom: 1px solid #f1f5f9;
-		font-size: 0.95rem;
+		font-size: 0.94rem;
+		color: #334155;
 	}
-	.typing-page .modern-table tbody tr:last-child td {
+
+	.doc-list-page .modern-table tbody tr:last-child td {
 		border-bottom: none;
 	}
-	.typing-page .cert-no {
-		font-weight: 700;
-		color: #1e40af;
-		font-family: 'Consolas', 'Monaco', monospace;
-		font-size: 0.9rem;
-	}
-	.typing-page .course-badge {
-		display: inline-block;
-		background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-		color: white;
-		padding: 0.35rem 0.75rem;
-		border-radius: 8px;
-		font-size: 0.8rem;
+
+	.doc-list-page .row-num {
+		color: var(--dl-muted);
 		font-weight: 600;
+		font-size: 0.85rem;
 	}
-	.typing-page .stat-pill {
+
+	.doc-list-page .course-badge {
+		display: inline-block;
+		background: linear-gradient(135deg, var(--dl-primary) 0%, var(--dl-primary-dark) 100%);
+		color: #fff;
+		padding: 0.4rem 0.8rem;
+		border-radius: 999px;
+		font-size: 0.78rem;
+		font-weight: 600;
+		box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22);
+	}
+
+	.doc-list-page .course-subtitle {
+		font-size: 0.78rem;
+		color: var(--dl-muted);
+		margin-top: 0.35rem;
+		line-height: 1.35;
+		max-width: 280px;
+	}
+
+	.doc-list-page .reg-no,
+	.doc-list-page .cert-no {
+		font-weight: 700;
+		color: var(--dl-primary-dark);
+		font-family: Consolas, Monaco, 'Courier New', monospace;
+		font-size: 0.88rem;
+		background: #eff6ff;
+		padding: 0.35rem 0.65rem;
+		border-radius: 8px;
+		border: 1px solid #dbeafe;
+		display: inline-block;
+	}
+
+	.doc-list-page .status-badge {
+		padding: 0.38rem 0.72rem;
+		border-radius: 999px;
+		font-weight: 700;
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.doc-list-page .status-badge::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: currentColor;
+		opacity: 0.85;
+	}
+
+	.doc-list-page .status-verified,
+	.doc-list-page .status-result-out,
+	.doc-list-page .status-dispatched {
+		background: #dcfce7;
+		color: #166534;
+		border: 1px solid #bbf7d0;
+	}
+
+	.doc-list-page .status-pending {
+		background: #fef3c7;
+		color: #92400e;
+		border: 1px solid #fde68a;
+	}
+
+	.doc-list-page .status-block {
+		background: #fee2e2;
+		color: #991b1b;
+		border: 1px solid #fecaca;
+	}
+
+	.doc-list-page .grade-badge,
+	.doc-list-page .stat-pill {
 		background: #f1f5f9;
 		color: #475569;
-		padding: 0.35rem 0.65rem;
-		border-radius: 6px;
-		font-size: 0.85rem;
+		padding: 0.38rem 0.72rem;
+		border-radius: 8px;
+		font-size: 0.84rem;
 		font-weight: 600;
+		border: 1px solid #e2e8f0;
+		display: inline-block;
 	}
-	.typing-page .btn-view {
-		background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-		color: white;
-		padding: 0.5rem 1rem;
+
+	.doc-list-page .grade-badge {
+		background: #dbeafe;
+		color: #1e40af;
+		border-color: #bfdbfe;
+	}
+
+	.doc-list-page .marks-text {
+		font-weight: 600;
+		color: #0f172a;
+	}
+
+	.doc-list-page .marks-text span {
+		color: var(--dl-muted);
+		font-weight: 500;
+	}
+
+	.doc-list-page .btn-view {
+		background: linear-gradient(135deg, var(--dl-primary) 0%, var(--dl-primary-dark) 100%);
+		color: #fff;
+		padding: 0.55rem 1.05rem;
 		border-radius: 10px;
 		font-weight: 600;
-		font-size: 0.85rem;
+		font-size: 0.84rem;
 		text-decoration: none;
 		display: inline-flex;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.45rem;
 		transition: all 0.25s ease;
 		border: none;
-		box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+		box-shadow: 0 2px 10px rgba(37, 99, 235, 0.28);
+		white-space: nowrap;
 	}
-	.typing-page .btn-view:hover {
+
+	.doc-list-page .btn-view:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-		color: white;
+		box-shadow: 0 6px 18px rgba(37, 99, 235, 0.38);
+		color: #fff;
 	}
-	.typing-page .empty-state {
+
+	.doc-list-page .btn-disabled {
+		background: #f1f5f9;
+		color: #94a3b8;
+		padding: 0.55rem 1.05rem;
+		border-radius: 10px;
+		font-weight: 600;
+		font-size: 0.84rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		cursor: not-allowed;
+		border: 1px solid #e2e8f0;
+		white-space: nowrap;
+	}
+
+	.doc-list-page .empty-state {
 		text-align: center;
-		padding: 3rem 2rem;
+		padding: 3.5rem 2rem;
 	}
-	.typing-page .empty-state .empty-icon {
-		width: 80px;
-		height: 80px;
-		border-radius: 20px;
+
+	.doc-list-page .empty-icon {
+		width: 88px;
+		height: 88px;
+		border-radius: 22px;
 		background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-		color: #2563eb;
+		color: var(--dl-primary);
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 2.25rem;
-		margin-bottom: 1.5rem;
+		font-size: 2.2rem;
+		margin-bottom: 1.25rem;
+		box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
 	}
-	.typing-page .empty-state h5 {
+
+	.doc-list-page .empty-state h5 {
 		font-weight: 700;
 		color: #1e293b;
 		margin-bottom: 0.5rem;
 	}
-	.typing-page .empty-state p {
-		color: #64748b;
-		max-width: 400px;
+
+	.doc-list-page .empty-state p {
+		color: var(--dl-muted);
+		max-width: 420px;
 		margin: 0 auto 1.5rem;
 		font-size: 0.95rem;
+		line-height: 1.6;
 	}
-	.typing-page .btn-back {
-		background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-		color: white;
-		padding: 0.6rem 1.25rem;
+
+	.doc-list-page .btn-back {
+		background: linear-gradient(135deg, var(--dl-primary) 0%, var(--dl-primary-dark) 100%);
+		color: #fff;
+		padding: 0.65rem 1.35rem;
 		border-radius: 10px;
 		font-weight: 600;
 		text-decoration: none;
@@ -187,65 +359,79 @@
 		align-items: center;
 		gap: 0.5rem;
 		transition: all 0.25s ease;
-		border: none;
-		box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+		box-shadow: 0 2px 10px rgba(37, 99, 235, 0.28);
 	}
-	.typing-page .btn-back:hover {
-		color: white;
+
+	.doc-list-page .btn-back:hover {
+		color: #fff;
 		transform: translateY(-2px);
-		box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+		box-shadow: 0 6px 18px rgba(37, 99, 235, 0.38);
 	}
-	.typing-page .count-badge {
-		background: rgba(255,255,255,0.25);
-		color: white;
-		padding: 0.25rem 0.6rem;
-		border-radius: 20px;
-		font-size: 0.8rem;
-		font-weight: 600;
-		margin-left: 0.5rem;
+
+	.doc-list-page .alert {
+		border-radius: 12px;
+		border: none;
+		box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+	}
+
+	@media (max-width: 768px) {
+		.doc-list-page .list-header,
+		.doc-list-page .card-body {
+			padding-left: 1.25rem;
+			padding-right: 1.25rem;
+		}
+
+		.doc-list-page .list-header h4 {
+			font-size: 1.2rem;
+		}
+
+		.doc-list-page .modern-table thead th,
+		.doc-list-page .modern-table tbody td {
+			padding: 0.85rem 0.75rem;
+			font-size: 0.85rem;
+		}
 	}
 </style>
+@endpush
 
 @section('content')
-<div class="container-fluid py-4 typing-page">
+<div class="container-fluid py-4 doc-list-page">
 	<div class="row">
 		<div class="col-12">
 			<div class="page-card">
 				<div class="list-header">
-					<div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-						<div>
-							<h4>
-								<span class="header-icon"><i class="fas fa-keyboard"></i></span>
-								Typing Certificates
-								@if($certificates->count() > 0)
-									<span class="count-badge">{{ $certificates->count() }} {{ $certificates->count() === 1 ? 'certificate' : 'certificates' }}</span>
-								@endif
-							</h4>
-							<p class="subtitle">Issued by your center — no result publication required</p>
-						</div>
+					<div class="list-header-inner">
+						<h4>
+							<span class="header-icon"><i class="fas fa-keyboard"></i></span>
+							Typing Certificates
+							@if($certificates->count() > 0)
+								<span class="count-badge">{{ $certificates->count() }} {{ $certificates->count() === 1 ? 'certificate' : 'certificates' }}</span>
+							@endif
+						</h4>
+						<p class="subtitle">Issued by your center — no result publication required</p>
 					</div>
 				</div>
 				<div class="card-body">
 					@if(session('success'))
-						<div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
 							<i class="fas fa-check-circle me-2"></i>{{ session('success') }}
 							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 						</div>
 					@endif
 					@if(session('error'))
-						<div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
 							<i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
 							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 						</div>
 					@endif
 
 					<div class="info-banner">
-						<i class="fas fa-info-circle me-2"></i>
-						Typing certificates are issued by your center and do not require result publication. Below are your issued typing certificates.
+						<i class="fas fa-info-circle"></i>
+						<span>Typing certificates are issued by your center and do not require result publication. Below are your issued typing certificates.</span>
 					</div>
 
 					@if($certificates->count() > 0)
-						<div class="cert-table-wrap">
+						<div class="list-table-wrap">
 							<div class="table-responsive">
 								<table class="table modern-table mb-0">
 									<thead>
@@ -263,24 +449,29 @@
 										@php $i = 1; @endphp
 										@foreach($certificates as $cert)
 											<tr>
-												<td class="text-muted">{{ $i++ }}</td>
+												<td><span class="row-num">{{ $i++ }}</span></td>
 												<td><span class="cert-no">{{ $cert->sc_certificate_number ?? 'N/A' }}</span></td>
-												<td><span class="course-badge">{{ $cert->c_short_name ?? $cert->c_full_name ?? 'N/A' }}</span></td>
+												<td>
+													<span class="course-badge">{{ $cert->c_short_name ?? $cert->c_full_name ?? 'N/A' }}</span>
+													@if(!empty($cert->c_full_name) && ($cert->c_short_name ?? '') !== ($cert->c_full_name ?? ''))
+														<div class="course-subtitle">{{ $cert->c_full_name }}</div>
+													@endif
+												</td>
 												<td>
 													@if($cert->sc_issue_date)
 														{{ \Carbon\Carbon::parse($cert->sc_issue_date)->format('d M Y') }}
 													@else
-														<span class="text-muted">–</span>
+														<span class="text-muted">—</span>
 													@endif
 												</td>
 												<td>
 													@if(($cert->sc_typing_speed_hindi != null && $cert->sc_typing_speed_hindi !== '') || ($cert->sc_typing_speed_english != null && $cert->sc_typing_speed_english !== ''))
 														<span class="stat-pill">H: {{ $cert->sc_typing_speed_hindi }} / E: {{ $cert->sc_typing_speed_english }} WPM</span>
 													@else
-														<span class="stat-pill">{{ $cert->sc_typing_speed ?? '–' }} WPM</span>
+														<span class="stat-pill">{{ $cert->sc_typing_speed ?? '—' }} WPM</span>
 													@endif
 												</td>
-												<td><span class="stat-pill">{{ $cert->sc_typing_accuracy ?? '–' }}%</span></td>
+												<td><span class="stat-pill">{{ $cert->sc_typing_accuracy ?? '—' }}%</span></td>
 												<td>
 													<a href="{{ route('student.view_typing_certificate', $cert->sc_id) }}" class="btn-view" title="View / Download certificate">
 														<i class="fas fa-eye"></i> View
@@ -294,9 +485,7 @@
 						</div>
 					@else
 						<div class="empty-state">
-							<div class="empty-icon">
-								<i class="fas fa-keyboard"></i>
-							</div>
+							<div class="empty-icon"><i class="fas fa-keyboard"></i></div>
 							<h5>No Typing Certificates Yet</h5>
 							<p>Your center will add typing certificates here once they are generated. No result publication is required for typing certificates.</p>
 							<a href="{{ route('student_dashboard') }}" class="btn-back">

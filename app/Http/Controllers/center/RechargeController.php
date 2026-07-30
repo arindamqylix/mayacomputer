@@ -87,8 +87,8 @@ class RechargeController extends Controller
     }
     
     public function center_recharge_by_admin(){
-        $center['center'] = Center::where('cl_code', '!=', '61123000')->get();
-        return view('admin.center_recharge', $center);
+        $centers = Center::orderBy('cl_center_name', 'asc')->get();
+        return view('admin.center_recharge', compact('centers'));
     }
     
     public function center_recharge_by_admin_now(Request $request){

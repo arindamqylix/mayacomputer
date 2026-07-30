@@ -33,7 +33,7 @@
 				<h5>Payment Form</h5>
 			</div>
 			<div class="card-body">
-				<form method="POST" enctype="multipart/form-data"> 
+				<form method="POST" action="{{ route('center.recharge') }}" enctype="multipart/form-data"> 
 					@csrf
 					<div class="row">
 					    <div class="col-lg-12 mb-2">
@@ -41,8 +41,8 @@
 								<label>Select Center</label>
 								<select class="form-control" required name="center_id">
 								    <option value="">--Select Center--</option>
-								    @foreach($center as $data)
-								        <option value="{{ $data->cl_id }}">{{$data->cl_name}} [{{ $data->cl_code }}]</option>
+								    @foreach($centers as $data)
+								        <option value="{{ $data->cl_id }}">{{ $data->cl_center_name ?? $data->cl_name }} [{{ $data->cl_code }}]</option>
 								    @endforeach
 								</select>
 							</div>

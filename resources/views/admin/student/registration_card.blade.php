@@ -366,8 +366,8 @@
                     <tr>
                         <td class="label">Date of Birth</td>
                         <td class="value" colspan="2">:
-                            {{ format_dob_display($data->sl_dob) }}
-                            &nbsp;&nbsp; Gender : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                            {!! format_dob_display_html($data->sl_dob, 'N/A', true) !!}
+                            &nbsp;&nbsp; Gen : {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Cat :
                             {{ $data->sl_category ?? 'Gen' }}
                         </td>
                     </tr>

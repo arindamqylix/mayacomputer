@@ -429,8 +429,8 @@ body {
                     <div class="icon-wrapper">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <h3>{{ $data->c_short_name ?? 'N/A' }}</h3>
-                    <p>Course</p>
+                    <h3>{{ ($enrolledCourses->count() ?? 1) > 1 ? ($enrolledCourses->count() . ' Courses') : ($data->c_short_name ?? 'N/A') }}</h3>
+                    <p>{{ ($enrolledCourses->count() ?? 1) > 1 ? 'Enrolled Courses' : 'Course' }}</p>
                 </div>
                 <div class="stat-card">
                     <div class="icon-wrapper">
@@ -482,12 +482,21 @@ body {
                     {{ $data->sl_reg_no ?? 'N/A' }}
                 </div>
                 <div>
-                    <span class="badge-course">
-                        <i class="fas fa-graduation-cap me-1"></i>
-                        {{ $data->c_short_name ?? 'N/A' }}
-                    </span>
+                    @if(($enrolledCourses->count() ?? 0) > 1)
+                        @foreach($enrolledCourses as $courseRow)
+                            <span class="badge-course d-inline-block mb-1 me-1">
+                                <i class="fas fa-graduation-cap me-1"></i>
+                                {{ $courseRow->c_short_name ?? $courseRow->c_full_name ?? 'N/A' }}
+                            </span>
+                        @endforeach
+                    @else
+                        <span class="badge-course">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            {{ $data->c_short_name ?? 'N/A' }}
+                        </span>
+                    @endif
                 </div>
-                <p class="small mt-2 text-muted mb-2">{{ $data->c_full_name ?? 'N/A' }}</p>
+                <p class="small mt-2 text-muted mb-2">{{ ($enrolledCourses->count() ?? 0) > 1 ? $courseNames : ($data->c_full_name ?? 'N/A') }}</p>
                 <div class="mt-3">
                     <i class="fas fa-birthday-cake me-2 text-danger"></i>
                     <span class="text-muted">
@@ -572,8 +581,8 @@ body {
                         <td>{{ $data->sl_father_name ?? 'N/A' }}</td>
                     </tr>
                     <tr>
-                        <td class="table-label"><i class="fas fa-book me-2"></i>Course Title</td>
-                        <td>{{ $data->c_full_name ?? 'N/A' }} ({{ $data->c_short_name ?? 'N/A' }})</td>
+                        <td class="table-label"><i class="fas fa-book me-2"></i>Course{{ ($enrolledCourses->count() ?? 0) > 1 ? 's' : '' }}</td>
+                        <td>{{ $courseNames ?: (($data->c_full_name ?? 'N/A') . ' (' . ($data->c_short_name ?? 'N/A') . ')') }}</td>
                     </tr>
                     <tr>
                         <td class="table-label"><i class="fas fa-clock me-2"></i>Course Duration</td>

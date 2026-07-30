@@ -127,6 +127,10 @@ CREATE TABLE `center_recharge` (
   PRIMARY KEY (`cr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Admin manual recharge: who deposited (e.g. Admin, Razorpay)
+ALTER TABLE `center_recharge`
+  ADD COLUMN `cr_deposit_by` VARCHAR(255) NULL DEFAULT NULL AFTER `cr_type`;
+
 INSERT INTO `center_recharge` (`cr_id`, `cr_payment_id`, `cr_razorpay_id`, `cr_FK_of_center_id`, `cr_amount`, `cr_status`, `cr_type`, `created_at`, `updated_at`) VALUES
 (9,	'order_O0SOFb6ghHsFt2',	'pay_O0SPjIuYBYvXFp',	1,	100,	1,	'CREDIT',	'2024-04-19 05:31:00',	'2024-04-19 11:02:38'),
 (10,	'order_O0SRxG9WomYsFf',	'pay_O0SSUfEk8QD6Qb',	1,	60,	1,	'CREDIT',	'2024-04-19 05:34:30',	'2024-04-19 11:05:11'),
@@ -715,3 +719,7 @@ MODIFY COLUMN `sc_status` ENUM(
 ALTER TABLE `student_certificates`
 ADD COLUMN `sc_typing_speed_hindi` VARCHAR(50) NULL DEFAULT NULL AFTER `sc_typing_speed`,
 ADD COLUMN `sc_typing_speed_english` VARCHAR(50) NULL DEFAULT NULL AFTER `sc_typing_speed_hindi`;
+
+-- 30-07-2026: admin manual recharge: who deposited (e.g. Admin, Razorpay)
+ALTER TABLE `center_recharge`
+  ADD COLUMN `cr_deposit_by` VARCHAR(255) NULL DEFAULT NULL AFTER `cr_type`;

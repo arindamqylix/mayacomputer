@@ -223,16 +223,16 @@
 
         .student-details {
             flex-grow: 1;
-            font-size: 13px;
+            font-size: 16px;
         }
 
         .info-row {
             display: flex;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .info-label {
-            width: 140px;
+            width: 155px;
             font-weight: bold;
         }
 
@@ -314,7 +314,7 @@
 
         /* Grading Details */
         .grading-info {
-            font-size: 11px;
+            font-size: 14px;
             font-weight: bold;
             margin-top: 4px;
             margin-bottom: 6px;
@@ -322,7 +322,7 @@
         }
 
         .issue-date {
-            font-size: 12px;
+            font-size: 15px;
             font-weight: bold;
             margin-bottom: 6px;
         }
@@ -517,8 +517,8 @@
                                             class="info-value">&nbsp;{{ strtoupper($data->sl_father_name ?? '') }}</span>
                                     </div>
                                     <div class="info-row"><span class="info-label">Date of Birth</span> : <span
-                                            class="info-value">&nbsp;{{ format_dob_display($data->sl_dob) }} &nbsp;&nbsp; Gender :
-                                            {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Category :
+                                            class="info-value">&nbsp;{!! format_dob_display_html($data->sl_dob, 'N/A', true) !!} &nbsp;&nbsp; Gen :
+                                            {{ strtoupper($data->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Cat :
                                             {{ $data->sl_category ?? 'Gen' }}</span></div>
                                     <div class="info-row"><span class="info-label">Course Name</span> : <span
                                             class="info-value">&nbsp;{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>

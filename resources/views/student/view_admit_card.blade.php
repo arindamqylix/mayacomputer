@@ -163,10 +163,15 @@
             border: 1px solid #ccc;
             border-top: none;
             display: flex;
-            padding: 10px;
-            padding-right: 150px;
-            position: relative;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 12px;
             background-color: #f9f9f980;
+        }
+
+        .details-main {
+            flex: 1;
+            min-width: 0;
         }
 
         .info-table {
@@ -195,54 +200,59 @@
             text-transform: uppercase;
         }
 
-        .photo-box {
-            width: 120px;
-            height: 140px;
+        .photo-column {
+            flex: 0 0 102px;
+            width: 102px;
+        }
+
+        .photo-frame {
+            width: 102px;
+            height: 127px;
             border: 2px solid #000;
+            background: #fff;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            background: #fff;
             text-align: center;
         }
 
-        .photo-placeholder {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ccc;
-            font-size: 10px;
-            width: 100%;
-        }
-
-        .photo-placeholder img {
+        .photo-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center center;
+            display: block;
         }
 
+        .photo-empty {
+            font-size: 9px;
+            color: #999;
+            line-height: 1.35;
+            padding: 6px 4px;
+        }
 
-        .signature-box {
+        .signature-frame {
+            width: 102px;
+            height: 38px;
+            border: 2px solid #000;
             border-top: 1px solid #000;
-            width: 100%;
-            min-height: 30px;
+            background: #fff;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            color: #ccc;
-            padding: 4px;
+            font-size: 8px;
+            color: #999;
         }
 
-        .signature-box img {
-            max-height: 36px;
+        .signature-frame img {
+            max-width: 96%;
+            max-height: 34px;
             width: auto;
+            height: auto;
             object-fit: contain;
+            display: block;
         }
 
         /* Exam Table */
@@ -403,6 +413,7 @@
 
             <!-- Student Details -->
             <div class="details-section">
+                <div class="details-main">
                 <table class="info-table">
                     <tr>
                         <td class="label">Student Name</td>
@@ -418,7 +429,7 @@
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {{ strtoupper(format_dob_display($student->sl_dob ?? null)) }} &nbsp;&nbsp; Gen: {{ strtoupper($student->sl_sex ?? '') }}</td>
+                        <td class="value" colspan="2">: {!! format_dob_display_html($student->sl_dob ?? null, 'N/A', true) !!} &nbsp;&nbsp; Gen: {{ strtoupper($student->sl_sex ?? '') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
@@ -433,22 +444,23 @@
                         <td class="value" colspan="2">: {{ $center->cl_code ?? '' }}</td>
                     </tr>
             </table>
+                </div>
 
-                <div class="photo-box">
-                    <div class="photo-placeholder">
+                <div class="photo-column">
+                    <div class="photo-frame">
                         @php $photoUrl = student_media_url($student->sl_photo ?? null); @endphp
                         @if($photoUrl)
                             <img src="{{ $photoUrl }}" alt="Student Photo">
                         @else
-                            Picture<br><br>1.2 in X 1.5 in
+                            <span class="photo-empty">Picture<br>1.2 in × 1.5 in</span>
                         @endif
                     </div>
-                    <div class="signature-box">
+                    <div class="signature-frame">
                         @php $signUrl = student_media_url($student->sl_signature ?? null); @endphp
                         @if($signUrl)
                             <img src="{{ $signUrl }}" alt="Student Signature">
                         @else
-                            Student Signature
+                            Signature
                         @endif
                     </div>
                 </div>
@@ -508,10 +520,10 @@
 
     <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
-        <a href="{{ route('student.download_admit_card', $admit->ac_id ?? 0) }}"
-            style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; text-decoration: none; border-radius: 5px; font-weight: bold;">
-            <i class="fa fa-download"></i> Download Admit Card PDF
-        </a>
+        <button type="button" onclick="window.print()"
+            style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;">
+            <i class="fa fa-print"></i> Print Admit Card
+        </button>
     </div>
 
 </body>

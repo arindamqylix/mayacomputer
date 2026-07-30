@@ -22,7 +22,8 @@ Route::group(['prefix' => 'student', 'middleware' => 'student:student'], functio
 	Route::get('logout', [AuthController::class, 'student_logout'])->name('student_logout');
 
 	// Registration Card
-	Route::get('view-registration-card', [RegistrationCardController::class, 'view_registration_card'])->name('view_registration_card');
+	Route::get('view-registration-card', [RegistrationCardController::class, 'registration_list'])->name('view_registration_card');
+	Route::get('view-registration-card/{courseId}', [RegistrationCardController::class, 'view_registration_card'])->name('student.view_registration_card_detail');
 
 	// Admit Card
 	Route::get('view-admit-card', [AdmitCardController::class, 'view_admit_card'])->name('view_admit_card');
@@ -42,7 +43,8 @@ Route::group(['prefix' => 'student', 'middleware' => 'student:student'], functio
 	// View Payment
 	Route::get('view-payment-history', [PaymentController::class, 'view_payment'])->name('view_payment');
 
-	Route::get('view-id-card', [IdCardController::class, 'view_id_card'])->name('view_id_card');
+	Route::get('view-id-card', [IdCardController::class, 'id_card_list'])->name('view_id_card');
+	Route::get('view-id-card/{courseId}', [IdCardController::class, 'view_id_card'])->name('student.view_id_card_detail');
 
 	// Document Reissue
 	Route::get('document-reissue', [DocumentReissueController::class, 'index'])->name('student.document_reissue');

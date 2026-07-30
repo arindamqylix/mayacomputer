@@ -1,5 +1,5 @@
 @extends('student.layouts.base')
-@section('title', 'Results')
+@section('title', 'ID Cards')
 @push('custom-css')
 <style type="text/css">
 	.doc-list-page {
@@ -402,13 +402,13 @@
 				<div class="list-header">
 					<div class="list-header-inner">
 						<h4>
-							<span class="header-icon"><i class="fas fa-file-lines"></i></span>
-							My Results
-							@if($results->count() > 0)
-								<span class="count-badge">{{ $results->count() }} {{ $results->count() === 1 ? 'result' : 'results' }}</span>
+							<span class="header-icon"><i class="fas fa-id-card"></i></span>
+							My ID Cards
+							@if($enrollments->count() > 0)
+								<span class="count-badge">{{ $enrollments->count() }} {{ $enrollments->count() === 1 ? 'course' : 'courses' }}</span>
 							@endif
 						</h4>
-						<p class="subtitle">Published marksheets for your regular (non-typing) courses</p>
+						<p class="subtitle">Download or print your student ID card for each enrolled course</p>
 					</div>
 				</div>
 				<div class="card-body">
@@ -421,10 +421,10 @@
 
 					<div class="info-banner">
 						<i class="fas fa-info-circle"></i>
-						<span>Typing courses do not have published results here — use <strong>Typing Certificate</strong> for those.</span>
+						<span>Your registration number is the same for all courses. Select a course below to view or print its ID card.</span>
 					</div>
 
-					@if($results->count() > 0)
+					@if($enrollments->count() > 0)
 						<div class="list-table-wrap">
 							<div class="table-responsive">
 								<table class="table modern-table mb-0">
@@ -432,15 +432,19 @@
 										<tr>
 											<th style="width: 50px;">#</th>
 											<th>Course</th>
-											<th>Total Marks</th>
-											<th>Percentage</th>
-											<th>Grade</th>
-											<th style="width: 160px;">Action</th>
+											<th>Registration No.</th>
+											<th>Status</th>
+											<th style="width: 150px;">Action</th>
 										</tr>
 									</thead>
 									<tbody>
 										@php $i = 1; @endphp
-										@foreach($results as $row)
+										@foreach($enrollments as $row)
+											@php
+												$status = strtoupper((string) ($row->status ?? 'PENDING'));
+												$statusClass = strtolower(str_replace(' ', '-', $status));
+												$canView = !in_array($status, ['PENDING', 'BLOCK'], true);
+											@endphp
 											<tr>
 												<td><span class="row-num">{{ $i++ }}</span></td>
 												<td>
@@ -449,18 +453,18 @@
 														<div class="course-subtitle">{{ $row->c_full_name }}</div>
 													@endif
 												</td>
+												<td><span class="reg-no">{{ $row->sl_reg_no ?? 'N/A' }}</span></td>
+												<td><span class="status-badge status-{{ $statusClass }}">{{ $status }}</span></td>
 												<td>
-													<span class="marks-text">
-														{{ $row->sr_total_marks_obtained ?? '—' }}
-														<span>/ {{ $row->sr_total_full_marks ?? '400' }}</span>
-													</span>
-												</td>
-												<td><span class="stat-pill">{{ number_format((float) ($row->sr_percentage ?? 0), 2) }}%</span></td>
-												<td><span class="grade-badge">{{ $row->sr_grade ?? '—' }}</span></td>
-												<td>
-													<a href="{{ route('student.view_marksheet_detail', $row->sr_id) }}" class="btn-view" target="_blank">
-														<i class="fas fa-eye"></i> View Marksheet
-													</a>
+													@if($canView)
+														<a href="{{ route('student.view_id_card_detail', $row->course_id) }}" class="btn-view" target="_blank">
+															<i class="fas fa-eye"></i> View ID Card
+														</a>
+													@else
+														<span class="btn-disabled" title="Available after admin approval">
+															<i class="fas fa-lock"></i> Pending
+														</span>
+													@endif
 												</td>
 											</tr>
 										@endforeach
@@ -470,9 +474,9 @@
 						</div>
 					@else
 						<div class="empty-state">
-							<div class="empty-icon"><i class="fas fa-file-lines"></i></div>
-							<h5>No Result Published Yet</h5>
-							<p>Your center will publish results here after marks are entered for your course.</p>
+							<div class="empty-icon"><i class="fas fa-id-card"></i></div>
+							<h5>No ID Card Found</h5>
+							<p>Contact your center if you believe this is an error.</p>
 							<a href="{{ route('student_dashboard') }}" class="btn-back">
 								<i class="fas fa-arrow-left"></i> Back to Dashboard
 							</a>

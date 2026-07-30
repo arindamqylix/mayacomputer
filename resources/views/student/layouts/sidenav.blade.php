@@ -73,14 +73,14 @@
         </a>
       </li> -->
 
-      <li class="nav-item {{ Request::segment(2) == 'view-registration-card' ? 'active' : '' }}">
+      <li class="nav-item {{ in_array(Request::segment(2), ['view-registration-card'], true) ? 'active' : '' }}">
         <a href="{{ route('view_registration_card') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-address-card"></i></span>
             <span class="sidebar-text">Registration Card</span>
         </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item {{ in_array(Request::segment(2), ['view-id-card'], true) ? 'active' : '' }}">
         <a href="{{ route('view_id_card') }}" class="nav-link">
             <span class="sidebar-icon"><i class="fa-solid fa-id-card"></i></span>
             <span class="sidebar-text">View ID Card</span>

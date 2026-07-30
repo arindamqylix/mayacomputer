@@ -399,7 +399,7 @@
                                 <td class="value">{{ format_dob_display($data->sl_dob) }}</td>
                             </tr>
                             <tr>
-                                <td class="label">Gender</td>
+                                <td class="label">Gen</td>
                                 <td class="colon">:</td>
                                 <td class="value">{{ ucfirst($data->sl_sex ?? 'N/A') }}</td>
                             </tr>
