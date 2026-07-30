@@ -167,6 +167,11 @@
 											<a href="{{ route('student_application', $data->sl_id) }}" target="_blank" class="student-name-link">
 												{{ $data->sl_name ?? 'N/A' }}
 											</a>
+											<div>
+												<a href="{{ route('center.student.courses', $data->sl_id) }}" class="small text-primary fw-semibold">
+													<i class="fas fa-book-open me-1"></i>Manage Courses
+												</a>
+											</div>
 										</td>
 										<td>
 											<span class="date-display">
@@ -177,7 +182,11 @@
 												@endif
 											</span>
 										</td>
-										<td><span class="text-muted">{{ $data->c_short_name ?? 'N/A' }}</span></td>
+										@if(!empty($data->course_names))
+										<span class="text-muted">{{ $data->course_names }}</span>
+									@else
+										<span class="text-muted">N/A</span>
+									@endif
 										<td>
 											<span class="status-badge result-updated">{{ $data->sl_status ?? 'RESULT UPDATED' }}</span>
 										</td>

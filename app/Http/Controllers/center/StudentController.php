@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\center;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\ManagesStudentEnrollments;
 use Illuminate\Http\Request;
 use App\Models\center\Student;
 use App\Models\admin\Course;
@@ -14,6 +15,81 @@ use DB;
 use Hash;
 class StudentController extends Controller
 {
+    use ManagesStudentEnrollments;
+
+    protected function enrollmentsViewName(): string
+    {
+        return 'center.student.enrollments';
+    }
+
+    protected function enrollmentsListRoute(): string
+    {
+        return 'all_student';
+    }
+
+    protected function enrollmentsManageRoute(int $studentId): string
+    {
+        return route('center.student.courses', $studentId);
+    }
+
+    protected function enrollmentsAddRoute(int $studentId): string
+    {
+        return route('center.student.courses.add', $studentId);
+    }
+
+    protected function enrollmentsRemoveRoute(int $studentId, int $courseId): string
+    {
+        return route('center.student.courses.remove', ['id' => $studentId, 'courseId' => $courseId]);
+    }
+
+    protected function enrollmentsStatusRoute(int $studentId): string
+    {
+        return route('center.student.courses.status', $studentId);
+    }
+
+    protected function enrollmentsEditRoute(int $studentId): string
+    {
+        return route('edit.student', $studentId);
+    }
+
+    protected function authorizeEnrollmentAccess(object $student): bool
+    {
+        return (int) $student->sl_FK_of_center_id === (int) CENTER_ID;
+    }
+
+    /**
+     * One row per student (reg no + center); all courses shown in course_names.
+     */
+    protected function centerStudentList(?string $status = null)
+    {
+        $query = DB::table('student_login as s')
+            ->join('center_login', 's.sl_FK_of_center_id', 'center_login.cl_id')
+            ->join('course', 's.sl_FK_of_course_id', 'course.c_id')
+            ->where('s.sl_FK_of_center_id', CENTER_ID)
+            ->select(
+                DB::raw('MIN(s.sl_id) as sl_id'),
+                DB::raw('MAX(s.sl_reg_no) as sl_reg_no'),
+                DB::raw('MAX(s.sl_name) as sl_name'),
+                DB::raw('MAX(s.sl_photo) as sl_photo'),
+                DB::raw('MAX(s.sl_dob) as sl_dob'),
+                DB::raw('MAX(s.sl_status) as sl_status'),
+                DB::raw('MAX(center_login.cl_code) as cl_code'),
+                DB::raw('GROUP_CONCAT(DISTINCT course.c_short_name ORDER BY course.c_short_name SEPARATOR ", ") as course_names')
+            )
+            ->groupBy('s.sl_reg_no', 's.sl_FK_of_center_id');
+
+        if ($status !== null) {
+            $query->where('s.sl_status', $status);
+        }
+
+        $rows = $query->get();
+        foreach ($rows as $row) {
+            $row->course_names = student_course_names((string) $row->sl_reg_no, (int) CENTER_ID);
+        }
+
+        return $rows;
+    }
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
@@ -24,33 +100,19 @@ class StudentController extends Controller
 
     public function all_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->get();
+        $student['student'] = $this->centerStudentList();
         return view('center.student.all_student', $student);
     }
 
     public function pending_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->where('student_login.sl_status', 'PENDING')
-            ->get();
+        $student['student'] = $this->centerStudentList('PENDING');
         return view('center.student.pending_student', $student);
     }
 
     public function verified_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->where('student_login.sl_status', 'VERIFIED')
-            ->get();
+        $student['student'] = $this->centerStudentList('VERIFIED');
 
         $attendance_batch['attendance_batch'] = Attendance::where('ab_status', 'ACTIVE')->get();
         return view('center.student.verified_student', $student, $attendance_batch);
@@ -58,45 +120,25 @@ class StudentController extends Controller
 
     public function result_updated_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->where('student_login.sl_status', 'RESULT UPDATED')
-            ->get();
+        $student['student'] = $this->centerStudentList('RESULT UPDATED');
         return view('center.student.result_updated_student', $student);
     }
 
     public function result_out_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->where('student_login.sl_status', 'RESULT OUT')
-            ->get();
+        $student['student'] = $this->centerStudentList('RESULT OUT');
         return view('center.student.result_out_student', $student);
     }
 
     public function dispatched_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->where('student_login.sl_status', 'DISPATCHED')
-            ->get();
+        $student['student'] = $this->centerStudentList('DISPATCHED');
         return view('center.student.dispatched_student', $student);
     }
 
     public function block_student()
     {
-        $student['student'] = DB::table('student_login')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', 'center_login.cl_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', 'course.c_id')
-            ->where('student_login.sl_FK_of_center_id', CENTER_ID)
-            ->where('student_login.sl_status', 'BLOCK')
-            ->get();
+        $student['student'] = $this->centerStudentList('BLOCK');
         return view('center.student.block_student', $student);
     }
 

@@ -157,7 +157,10 @@
 							<i class="fas fa-edit"></i>
 							Edit Student Registration
 						</h4>
-						<div>
+						<div class="d-flex gap-2 align-items-center">
+							<a href="{{ route('center.student.courses', $data->sl_id) }}" class="btn btn-light btn-sm">
+								<i class="fas fa-book-open me-1"></i> Manage Courses
+							</a>
 							<a href="{{ route('pending_student') }}" class="btn-view-all">
 								<i class="fas fa-list"></i>
 								View All

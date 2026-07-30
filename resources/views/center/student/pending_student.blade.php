@@ -281,6 +281,11 @@
 											<a href="{{ route('student_application', $data->sl_id) }}" target="_blank" class="student-name-link">
 												{{ $data->sl_name ?? 'N/A' }}
 											</a>
+											<div>
+												<a href="{{ route('center.student.courses', $data->sl_id) }}" class="small text-primary fw-semibold">
+													<i class="fas fa-book-open me-1"></i>Manage Courses
+												</a>
+											</div>
 										</td>
 										<td>
 											<span class="date-display">
@@ -292,13 +297,21 @@
 											</span>
 										</td>
 										<td>
-											<span class="text-muted">{{ $data->c_short_name ?? 'N/A' }}</span>
+											@if(!empty($data->course_names))
+											<span class="text-muted">{{ $data->course_names }}</span>
+										@else
+											<span class="text-muted">N/A</span>
+										@endif
 										</td>
 										<td>
 											<span class="status-badge pending">{{ $data->sl_status ?? 'PENDING' }}</span>
 										</td>
 										<td>
-											<div class="d-flex gap-2">
+											<div class="d-flex flex-wrap gap-2">
+												<a href="{{ route('center.student.courses', $data->sl_id) }}" class="btn-action btn-edit" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+													<i class="fas fa-book-open"></i>
+													Courses
+												</a>
 												<a href="{{ route('edit.student', $data->sl_id) }}" class="btn-action btn-edit">
 													<i class="fas fa-edit"></i>
 													Edit
