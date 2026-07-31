@@ -189,7 +189,7 @@
 
 					<div class="info-banner">
 						<i class="fas fa-info-circle"></i>
-						<span>Admit cards are issued by your center for regular courses only. Select a course below once your admit card has been generated.</span>
+						<span>Admit cards are issued per course. Select a course below once your center has generated it (Typing, ADCA, etc.).</span>
 					</div>
 
 					@if($enrollments->count() > 0)

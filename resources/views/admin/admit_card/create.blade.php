@@ -535,8 +535,8 @@
 					@else
 						<div class="empty-state">
 							<i class="fas fa-user-slash"></i>
-							<h5>No Verified Students Found</h5>
-							<p>Only verified/approved students who don't have admit cards yet are shown in this list.</p>
+							<h5>No Verified Enrollments Found</h5>
+							<p>Only verified course enrollments without an admit card yet are shown (including Typing and regular courses).</p>
 						</div>
 					@endif
 				</div>
@@ -548,9 +548,9 @@
 						Important Information
 					</h6>
 					<ul>
-						<li>Only verified/approved students are shown in this list</li>
-						<li>Students who already have admit cards generated are excluded from this list</li>
-						<li>You can select multiple students at once for bulk admit card generation</li>
+						<li>One admit card is generated per course — a student in ADCA and Typing appears twice (once per course)</li>
+						<li>Only verified enrollments without an existing admit card for that course are listed</li>
+						<li>You can select multiple rows at once for bulk admit card generation</li>
 						<li>Use filters to quickly find students by name, registration number, course, or center</li>
 					</ul>
 				</div>

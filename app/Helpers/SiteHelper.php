@@ -954,6 +954,62 @@ if (!function_exists('student_course_enrollment_rows')) {
     }
 }
 
+if (!function_exists('admit_card_exists_for_course')) {
+    function admit_card_exists_for_course(string $regNo, int $centerId, int $courseId): bool
+    {
+        $slIds = student_sl_ids_for_person($regNo, $centerId);
+
+        return DB::table('student_admit_cards')
+            ->where('course_id', $courseId)
+            ->where('center_id', $centerId)
+            ->where(function ($query) use ($slIds, $regNo) {
+                if ($slIds !== []) {
+                    $query->whereIn('student_id', $slIds);
+                }
+                $query->orWhere('reg_no', $regNo);
+            })
+            ->exists();
+    }
+}
+
+if (!function_exists('admit_card_eligible_enrollments')) {
+    /**
+     * One row per verified enrollment without an admit card yet (all courses incl. typing).
+     */
+    function admit_card_eligible_enrollments(?int $centerId = null): \Illuminate\Support\Collection
+    {
+        return student_course_enrollment_rows($centerId, null)
+            ->map(function ($row) {
+                $regNo = (string) $row->sl_reg_no;
+                $cid = (int) $row->center_id;
+                $courseId = (int) $row->course_id;
+                $login = DB::table('student_login')->where('sl_id', $row->sl_id)->first();
+                if ($login) {
+                    $row->sl_dob = $login->sl_dob;
+                    $row->sl_email = $login->sl_email ?? null;
+                }
+                $row->sl_FK_of_course_id = $courseId;
+                $row->sl_FK_of_center_id = $cid;
+                $row->center_name = $row->cl_center_name ?? null;
+                $row->enrollment_status = enrollment_status_for_course($regNo, $cid, $courseId);
+
+                return $row;
+            })
+            ->filter(function ($row) {
+                if (($row->enrollment_status ?? '') !== 'VERIFIED') {
+                    return false;
+                }
+
+                return !admit_card_exists_for_course(
+                    (string) $row->sl_reg_no,
+                    (int) $row->center_id,
+                    (int) $row->course_id
+                );
+            })
+            ->values();
+    }
+}
+
 if (!function_exists('enrollment_status_for_course')) {
     function enrollment_status_for_course(string $regNo, int $centerId, int $courseId): string
     {

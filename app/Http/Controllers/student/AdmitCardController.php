@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
-use App\Models\admin\Course;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use DB;
@@ -16,10 +15,7 @@ class AdmitCardController extends Controller
         $enrollments = $this->enrollmentsForStudent($user);
 
         if ($enrollments->isEmpty()) {
-            return redirect()->route('student_dashboard')->with(
-                'error',
-                'Admit cards are not used for your course. Use Typing Certificate from the menu.'
-            );
+            return redirect()->route('student_dashboard')->with('error', 'No enrolled courses found.');
         }
 
         $admitByCourse = $this->admitCardsByCourse($user);
@@ -31,10 +27,6 @@ class AdmitCardController extends Controller
     {
         $user = Auth::guard('student')->user();
         $courseId = (int) $courseId;
-
-        if (Course::qualifiesForTypingCertificateById($courseId)) {
-            return redirect()->route('view_admit_card')->with('error', 'Admit cards are not used for typing courses.');
-        }
 
         $enrollments = $this->enrollmentsForStudent($user);
         $enrollment = $enrollments->first(fn ($row) => (int) $row->course_id === $courseId);
@@ -68,10 +60,6 @@ class AdmitCardController extends Controller
             return back()->with('error', 'Admit Card not found');
         }
 
-        if (Course::qualifiesForTypingCertificateById((int) $admit->course_id)) {
-            return redirect()->route('view_admit_card')->with('error', 'Admit cards are not used for typing courses.');
-        }
-
         $data = admit_card_view_data($admit->ac_id);
         if (!$data) {
             return back()->with('error', 'Admit Card not found');
@@ -92,7 +80,7 @@ class AdmitCardController extends Controller
         $regNo = (string) $user->sl_reg_no;
         $centerId = (int) $user->sl_FK_of_center_id;
 
-        return student_course_enrollment_rows($centerId, false)
+        return student_course_enrollment_rows($centerId, null)
             ->filter(fn ($row) => (string) $row->sl_reg_no === $regNo)
             ->map(function ($row) use ($regNo, $centerId) {
                 $row->status = enrollment_status_for_course($regNo, $centerId, (int) $row->course_id);

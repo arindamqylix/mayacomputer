@@ -4,10 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\admin\Course;
 use DB;
-use Auth;
-
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class GenerateAdmitController extends Controller
@@ -25,40 +22,19 @@ class GenerateAdmitController extends Controller
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOption('isRemoteEnabled', true);
         $pdf->setOption('isHtml5ParserEnabled', true);
+
         return $pdf->download('Admit_Card_' . $data['student']->sl_reg_no . '.pdf');
     }
 
     public function generate_admit_card()
     {
-        // Fetch ALL Students + Course + Center (Admin can see all students)
-        // Exclude students who already have admit cards generated
-        $students = DB::table('student_login')
-            ->leftJoin('course', 'course.c_id', '=', 'student_login.sl_FK_of_course_id')
-            ->leftJoin('center_login', 'center_login.cl_id', '=', 'student_login.sl_FK_of_center_id')
-            ->leftJoin('student_admit_cards', 'student_admit_cards.student_id', '=', 'student_login.sl_id')
-            ->where('student_login.sl_status', 'VERIFIED') // Only verified students
-            ->whereNull('student_admit_cards.ac_id') // Exclude students who already have admit cards
-            ->where(function ($q) {
-                $q->whereNull('course.is_typing_related')
-                    ->orWhere('course.is_typing_related', 0);
-            })
-            ->select(
-                'student_login.*',
-                'course.c_full_name',
-                'course.c_short_name',
-                'center_login.cl_name as center_name',
-                'center_login.cl_center_name'
-            )
-            ->orderBy('student_login.sl_id', 'DESC')
-            ->get();
+        $students = admit_card_eligible_enrollments();
 
-        // Fetch ALL Course List
         $courseList = DB::table('course')
             ->select('course.c_id', 'course.c_full_name', 'course.c_short_name')
-            ->distinct()
+            ->orderBy('course.c_full_name')
             ->get();
 
-        // Fetch all active centers for exam venue dropdown
         $activeCenters = DB::table('center_login')
             ->whereIn('cl_account_status', ['ACTIVE', 'APPROVED'])
             ->select('cl_id', 'cl_code', 'cl_center_name', 'cl_center_address')
@@ -79,69 +55,15 @@ class GenerateAdmitController extends Controller
             'exam_notice' => 'nullable|string',
         ]);
 
-        $studentIds = $request->student_ids;
         $successCount = 0;
         $errorCount = 0;
-        $skippedTyping = 0;
 
         DB::beginTransaction();
         try {
-            foreach ($studentIds as $studentId) {
-                // Get student details - verify student exists and is VERIFIED
-                $student = DB::table('student_login')
-                    ->where('sl_id', $studentId)
-                    ->where('sl_status', 'VERIFIED') // Ensure only verified students
-                    ->select(
-                        'sl_id',
-                        'sl_reg_no',
-                        'sl_FK_of_course_id',
-                        'sl_FK_of_center_id'
-                    )
-                    ->first();
-
-                if (!$student) {
+            foreach ($request->student_ids as $studentId) {
+                if (!$this->createOrUpdateAdmitForStudent((int) $studentId, $request)) {
                     $errorCount++;
                     continue;
-                }
-
-                if (Course::isTypingRelated((int) $student->sl_FK_of_course_id)) {
-                    $skippedTyping++;
-                    continue;
-                }
-
-                // Check if admit card already exists for this student
-                $existingAdmit = DB::table('student_admit_cards')
-                    ->where('student_id', $student->sl_id)
-                    ->first();
-
-                if ($existingAdmit) {
-                    // Update existing admit card
-                    $resolvedCenterId = resolve_admit_center_id($student, $request->exam_venue);
-                    DB::table('student_admit_cards')
-                        ->where('ac_id', $existingAdmit->ac_id)
-                        ->update([
-                            'center_id' => $resolvedCenterId > 0 ? $resolvedCenterId : $existingAdmit->center_id,
-                            'exam_date' => $request->exam_date,
-                            'exam_time' => $request->exam_time,
-                            'exam_venue' => $request->exam_venue,
-                            'exam_notice' => $request->exam_notice,
-                            'updated_at' => now(),
-                        ]);
-                } else {
-                    // Insert new admit card
-                    $resolvedCenterId = resolve_admit_center_id($student, $request->exam_venue);
-                    DB::table('student_admit_cards')->insert([
-                        'center_id' => $resolvedCenterId,
-                        'student_id' => $student->sl_id,
-                        'course_id' => $student->sl_FK_of_course_id,
-                        'reg_no' => $student->sl_reg_no,
-                        'exam_date' => $request->exam_date,
-                        'exam_time' => $request->exam_time,
-                        'exam_venue' => $request->exam_venue,
-                        'exam_notice' => $request->exam_notice,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
                 }
                 $successCount++;
             }
@@ -153,24 +75,85 @@ class GenerateAdmitController extends Controller
                 if ($errorCount > 0) {
                     $message .= ' (' . $errorCount . ' failed)';
                 }
-                if ($skippedTyping > 0) {
-                    $message .= ' ' . $skippedTyping . ' skipped (typing-related courses use typing certificate only, no admit card).';
-                }
+
                 return back()->with('success', $message);
             }
-            if ($skippedTyping > 0 && $errorCount === 0) {
-                return back()->with('error', 'No admit cards created. Typing-related courses do not use admit cards—generate a typing certificate instead.');
-            }
-            return back()->with('error', 'No admit cards were created. Please select valid students.');
+
+            return back()->with('error', 'No admit cards were created. Please select valid verified enrollments.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->with('error', 'Failed to create admit cards: ' . $e->getMessage());
         }
     }
 
+    protected function createOrUpdateAdmitForStudent(int $studentId, Request $request): bool
+    {
+        $student = DB::table('student_login')
+            ->where('sl_id', $studentId)
+            ->select('sl_id', 'sl_reg_no', 'sl_FK_of_course_id', 'sl_FK_of_center_id')
+            ->first();
+
+        if (!$student) {
+            return false;
+        }
+
+        $courseId = (int) $student->sl_FK_of_course_id;
+        $centerId = (int) $student->sl_FK_of_center_id;
+        $status = enrollment_status_for_course((string) $student->sl_reg_no, $centerId, $courseId);
+
+        if ($status !== 'VERIFIED') {
+            return false;
+        }
+
+        $existingAdmit = DB::table('student_admit_cards')
+            ->where('student_id', $student->sl_id)
+            ->where('course_id', $courseId)
+            ->first();
+
+        if (!$existingAdmit) {
+            $existingAdmit = DB::table('student_admit_cards')
+                ->where('center_id', $centerId)
+                ->where('course_id', $courseId)
+                ->where('reg_no', $student->sl_reg_no)
+                ->first();
+        }
+
+        $resolvedCenterId = resolve_admit_center_id($student, $request->exam_venue);
+        $payload = [
+            'exam_date' => $request->exam_date,
+            'exam_time' => $request->exam_time,
+            'exam_venue' => $request->exam_venue,
+            'exam_notice' => $request->exam_notice,
+            'updated_at' => now(),
+        ];
+
+        if ($existingAdmit) {
+            DB::table('student_admit_cards')
+                ->where('ac_id', $existingAdmit->ac_id)
+                ->update(array_merge($payload, [
+                    'center_id' => $resolvedCenterId > 0 ? $resolvedCenterId : $existingAdmit->center_id,
+                    'student_id' => $student->sl_id,
+                    'course_id' => $courseId,
+                    'reg_no' => $student->sl_reg_no,
+                ]));
+
+            return true;
+        }
+
+        DB::table('student_admit_cards')->insert(array_merge($payload, [
+            'center_id' => $resolvedCenterId > 0 ? $resolvedCenterId : $centerId,
+            'student_id' => $student->sl_id,
+            'course_id' => $courseId,
+            'reg_no' => $student->sl_reg_no,
+            'created_at' => now(),
+        ]));
+
+        return true;
+    }
+
     public function admit_card_list(Request $request)
     {
-        // Admin can see ALL admit cards from ALL centers
         $centers = DB::table('center_login')->orderBy('cl_name', 'asc')->get();
 
         $query = DB::table('student_admit_cards AS a')
@@ -192,6 +175,7 @@ class GenerateAdmitController extends Controller
                 's.sl_dob',
                 's.sl_FK_of_center_id',
                 'c.c_full_name',
+                'c.c_short_name',
                 DB::raw('COALESCE(cl.cl_center_name, cl.cl_name) as center_name'),
                 DB::raw("(SELECT MAX(sl_dob) FROM student_login p WHERE p.sl_reg_no = COALESCE(a.reg_no, s.sl_reg_no) AND p.sl_dob IS NOT NULL AND p.sl_dob != '' AND p.sl_dob != '0000-00-00') as profile_dob")
             )
@@ -209,6 +193,7 @@ class GenerateAdmitController extends Controller
             if (!empty($enriched->sl_reg_no)) {
                 $enriched->reg_no = $enriched->sl_reg_no;
             }
+
             return $enriched;
         });
         $selectedCenterId = $request->center_id;
@@ -218,7 +203,6 @@ class GenerateAdmitController extends Controller
 
     public function edit_admit_card($id)
     {
-        // Fetch Admit Card by ID
         $admit = DB::table('student_admit_cards')
             ->where('ac_id', $id)
             ->first();
@@ -227,7 +211,6 @@ class GenerateAdmitController extends Controller
             return back()->with('error', 'Admit Card not found');
         }
 
-        // Fetch all students with course name (Admin can see all students)
         $students = DB::table('student_login')
             ->join('course', 'course.c_id', '=', 'student_login.sl_FK_of_course_id')
             ->leftJoin('center_login', 'center_login.cl_id', '=', 'student_login.sl_FK_of_center_id')
@@ -246,7 +229,6 @@ class GenerateAdmitController extends Controller
             'exam_venue' => 'required',
         ]);
 
-        // Get student to get center_id
         $student = DB::table('student_login')
             ->where('sl_id', $request->reg_no)
             ->first();
@@ -303,4 +285,3 @@ class GenerateAdmitController extends Controller
         }
     }
 }
-
