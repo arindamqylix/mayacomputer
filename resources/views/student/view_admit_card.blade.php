@@ -520,6 +520,10 @@
 
     <!-- Print Button (Hidden in Print Mode) -->
     <div style="text-align: center; margin-top: 20px;" class="no-print">
+        <a href="{{ route('view_admit_card') }}"
+            style="display: inline-block; padding: 10px 20px; font-size: 16px; background: #2563eb; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; text-decoration: none; margin-right: 10px;">
+            <i class="fa fa-arrow-left"></i> Back to List
+        </a>
         <button type="button" onclick="window.print()"
             style="padding: 10px 20px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;">
             <i class="fa fa-print"></i> Print Admit Card

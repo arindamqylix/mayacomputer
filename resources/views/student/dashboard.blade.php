@@ -548,6 +548,12 @@ body {
                         </div>
                         <span>Certificate</span>
                     </a>
+                    <a href="{{ route('student.typing_certificate_list') }}" class="action-btn">
+                        <div class="icon">
+                            <i class="fas fa-keyboard"></i>
+                        </div>
+                        <span>Typing Certificate</span>
+                    </a>
                     <a href="{{ route('view_payment') }}" class="action-btn">
                         <div class="icon">
                             <i class="fas fa-credit-card"></i>

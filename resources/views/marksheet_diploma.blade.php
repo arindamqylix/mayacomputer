@@ -242,11 +242,22 @@
             flex-grow: 1;
         }
 
+        .info-row-address {
+            align-items: flex-start;
+        }
+
+        .info-row-address .info-value {
+            line-height: 1.35;
+        }
+
         .photo-area {
             width: 100px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            align-self: flex-start;
+            padding-top: 6px;
+            margin-top: 0;
         }
 
         .student-photo {
@@ -537,9 +548,8 @@
                                     <div class="info-row"><span class="info-label">Center Name</span> : <span
                                             class="info-value">&nbsp;{{ strtoupper($data->cl_center_name ?? $data->cl_name ?? 'N/A') }}</span>
                                     </div>
-                                    <div class="info-row"><span class="info-label">Center Code & Address</span> : <span
-                                            class="info-value"> &nbsp;{{ $data->cl_code ?? 'N/A' }} &
-                                            {{ $data->cl_center_address ?? 'N/A' }}</span></div>
+                                    <div class="info-row info-row-address"><span class="info-label">Center Code & Address</span> : <span
+                                            class="info-value">{!! format_marksheet_center_code_address_html($data->cl_code ?? null, $data->cl_center_address ?? null) !!}</span></div>
                                 </div>
                                 <div class="photo-area">
                                     @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))

@@ -151,11 +151,15 @@
             border: 1px solid #ccc;
             border-top: none;
             display: flex;
-            padding: 10px;
-            padding-right: 150px;
-            /* space for photo-box so text doesn't overlap */
-            position: relative;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 12px;
             background-color: #f9f9f980;
+        }
+
+        .details-main {
+            flex: 1;
+            min-width: 0;
         }
 
         .info-table {
@@ -184,54 +188,59 @@
             text-transform: uppercase;
         }
 
-        .photo-box {
-            width: 120px;
-            height: 140px;
+        .photo-column {
+            flex: 0 0 102px;
+            width: 102px;
+        }
+
+        .photo-frame {
+            width: 102px;
+            height: 127px;
             border: 2px solid #000;
+            background: #fff;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            background: #fff;
             text-align: center;
         }
 
-        .photo-placeholder {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ccc;
-            font-size: 10px;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .photo-placeholder img {
+        .photo-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center center;
+            display: block;
         }
 
-        .signature-box {
+        .photo-empty {
+            font-size: 9px;
+            color: #999;
+            line-height: 1.35;
+            padding: 6px 4px;
+        }
+
+        .signature-frame {
+            width: 102px;
+            height: 38px;
+            border: 2px solid #000;
             border-top: 1px solid #000;
-            width: 100%;
-            min-height: 30px;
+            background: #fff;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            color: #ccc;
-            padding: 4px;
+            font-size: 8px;
+            color: #999;
         }
 
-        .signature-box img {
-            max-height: 36px;
+        .signature-frame img {
+            max-width: 96%;
+            max-height: 34px;
             width: auto;
+            height: auto;
             object-fit: contain;
+            display: block;
         }
 
         /* Stamp & signature - same size as center_certificate.blade.php */
@@ -333,6 +342,7 @@
 
             <!-- Student Details -->
             <div class="details-section">
+                <div class="details-main">
                 <table class="info-table">
                     <tr>
                         <td class="label">Student Name</td>
@@ -385,20 +395,23 @@
                         {{ $data->cl_center_address ?? 'N/A' }}</td>
                     </tr>
             </table>
+                </div>
 
-                <div class="photo-box">
-                    <div class="photo-placeholder">
-                        @if(!empty($data->sl_photo) && file_exists(public_path($data->sl_photo)))
-                            <img src="{{ asset($data->sl_photo) }}" alt="Student Photo">
+                <div class="photo-column">
+                    <div class="photo-frame">
+                        @php $photoUrl = student_media_url($data->sl_photo ?? null); @endphp
+                        @if($photoUrl)
+                            <img src="{{ $photoUrl }}" alt="Student Photo">
                         @else
-                            Picture<br><br>1.2 in X 1.5 in
+                            <span class="photo-empty">Picture<br>1.2 in × 1.5 in</span>
                         @endif
                     </div>
-                    <div class="signature-box">
-                        @if(!empty($data->sl_signature) && file_exists(public_path($data->sl_signature)))
-                            <img src="{{ asset($data->sl_signature) }}" alt="Student Signature">
+                    <div class="signature-frame">
+                        @php $signUrl = student_media_url($data->sl_signature ?? null); @endphp
+                        @if($signUrl)
+                            <img src="{{ $signUrl }}" alt="Student Signature">
                         @else
-                            Student Signature
+                            Signature
                         @endif
                     </div>
                 </div>

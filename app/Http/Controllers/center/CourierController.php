@@ -17,7 +17,8 @@ class CourierController extends Controller
         // Get all dispatched certificates for this center
         $couriers = DB::table('student_certificates')
             ->leftJoin('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-            ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('course as course_sl', 'student_login.sl_FK_of_course_id', '=', 'course_sl.c_id')
             ->where('student_certificates.sc_FK_of_center_id', $centerId)
             ->whereNotNull('student_certificates.sc_dispatch_date')
             ->select(
@@ -25,8 +26,8 @@ class CourierController extends Controller
                 'student_login.sl_name',
                 'student_login.sl_reg_no',
                 'student_login.sl_photo',
-                'course.c_short_name',
-                'course.c_full_name'
+                DB::raw('COALESCE(course.c_short_name, course_sl.c_short_name) as c_short_name'),
+                DB::raw('COALESCE(course.c_full_name, course_sl.c_full_name) as c_full_name')
             )
             ->orderBy('student_certificates.sc_dispatch_date', 'DESC')
             ->orderBy('student_certificates.sc_tracking_number', 'ASC')

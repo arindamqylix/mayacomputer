@@ -148,6 +148,28 @@ if (!function_exists('format_dob_display_html')) {
     }
 }
 
+if (!function_exists('format_marksheet_center_code_address_html')) {
+    /**
+     * Center code + address for marksheet — city, state and PIN on a second line when detectable.
+     */
+    function format_marksheet_center_code_address_html(?string $code, ?string $address): string
+    {
+        $code = e(trim((string) ($code ?? 'N/A')));
+        $address = trim((string) ($address ?? ''));
+
+        if ($address === '' || strtoupper($address) === 'N/A') {
+            return '&nbsp;' . $code . ' &amp; N/A';
+        }
+
+        $addressHtml = e($address);
+        if (preg_match('/^(.+?),\s*([^,]+,\s*[^,]+,\s*PIN\s*:?\s*\d+.*)$/iu', $address, $matches)) {
+            $addressHtml = e(trim($matches[1])) . '<br>&nbsp;' . e(trim($matches[2]));
+        }
+
+        return '&nbsp;' . $code . ' &amp; ' . $addressHtml;
+    }
+}
+
 if (!function_exists('admit_card_public_img')) {
     /**
      * Image src for admit card — file path for DomPDF, asset URL for browser.
