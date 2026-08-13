@@ -675,61 +675,101 @@ class PagesController extends Controller
     }
 
     /**
-     * QR code verification: verify student ID card by registration number (public).
-     * URL: /verify-id-card/{reg_no}
+     * QR code verification: verify student ID card by enrollment row id (sl_id).
+     * Falls back to registration number for older printed cards.
+     * URL: /verify-id-card/{id}
      */
-    public function verifyIdCardByRegNo($reg_no)
+    public function verifyIdCardByRegNo($id)
     {
-        $regNo = trim((string) $reg_no);
+        $identifier = trim((string) $id);
+        $student = null;
+        $displayRegNo = $identifier;
+        $singleCourse = false;
 
-        $loginRows = DB::table('student_login')
-            ->where('sl_reg_no', $regNo)
-            ->whereNotIn('sl_status', ['PENDING', 'BLOCK'])
-            ->orderBy('sl_id')
-            ->get();
+        if (ctype_digit($identifier)) {
+            $student = DB::table('student_login')
+                ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_login.sl_id', (int) $identifier)
+                ->whereNotIn('student_login.sl_status', ['PENDING', 'BLOCK'])
+                ->select(
+                    'student_login.sl_id',
+                    'student_login.sl_name',
+                    'student_login.sl_reg_no',
+                    'student_login.sl_father_name',
+                    'student_login.sl_dob',
+                    'student_login.sl_mobile_no',
+                    'student_login.sl_status',
+                    'student_login.sl_FK_of_center_id',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    DB::raw('COALESCE(center_login.cl_center_name, center_login.cl_name) as cl_center_name'),
+                    'center_login.cl_name',
+                    'center_login.cl_code'
+                )
+                ->first();
 
-        if ($loginRows->isEmpty()) {
-            return view('frontend.id-card-verify-result', [
-                'verified' => false,
-                'reg_no' => $regNo,
-                'data' => null,
-            ]);
+            if ($student) {
+                $displayRegNo = $student->sl_reg_no;
+                $singleCourse = true;
+            }
         }
 
-        $centerId = (int) $loginRows
-            ->pluck('sl_FK_of_center_id')
-            ->map(fn ($id) => (int) $id)
-            ->filter(fn ($id) => $id > 0)
-            ->first();
+        if (!$student) {
+            $regNo = $identifier;
 
-        $primary = $loginRows->first(fn ($row) => (int) $row->sl_FK_of_center_id === $centerId)
-            ?? $loginRows->first();
+            $loginRows = DB::table('student_login')
+                ->where('sl_reg_no', $regNo)
+                ->whereNotIn('sl_status', ['PENDING', 'BLOCK'])
+                ->orderBy('sl_id')
+                ->get();
 
-        $student = DB::table('student_login')
-            ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
-            ->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
-            ->where('student_login.sl_id', $primary->sl_id)
-            ->select(
-                'student_login.sl_id',
-                'student_login.sl_name',
-                'student_login.sl_reg_no',
-                'student_login.sl_father_name',
-                'student_login.sl_dob',
-                'student_login.sl_mobile_no',
-                'student_login.sl_status',
-                'student_login.sl_FK_of_center_id',
-                'course.c_full_name',
-                'course.c_short_name',
-                DB::raw('COALESCE(center_login.cl_center_name, center_login.cl_name) as cl_center_name'),
-                'center_login.cl_name',
-                'center_login.cl_code'
-            )
-            ->first();
+            if ($loginRows->isEmpty()) {
+                return view('frontend.id-card-verify-result', [
+                    'verified' => false,
+                    'reg_no' => $regNo,
+                    'data' => null,
+                ]);
+            }
+
+            $centerId = (int) $loginRows
+                ->pluck('sl_FK_of_center_id')
+                ->map(fn ($cid) => (int) $cid)
+                ->filter(fn ($cid) => $cid > 0)
+                ->first();
+
+            $primary = $loginRows->first(fn ($row) => (int) $row->sl_FK_of_center_id === $centerId)
+                ?? $loginRows->first();
+
+            $student = DB::table('student_login')
+                ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+                ->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+                ->where('student_login.sl_id', $primary->sl_id)
+                ->select(
+                    'student_login.sl_id',
+                    'student_login.sl_name',
+                    'student_login.sl_reg_no',
+                    'student_login.sl_father_name',
+                    'student_login.sl_dob',
+                    'student_login.sl_mobile_no',
+                    'student_login.sl_status',
+                    'student_login.sl_FK_of_center_id',
+                    'course.c_full_name',
+                    'course.c_short_name',
+                    DB::raw('COALESCE(center_login.cl_center_name, center_login.cl_name) as cl_center_name'),
+                    'center_login.cl_name',
+                    'center_login.cl_code'
+                )
+                ->first();
+
+            $displayRegNo = $regNo;
+        }
 
         if ($student) {
-            $resolvedCenterId = $centerId > 0 ? $centerId : (int) ($student->sl_FK_of_center_id ?? 0);
+            $regNo = trim((string) ($student->sl_reg_no ?? $displayRegNo));
+            $centerId = (int) ($student->sl_FK_of_center_id ?? 0);
             $center = resolve_center_for_admit((object) [
-                'center_id' => $resolvedCenterId,
+                'center_id' => $centerId,
                 'sl_FK_of_center_id' => $student->sl_FK_of_center_id ?? 0,
                 'reg_no' => $regNo,
                 'sl_reg_no' => $regNo,
@@ -745,12 +785,16 @@ class PagesController extends Controller
                 $centerId = (int) $center->cl_id;
             }
 
-            $student->course_names = student_course_names($regNo, $centerId);
+            if ($singleCourse) {
+                $student->course_names = trim($student->c_short_name ?? $student->c_full_name ?? '');
+            } else {
+                $student->course_names = student_course_names($regNo, $centerId);
+            }
         }
 
         return view('frontend.id-card-verify-result', [
-            'verified' => true,
-            'reg_no' => $regNo,
+            'verified' => (bool) $student,
+            'reg_no' => $displayRegNo,
             'data' => $student,
         ]);
     }
