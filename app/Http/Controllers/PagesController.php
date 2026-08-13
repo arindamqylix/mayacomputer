@@ -680,8 +680,10 @@ class PagesController extends Controller
      */
     public function verifyIdCardByRegNo($reg_no)
     {
+        $regNo = trim((string) $reg_no);
+
         $loginRows = DB::table('student_login')
-            ->where('sl_reg_no', $reg_no)
+            ->where('sl_reg_no', $regNo)
             ->whereNotIn('sl_status', ['PENDING', 'BLOCK'])
             ->orderBy('sl_id')
             ->get();
@@ -689,13 +691,19 @@ class PagesController extends Controller
         if ($loginRows->isEmpty()) {
             return view('frontend.id-card-verify-result', [
                 'verified' => false,
-                'reg_no' => $reg_no,
+                'reg_no' => $regNo,
                 'data' => null,
             ]);
         }
 
-        $primary = $loginRows->first();
-        $centerId = (int) $primary->sl_FK_of_center_id;
+        $centerId = (int) $loginRows
+            ->pluck('sl_FK_of_center_id')
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->first();
+
+        $primary = $loginRows->first(fn ($row) => (int) $row->sl_FK_of_center_id === $centerId)
+            ?? $loginRows->first();
 
         $student = DB::table('student_login')
             ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
@@ -709,20 +717,31 @@ class PagesController extends Controller
                 'student_login.sl_dob',
                 'student_login.sl_mobile_no',
                 'student_login.sl_status',
+                'student_login.sl_FK_of_center_id',
                 'course.c_full_name',
                 'course.c_short_name',
-                'center_login.cl_center_name',
+                DB::raw('COALESCE(center_login.cl_center_name, center_login.cl_name) as cl_center_name'),
+                'center_login.cl_name',
                 'center_login.cl_code'
             )
             ->first();
 
         if ($student) {
-            $student->course_names = student_course_names((string) $reg_no, $centerId);
+            if ($centerId > 0 && (empty($student->cl_center_name) || empty($student->cl_code))) {
+                $center = DB::table('center_login')->where('cl_id', $centerId)->first();
+                if ($center) {
+                    $student->cl_center_name = $center->cl_center_name ?? $center->cl_name ?? $student->cl_center_name;
+                    $student->cl_code = $center->cl_code ?? $student->cl_code;
+                    $student->cl_name = $center->cl_name ?? $student->cl_name;
+                }
+            }
+
+            $student->course_names = student_course_names($regNo, $centerId > 0 ? $centerId : (int) ($student->sl_FK_of_center_id ?? 0));
         }
 
         return view('frontend.id-card-verify-result', [
             'verified' => true,
-            'reg_no' => $reg_no,
+            'reg_no' => $regNo,
             'data' => $student,
         ]);
     }

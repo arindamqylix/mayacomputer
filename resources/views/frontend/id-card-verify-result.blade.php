@@ -118,7 +118,12 @@
                 </div>
                 <div class="verify-detail-row">
                     <span class="verify-detail-label">Center</span>
-                    <span class="verify-detail-value">{{ $data->cl_center_name ?? 'N/A' }} ({{ $data->cl_code ?? '' }})</span>
+                    <span class="verify-detail-value">
+                        @php
+                            $centerLabel = trim(($data->cl_center_name ?? $data->cl_name ?? '') . ($data->cl_code ? ' (' . $data->cl_code . ')' : ''));
+                        @endphp
+                        {{ $centerLabel !== '' ? strtoupper($centerLabel) : 'N/A' }}
+                    </span>
                 </div>
                 @if(!empty($data->sl_dob))
                 <div class="verify-detail-row">
