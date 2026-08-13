@@ -674,6 +674,59 @@ class PagesController extends Controller
         ]);
     }
 
+    /**
+     * QR code verification: verify student ID card by registration number (public).
+     * URL: /verify-id-card/{reg_no}
+     */
+    public function verifyIdCardByRegNo($reg_no)
+    {
+        $loginRows = DB::table('student_login')
+            ->where('sl_reg_no', $reg_no)
+            ->whereNotIn('sl_status', ['PENDING', 'BLOCK'])
+            ->orderBy('sl_id')
+            ->get();
+
+        if ($loginRows->isEmpty()) {
+            return view('frontend.id-card-verify-result', [
+                'verified' => false,
+                'reg_no' => $reg_no,
+                'data' => null,
+            ]);
+        }
+
+        $primary = $loginRows->first();
+        $centerId = (int) $primary->sl_FK_of_center_id;
+
+        $student = DB::table('student_login')
+            ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
+            ->where('student_login.sl_id', $primary->sl_id)
+            ->select(
+                'student_login.sl_id',
+                'student_login.sl_name',
+                'student_login.sl_reg_no',
+                'student_login.sl_father_name',
+                'student_login.sl_dob',
+                'student_login.sl_mobile_no',
+                'student_login.sl_status',
+                'course.c_full_name',
+                'course.c_short_name',
+                'center_login.cl_center_name',
+                'center_login.cl_code'
+            )
+            ->first();
+
+        if ($student) {
+            $student->course_names = student_course_names((string) $reg_no, $centerId);
+        }
+
+        return view('frontend.id-card-verify-result', [
+            'verified' => true,
+            'reg_no' => $reg_no,
+            'data' => $student,
+        ]);
+    }
+
     // AJAX endpoint to fetch certificate data
     public function getCertificateData(Request $request)
     {

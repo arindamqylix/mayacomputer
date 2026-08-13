@@ -304,7 +304,7 @@
         <div class="id-footer">
             <div class="footer-content">
                 <div class="qr-section">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/' . ($student->cl_code ?? '')) }}"
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-id-card/' . ($student->sl_reg_no ?? '')) }}"
                         style="width: 65px; height: 65px; border: 1px solid #ddd; background:white;">
                 </div>
 

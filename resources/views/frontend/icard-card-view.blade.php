@@ -456,7 +456,7 @@
                             <div class="footer-content">
                                 <!-- Left: QR Code -->
                                 <div class="qr-section">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-center/' . ($data->cl_code ?? '')) }}"
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-id-card/' . ($data->sl_reg_no ?? '')) }}"
                                         alt="QR"
                                         style="width: 70px; height: 70px; border: 1px solid #ddd; padding: 2px; background:white;">
                                 </div>
