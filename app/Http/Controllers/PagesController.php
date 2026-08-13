@@ -727,16 +727,25 @@ class PagesController extends Controller
             ->first();
 
         if ($student) {
-            if ($centerId > 0 && (empty($student->cl_center_name) || empty($student->cl_code))) {
-                $center = DB::table('center_login')->where('cl_id', $centerId)->first();
-                if ($center) {
-                    $student->cl_center_name = $center->cl_center_name ?? $center->cl_name ?? $student->cl_center_name;
-                    $student->cl_code = $center->cl_code ?? $student->cl_code;
-                    $student->cl_name = $center->cl_name ?? $student->cl_name;
-                }
+            $resolvedCenterId = $centerId > 0 ? $centerId : (int) ($student->sl_FK_of_center_id ?? 0);
+            $center = resolve_center_for_admit((object) [
+                'center_id' => $resolvedCenterId,
+                'sl_FK_of_center_id' => $student->sl_FK_of_center_id ?? 0,
+                'reg_no' => $regNo,
+                'sl_reg_no' => $regNo,
+            ]);
+
+            if ($center) {
+                $student->cl_center_name = trim((string) ($center->cl_center_name ?? '')) !== ''
+                    ? $center->cl_center_name
+                    : ($center->cl_name ?? null);
+                $student->cl_name = $center->cl_name ?? null;
+                $student->cl_code = $center->cl_code ?? null;
+                $student->sl_FK_of_center_id = (int) $center->cl_id;
+                $centerId = (int) $center->cl_id;
             }
 
-            $student->course_names = student_course_names($regNo, $centerId > 0 ? $centerId : (int) ($student->sl_FK_of_center_id ?? 0));
+            $student->course_names = student_course_names($regNo, $centerId);
         }
 
         return view('frontend.id-card-verify-result', [

@@ -358,6 +358,20 @@ if (!function_exists('resolve_center_for_admit')) {
 
         $regNo = trim((string) ($admitOrRow->reg_no ?? $admitOrRow->sl_reg_no ?? ''));
         if ($regNo !== '') {
+            $enrollmentCenterId = (int) DB::table('student_enrollments')
+                ->join('student_login', 'student_enrollments.se_FK_of_student_id', '=', 'student_login.sl_id')
+                ->where('student_login.sl_reg_no', $regNo)
+                ->where('student_enrollments.se_FK_of_center_id', '>', 0)
+                ->orderByDesc('student_enrollments.se_id')
+                ->value('student_enrollments.se_FK_of_center_id');
+
+            if ($enrollmentCenterId > 0) {
+                $center = DB::table('center_login')->where('cl_id', $enrollmentCenterId)->first();
+                if ($center) {
+                    return $center;
+                }
+            }
+
             $center = DB::table('center_login')
                 ->whereRaw('? LIKE CONCAT(cl_code, "%")', [$regNo])
                 ->orderByRaw('LENGTH(cl_code) DESC')
@@ -391,6 +405,36 @@ if (!function_exists('resolve_center_for_admit')) {
         }
 
         return null;
+    }
+}
+
+if (!function_exists('center_display_label')) {
+    /**
+     * Human-readable center name with optional code, e.g. "WEBEL COMPUTER CENTER (61123000)".
+     */
+    function center_display_label($row, string $default = 'N/A'): string
+    {
+        if (!$row) {
+            return $default;
+        }
+
+        $name = trim((string) ($row->cl_center_name ?? ''));
+        if ($name === '') {
+            $name = trim((string) ($row->cl_name ?? ''));
+        }
+
+        $code = trim((string) ($row->cl_code ?? ''));
+        if ($name !== '' && $code !== '') {
+            return strtoupper($name . ' (' . $code . ')');
+        }
+        if ($name !== '') {
+            return strtoupper($name);
+        }
+        if ($code !== '') {
+            return strtoupper($code);
+        }
+
+        return $default;
     }
 }
 
