@@ -208,6 +208,7 @@ class InvoiceController extends Controller
             'student' => $student,
             'invoice_no' => $invoiceNo,
             'invoice_date' => date('d-M-Y', strtotime($payment->fp_date)),
+            'forPdf' => true,
         ];
 
         $pdf = PDF::loadView('center.invoice.student_payment_invoice_pdf', $data);
