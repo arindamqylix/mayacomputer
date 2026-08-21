@@ -1580,7 +1580,12 @@ class PagesController extends Controller
 
     public function verifyCenter($code)
     {
+        $code = trim((string) $code);
         $center = DB::table('center_login')->where('cl_code', $code)->first();
+
+        if (!$center && ctype_digit($code)) {
+            $center = DB::table('center_login')->where('cl_id', (int) $code)->first();
+        }
 
         if (!$center) {
             return view('frontend.verify_center_error', ['message' => 'Center not found. Please scan a valid QR code.']);

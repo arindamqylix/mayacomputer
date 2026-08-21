@@ -54,13 +54,13 @@
 <body>
     <div class="card">
         <div class="success-icon">✓</div>
-        <h1>Center Verified</h1>
-        <p>This center is successfully registered with us.</p>
+        <h1>Center ID Card Verified</h1>
+        <p>This center is successfully registered with Maya Computer Center.</p>
         
         <div class="details">
             <div class="detail-row">
                 <span class="label">Center Name:</span>
-                <span class="value">{{ $center->cl_center_name }}</span>
+                <span class="value">{{ $center->cl_center_name ?? $center->cl_name ?? 'N/A' }}</span>
             </div>
             <div class="detail-row">
                 <span class="label">Center Code:</span>
@@ -72,7 +72,7 @@
             </div>
             <div class="detail-row">
                 <span class="label">Registration Date:</span>
-                <span class="value">{{ \Carbon\Carbon::parse($center->cl_registration_date)->format('d-M-Y') }}</span>
+                <span class="value">{{ $center->cl_registration_date ? \Carbon\Carbon::parse($center->cl_registration_date)->format('d-M-Y') : 'N/A' }}</span>
             </div>
             <div class="detail-row">
                 <span class="label">Status:</span>
