@@ -496,7 +496,7 @@
             <!-- Footer row: QR bottom-left, Controller bottom-right - same as marksheet_diploma -->
             <div class="card-footer-row">
                 <div class="qr-code-wrap">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-student/' . ($student->sl_reg_no ?? '')) }}"
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('verify-admit-card/' . ($admit->ac_id ?? '')) }}"
                     alt="QR Code" class="qr-code">
                     <div class="qr-sr-no">Scan to verify</div>
                 </div>

@@ -630,47 +630,134 @@ class PagesController extends Controller
     }
 
     /**
-     * QR code verification: verify student / admit card by registration number (public).
+     * QR code verification: verify registration card by registration number (public).
      * URL: /verify-student/{reg_no}
      */
     public function verifyStudentByRegNo($reg_no)
     {
+        $regNo = trim((string) $reg_no);
+
+        $loginRows = DB::table('student_login')
+            ->where('sl_reg_no', $regNo)
+            ->whereNotIn('sl_status', ['PENDING', 'BLOCK'])
+            ->orderBy('sl_id')
+            ->get();
+
+        if ($loginRows->isEmpty()) {
+            return view('frontend.registration-verify-result', [
+                'verified' => false,
+                'reg_no' => $regNo,
+                'data' => null,
+            ]);
+        }
+
+        $centerId = (int) $loginRows
+            ->pluck('sl_FK_of_center_id')
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->first();
+
+        $primary = $loginRows->first(fn ($row) => (int) $row->sl_FK_of_center_id === $centerId)
+            ?? $loginRows->first();
+
         $student = DB::table('student_login')
-            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
             ->leftJoin('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
-            ->leftJoin('student_admit_cards', function ($join) {
-                $join->on('student_admit_cards.student_id', '=', 'student_login.sl_id');
-            })
-            ->where('student_login.sl_reg_no', $reg_no)
-            ->orderBy('student_admit_cards.ac_id', 'desc')
+            ->where('student_login.sl_id', $primary->sl_id)
             ->select(
                 'student_login.sl_id',
                 'student_login.sl_name',
                 'student_login.sl_reg_no',
                 'student_login.sl_father_name',
                 'student_login.sl_status',
+                'student_login.sl_FK_of_center_id',
                 'course.c_full_name',
                 'course.c_short_name',
-                'center_login.cl_center_name',
-                'center_login.cl_code',
-                'student_admit_cards.exam_date',
-                'student_admit_cards.exam_venue',
-                'student_admit_cards.exam_time'
+                DB::raw('COALESCE(center_login.cl_center_name, center_login.cl_name) as cl_center_name'),
+                'center_login.cl_name',
+                'center_login.cl_code'
             )
             ->first();
 
-        if (!$student || in_array($student->sl_status ?? '', ['PENDING', 'BLOCK'])) {
-            return view('frontend.admit-verify-result', [
+        if (!$student) {
+            return view('frontend.registration-verify-result', [
                 'verified' => false,
-                'reg_no' => $reg_no,
+                'reg_no' => $regNo,
                 'data' => null,
             ]);
         }
 
+        $resolvedCenterId = $centerId > 0 ? $centerId : (int) ($student->sl_FK_of_center_id ?? 0);
+        $center = resolve_center_for_admit((object) [
+            'center_id' => $resolvedCenterId,
+            'sl_FK_of_center_id' => $student->sl_FK_of_center_id ?? 0,
+            'reg_no' => $regNo,
+            'sl_reg_no' => $regNo,
+        ]);
+
+        if ($center) {
+            $student->cl_center_name = $center->cl_center_name ?? $center->cl_name ?? null;
+            $student->cl_name = $center->cl_name ?? null;
+            $student->cl_code = $center->cl_code ?? null;
+            $centerId = (int) $center->cl_id;
+        }
+
+        $student->course_names = student_course_names($regNo, $centerId);
+
+        return view('frontend.registration-verify-result', [
+            'verified' => true,
+            'reg_no' => $regNo,
+            'data' => $student,
+        ]);
+    }
+
+    /**
+     * QR code verification: verify admit card by admit card id (public).
+     * URL: /verify-admit-card/{id}
+     */
+    public function verifyAdmitCardById($id)
+    {
+        $admitId = (int) $id;
+        $viewData = admit_card_view_data($admitId);
+
+        if (!$viewData) {
+            return view('frontend.admit-verify-result', [
+                'verified' => false,
+                'reg_no' => (string) $id,
+                'data' => null,
+            ]);
+        }
+
+        $student = $viewData['student'];
+        $admit = $viewData['admit'];
+        $course = $viewData['course'];
+        $center = $viewData['center'];
+
+        if (in_array($student->sl_status ?? '', ['PENDING', 'BLOCK'])) {
+            return view('frontend.admit-verify-result', [
+                'verified' => false,
+                'reg_no' => $admit->reg_no ?? (string) $id,
+                'data' => null,
+            ]);
+        }
+
+        $data = (object) [
+            'sl_reg_no' => $student->sl_reg_no ?? $admit->reg_no ?? '',
+            'sl_name' => $student->sl_name ?? '',
+            'sl_father_name' => $student->sl_father_name ?? '',
+            'c_full_name' => $course->c_full_name ?? null,
+            'c_short_name' => $course->c_short_name ?? null,
+            'cl_center_name' => $center->cl_center_name ?? $center->cl_name ?? null,
+            'cl_code' => $center->cl_code ?? null,
+            'exam_date' => $admit->exam_date ?? null,
+            'exam_time' => $admit->exam_time ?? null,
+            'exam_venue' => $admit->exam_venue ?? null,
+        ];
+
         return view('frontend.admit-verify-result', [
             'verified' => true,
-            'reg_no' => $reg_no,
-            'data' => $student,
+            'reg_no' => $data->sl_reg_no,
+            'data' => $data,
         ]);
     }
 

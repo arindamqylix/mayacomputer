@@ -48,6 +48,7 @@ Route::get('/verification/result/view', [PagesController::class, 'showResultView
 Route::post('/verification/result-pdf', [PagesController::class, 'generateResultPDF'])->name('verification.result.pdf');
 Route::get('verify-result/{reg_no}', [PagesController::class, 'verifyResultByRegNo'])->name('verify_result');
 Route::get('verify-student/{reg_no}', [PagesController::class, 'verifyStudentByRegNo'])->name('verify_student');
+Route::get('verify-admit-card/{id}', [PagesController::class, 'verifyAdmitCardById'])->name('verify_admit_card');
 Route::get('verify-id-card/{id}', [PagesController::class, 'verifyIdCardByRegNo'])->name('verify_id_card');
 Route::get('/verification/certificate', [PagesController::class, 'certificate'])->name('verification.certificate');
 Route::get('/verification/certificate/view', [PagesController::class, 'showCertificate'])->name('verification.certificate.view');

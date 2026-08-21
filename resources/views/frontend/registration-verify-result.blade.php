@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', $verified ? 'Admit Card Verified - Maya Computer Center' : 'Admit Card Verification - Maya Computer Center')
+@section('title', $verified ? 'Registration Card Verified - Maya Computer Center' : 'Registration Card Verification - Maya Computer Center')
 
 @push('custom-css')
 <style>
@@ -59,11 +59,13 @@
         padding: 10px 0;
         border-bottom: 1px solid #f1f5f9;
         font-size: 0.95rem;
+        gap: 12px;
     }
     .verify-detail-row:last-child { border-bottom: none; }
     .verify-detail-label {
         color: #64748b;
         font-weight: 500;
+        flex-shrink: 0;
     }
     .verify-detail-value {
         color: #0f172a;
@@ -94,8 +96,8 @@
         @if($verified)
             <div class="verify-card-header verified">
                 <div class="verify-icon"><i class="fa fa-check"></i></div>
-                <h1>Admit Card Verified</h1>
-                <p>This admit card has been verified by Maya Computer Center</p>
+                <h1>Registration Card Verified</h1>
+                <p>This student registration has been verified by Maya Computer Center</p>
             </div>
             <div class="verify-card-body">
                 <div class="verify-detail-row">
@@ -112,30 +114,12 @@
                 </div>
                 <div class="verify-detail-row">
                     <span class="verify-detail-label">Course</span>
-                    <span class="verify-detail-value">{{ strtoupper($data->c_full_name ?? $data->c_short_name ?? '') }}</span>
+                    <span class="verify-detail-value">{{ strtoupper($data->course_names ?? $data->c_full_name ?? $data->c_short_name ?? '') }}</span>
                 </div>
                 <div class="verify-detail-row">
                     <span class="verify-detail-label">Center</span>
                     <span class="verify-detail-value">{{ center_display_label($data) }}</span>
                 </div>
-                @if(!empty($data->exam_date))
-                <div class="verify-detail-row">
-                    <span class="verify-detail-label">Exam Date</span>
-                    <span class="verify-detail-value">{{ \Carbon\Carbon::parse($data->exam_date)->format('d-M-Y') }}</span>
-                </div>
-                @endif
-                @if(!empty($data->exam_time))
-                <div class="verify-detail-row">
-                    <span class="verify-detail-label">Exam Time</span>
-                    <span class="verify-detail-value">{{ $data->exam_time }}</span>
-                </div>
-                @endif
-                @if(!empty($data->exam_venue))
-                <div class="verify-detail-row">
-                    <span class="verify-detail-label">Exam Venue</span>
-                    <span class="verify-detail-value">{{ $data->exam_venue }}</span>
-                </div>
-                @endif
                 <div class="verify-cta">
                     <a href="{{ route('index') }}">Back to Home</a>
                 </div>
@@ -143,15 +127,15 @@
         @else
             <div class="verify-card-header invalid">
                 <div class="verify-icon"><i class="fa fa-times"></i></div>
-                <h1>Admit Card Not Verified</h1>
-                <p>This admit card could not be verified</p>
+                <h1>Registration Card Not Verified</h1>
+                <p>This registration could not be verified</p>
             </div>
             <div class="verify-card-body">
                 <div class="verify-detail-row">
                     <span class="verify-detail-label">Registration No. scanned</span>
                     <span class="verify-detail-value">{{ $reg_no }}</span>
                 </div>
-                <p class="mb-0 mt-3 text-muted small">The registration number may be incorrect, or the student may not be registered yet. Please check the number or contact the center.</p>
+                <p class="mb-0 mt-3 text-muted small">The registration number may be incorrect, or the student may not be registered yet. Please contact Maya Computer Center.</p>
                 <div class="verify-cta">
                     <a href="{{ route('index') }}">Back to Home</a>
                 </div>

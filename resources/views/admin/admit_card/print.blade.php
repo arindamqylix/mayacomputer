@@ -349,7 +349,7 @@
         $examAddress = ($examCenter && $examCenter->cl_center_address)
             ? $examCenter->cl_center_address
             : ($center->cl_center_address ?? 'N/A');
-        $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode(url('verify-student/' . $student->sl_reg_no));
+        $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode(url('verify-admit-card/' . ($admit->ac_id ?? '')));
     @endphp
 
     <div class="admit-card">
