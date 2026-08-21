@@ -451,29 +451,21 @@ class StudentController extends Controller
     public function delete_student($id)
     {
         $student = Student::findOrFail($id);
+        $regNo = $student->sl_reg_no;
+        $slIds = DB::table('student_login')->where('sl_reg_no', $regNo)->pluck('sl_id');
 
-        // Delete Student Photo
-        if (!empty($student->sl_photo) && file_exists(public_path($student->sl_photo))) {
-            @unlink(public_path($student->sl_photo));
+        foreach (['sl_photo', 'sl_id_card', 'sl_educational_certificate', 'sl_signature'] as $field) {
+            $path = $student->{$field} ?? null;
+            if ($path && file_exists(public_path($path))) {
+                @unlink(public_path($path));
+            }
         }
 
-        // Delete ID Card
-        if (!empty($student->sl_id_card) && file_exists(public_path($student->sl_id_card))) {
-            @unlink(public_path($student->sl_id_card));
+        foreach ($slIds as $slId) {
+            $this->deleteEnrollmentDependencies((int) $slId);
         }
 
-        // Delete Educational Certificate
-        if (!empty($student->sl_educational_certificate) && file_exists(public_path($student->sl_educational_certificate))) {
-            @unlink(public_path($student->sl_educational_certificate));
-        }
-
-        // Delete Signature
-        if (!empty($student->sl_signature) && file_exists(public_path($student->sl_signature))) {
-            @unlink(public_path($student->sl_signature));
-        }
-
-        // Delete student record
-        $student->delete();
+        DB::table('transaction')->where('t_student_reg_no', $regNo)->delete();
 
         return back()->with('success', 'Student Deleted Successfully!');
     }

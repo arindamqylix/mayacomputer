@@ -19,11 +19,19 @@ class AuthController extends Controller
     }
 
     public function student_login_now(Request $request){
-    	if (Auth::guard('student')->attempt(['sl_reg_no'=>$request->reg_no,'password'=>$request->mobile])) {
-    	   return redirect('student/dashboard');
+    	$request->validate([
+    		'reg_no' => 'required|string',
+    		'mobile' => 'required|string',
+    	]);
+
+    	$student = student_find_for_login($request->reg_no, $request->mobile);
+    	if ($student) {
+    		Auth::guard('student')->login($student);
+    		return redirect('student/dashboard');
     	}
-    	Session::flash('error', 'Invalid credential');
-    	return redirect()->back();
+
+    	Session::flash('error', 'Invalid Registration Number or Password');
+    	return redirect()->back()->withInput(['reg_no' => $request->reg_no]);
     }
 
     public function student_logout(){

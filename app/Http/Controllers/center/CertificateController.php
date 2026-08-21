@@ -17,11 +17,17 @@ class CertificateController extends Controller
     // List certificates for center (join course on certificate's course so Typing certs show correct course)
     public function certificate_list()
     {
+        $centerId = (int) Auth::guard('center')->user()->cl_id;
+
         $certificates = DB::table('student_certificates')
             ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
             ->leftJoin('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
             ->leftJoin('course as course_sl', 'student_login.sl_FK_of_course_id', '=', 'course_sl.c_id')
-            ->where('student_certificates.sc_FK_of_center_id', Auth::guard('center')->user()->cl_id)
+            ->leftJoin('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+            ->where(function ($q) use ($centerId) {
+                $q->where('student_certificates.sc_FK_of_center_id', $centerId)
+                    ->orWhere('student_login.sl_FK_of_center_id', $centerId);
+            })
             ->select(
                 'student_certificates.*',
                 'student_login.sl_name',
@@ -142,32 +148,93 @@ class CertificateController extends Controller
     // View certificate (for center panel)
     public function view_certificate($id)
     {
-        $certificate = DB::table('student_certificates')
+        $centerId = (int) Auth::guard('center')->user()->cl_id;
+
+        $certificate_base = DB::table('student_certificates')->where('sc_id', $id)->first();
+        if (!$certificate_base) {
+            return redirect()->route('center.certificate_list')->with('error', 'Certificate not found!');
+        }
+
+        $studentRow = DB::table('student_login')
+            ->where('sl_id', $certificate_base->sc_FK_of_student_id)
+            ->first();
+
+        $certCenterId = (int) ($certificate_base->sc_FK_of_center_id ?? 0);
+        $studentCenterId = (int) ($studentRow->sl_FK_of_center_id ?? 0);
+        $resolvedCenterId = $studentRow ? resolve_admit_center_id($studentRow) : 0;
+
+        $belongsToCenter = $certCenterId === $centerId
+            || $studentCenterId === $centerId
+            || $resolvedCenterId === $centerId;
+
+        if (!$belongsToCenter) {
+            return redirect()->route('center.certificate_list')->with('error', 'Certificate not found!');
+        }
+
+        $query = DB::table('student_certificates')
             ->join('student_login', 'student_certificates.sc_FK_of_student_id', '=', 'student_login.sl_id')
-            ->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
-            ->join('course', 'student_login.sl_FK_of_course_id', '=', 'course.c_id')
-            ->join('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
-            ->where('student_certificates.sc_id', $id)
-            ->where('student_certificates.sc_FK_of_center_id', Auth::guard('center')->user()->cl_id)
-            ->select(
+            ->join('course', 'student_certificates.sc_FK_of_course_id', '=', 'course.c_id')
+            ->leftJoin('center_login', 'student_certificates.sc_FK_of_center_id', '=', 'center_login.cl_id')
+            ->leftJoin('center_login as center_sl', 'student_login.sl_FK_of_center_id', '=', 'center_sl.cl_id')
+            ->where('student_certificates.sc_id', $id);
+
+        if (($certificate_base->sc_type ?? 'REGULAR') === 'REGULAR') {
+            $query->join('set_result', 'student_certificates.sc_FK_of_result_id', '=', 'set_result.sr_id')
+                ->select(
+                    'student_certificates.*',
+                    'student_login.*',
+                    'set_result.*',
+                    'course.*',
+                    DB::raw('COALESCE(center_login.cl_center_name, center_sl.cl_center_name, center_login.cl_name, center_sl.cl_name) as cl_center_name'),
+                    DB::raw('COALESCE(center_login.cl_name, center_sl.cl_name) as cl_name'),
+                    DB::raw('COALESCE(center_login.cl_code, center_sl.cl_code) as cl_code'),
+                    DB::raw('COALESCE(center_login.cl_center_address, center_sl.cl_center_address) as cl_center_address'),
+                    DB::raw('COALESCE(center_login.cl_authorized_signature, center_sl.cl_authorized_signature) as cl_authorized_signature'),
+                    DB::raw('COALESCE(center_login.cl_center_stamp, center_sl.cl_center_stamp) as cl_center_stamp')
+                );
+        } else {
+            $query->select(
                 'student_certificates.*',
                 'student_login.*',
-                'set_result.*',
                 'course.*',
-                'center_login.cl_center_name',
-                'center_login.cl_name',
-                'center_login.cl_code',
-                'center_login.cl_center_address',
-                'center_login.cl_authorized_signature',
-                'center_login.cl_center_stamp'
-            )
-            ->first();
+                DB::raw('COALESCE(center_login.cl_center_name, center_sl.cl_center_name, center_login.cl_name, center_sl.cl_name) as cl_center_name'),
+                DB::raw('COALESCE(center_login.cl_name, center_sl.cl_name) as cl_name'),
+                DB::raw('COALESCE(center_login.cl_code, center_sl.cl_code) as cl_code'),
+                DB::raw('COALESCE(center_login.cl_center_address, center_sl.cl_center_address) as cl_center_address'),
+                DB::raw('COALESCE(center_login.cl_authorized_signature, center_sl.cl_authorized_signature) as cl_authorized_signature'),
+                DB::raw('COALESCE(center_login.cl_center_stamp, center_sl.cl_center_stamp) as cl_center_stamp')
+            );
+        }
+
+        $certificate = $query->first();
+
+        if ($certificate && empty($certificate->cl_center_name) && !empty($certificate->sl_reg_no)) {
+            $center = resolve_center_for_admit((object) [
+                'center_id' => (int) ($certificate->sc_FK_of_center_id ?? 0),
+                'sl_FK_of_center_id' => (int) ($certificate->sc_FK_of_center_id ?? 0),
+                'reg_no' => $certificate->sl_reg_no,
+                'sl_reg_no' => $certificate->sl_reg_no,
+            ]);
+            if ($center) {
+                $certificate->cl_center_name = $center->cl_center_name ?? $center->cl_name;
+                $certificate->cl_name = $center->cl_name;
+                $certificate->cl_code = $center->cl_code;
+                $certificate->cl_center_address = $center->cl_center_address ?? null;
+                $certificate->cl_authorized_signature = $center->cl_authorized_signature ?? null;
+                $certificate->cl_center_stamp = $center->cl_center_stamp ?? null;
+            }
+        }
 
         if (!$certificate) {
             return redirect()->route('center.certificate_list')->with('error', 'Certificate not found!');
         }
 
         $setting = DB::table('site_settings')->first();
+
+        if (($certificate->sc_type ?? '') === 'TYPING') {
+            return view('center.certificate.typing_view', compact('certificate', 'setting'));
+        }
+
         return view('center.certificate.view', compact('certificate', 'setting'));
     }
 

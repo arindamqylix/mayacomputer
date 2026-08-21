@@ -287,6 +287,9 @@
                                 <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
                             </div>
                         @enderror
+                        <div class="text-muted small mt-2">
+                            <i class="fas fa-info-circle me-1"></i>Default password is your registered mobile number.
+                        </div>
                     </div>
 
                     <!-- Submit Button -->

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 if (!function_exists('site_settings')) {
     function site_settings() {
@@ -1003,6 +1005,116 @@ if (!function_exists('student_person_sl_ids')) {
         }
 
         return $ids;
+    }
+}
+
+if (!function_exists('student_login_password_candidates')) {
+    /**
+     * Password variants (mobile may be stored with/without country code).
+     */
+    function student_login_password_candidates(string $input): array
+    {
+        $raw = trim($input);
+        $candidates = [$raw];
+        $digits = preg_replace('/\D+/', '', $raw);
+
+        if ($digits !== '') {
+            $candidates[] = $digits;
+            if (strlen($digits) === 12 && str_starts_with($digits, '91')) {
+                $candidates[] = substr($digits, 2);
+            }
+            if (strlen($digits) === 10) {
+                $candidates[] = '91' . $digits;
+            }
+        }
+
+        return array_values(array_unique(array_filter($candidates, fn ($v) => $v !== '')));
+    }
+}
+
+if (!function_exists('student_password_matches')) {
+    function student_password_matches(?string $stored, array $candidates): bool
+    {
+        if ($stored === null || $stored === '') {
+            return false;
+        }
+
+        foreach ($candidates as $candidate) {
+            if (str_starts_with($stored, '$2y$') || str_starts_with($stored, '$2a$') || str_starts_with($stored, '$2b$')) {
+                if (Hash::check($candidate, $stored)) {
+                    return true;
+                }
+            } elseif (hash_equals($stored, $candidate)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('student_sync_login_password')) {
+    /**
+     * Keep password in sync on every login row for the same registration number.
+     */
+    function student_sync_login_password($student, string $plainPassword): void
+    {
+        $regNo = trim((string) ($student->sl_reg_no ?? ''));
+        if ($regNo === '') {
+            return;
+        }
+
+        $hashed = Hash::make($plainPassword);
+        $update = ['password' => $hashed];
+        if (Schema::hasColumn('student_login', 'sl_password')) {
+            $update['sl_password'] = $hashed;
+        }
+
+        DB::table('student_login')->where('sl_reg_no', $regNo)->update($update);
+    }
+}
+
+if (!function_exists('student_find_for_login')) {
+    /**
+     * Match login across all course rows sharing the same registration number.
+     */
+    function student_find_for_login(string $regNo, string $passwordInput): ?\App\Models\student\Student
+    {
+        $regNo = trim($regNo);
+        if ($regNo === '') {
+            return null;
+        }
+
+        $candidates = student_login_password_candidates($passwordInput);
+        if ($candidates === []) {
+            return null;
+        }
+
+        $rows = \App\Models\student\Student::where('sl_reg_no', $regNo)->orderBy('sl_id')->get();
+        if ($rows->isEmpty()) {
+            return null;
+        }
+
+        $hasSlPassword = Schema::hasColumn('student_login', 'sl_password');
+
+        foreach ($rows as $student) {
+            if (student_password_matches($student->password, $candidates)) {
+                $plain = $candidates[0];
+                if (!str_starts_with((string) $student->password, '$2y$')) {
+                    student_sync_login_password($student, $plain);
+                }
+
+                return $student;
+            }
+
+            if ($hasSlPassword && student_password_matches($student->sl_password ?? null, $candidates)) {
+                student_sync_login_password($student, $candidates[0]);
+
+                return $student;
+            }
+        }
+
+        return null;
     }
 }
 

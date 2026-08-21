@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 use Hash;
+use Illuminate\Support\Facades\Schema;
 use App\Models\student\Student;
 
 class ProfileController extends Controller
@@ -24,28 +25,30 @@ class ProfileController extends Controller
         ]);
 
         $student = Auth::guard('student')->user();
+        $oldMatches = student_password_matches(
+            $student->password,
+            student_login_password_candidates($request->old_password)
+        );
 
-        if (Hash::check($request->old_password, $student->sl_password)) {
-            // Student model likely uses sl_password but check if it's hashed and if there's a mutator. 
-            // Assuming standard Laravel behavior but with custom column name.
-            // If the model doesn't handle password hashing automatically, we do it here.
-            
-            // We need to update the student model to use the custom password field or update explicitly.
-            // Since we are using Query Builder or Eloquent, let's try direct update.
-            
-            $student->sl_password = Hash::make($request->new_password);
-            
-            // Note: If the Student model has 'password' as hidden or expected field for Auth, 
-            // but the column is 'sl_password', the update should work if the model is set up correctly.
-            // Let's use specific update to be safe if save() has issues with other fields.
-            
-            Student::where('sl_id', $student->sl_id)->update([
-                'sl_password' => Hash::make($request->new_password)
-            ]);
-            
-            return back()->with('success', 'Password Changed Successfully!');
-        } else {
+        if (!$oldMatches && Schema::hasColumn('student_login', 'sl_password')) {
+            $oldMatches = student_password_matches(
+                $student->sl_password ?? null,
+                student_login_password_candidates($request->old_password)
+            );
+        }
+
+        if (!$oldMatches) {
             return back()->with('error', 'Old Password Does Not Match!');
         }
+
+        $hashed = Hash::make($request->new_password);
+        $update = ['password' => $hashed];
+        if (Schema::hasColumn('student_login', 'sl_password')) {
+            $update['sl_password'] = $hashed;
+        }
+
+        Student::where('sl_reg_no', $student->sl_reg_no)->update($update);
+
+        return back()->with('success', 'Password Changed Successfully!');
     }
 }

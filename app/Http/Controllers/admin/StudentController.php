@@ -667,41 +667,21 @@ class StudentController extends Controller
 				return redirect()->back()->with('error', 'Student not found!');
 			}
 
-			// Delete related records first (if needed, database should handle CASCADE)
-			// Delete student results if any
-			DB::table('set_result')->where('sr_FK_of_student_id', $id)->delete();
+			$regNo = $student->sl_reg_no;
+			$slIds = DB::table('student_login')->where('sl_reg_no', $regNo)->pluck('sl_id');
 
-			// Delete student certificates if any
-			DB::table('student_certificates')->where('sc_FK_of_student_id', $id)->delete();
-
-			// Delete student fees if any
-			DB::table('set_fee')->where('sf_FK_of_student_id', $id)->delete();
-
-			// Delete fees payments if any
-			DB::table('fees_payment')->where('fp_FK_of_student_id', $id)->delete();
-
-			// Delete student admit cards if any
-			DB::table('student_admit_cards')->where('student_id', $id)->delete();
-
-			// Delete transactions if any
-			DB::table('transaction')->where('t_student_reg_no', $student->sl_reg_no)->delete();
-
-			// Delete student files if exist
-			if ($student->sl_photo && file_exists(public_path($student->sl_photo))) {
-				@unlink(public_path($student->sl_photo));
-			}
-			if ($student->sl_id_card && file_exists(public_path($student->sl_id_card))) {
-				@unlink(public_path($student->sl_id_card));
-			}
-			if ($student->sl_educational_certificate && file_exists(public_path($student->sl_educational_certificate))) {
-				@unlink(public_path($student->sl_educational_certificate));
-			}
-			if ($student->sl_signature && file_exists(public_path($student->sl_signature))) {
-				@unlink(public_path($student->sl_signature));
+			foreach (['sl_photo', 'sl_id_card', 'sl_educational_certificate', 'sl_signature'] as $field) {
+				$path = $student->{$field} ?? null;
+				if ($path && file_exists(public_path($path))) {
+					@unlink(public_path($path));
+				}
 			}
 
-			// Finally delete the student
-			DB::table('student_login')->where('sl_id', $id)->delete();
+			foreach ($slIds as $slId) {
+				$this->deleteEnrollmentDependencies((int) $slId);
+			}
+
+			DB::table('transaction')->where('t_student_reg_no', $regNo)->delete();
 
 			DB::commit();
 			return redirect()->back()->with('success', 'Student and all related records deleted successfully!');
@@ -896,24 +876,22 @@ class StudentController extends Controller
 			]);
 		endif;
 
-		// Reset password to mobile number
-		$mobileNumber = $student->sl_mobile_no;
-		if (!$mobileNumber):
+		// Reset password to mobile number on every row for this registration number
+		$mobileNumber = trim((string) $student->sl_mobile_no);
+		if ($mobileNumber === '') {
 			return response()->json([
 				'msg' => 'Student mobile number not found!',
 				'status' => 0,
 			]);
-		endif;
+		}
 
-		// Use Hash::make() explicitly
-		$update = Student::where('sl_id', $request->student_id)->update([
-			'password' => Hash::make($mobileNumber),
-			// Also update sl_password if your system uses that column for legacy reasons, 
-			// but auth uses 'password' usually. Based on create(), it uses 'password'.
-			// Let's just update 'password' as per create method.
-			// If you have a separate sl_password column that needs syncing, add it here.
-			'sl_password' => Hash::make($mobileNumber)
-		]);
+		$hashed = Hash::make($mobileNumber);
+		$update = ['password' => $hashed];
+		if (\Illuminate\Support\Facades\Schema::hasColumn('student_login', 'sl_password')) {
+			$update['sl_password'] = $hashed;
+		}
+
+		$update = Student::where('sl_reg_no', $student->sl_reg_no)->update($update);
 
 		if ($update):
 			$data = [
