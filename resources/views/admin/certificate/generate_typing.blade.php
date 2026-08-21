@@ -153,6 +153,7 @@
                                                     <input type="hidden" name="type" value="TYPING">
                                                     <input type="hidden" name="student_id" value="{{ $student->sl_id }}">
                                                     <input type="hidden" name="course_id" value="{{ $student->c_id }}">
+                                                    <input type="hidden" name="center_id" value="{{ $student->center_id ?? '' }}">
                                                     <td>
                                                         <div class="speed-hindi-english">
                                                             <label>Hindi
