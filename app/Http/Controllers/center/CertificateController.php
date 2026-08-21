@@ -176,8 +176,14 @@ class CertificateController extends Controller
     {
         $centerId = (int) Auth::guard('center')->user()->cl_id;
         $students = typing_certificate_eligible_students($centerId);
+        $typingEnrolledCount = typing_certificate_enrolled_students($centerId)->count();
+        $alreadyCertifiedCount = max(0, $typingEnrolledCount - $students->count());
 
-        return view('center.certificate.generate_typing', compact('students'));
+        return view('center.certificate.generate_typing', compact(
+            'students',
+            'typingEnrolledCount',
+            'alreadyCertifiedCount'
+        ));
     }
 
     // Store typing certificate (center)

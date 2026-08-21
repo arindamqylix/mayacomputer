@@ -837,15 +837,28 @@ if (!function_exists('typing_course_sql')) {
     {
         $c = $courseAlias;
 
-        return "({$c}.is_typing_related = 1 OR LOWER(TRIM(COALESCE({$c}.category_name,''))) = 'typing' OR {$c}.c_short_name LIKE '%Typing%' OR {$c}.c_full_name LIKE '%Typing%')";
+        return "(
+            {$c}.is_typing_related = 1
+            OR LOWER(TRIM(COALESCE({$c}.category_name,''))) = 'typing'
+            OR LOWER(TRIM(COALESCE({$c}.category_name,''))) LIKE '%typing%'
+            OR LOWER(COALESCE({$c}.c_short_name,'')) LIKE '%typing%'
+            OR LOWER(COALESCE({$c}.c_full_name,'')) LIKE '%typing%'
+        )";
     }
 }
 
-if (!function_exists('typing_certificate_eligible_students')) {
+if (!function_exists('typing_certificate_enrolled_students')) {
     /**
-     * Students eligible for a typing certificate — one row per reg no + center + typing course.
+     * All students enrolled in typing courses (with or without an existing certificate).
      */
-    function typing_certificate_eligible_students(?int $centerId = null): \Illuminate\Support\Collection
+    function typing_certificate_enrolled_students(?int $centerId = null, bool $excludeCertified = false): \Illuminate\Support\Collection
+    {
+        return typing_certificate_student_query($centerId, $excludeCertified);
+    }
+}
+
+if (!function_exists('typing_certificate_student_query')) {
+    function typing_certificate_student_query(?int $centerId = null, bool $excludeCertified = true): \Illuminate\Support\Collection
     {
         $typingSql = typing_course_sql('c');
         $centerFilterLogin = $centerId ? 'AND s.sl_FK_of_center_id = ' . (int) $centerId : '';
@@ -856,21 +869,34 @@ if (!function_exists('typing_certificate_eligible_students')) {
                 COALESCE(
                     (SELECT s2.sl_id FROM student_login s2
                      WHERE s2.sl_reg_no = enr.sl_reg_no
-                       AND s2.sl_FK_of_center_id = enr.center_id
                        AND s2.sl_FK_of_course_id = enr.cid
-                     ORDER BY s2.sl_id ASC LIMIT 1),
+                       AND (enr.center_id = 0 OR s2.sl_FK_of_center_id = enr.center_id OR s2.sl_FK_of_center_id = 0)
+                     ORDER BY CASE WHEN s2.sl_FK_of_center_id = enr.center_id THEN 0 ELSE 1 END, s2.sl_id ASC
+                     LIMIT 1),
                     MIN(enr.sl_id)
                 ) AS sid,
                 enr.cid,
                 enr.sl_reg_no,
                 enr.center_id
             FROM (
-                SELECT s.sl_id, s.sl_reg_no, s.sl_FK_of_center_id AS center_id, c.c_id AS cid
+                SELECT s.sl_id, s.sl_reg_no,
+                    COALESCE(
+                        NULLIF(s.sl_FK_of_center_id, 0),
+                        (SELECT se2.se_FK_of_center_id FROM student_enrollments se2
+                         WHERE se2.se_FK_of_student_id = s.sl_id
+                           AND se2.se_FK_of_course_id = c.c_id
+                           AND se2.se_FK_of_center_id > 0
+                         ORDER BY se2.se_id DESC LIMIT 1),
+                        0
+                    ) AS center_id,
+                    c.c_id AS cid
                 FROM student_login s
                 JOIN course c ON c.c_id = s.sl_FK_of_course_id
                 WHERE {$typingSql} {$centerFilterLogin}
                 UNION ALL
-                SELECT se.se_FK_of_student_id, s.sl_reg_no, se.se_FK_of_center_id, c.c_id
+                SELECT se.se_FK_of_student_id, s.sl_reg_no,
+                    COALESCE(NULLIF(se.se_FK_of_center_id, 0), NULLIF(s.sl_FK_of_center_id, 0), 0) AS center_id,
+                    c.c_id AS cid
                 FROM student_enrollments se
                 JOIN course c ON c.c_id = se.se_FK_of_course_id
                 JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
@@ -879,24 +905,28 @@ if (!function_exists('typing_certificate_eligible_students')) {
             GROUP BY enr.sl_reg_no, enr.center_id, enr.cid
         ";
 
-        return DB::table(DB::raw("({$enrolledSubSql}) AS enr"))
+        $query = DB::table(DB::raw("({$enrolledSubSql}) AS enr"))
             ->join('student_login', 'student_login.sl_id', '=', 'enr.sid')
             ->join('course', 'course.c_id', '=', 'enr.cid')
-            ->join('center_login', 'student_login.sl_FK_of_center_id', '=', 'center_login.cl_id')
-            ->whereNotExists(function ($query) {
-                $query->select(DB::raw(1))
+            ->leftJoin('center_login', 'center_login.cl_id', '=', 'enr.center_id');
+
+        if ($excludeCertified) {
+            $query->whereNotExists(function ($sub) {
+                $sub->select(DB::raw(1))
                     ->from('student_certificates as sc')
                     ->join('student_login as cert_sl', 'cert_sl.sl_id', '=', 'sc.sc_FK_of_student_id')
                     ->whereColumn('sc.sc_FK_of_course_id', 'enr.cid')
                     ->where('sc.sc_type', 'TYPING')
-                    ->whereColumn('cert_sl.sl_reg_no', 'enr.sl_reg_no')
-                    ->whereColumn('cert_sl.sl_FK_of_center_id', 'enr.center_id');
-            })
-            ->select(
+                    ->whereColumn('cert_sl.sl_reg_no', 'enr.sl_reg_no');
+            });
+        }
+
+        return $query->select(
                 'student_login.sl_id',
                 'student_login.sl_name',
                 'student_login.sl_reg_no',
                 'student_login.sl_photo',
+                'enr.center_id',
                 'course.c_id',
                 'course.c_full_name',
                 'course.c_short_name',
@@ -906,7 +936,34 @@ if (!function_exists('typing_certificate_eligible_students')) {
                 'center_login.cl_code'
             )
             ->orderBy('student_login.sl_name', 'ASC')
-            ->get();
+            ->get()
+            ->map(function ($row) {
+                if (empty($row->cl_center_name) && !empty($row->sl_reg_no)) {
+                    $center = resolve_center_for_admit((object) [
+                        'center_id' => (int) ($row->center_id ?? 0),
+                        'sl_FK_of_center_id' => (int) ($row->center_id ?? 0),
+                        'reg_no' => $row->sl_reg_no,
+                        'sl_reg_no' => $row->sl_reg_no,
+                    ]);
+                    if ($center) {
+                        $row->cl_center_name = $center->cl_center_name ?? $center->cl_name;
+                        $row->cl_code = $center->cl_code;
+                        $row->center_id = (int) $center->cl_id;
+                    }
+                }
+
+                return $row;
+            });
+    }
+}
+
+if (!function_exists('typing_certificate_eligible_students')) {
+    /**
+     * Students eligible for a typing certificate — one row per reg no + center + typing course.
+     */
+    function typing_certificate_eligible_students(?int $centerId = null): \Illuminate\Support\Collection
+    {
+        return typing_certificate_student_query($centerId, true);
     }
 }
 

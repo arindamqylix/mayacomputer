@@ -208,8 +208,14 @@ class CertificateController extends Controller
     public function generate_typing_certificate()
     {
         $students = typing_certificate_eligible_students();
+        $typingEnrolledCount = typing_certificate_enrolled_students()->count();
+        $alreadyCertifiedCount = max(0, $typingEnrolledCount - $students->count());
 
-        return view('admin.certificate.generate_typing', compact('students'));
+        return view('admin.certificate.generate_typing', compact(
+            'students',
+            'typingEnrolledCount',
+            'alreadyCertifiedCount'
+        ));
     }
 
     // Generate certificate for a student (admin panel)

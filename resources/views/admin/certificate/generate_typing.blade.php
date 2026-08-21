@@ -213,7 +213,15 @@
                         @else
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle"></i>
-                                No students enrolled in Typing courses found for certificate generation.
+                                @if(($alreadyCertifiedCount ?? 0) > 0 && ($typingEnrolledCount ?? 0) > 0)
+                                    All {{ $alreadyCertifiedCount }} typing enrollment(s) already have certificates generated.
+                                    Check <strong>Certificates → Certificate List</strong> to view or re-print them.
+                                @elseif(($typingEnrolledCount ?? 0) === 0)
+                                    No students enrolled in Typing courses found for certificate generation.
+                                    Ensure the course is marked as <strong>Typing related</strong> in Course settings, or its name/category contains “Typing”.
+                                @else
+                                    No students are currently eligible for a new typing certificate.
+                                @endif
                             </div>
                         @endif
                     </div>
