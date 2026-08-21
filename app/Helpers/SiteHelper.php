@@ -971,12 +971,67 @@ if (!function_exists('typing_certificate_eligible_students')) {
 if (!function_exists('student_sl_ids_for_person')) {
     function student_sl_ids_for_person(string $regNo, int $centerId): array
     {
-        return DB::table('student_login')
-            ->where('sl_reg_no', $regNo)
-            ->where('sl_FK_of_center_id', $centerId)
-            ->pluck('sl_id')
+        $query = DB::table('student_login')->where('sl_reg_no', $regNo);
+        if ($centerId > 0) {
+            $query->where('sl_FK_of_center_id', $centerId);
+        }
+
+        return $query->pluck('sl_id')
             ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
             ->all();
+    }
+}
+
+if (!function_exists('student_person_sl_ids')) {
+    /**
+     * All student_login ids for the logged-in student (multi-course, all centers).
+     */
+    function student_person_sl_ids($student): array
+    {
+        $regNo = trim((string) ($student->sl_reg_no ?? ''));
+        if ($regNo === '') {
+            $id = (int) ($student->sl_id ?? 0);
+
+            return $id > 0 ? [$id] : [];
+        }
+
+        $ids = student_sl_ids_for_person($regNo, 0);
+        if ($ids === [] && !empty($student->sl_id)) {
+            $ids = [(int) $student->sl_id];
+        }
+
+        return $ids;
+    }
+}
+
+if (!function_exists('student_fee_payments_query')) {
+    /**
+     * Fee payments for a student across all course enrollments (reg-no based).
+     */
+    function student_fee_payments_query($student)
+    {
+        $regNo = trim((string) ($student->sl_reg_no ?? ''));
+
+        $query = \App\Models\center\FeesPayment::query();
+
+        if ($regNo !== '') {
+            $query->whereIn('fp_FK_of_student_id', function ($sub) use ($regNo) {
+                $sub->select('sl_id')
+                    ->from('student_login')
+                    ->where('sl_reg_no', $regNo);
+            });
+        } else {
+            $slId = (int) ($student->sl_id ?? 0);
+            if ($slId > 0) {
+                $query->where('fp_FK_of_student_id', $slId);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        return $query;
     }
 }
 

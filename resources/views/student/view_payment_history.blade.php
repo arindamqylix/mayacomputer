@@ -113,11 +113,13 @@
                 </h4>
             </div>
             <div class="card-body p-0">
-                @if(isset($payment_list) && count($payment_list) > 0)
+                @php($payments = collect($payment_list ?? []))
+                @if($payments->isNotEmpty())
                     <div class="table-responsive">
                         <table class="table modern-table table-hover mb-0">
                             <thead>
                                 <tr>
+                                    <th><i class="fas fa-receipt me-2"></i>Receipt No.</th>
                                     <th><i class="fas fa-calendar me-2"></i>Paid Date</th>
                                     <th><i class="fas fa-money-bill-wave me-2"></i>Total Amount</th>
                                     <th><i class="fas fa-check-circle me-2"></i>Paid Amount</th>
@@ -125,8 +127,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($payment_list as $data)
+                                @foreach ($payments as $data)
                                     <tr>
+                                        <td>
+                                            <span class="text-muted">{{ $data->fp_receipt_no ?? '—' }}</span>
+                                        </td>
                                         <td>
                                             <span class="date-display">
                                                 @if($data->fp_date)

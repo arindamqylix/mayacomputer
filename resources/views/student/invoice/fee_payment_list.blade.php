@@ -18,6 +18,7 @@
                                     <th>Receipt No.</th>
                                     <th>Amount</th>
                                     <th>Date</th>
+                                    <th>Type</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -27,6 +28,13 @@
                                         <td><strong>{{ $invoice->fp_receipt_no }}</strong></td>
                                         <td>₹ {{ number_format($invoice->fp_amount, 2) }}</td>
                                         <td>{{ date('d-M-Y', strtotime($invoice->fp_date)) }}</td>
+                                        <td>
+                                            @if((int) ($invoice->fp_is_invoice ?? 0) === 1)
+                                                <span class="badge bg-success">Invoice</span>
+                                            @else
+                                                <span class="badge bg-secondary">Receipt</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             <a href="{{ route('student.invoice.fee_payment_view', $invoice->fp_id) }}" class="btn btn-sm btn-info">
                                                 <i class="fa-solid fa-eye"></i> View
@@ -38,7 +46,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center">No invoices found.</td>
+                                        <td colspan="5" class="text-center">No fee payments found yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

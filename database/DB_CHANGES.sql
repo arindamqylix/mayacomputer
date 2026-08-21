@@ -723,3 +723,11 @@ ADD COLUMN `sc_typing_speed_english` VARCHAR(50) NULL DEFAULT NULL AFTER `sc_typ
 -- 30-07-2026: admin manual recharge: who deposited (e.g. Admin, Razorpay)
 ALTER TABLE `center_recharge`
   ADD COLUMN `cr_deposit_by` VARCHAR(255) NULL DEFAULT NULL AFTER `cr_type`;
+
+-- 30-07-2026: student fee invoice flags (run once; skip if columns already exist)
+ALTER TABLE `set_fee`
+  ADD COLUMN `sf_invoice_generated` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1 if invoice generated' AFTER `sf_due`,
+  ADD COLUMN `sf_invoice_id` INT(11) NULL DEFAULT NULL COMMENT 'fees_payment.fp_id for invoice' AFTER `sf_invoice_generated`;
+
+ALTER TABLE `fees_payment`
+  ADD COLUMN `fp_is_invoice` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1=invoice row, 0=receipt only' AFTER `fp_remarks`;
