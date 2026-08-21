@@ -870,14 +870,13 @@ if (!function_exists('typing_certificate_student_query')) {
                     (SELECT s2.sl_id FROM student_login s2
                      WHERE s2.sl_reg_no = enr.sl_reg_no
                        AND s2.sl_FK_of_course_id = enr.cid
-                       AND (enr.center_id = 0 OR s2.sl_FK_of_center_id = enr.center_id OR s2.sl_FK_of_center_id = 0)
-                     ORDER BY CASE WHEN s2.sl_FK_of_center_id = enr.center_id THEN 0 ELSE 1 END, s2.sl_id ASC
+                     ORDER BY CASE WHEN s2.sl_FK_of_center_id > 0 THEN 0 ELSE 1 END, s2.sl_id ASC
                      LIMIT 1),
                     MIN(enr.sl_id)
                 ) AS sid,
                 enr.cid,
                 enr.sl_reg_no,
-                enr.center_id
+                COALESCE(MAX(NULLIF(enr.center_id, 0)), MAX(enr.center_id), 0) AS center_id
             FROM (
                 SELECT s.sl_id, s.sl_reg_no,
                     COALESCE(
@@ -902,7 +901,7 @@ if (!function_exists('typing_certificate_student_query')) {
                 JOIN student_login s ON s.sl_id = se.se_FK_of_student_id
                 WHERE {$typingSql} {$centerFilterEnroll}
             ) AS enr
-            GROUP BY enr.sl_reg_no, enr.center_id, enr.cid
+            GROUP BY enr.sl_reg_no, enr.cid
         ";
 
         $query = DB::table(DB::raw("({$enrolledSubSql}) AS enr"))
@@ -953,13 +952,15 @@ if (!function_exists('typing_certificate_student_query')) {
                 }
 
                 return $row;
-            });
+            })
+            ->unique(fn ($row) => (string) $row->sl_reg_no . '|' . (int) $row->c_id)
+            ->values();
     }
 }
 
 if (!function_exists('typing_certificate_eligible_students')) {
     /**
-     * Students eligible for a typing certificate — one row per reg no + center + typing course.
+     * Students eligible for a typing certificate — one row per reg no + typing course.
      */
     function typing_certificate_eligible_students(?int $centerId = null): \Illuminate\Support\Collection
     {
