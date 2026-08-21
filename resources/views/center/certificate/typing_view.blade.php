@@ -65,7 +65,7 @@
         .content-area-white {
             background-color: white;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold' font-size='10' fill='%230f1d46' opacity='0.05' transform='rotate(-45 100 100)'%3EMAYA COMPUTER CENTER PRIVATE LIMITED%3C/text%3E%3C/svg%3E");
-            padding: 5px 30px 12px 30px;
+            padding: 5px 30px 16px 30px;
             height: 100%;
             border: 1px solid #c5a059;
             position: relative;
@@ -239,10 +239,10 @@
             object-fit: cover;
         }
 
-        /* Footer Section - sits close below main content, no extra gap */
+        /* Footer Section */
         .footer-section {
-            margin-top: 10px;
-            padding-bottom: 3px;
+            margin-top: 4px;
+            padding-bottom: 8px;
         }
 
         .footer-logos {
@@ -250,14 +250,14 @@
             justify-content: center;
             align-items: center;
             gap: 4px;
-            margin-bottom: 1px;
+            margin-bottom: 0;
             border-top: 1px solid #eee;
-            padding-top: 2px;
+            padding-top: 0;
             flex-wrap: nowrap;
         }
 
         .footer-logo {
-            height: 48px;
+            height: 42px;
             width: auto;
             max-width: 180px;
             object-fit: contain;
@@ -270,7 +270,7 @@
             align-items: stretch;
             padding: 0 20px;
             gap: 10px;
-            margin-top: 1px;
+            margin-top: 0;
         }
 
         .sig-block {
@@ -319,7 +319,7 @@
 
         .sig-area {
             position: relative;
-            height: 110px;
+            height: 92px;
             width: 200px;
             margin: 0 auto;
             flex-shrink: 0;
@@ -330,7 +330,7 @@
 
         .stamp-img {
             position: absolute;
-            height: 130px;
+            height: 112px;
             width: auto;
             top: 0;
             left: 50%;
@@ -352,13 +352,13 @@
         }
 
         .sig-line {
-            padding-top: 4px;
-            margin-top: -31px;
-            min-height: 18px;
+            padding-top: 0;
+            margin-top: -38px;
+            min-height: 16px;
             font-weight: bold;
             font-size: 14px;
             color: #333;
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         @page {
@@ -461,14 +461,14 @@
                             </div>
 
                             <div class="center-study-details"
-                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; color: #000; font-weight: bold; line-height: 1.6; margin-top: 10px;">
+                                style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 18px; color: #000; font-weight: bold; line-height: 1.5; margin-top: 4px;">
                                 {{ $certificate->cl_center_name ?? '' }} , {{ $certificate->cl_center_address ?? '' }}
                                 <br>
                                 Centre Code {{ $certificate->cl_code ?? '' }}
                             </div>
 
                             <div class="recommendation-text"
-                                style="margin-top: 10px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
+                                style="margin-top: 4px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 16px; color: #000;">
                                 On the recommendation of the board of examination
                             </div>
 
@@ -481,7 +481,7 @@
                                 @endif
                             </div>
 
-                            <div class="authorization-text" style="margin-top: 10px; font-size:14px;">
+                            <div class="authorization-text" style="margin-top: 4px; font-size:14px;">
                                 <span class="company-name">MAYA COMPUTER CENTER PRIVATE LIMITED</span>
                             </div>
                         </div>
