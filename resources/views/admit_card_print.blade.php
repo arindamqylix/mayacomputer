@@ -383,8 +383,8 @@
                     <div class="detail-value">{{ strtoupper($student->sl_category ?? 'N/A') }}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Center Code & Name:</div>
-                    <div class="detail-value">{{ $center->cl_code ?? '' }}- {{ strtoupper($center->cl_name ?? $center->cl_center_name ?? 'N/A') }}</div>
+                    <div class="detail-label">Center Code &amp; Address:</div>
+                    <div class="detail-value">{{ $center->cl_code ?? '' }} &amp; {{ $center->cl_center_address ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Course Name:</div>
@@ -423,7 +423,7 @@
                     <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
                     <td>{{ \Carbon\Carbon::parse($admit->exam_time)->format('h:i A') }}</td>
                     <td>{{ $admit->exam_venue }}</td>
-                    <td>{{ $center->cl_center_address ?? 'N/A' }}</td>
+                    <td>{{ admit_card_exam_center_address($admit->exam_venue ?? null, $center) }}</td>
                 </tr>
             </tbody>
         </table>

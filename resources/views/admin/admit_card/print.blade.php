@@ -345,10 +345,7 @@
         $signSrc = $forPdf
             ? student_media_public_path($student->sl_signature ?? null)
             : student_media_url($student->sl_signature ?? null);
-        $examCenter = \DB::table('center_login')->where('cl_center_name', $admit->exam_venue)->first();
-        $examAddress = ($examCenter && $examCenter->cl_center_address)
-            ? $examCenter->cl_center_address
-            : ($center->cl_center_address ?? 'N/A');
+        $examAddress = admit_card_exam_center_address($admit->exam_venue ?? null, $center);
         $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode(url('verify-admit-card/' . ($admit->ac_id ?? '')));
     @endphp
 
@@ -401,7 +398,10 @@
                                 </tr>
                                 <tr>
                                     <td class="label">Date of Birth</td>
-                                    <td class="value">: {!! format_dob_display_html($student->sl_dob ?? null, 'N/A', true) !!} &nbsp;&nbsp; Gen: {{ strtoupper($student->sl_sex ?? '') }}</td>
+                                    <td class="value">: {!! format_dob_display_html($student->sl_dob ?? null, 'N/A', true) !!}
+                                        &nbsp;&nbsp; Gen : {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Cat :
+                                        {{ $student->sl_category ?? 'Gen' }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="label">Course Name</td>
@@ -412,8 +412,9 @@
                                     <td class="value">: {{ strtoupper($center->cl_center_name ?? $center->cl_name ?? '') }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="label">Center Code</td>
-                                    <td class="value">: {{ $center->cl_code ?? '' }}</td>
+                                    <td class="label">Center Code &amp; Address</td>
+                                    <td class="value">: {{ $center->cl_code ?? '' }} &amp;
+                                        {{ $center->cl_center_address ?? 'N/A' }}</td>
                                 </tr>
                             </table>
                         </td>

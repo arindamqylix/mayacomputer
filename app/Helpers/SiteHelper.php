@@ -410,6 +410,43 @@ if (!function_exists('resolve_center_for_admit')) {
     }
 }
 
+if (!function_exists('admit_card_exam_center_address')) {
+    /**
+     * Address for the exam venue row (matches center by name; falls back to study center).
+     */
+    function admit_card_exam_center_address(?string $examVenue, $studyCenter = null): string
+    {
+        $venue = trim((string) $examVenue);
+        if ($venue !== '') {
+            $examCenter = DB::table('center_login')
+                ->where(function ($q) use ($venue) {
+                    $q->where('cl_center_name', $venue)
+                        ->orWhere('cl_name', $venue);
+                })
+                ->first();
+
+            if (!$examCenter) {
+                $examCenter = DB::table('center_login')
+                    ->where(function ($q) use ($venue) {
+                        $q->where('cl_center_name', 'like', '%' . $venue . '%')
+                            ->orWhere('cl_name', 'like', '%' . $venue . '%');
+                    })
+                    ->first();
+            }
+
+            if ($examCenter && !empty(trim((string) ($examCenter->cl_center_address ?? '')))) {
+                return trim((string) $examCenter->cl_center_address);
+            }
+        }
+
+        if ($studyCenter && !empty(trim((string) ($studyCenter->cl_center_address ?? '')))) {
+            return trim((string) $studyCenter->cl_center_address);
+        }
+
+        return 'N/A';
+    }
+}
+
 if (!function_exists('center_display_label')) {
     /**
      * Human-readable center name with optional code, e.g. "WEBEL COMPUTER CENTER (61123000)".

@@ -429,7 +429,10 @@
                     </tr>
                     <tr>
                         <td class="label">Date of Birth</td>
-                        <td class="value" colspan="2">: {!! format_dob_display_html($student->sl_dob ?? null, 'N/A', true) !!} &nbsp;&nbsp; Gen: {{ strtoupper($student->sl_sex ?? '') }}</td>
+                        <td class="value" colspan="2">: {!! format_dob_display_html($student->sl_dob ?? null, 'N/A', true) !!}
+                            &nbsp;&nbsp; Gen : {{ strtoupper($student->sl_sex ?? 'N/A') }} &nbsp;&nbsp; Cat :
+                            {{ $student->sl_category ?? 'Gen' }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Course Name</td>
@@ -440,8 +443,9 @@
                         <td class="value" colspan="2">: {{ strtoupper($center->cl_center_name ?? $center->cl_name ?? '') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Center Code</td>
-                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }}</td>
+                        <td class="label">Center Code &amp; Address</td>
+                        <td class="value" colspan="2">: {{ $center->cl_code ?? '' }} &amp;
+                            {{ $center->cl_center_address ?? 'N/A' }}</td>
                     </tr>
             </table>
                 </div>
@@ -481,7 +485,7 @@
                         <td>{{ \Carbon\Carbon::parse($admit->exam_date)->format('d/m/Y') }}</td>
                         <td>{{ $admit->exam_time }}</td>
                         <td>{!! nl2br(e($admit->exam_venue)) !!}</td>
-                        <td>{{ $center->cl_center_address ?? 'N/A' }}</td>
+                        <td>{{ admit_card_exam_center_address($admit->exam_venue ?? null, $center) }}</td>
                     </tr>
                 </tbody>
             </table>
